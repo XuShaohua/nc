@@ -9,7 +9,7 @@ import sys
 
 
 def format_syscall(group):
-    print("const SYS_{0} = {1}".format(group[0].upper(), group[1]))
+    print("pub const SYS_{0} : usize = {1}".format(group[0].upper(), group[1]))
 
 
 def main():

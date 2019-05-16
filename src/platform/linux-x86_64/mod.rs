@@ -1,8 +1,10 @@
 
-pub mod num;
+pub mod c;
+pub mod nums;
+pub mod types;
 
 // From kmcallister/syscall.rs
-#[include(always)]
+#[inline(always)]
 pub unsafe fn syscall0(n: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
@@ -11,3 +13,4 @@ pub unsafe fn syscall0(n: usize) -> usize {
                    : "volatile");
     ret
 }
+

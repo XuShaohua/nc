@@ -1,10 +1,15 @@
 
 use super::nums::*;
 use super::syscall0;
-use super::types::*;
 
-pub fn getpid() -> pid_t {
+pub fn getpid() -> isize {
     unsafe {
-        return syscall0(SYS_GETPID) as pid_t;
+        return syscall0(SYS_GETPID) as isize;
+    }
+}
+
+pub fn getppid() -> isize {
+    unsafe {
+        return syscall0(SYS_GETPPID) as isize;
     }
 }

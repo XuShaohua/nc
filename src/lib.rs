@@ -1,7 +1,12 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+
+#![crate_name="nc"]
+#![crate_type="lib"]
+
+#![feature(asm)]
+#![no_std]
+
+pub use platform::*;
+
+#[cfg(all(target_os="linux", target_arch="x86_64"))]
+#[path="platform/linux-x86_64/mod.rs"]
+pub mod platform;

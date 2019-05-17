@@ -1,7 +1,12 @@
 
-use super::nums::*;
+use super::errno::*;
+use super::sysno::*;
 use super::types::*;
 use super::{syscall0, syscall1, syscall3};
+
+#[inline(always)]
+fn e(n: usize) -> usize {
+}
 
 pub fn exit(status: u8) {
     unsafe {
@@ -27,14 +32,12 @@ pub fn getppid() -> pid_t {
     }
 }
 
-pub fn write(fd: c_int, buf: &[u8]) -> ssize_t {
+pub fn write(fd: c_int, buf: &[u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let ret = syscall3(SYS_WRITE, fd as usize, buf.as_ptr() as usize, buf.len());
         if (ret as isize) < 0 && (ret as isize) >= -256 {
             let errno = -(ret as isize) as c_int;
-            panic!("errno: {}, ret: {}", errno, ret);
         }
-        panic!("ret: {}", ret);
-        return ret as ssize_t;
+        return Ok(ret as ssize_t);
     }
 }

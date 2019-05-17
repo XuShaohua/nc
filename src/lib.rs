@@ -7,7 +7,8 @@
 #![no_std]
 
 pub use platform::c::*;
-pub use platform::nums::*;
+pub use platform::errno::*;
+pub use platform::sysno::*;
 pub use platform::types::*;
 
 #[cfg(all(target_os="linux", target_arch="x86_64"))]

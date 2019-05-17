@@ -35,9 +35,9 @@ pub fn getppid() -> pid_t {
 pub fn write(fd: c_int, buf: &[u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let ret = syscall3(SYS_WRITE, fd as usize, buf.as_ptr() as usize, buf.len());
-        if (ret as isize) < 0 && (ret as isize) >= -256 {
-            let errno = -(ret as isize) as i32;
-            return Err(errno);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(reti);
         } else {
             return Ok(ret as ssize_t);
         }

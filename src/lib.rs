@@ -2,6 +2,7 @@
 #![crate_name="nc"]
 #![crate_type="lib"]
 
+#![allow(non_camel_case_types)]
 #![feature(asm)]
 #![no_std]
 

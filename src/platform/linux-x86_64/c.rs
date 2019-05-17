@@ -1,7 +1,13 @@
 
 use super::nums::*;
 use super::types::*;
-use super::syscall0;
+use super::{syscall0, syscall1};
+
+pub fn exit(status: u8) {
+    unsafe {
+        syscall1(SYS_EXIT, status as usize);
+    }
+}
 
 pub fn fork() -> pid_t {
     unsafe {

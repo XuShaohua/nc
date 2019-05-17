@@ -1,6 +1,7 @@
 
 pub mod c;
-pub mod nums;
+pub mod errno;
+pub mod sysno;
 pub mod types;
 
 // Copy from kmcallister/syscall.rs

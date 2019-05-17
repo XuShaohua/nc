@@ -7,6 +7,7 @@
 #![no_std]
 
 pub use platform::c::*;
+pub use platform::consts::*;
 pub use platform::errno::*;
 pub use platform::sysno::*;
 pub use platform::types::*;

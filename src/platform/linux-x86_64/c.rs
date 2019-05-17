@@ -4,9 +4,28 @@ use super::sysno::*;
 use super::types::*;
 use super::{syscall0, syscall1, syscall3};
 
-//#[inline(always)]
-//fn e(n: usize) -> usize {
-//}
+fn c_str(s: &str) -> [u8; 128]{
+    let mut buf: [u8; 128] = [42; 128];
+    for (i, b) in s.bytes().enumerate() {
+        buf[i] = b;
+    }
+    // TODO(Shaohua): Assert length
+    buf[s.len()] = 0;
+    return buf;
+}
+
+pub fn close(fd: isize) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let ret = syscall1(SYS_CLOSE, fd);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
 
 pub fn exit(status: u8) {
     unsafe {
@@ -38,9 +57,27 @@ pub fn getppid() -> pid_t {
     }
 }
 
-pub fn write(fd: c_int, buf: &[u8]) -> Result<ssize_t, Errno> {
+pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
     unsafe {
-        let ret = syscall3(SYS_WRITE, fd as usize, buf.as_ptr() as usize, buf.len());
+        let path = c_str(path).as_ptr() as usize;
+        let flags = flags as usize;
+        let mode = mode as usize;
+        let ret = syscall3(SYS_OPEN, path, flags, mode);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(reti);
+        }
+    }
+}
+
+pub fn write(fd: isize, buf: &[u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_len = buf.len();
+        let buf = buf.as_ptr() as usize;
+        let ret = syscall3(SYS_WRITE, fd, buf, buf_len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);

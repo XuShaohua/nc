@@ -14,9 +14,15 @@ pub fn exit(status: u8) {
     }
 }
 
-pub fn fork() -> pid_t {
+pub fn fork() -> Result<pid_t, Errno> {
     unsafe {
-        return syscall0(SYS_FORK) as pid_t;
+        let ret = syscall0(SYS_FORK);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(ret as pid_t);
+        }
     }
 }
 
@@ -37,7 +43,7 @@ pub fn write(fd: c_int, buf: &[u8]) -> Result<ssize_t, Errno> {
         let ret = syscall3(SYS_WRITE, fd as usize, buf.as_ptr() as usize, buf.len());
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
-            return Err(reti);
+            return Err(-reti);
         } else {
             return Ok(ret as ssize_t);
         }

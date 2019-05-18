@@ -2,7 +2,7 @@
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
-use super::{syscall0, syscall1, syscall2, syscall3};
+use super::{syscall0, syscall1, syscall2, syscall3, syscall4};
 
 fn c_str(s: &str) -> [u8; 128]{
     let mut buf: [u8; 128] = [42; 128];
@@ -331,6 +331,43 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
     unsafe {
         let uid = uid as usize;
         let ret = syscall1(SYS_SETUID, uid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Commit filesystem caches to disk.
+pub fn sync() {
+    unsafe {
+        syscall0(SYS_SYNC);
+    }
+}
+
+/// Commit filesystem cache related to `fd` to disk.
+pub fn syncfs(fd: isize) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let ret = syscall1(SYS_SYNCFS, fd);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn sync_file_range(fd: isize, offset: off_t, nbytes: off_t, flags: isize) -> Result<(), Errno>{
+    unsafe {
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let nbytes = nbytes as usize;
+        let flags = flags as usize;
+        let ret = syscall4(SYS_SYNC_FILE_RANGE, fd, offset, nbytes, flags);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);

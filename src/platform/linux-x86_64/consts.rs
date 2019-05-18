@@ -14,7 +14,6 @@ pub const S_IWOTH: mode_t = S_IWGRP >> 3;
 pub const S_IXOTH: mode_t = S_IXGRP >> 3;
 pub const S_IRWXO: mode_t = S_IRWXG >> 3;
 
-
 pub const O_RDONLY: i32 = 00;
 pub const O_WRONLY: i32 = 01;
 pub const O_RDWR: i32 = 02;
@@ -26,4 +25,13 @@ pub const O_APPEND: i32 = 02000;
 pub const O_NONBLOCK: i32 = 04000;
 pub const O_SYNC: i32 = 04010000;
 pub const O_ASYNC: i32 = 020000;
+
+pub const SYNC_FILE_RANGE_WAIT_BEFORE: usize = 1;
+pub const SYNC_FILE_RANGE_WRITE: usize = 2;
+pub const SYNC_FILE_RANGE_WAIT_AFTER: usize = 4;
+
+pub const SPLICE_F_MOVE: usize = 1;
+pub const SPLICE_F_NONBLOCK: usize = 2;
+pub const SPLICE_F_MORE: usize = 4;
+pub const SPLICE_F_GIFT: usize = 8;
 

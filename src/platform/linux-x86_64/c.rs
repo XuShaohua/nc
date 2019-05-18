@@ -45,6 +45,30 @@ pub fn fork() -> Result<pid_t, Errno> {
     }
 }
 
+pub fn getegid() -> gid_t {
+    unsafe {
+        return syscall0(SYS_GETEGID) as gid_t;
+    }
+}
+
+pub fn geteuid() -> uid_t {
+    unsafe {
+        return syscall0(SYS_GETEUID) as uid_t;
+    }
+}
+
+pub fn getgid() -> gid_t {
+    unsafe {
+        return syscall0(SYS_GETGID) as gid_t;
+    }
+}
+
+pub fn getpgrp() -> pid_t {
+    unsafe {
+        return syscall0(SYS_GETPGRP) as pid_t;
+    }
+}
+
 pub fn getpid() -> pid_t {
     unsafe {
         return syscall0(SYS_GETPID) as pid_t;
@@ -54,6 +78,12 @@ pub fn getpid() -> pid_t {
 pub fn getppid() -> pid_t {
     unsafe {
         return syscall0(SYS_GETPPID) as pid_t;
+    }
+}
+
+pub fn getuid() -> uid_t {
+    unsafe {
+        return syscall0(SYS_GETUID) as uid_t;
     }
 }
 
@@ -77,6 +107,20 @@ pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
         let oldpath = c_str(oldpath).as_ptr() as usize;
         let newpath = c_str(newpath).as_ptr() as usize;
         let ret = syscall2(SYS_RENAME, oldpath, newpath);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let pgid = pgid as usize;
+        let ret = syscall2(SYS_SETPGID, pid, pgid);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);

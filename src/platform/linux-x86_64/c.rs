@@ -5,6 +5,7 @@ use super::types::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4};
 
 fn c_str(s: &str) -> [u8; 128]{
+    // TODO(Shaohua): Simplify ops
     let mut buf: [u8; 128] = [42; 128];
     for (i, b) in s.bytes().enumerate() {
         buf[i] = b;
@@ -199,6 +200,7 @@ pub fn kill(pid: pid_t, signal: isize) -> Result<(), Errno> {
     }
 }
 
+/// Open and possibly create a file.
 pub fn open(path: &str, flags: isize, mode: mode_t) -> Result<isize, Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
@@ -227,6 +229,7 @@ pub fn pause() -> Result<(), Errno> {
     }
 }
 
+/// Read from a file descriptor.
 pub fn read(fd: isize, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
@@ -383,6 +386,22 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
     }
 }
 
+/// Get file status about a file.
+pub fn stat(path: &str) -> Result<stat_t, Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let mut statbuf = stat_t::default();
+        let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
+        let ret = syscall2(SYS_STAT, path, statbuf_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(statbuf);
+        }
+    }
+}
+
 /// Commit filesystem caches to disk.
 pub fn sync() {
     unsafe {
@@ -404,6 +423,7 @@ pub fn syncfs(fd: isize) -> Result<(), Errno> {
     }
 }
 
+/// Sync a file segment to disk
 pub fn sync_file_range(fd: isize, offset: off_t, nbytes: off_t, flags: isize) -> Result<(), Errno>{
     unsafe {
         let fd = fd as usize;
@@ -441,6 +461,7 @@ pub fn waitid() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Write to a file descriptor.
 pub fn write(fd: isize, buf: &[u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;

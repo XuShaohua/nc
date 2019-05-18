@@ -28,6 +28,54 @@ pub fn close(fd: isize) -> Result<(), Errno> {
     }
 }
 
+/// Creates a copy of the file descriptor `oldfd`, using the lowest available
+/// file descriptor.
+pub fn dup(oldfd: isize) -> Result<isize, Errno> {
+    unsafe {
+        let oldfd = oldfd as usize;
+        let ret = syscall1(SYS_DUP, oldfd);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as isize;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Creates a copy of the file descriptor `oldfd`, using the speficified file
+/// descriptor `newfd`.
+pub fn dup2(oldfd: isize, newfd: isize) -> Result<(), Errno> {
+    unsafe {
+        let oldfd = oldfd as usize;
+        let newfd = newfd as usize;
+        let ret = syscall2(SYS_DUP2, oldfd, newfd);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
+pub fn dup3(oldfd: isize, newfd: isize, flags: isize) -> Result<(), Errno> {
+    unsafe {
+        let oldfd = oldfd as usize;
+        let newfd = newfd as usize;
+        let flags = flags as usize;
+        let ret = syscall3(SYS_DUP3, oldfd, newfd, flags);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Terminate current process.
 pub fn exit(status: u8) {
     unsafe {
@@ -72,6 +120,20 @@ pub fn getgid() -> gid_t {
 /// Get list of supplementary group Ids.
 pub fn getgroups() {
     // TODO(Shaohua): Not implemented
+}
+
+pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let ret = syscall1(SYS_GETPGID, pid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as pid_t;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Get the process group ID of the calling process.
@@ -121,6 +183,19 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
             return Err(-reti);
         } else {
             return Ok(reti);
+        }
+    }
+}
+
+// Pause the calling process to sleep until a signal is delivered.
+pub fn pause() -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall0(SYS_PAUSE);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
         }
     }
 }

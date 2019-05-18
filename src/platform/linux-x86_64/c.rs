@@ -14,6 +14,10 @@ fn c_str(s: &str) -> [u8; 128]{
     return buf;
 }
 
+pub fn clone() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Close a file descriptor.
 pub fn close(fd: isize) -> Result<(), Errno> {
     unsafe {
@@ -28,7 +32,7 @@ pub fn close(fd: isize) -> Result<(), Errno> {
     }
 }
 
-/// Creates a copy of the file descriptor `oldfd`, using the lowest available
+/// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 pub fn dup(oldfd: isize) -> Result<isize, Errno> {
     unsafe {
@@ -44,7 +48,7 @@ pub fn dup(oldfd: isize) -> Result<isize, Errno> {
     }
 }
 
-/// Creates a copy of the file descriptor `oldfd`, using the speficified file
+/// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
 pub fn dup2(oldfd: isize, newfd: isize) -> Result<(), Errno> {
     unsafe {
@@ -74,6 +78,10 @@ pub fn dup3(oldfd: isize, newfd: isize, flags: isize) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn execve() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Terminate current process.
@@ -169,6 +177,21 @@ pub fn getresuid() {
 pub fn getuid() -> uid_t {
     unsafe {
         return syscall0(SYS_GETUID) as uid_t;
+    }
+}
+
+/// Send signal to a process.
+pub fn kill(pid: pid_t, signal: isize) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let signal = signal as usize;
+        let ret = syscall2(SYS_KILL, pid, signal);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
     }
 }
 
@@ -375,6 +398,27 @@ pub fn sync_file_range(fd: isize, offset: off_t, nbytes: off_t, flags: isize) ->
             return Ok(());
         }
     }
+}
+
+/// Create a child process and wait until it is terminated.
+pub fn vfork() -> Result<pid_t, Errno> {
+    unsafe {
+        let ret = syscall0(SYS_VFORK);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(ret as pid_t);
+        }
+    }
+}
+
+pub fn wait4() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn waitid() {
+    // TODO(Shaohua): Not implemented
 }
 
 pub fn write(fd: isize, buf: &[u8]) -> Result<ssize_t, Errno> {

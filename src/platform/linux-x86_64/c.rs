@@ -104,6 +104,10 @@ pub fn fork() -> Result<pid_t, Errno> {
     }
 }
 
+pub fn fsync() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Get the effective group ID of the calling process.
 pub fn getegid() -> gid_t {
     unsafe {
@@ -195,7 +199,7 @@ pub fn kill(pid: pid_t, signal: isize) -> Result<(), Errno> {
     }
 }
 
-pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
+pub fn open(path: &str, flags: isize, mode: mode_t) -> Result<isize, Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
         let flags = flags as usize;
@@ -219,6 +223,22 @@ pub fn pause() -> Result<(), Errno> {
             return Err(-reti);
         } else {
             return Ok(());
+        }
+    }
+}
+
+pub fn read(fd: isize, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_len = buf.len() as usize;
+        let buf = buf.as_mut_ptr() as usize;
+        let ret = syscall3(SYS_READ, fd, buf, buf_len);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
         }
     }
 }

@@ -116,6 +116,20 @@ pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
     }
 }
 
+/// Set group identity.
+pub fn setgid(gid: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let gid = gid as usize;
+        let ret = syscall1(SYS_SETGID, gid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;

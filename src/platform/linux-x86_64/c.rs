@@ -69,7 +69,12 @@ pub fn getgid() -> gid_t {
     }
 }
 
-/// Get process group.
+/// Get list of supplementary group Ids.
+pub fn getgroups() {
+    // TODO(Shaohua): Not implemented
+}
+
+/// Get the process group ID of the calling process.
 pub fn getpgrp() -> pid_t {
     unsafe {
         return syscall0(SYS_GETPGRP) as pid_t;
@@ -83,18 +88,19 @@ pub fn getpid() -> pid_t {
     }
 }
 
-/// Get the process group ID of the calling process.
-pub fn getpgrp() -> pid_t {
-    unsafe {
-        return syscall0(SYS_GETPGRP) as pid_t;
-    }
-}
-
 /// Get the process ID of the parent of the calling process.
 pub fn getppid() -> pid_t {
     unsafe {
         return syscall0(SYS_GETPPID) as pid_t;
     }
+}
+
+pub fn getresgid() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn getresuid() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Get the real user ID of the calling process.
@@ -147,12 +153,81 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
     }
 }
 
+/// Set list of supplementary group Ids.
+pub fn setgroups() -> Result<(), Errno> {
+    // TODO(Shaohua): not implemented
+    Ok(())
+}
+
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
 pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;
         let pgid = pgid as usize;
         let ret = syscall2(SYS_SETPGID, pid, pgid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set real and effective group IDs of the calling process.
+pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let rgid = rgid as usize;
+        let egid = egid as usize;
+        let ret = syscall2(SYS_SETREGID, rgid, egid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+
+/// Set real and effective user IDs of the calling process.
+pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
+    unsafe {
+        let ruid = ruid as usize;
+        let euid = euid as usize;
+        let ret = syscall2(SYS_SETREUID, ruid, euid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set real, effective and saved group Ids of the calling process.
+pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let rgid = rgid as usize;
+        let egid = egid as usize;
+        let sgid = sgid as usize;
+        let ret = syscall3(SYS_SETREUID, rgid, egid, sgid);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set real, effective and saved user Ids of the calling process.
+pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
+    unsafe {
+        let ruid = ruid as usize;
+        let euid = euid as usize;
+        let suid = suid as usize;
+        let ret = syscall3(SYS_SETREUID, ruid, euid, suid);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);

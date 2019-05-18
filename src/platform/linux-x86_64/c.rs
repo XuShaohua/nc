@@ -2,7 +2,7 @@
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
-use super::{syscall0, syscall1, syscall3};
+use super::{syscall0, syscall1, syscall2, syscall3};
 
 fn c_str(s: &str) -> [u8; 128]{
     let mut buf: [u8; 128] = [42; 128];
@@ -68,6 +68,20 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
             return Err(-reti);
         } else {
             return Ok(reti);
+        }
+    }
+}
+
+pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
+    unsafe {
+        let oldpath = c_str(oldpath).as_ptr() as usize;
+        let newpath = c_str(newpath).as_ptr() as usize;
+        let ret = syscall2(SYS_RENAME, oldpath, newpath);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
         }
     }
 }

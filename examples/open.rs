@@ -4,7 +4,7 @@ extern crate nc;
 fn main() {
     let path = "/tmp/hello.rs";
     let fd = nc::open(path,
-                      nc::O_CREAT | nc::O_TRUNC,
+                      nc::O_CREAT | nc::O_RDWR,
                       nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH)
         .expect("Failed to open file!");
     println!("fd: {:?}", fd);

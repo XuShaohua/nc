@@ -15,6 +15,34 @@ fn c_str(s: &str) -> [u8; 128]{
     return buf;
 }
 
+/// Check user's permission for a file.
+pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_ACCESS, path, mode);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok();
+        }
+    }
+}
+
+/// Change data segment size.
+pub fn brk(addr: usize) -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall1(SYS_BRK, addr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn clone() {
     // TODO(Shaohua): Not implemented
 }
@@ -201,6 +229,10 @@ pub fn getuid() -> uid_t {
     }
 }
 
+pub fn ioctl() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Send signal to a process.
 pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     unsafe {
@@ -341,13 +373,65 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     }
 }
 
+/// Read from a file descriptor without changing file offset.
+pub fn pread64(fd: i32, buf: mut [u8], len: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_ptr = buf.as_ptr() as usize;
+        let len = len as usize;
+        let offset = offset as usize;
+        let ret = syscall4(SYS_PREAD64, fd, buf_ptr, len, offset);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Write to a file descriptor without changing file offset.
+pub fn pwrite(fd: i32, buf: &[u8], len: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_ptr = buf.as_ptr() as usize;
+        let len = len as usize;
+        let offset = offset as usize;
+        let ret = syscall4(SYS_PWRITE64, fd, buf_ptr, len, offset);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(ret as ssize_t);
+        }
+    }
+}
+
 /// Read from a file descriptor.
-pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn read(fd: i32, buf: &mut [u8], len: size_t) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_mut_ptr() as usize;
-        let buf_len = buf.len() as usize;
-        let ret = syscall3(SYS_READ, fd, buf_ptr, buf_len);
+        let len = len as usize;
+        let ret = syscall3(SYS_READ, fd, buf_ptr, len);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Read from a file descriptor into multiple buffers.
+pub fn readv(fd: i32, iov: &mut [iovec_t], len: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let iov_ptr = iov.as_mut_ptr() as usize;
+        let len = len as usize;
+        let ret = syscall3(SYS_READV, fd, iov_ptr, len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);
@@ -370,6 +454,19 @@ pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn rt_sigaction() -> Result<(), Errno> {
+    // TODO(Shaohua): Not implemented
+    Ok(())
+}
+
+pub fn rt_sigprocmask() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn rt_sigreturn() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Set the group ID of the calling process to `gid`.
@@ -574,12 +671,28 @@ pub fn waitid() {
 }
 
 /// Write to a file descriptor.
-pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
+pub fn write(fd: i32, buf: &[u8], len: size_t) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_ptr() as usize;
-        let buf_len = buf.len();
-        let ret = syscall3(SYS_WRITE, fd, buf_ptr, buf_len);
+        let len = len as usize;
+        let ret = syscall3(SYS_WRITE, fd, buf_ptr, len);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(ret as ssize_t);
+        }
+    }
+}
+
+/// Write to a file descriptor from multiple buffers.
+pub fn writev(fd: i32, iov: &[iovec_t], len: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let iov_ptr = iov.as_ptr() as usize;
+        let len = len as usize;
+        let ret = syscall3(SYS_WRITE, fd, iov_ptr, len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);

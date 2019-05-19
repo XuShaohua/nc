@@ -53,3 +53,12 @@ pub struct pollfd_t {
     events: i16,  // Types of events poller cares about
     revents: i16, // Types of events that actually occurred
 }
+
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct iovec_t {
+    pub iov_base: usize,
+    pub iov_len: size_t,
+}
+

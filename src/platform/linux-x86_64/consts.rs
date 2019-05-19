@@ -28,6 +28,7 @@ pub const O_NONBLOCK: i32 = 04000;
 pub const O_SYNC: i32 = 04010000;
 pub const O_ASYNC: i32 = 020000;
 
+/// access() mode
 pub const R_OK: i32 = 4;
 pub const W_OK: i32 = 2;
 pub const X_OK: i32 = 1;

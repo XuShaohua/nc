@@ -32,8 +32,8 @@ pub type shmatt_t = usize; // Type to count number of shared memory attaches.
 #[derive(Debug)]
 #[derive(Default)]
 pub struct timespec_t {
-    pub tv_sec: time_t,  // Seconds
-    pub tv_nsec: i64, // Nanoseconds
+    pub tv_sec: time_t, // Seconds
+    pub tv_nsec: isize, // Nanoseconds
 }
 
 #[derive(Debug)]

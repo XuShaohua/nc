@@ -366,6 +366,21 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     }
 }
 
+/// High resolution sleep.
+pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let req_ptr = req as *const timespec_t as usize;
+        let rem_ptr = rem as *mut timespec_t as usize;
+        let ret = syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Open and possibly create a file.
 pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {

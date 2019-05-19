@@ -25,6 +25,7 @@ pub type ssize_t = isize;
 pub type time_t = isize;
 pub type nfds_t = usize;
 pub type uid_t = u32;
+pub type shmatt_t = usize; // Type to count number of shared memory attaches.
 
 /// POSIX.1b structure for a time value. 
 /// This is like a `timeval_t' but has nanoseconds instead of microseconds.
@@ -66,7 +67,6 @@ pub struct pollfd_t {
     revents: i16, // Types of events that actually occurred
 }
 
-
 #[derive(Debug)]
 #[derive(Default)]
 pub struct iovec_t {
@@ -74,3 +74,31 @@ pub struct iovec_t {
     pub iov_len: size_t,
 }
 
+/// Data structure used to pass permission information to IPC operations.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct ipc_perm_t {
+    key: key_t,                 // Key.
+    pub uid: uid_t,             // Owner's user ID.
+    pub gid: gid_t,             // Owner's group ID.
+    pub cuid: uid_t,            // Creator's user ID.
+    pub cgid: gid_t,            // Creator's group ID.
+    pub mode: u16,              // Read/write permission.
+    pad1: u16,
+    seq: u16,                   // Sequence number.
+    pad2: u16,
+}
+
+/// Data structure describing a shared memory segment
+#[derive(Debug)]
+#[derive(Default)]
+pub struct shmid_ds {
+    pub shm_perm: ipc_perm_t, // operation permission struct
+    pub shm_segsz: size_t,    // size of segment in bytes
+    pub shm_atime: time_t,    // time of last shmat()
+    pub shm_dtime: time_t,    // time of last shmdt()
+    pub shm_ctime: time_t,    // time of last change by shmctl()
+    pub shm_cpid: pid_t,      //pid of creator
+    pub shm_lpid: pid_t,      // pid of last shmop
+    pub shm_nattch: shmatt_t, // number of current attaches
+}

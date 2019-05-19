@@ -652,6 +652,38 @@ pub fn setsid() -> Result<pid_t, Errno> {
     }
 }
 
+/// Attach the System V shared memory segment.
+pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
+    unsafe {
+        let shmid = shmid as usize;
+        let shmflg = shmflg as usize;
+        let ret = syscall3(SYS_SHMAT, shmid, shmaddr, shmflg);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(ret);
+        }
+    }
+}
+
+/// System V shared memory control.
+pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds) -> Result<i32, Errno> {
+    unsafe {
+        let shmid = shmid as usize;
+        let cmd = cmd as usize;
+        let buf_ptr = buf as *mut shmid_ds as usize;
+        let ret = syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Allocates a System V shared memory segment.
 pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
     unsafe {

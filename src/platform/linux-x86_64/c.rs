@@ -25,7 +25,7 @@ pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
         if reti < 0 && reti >= -256 {
             return Err(-reti);
         } else {
-            return Ok();
+            return Ok(());
         }
     }
 }
@@ -357,6 +357,19 @@ pub fn pause() -> Result<(), Errno> {
     }
 }
 
+pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
+    unsafe {
+        let pipefd_ptr = pipefd.as_mut_ptr() as usize;
+        let ret = syscall1(SYS_PAUSE, pipefd_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Wait for some event on file descriptors.
 pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     unsafe {
@@ -374,7 +387,7 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
 }
 
 /// Read from a file descriptor without changing file offset.
-pub fn pread64(fd: i32, buf: mut [u8], len: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+pub fn pread64(fd: i32, buf: &mut [u8], len: size_t, offset: off_t) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_ptr() as usize;

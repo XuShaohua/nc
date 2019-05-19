@@ -427,11 +427,11 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
 }
 
 /// Read from a file descriptor without changing file offset.
-pub fn pread64(fd: i32, buf: &mut [u8], len: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_ptr() as usize;
-        let len = len as usize;
+        let len = buf.len() as usize;
         let offset = offset as usize;
         let ret = syscall4(SYS_PREAD64, fd, buf_ptr, len, offset);
         let reti = ret as isize;
@@ -445,11 +445,11 @@ pub fn pread64(fd: i32, buf: &mut [u8], len: size_t, offset: off_t) -> Result<ss
 }
 
 /// Write to a file descriptor without changing file offset.
-pub fn pwrite(fd: i32, buf: &[u8], len: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+pub fn pwrite(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_ptr() as usize;
-        let len = len as usize;
+        let len = buf.len() as usize;
         let offset = offset as usize;
         let ret = syscall4(SYS_PWRITE64, fd, buf_ptr, len, offset);
         let reti = ret as isize;
@@ -462,11 +462,11 @@ pub fn pwrite(fd: i32, buf: &[u8], len: size_t, offset: off_t) -> Result<ssize_t
 }
 
 /// Read from a file descriptor.
-pub fn read(fd: i32, buf: &mut [u8], len: size_t) -> Result<ssize_t, Errno> {
+pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_mut_ptr() as usize;
-        let len = len as usize;
+        let len = buf.len() as usize;
         let ret = syscall3(SYS_READ, fd, buf_ptr, len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
@@ -479,11 +479,11 @@ pub fn read(fd: i32, buf: &mut [u8], len: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Read from a file descriptor into multiple buffers.
-pub fn readv(fd: i32, iov: &mut [iovec_t], len: size_t) -> Result<ssize_t, Errno> {
+pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let iov_ptr = iov.as_mut_ptr() as usize;
-        let len = len as usize;
+        let len = iov.len() as usize;
         let ret = syscall3(SYS_READV, fd, iov_ptr, len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
@@ -758,11 +758,11 @@ pub fn waitid() {
 }
 
 /// Write to a file descriptor.
-pub fn write(fd: i32, buf: &[u8], len: size_t) -> Result<ssize_t, Errno> {
+pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_ptr() as usize;
-        let len = len as usize;
+        let len = buf.len() as usize;
         let ret = syscall3(SYS_WRITE, fd, buf_ptr, len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
@@ -774,11 +774,11 @@ pub fn write(fd: i32, buf: &[u8], len: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Write to a file descriptor from multiple buffers.
-pub fn writev(fd: i32, iov: &[iovec_t], len: size_t) -> Result<ssize_t, Errno> {
+pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let iov_ptr = iov.as_ptr() as usize;
-        let len = len as usize;
+        let len = iov.len() as usize;
         let ret = syscall3(SYS_WRITE, fd, iov_ptr, len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {

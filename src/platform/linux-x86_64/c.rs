@@ -119,8 +119,20 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn execve() {
-    // TODO(Shaohua): Not implemented
+/// Execute a new program.
+pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
+    unsafe {
+        let filename = c_str(filename).as_ptr() as usize;
+        let argv_ptr = argv as *const [str] as usize;
+        let env_ptr = env as *const [str] as usize;
+        let ret = syscall3(SYS_EXECVE, filename, argv_ptr, env_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Terminate current process.

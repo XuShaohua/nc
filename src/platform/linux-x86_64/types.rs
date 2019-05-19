@@ -26,14 +26,32 @@ pub type time_t = isize;
 pub type nfds_t = usize;
 pub type uid_t = u32;
 pub type shmatt_t = usize; // Type to count number of shared memory attaches.
+pub type suseconds_t = isize; // Signed count of microseconds.
 
-/// POSIX.1b structure for a time value. 
+/// POSIX.1b structure for a time value.
 /// This is like a `timeval_t' but has nanoseconds instead of microseconds.
 #[derive(Debug)]
 #[derive(Default)]
 pub struct timespec_t {
     pub tv_sec: time_t, // Seconds
     pub tv_nsec: isize, // Nanoseconds
+}
+
+
+/// A time value that is accurate to the nearest microsecond
+/// but also has a range of years.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct timeval_t {
+  pub tv_sec: time_t, // Seconds.
+  pub tv_usec: suseconds_t, // Microseconds.
+}
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct itimerval_t {
+    pub it_interval: timeval_t, // Value to put into `it_value' when the timer expires.
+    pub it_value: timeval_t,    // Time to the next timer expiration.
 }
 
 #[derive(Debug)]
@@ -102,3 +120,4 @@ pub struct shmid_ds {
     pub shm_lpid: pid_t,      // pid of last shmop
     pub shm_nattch: shmatt_t, // number of current attaches
 }
+

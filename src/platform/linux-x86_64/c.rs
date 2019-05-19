@@ -179,6 +179,22 @@ pub fn getgroups() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Get value of an interval timer.
+pub fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
+    unsafe {
+        let which = which as usize;
+        let curr_val_ptr = curr_val as *mut itimerval_t as usize;
+        let ret = syscall2(SYS_GETITIMER, which, curr_val_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Returns the PGID(process group ID) of the process specified by `pid`.
 pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     unsafe {
         let pid = pid as usize;
@@ -573,6 +589,23 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 pub fn setgroups() -> Result<(), Errno> {
     // TODO(Shaohua): not implemented
     Ok(())
+}
+
+/// Set value of an interval timer.
+pub fn setitimer(which: i32, new_val: &itimerval_t,
+                 old_val: &mut itimerval_t) -> Result<(), Errno> {
+    unsafe {
+        let which = which as usize;
+        let new_val_ptr = new_val as *const itimerval_t as usize;
+        let old_val_ptr = old_val as *mut itimerval_t as usize;
+        let ret = syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.

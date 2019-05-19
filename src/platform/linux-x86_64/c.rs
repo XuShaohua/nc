@@ -20,7 +20,7 @@ pub fn clone() {
 }
 
 /// Close a file descriptor.
-pub fn close(fd: isize) -> Result<(), Errno> {
+pub fn close(fd: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let ret = syscall1(SYS_CLOSE, fd);
@@ -35,7 +35,7 @@ pub fn close(fd: isize) -> Result<(), Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
-pub fn dup(oldfd: isize) -> Result<isize, Errno> {
+pub fn dup(oldfd: i32) -> Result<isize, Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let ret = syscall1(SYS_DUP, oldfd);
@@ -51,7 +51,7 @@ pub fn dup(oldfd: isize) -> Result<isize, Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
-pub fn dup2(oldfd: isize, newfd: isize) -> Result<(), Errno> {
+pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let newfd = newfd as usize;
@@ -66,7 +66,7 @@ pub fn dup2(oldfd: isize, newfd: isize) -> Result<(), Errno> {
 }
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
-pub fn dup3(oldfd: isize, newfd: isize, flags: isize) -> Result<(), Errno> {
+pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let newfd = newfd as usize;
@@ -101,6 +101,22 @@ pub fn fork() -> Result<pid_t, Errno> {
             return Err(-reti);
         } else {
             return Ok(ret as pid_t);
+        }
+    }
+}
+
+/// Get file status about a file descriptor.
+pub fn fstat(fd: i32) -> Result<stat_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let mut statbuf = stat_t::default();
+        let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
+        let ret = syscall2(SYS_FSTAT, fd, statbuf_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(statbuf);
         }
     }
 }
@@ -186,7 +202,7 @@ pub fn getuid() -> uid_t {
 }
 
 /// Send signal to a process.
-pub fn kill(pid: pid_t, signal: isize) -> Result<(), Errno> {
+pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;
         let signal = signal as usize;
@@ -200,8 +216,40 @@ pub fn kill(pid: pid_t, signal: isize) -> Result<(), Errno> {
     }
 }
 
+/// Reposition file offset.
+pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let whence = whence as usize;
+        let ret = syscall3(SYS_LSEEK, fd, offset, whence);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Get file status about a file, without following symbolic.
+pub fn lstat(path: &str) -> Result<stat_t, Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let mut statbuf = stat_t::default();
+        let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
+        let ret = syscall2(SYS_STAT, path, statbuf_ptr);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(statbuf);
+        }
+    }
+}
+
 /// Open and possibly create a file.
-pub fn open(path: &str, flags: isize, mode: mode_t) -> Result<isize, Errno> {
+pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
         let flags = flags as usize;
@@ -229,13 +277,29 @@ pub fn pause() -> Result<(), Errno> {
     }
 }
 
+/// Wait for some event on file descriptors.
+pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
+    unsafe {
+        let fds_ptr = fds.as_mut_ptr() as usize;
+        let nfds = fds.len() as usize;
+        let timeout = timeout as usize;
+        let ret = syscall3(SYS_POLL, fds_ptr, nfds, timeout);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Read from a file descriptor.
-pub fn read(fd: isize, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
         let buf_len = buf.len() as usize;
-        let buf = buf.as_mut_ptr() as usize;
-        let ret = syscall3(SYS_READ, fd, buf, buf_len);
+        let ret = syscall3(SYS_READ, fd, buf_ptr, buf_len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);
@@ -410,7 +474,7 @@ pub fn sync() {
 }
 
 /// Commit filesystem cache related to `fd` to disk.
-pub fn syncfs(fd: isize) -> Result<(), Errno> {
+pub fn syncfs(fd: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let ret = syscall1(SYS_SYNCFS, fd);
@@ -424,7 +488,7 @@ pub fn syncfs(fd: isize) -> Result<(), Errno> {
 }
 
 /// Sync a file segment to disk
-pub fn sync_file_range(fd: isize, offset: off_t, nbytes: off_t, flags: isize) -> Result<(), Errno>{
+pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno>{
     unsafe {
         let fd = fd as usize;
         let offset = offset as usize;
@@ -462,12 +526,12 @@ pub fn waitid() {
 }
 
 /// Write to a file descriptor.
-pub fn write(fd: isize, buf: &[u8]) -> Result<ssize_t, Errno> {
+pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
+        let buf_ptr = buf.as_ptr() as usize;
         let buf_len = buf.len();
-        let buf = buf.as_ptr() as usize;
-        let ret = syscall3(SYS_WRITE, fd, buf, buf_len);
+        let ret = syscall3(SYS_WRITE, fd, buf_ptr, buf_len);
         let reti = ret as isize;
         if reti < 0 && reti >= -256 {
             return Err(-reti);

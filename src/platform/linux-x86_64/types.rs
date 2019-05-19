@@ -7,10 +7,11 @@ pub type ino_t = u64;
 pub type mode_t = usize;
 pub type nlink_t = u64;
 pub type off_t = i64;
-pub type pid_t = isize;
+pub type pid_t = i32;
 pub type size_t = u64;
 pub type ssize_t = i64;
 pub type time_t = i64;
+pub type nfds_t = u64;
 pub type uid_t = u32;
 
 /// POSIX.1b structure for a time value. 
@@ -44,3 +45,11 @@ pub struct stat_t {
     // TODO(Shaohua): Add another pad
 }
 
+/// Data structure describing a polling request.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct pollfd_t {
+    fd: i32,      // File descriptor to poll
+    events: i16,  // Types of events poller cares about
+    revents: i16, // Types of events that actually occurred
+}

@@ -86,6 +86,7 @@ pub const SIGUNUSED: i32 = 31;
 pub const SIG_RT_MIN: i32 = 32;
 pub const SIG_RTMAX: i32 = 64;
 
+/// sigaction() sa_flags
 pub const SA_NOCLDSTOP: i32 = 1;
 pub const SA_NOCLDWAIT: i32 = 2;
 pub const SA_SIGINFO: i32 = 4;
@@ -96,7 +97,7 @@ pub const SA_NODEFER: i32 = 0x40000000;
 #[allow(overflowing_literals)]
 pub const SA_RESETHAND: i32 = 0x80000000;
 
-/// Whence:
+/// lseek() whence
 pub const SEEK_SET: i32 = 0;
 pub const SEEK_CUR: i32 = 1;
 pub const SEEK_END: i32 = 2;
@@ -113,3 +114,38 @@ pub const POLLRDNORM: i32 = 0x040;
 pub const POLLRDBAND: i32 = 0x080;
 pub const POLLWRNORM: i32 = 0x100;
 pub const POLLWRBAND: i32 = 0x200;
+
+/// Mmap protection types
+pub const PROT_READ: i32 = 0x1;
+pub const PROT_WRITE: i32 = 0x2;
+pub const PROT_EXEC: i32 = 0x4;
+pub const PROT_NONE: i32 = 0x0;
+pub const PROT_GROWSDOWN: i32 = 0x01000000;
+pub const PROT_GROWSUP: i32 = 0x02000000;
+
+/// Mmap flags
+pub const MAP_UNINITIALIZED: i32 = 0x00;
+pub const MAP_SHARED: i32 = 0x01;
+pub const MAP_PRIVATE: i32 = 0x02;
+pub const MAP_SHARED_VALIDATE: i32 = 0x03;
+pub const MAP_TYPE: i32 = 0x0f;
+pub const MAP_FIXED: i32 = 0x10;
+pub const MAP_ANONYMOUS: i32 = 0x20;
+pub const MAP_GROWSDOWN: i32 = 0x0100;
+pub const MAP_DENYWRITE: i32 = 0x0800;
+pub const MAP_EXECUTABLE: i32 = 0x1000;
+pub const MAP_LOCKED: i32 = 0x2000;
+pub const MAP_NORESERVE: i32 = 0x4000;
+pub const MAP_POPULATE: i32 = 0x8000;
+pub const MAP_NONBLOCK: i32 = 0x10000;
+pub const MAP_STACK: i32 = 0x20000;
+pub const MAP_HUGETLB: i32 = 0x40000;
+pub const MAP_SYNC: i32 = 0x80000;
+pub const MAP_FIXED_NOREPLACE: i32 = 0x100000;
+
+pub const MAP_FAILED: i32 = -1;
+
+/// Mmap lock
+pub const MCL_CURRENT: i32 = 1;
+pub const MCL_FUTURE: i32 = 2;
+pub const MCL_ONFAULT: i32 = 4;

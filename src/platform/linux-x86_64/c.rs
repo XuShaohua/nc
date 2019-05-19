@@ -2,7 +2,7 @@
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
-use super::{syscall0, syscall1, syscall2, syscall3, syscall4};
+use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall6};
 
 fn c_str(s: &str) -> [u8; 128]{
     // TODO(Shaohua): Simplify ops
@@ -244,6 +244,54 @@ pub fn lstat(path: &str) -> Result<stat_t, Errno> {
             return Err(-reti);
         } else {
             return Ok(statbuf);
+        }
+    }
+}
+
+/// Map files or devices into memory.
+pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Result<usize, Errno> {
+    unsafe {
+        let addr = 0 as usize;
+        let len = len as usize;
+        let prot = prot as usize;
+        let flags = flags as usize;
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let ret = syscall6(SYS_MMAP, addr, len, prot, flags, fd, offset);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(ret);
+        }
+    }
+}
+
+/// Set protection on a region of memory.
+pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let prot = prot as usize;
+        let ret = syscall3(SYS_MPROTECT, addr, len, prot);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Unmap files or devices from memory.
+pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let ret = syscall2(SYS_MUNMAP, addr, len);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
         }
     }
 }
@@ -540,3 +588,4 @@ pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
         }
     }
 }
+

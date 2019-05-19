@@ -30,6 +30,16 @@ pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
+/// set an alarm clock for delivery of a signal.
+pub fn alarm(seconds: u32) -> u32 {
+    unsafe {
+        let seconds = seconds as usize;
+        let ret = syscall1(SYS_ALARM, seconds);
+        let ret = ret as u32;
+        return ret;
+    }
+}
+
 /// Change data segment size.
 pub fn brk(addr: usize) -> Result<(), Errno> {
     unsafe {
@@ -569,6 +579,25 @@ pub fn sched_yield() -> Result<(), Errno> {
 /// Waiting one or more file descriptors become ready.
 pub fn select() {
     // TODO(Shaohua): Not implemented.
+}
+
+/// Transfer data between two file descriptors.
+pub fn sendfile(out_fd: i32, in_fd: i32, offset: &mut off_t,
+                count: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let out_fd = out_fd as usize;
+        let in_fd = in_fd as usize;
+        let offset_ptr = offset as *mut off_t as usize;
+        let count = count as usize;
+        let ret = syscall4(SYS_SENDFILE, out_fd, in_fd, offset_ptr, count);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Set the group ID of the calling process to `gid`.

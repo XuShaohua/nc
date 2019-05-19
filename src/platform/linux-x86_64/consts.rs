@@ -1,5 +1,5 @@
 
-use super::types::mode_t;
+use super::types::{mode_t, key_t};
 
 /// open() mode
 pub const S_IRUSR: mode_t = 0400;
@@ -155,4 +155,17 @@ pub const MCL_ONFAULT: i32 = 4;
 pub const MS_ASYNC: i32 = 1;
 pub const MS_SYNC: i32 = 4;
 pub const MS_INVALIDATE: i32 = 2;
+
+/// Mode bits for `msgget', `semget', and `shmget'.
+pub const IPC_CREAT: i32 = 01000;
+pub const IPC_EXCL: i32 = 02000;
+pub const IPC_NOWAIT: i32 = 04000;
+
+/// Control commands for `msgctl', `semctl', and `shmctl'. 
+pub const IPC_RMID: i32 = 0;
+pub const IPC_SET: i32 = 1;
+pub const IPC_STAT: i32 = 2;
+pub const IPC_INFO: i32 = 3;
+
+pub const IPC_PRIVATE: key_t = 0;
 

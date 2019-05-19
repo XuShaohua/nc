@@ -1,17 +1,29 @@
 
-pub type blksize_t = i64;
-pub type blkcnt_t = i64;
-pub type dev_t = u64;
+/// C types represented in Rust:
+/// * long -> isize, 4 bytes on x86, 8 bytes on x86_64.
+/// * unsigned long -> usize, 4 bytes on x86, 8 bytes on x86_64.
+/// * unsigned long int -> usize, 4 bytes on x86, 8 bytes on x86_64.
+/// * long int -> isize, 4 bytes on x86, 8 bytes on x86_64.
+/// * void* -> usize, pointer address, 4 bytes on x86, 8 bytes on x86_64.
+/// * int -> i32, 4 bytes.
+/// * unsigned int -> u32, 4 bytes.
+/// * unsigned short int -> u16, 2 bytes.
+/// * short int -> i16, 2 bytes.
+
+pub type blksize_t = isize;
+pub type blkcnt_t = isize;
+pub type dev_t = usize;
 pub type gid_t = u32;
-pub type ino_t = u64;
-pub type mode_t = usize;
-pub type nlink_t = u64;
-pub type off_t = i64;
+pub type ino_t = usize;
+pub type key_t = i32;
+pub type mode_t = u32;
+pub type nlink_t = usize;
+pub type off_t = isize;
 pub type pid_t = i32;
-pub type size_t = u64;
-pub type ssize_t = i64;
-pub type time_t = i64;
-pub type nfds_t = u64;
+pub type size_t = usize;
+pub type ssize_t = isize;
+pub type time_t = isize;
+pub type nfds_t = usize;
 pub type uid_t = u32;
 
 /// POSIX.1b structure for a time value. 

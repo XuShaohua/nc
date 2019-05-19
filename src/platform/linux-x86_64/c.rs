@@ -280,6 +280,25 @@ pub fn lstat(path: &str) -> Result<stat_t, Errno> {
     }
 }
 
+/// Give advice about use of memory.
+pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let advice = advice as usize;
+        let ret = syscall3(SYS_MADVISE, addr, len, advice);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn mincore() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Map files or devices into memory.
 pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Result<usize, Errno> {
     unsafe {
@@ -629,6 +648,22 @@ pub fn setsid() -> Result<pid_t, Errno> {
         } else {
             let ret = ret as pid_t;
             return Ok(ret);
+        }
+    }
+}
+
+/// Allocates a System V shared memory segment.
+pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
+    unsafe {
+        let key = key as usize;
+        let size = size as usize;
+        let shmflg = shmflg as usize;
+        let ret = syscall3(SYS_SHMGET, key, size, shmflg);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
         }
     }
 }

@@ -150,3 +150,9 @@ pub const MAP_FAILED: i32 = -1;
 pub const MCL_CURRENT: i32 = 1;
 pub const MCL_FUTURE: i32 = 2;
 pub const MCL_ONFAULT: i32 = 4;
+
+/// msync flags
+pub const MS_ASYNC: i32 = 1;
+pub const MS_SYNC: i32 = 4;
+pub const MS_INVALIDATE: i32 = 2;
+

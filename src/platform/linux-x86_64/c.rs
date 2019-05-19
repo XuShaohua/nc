@@ -314,6 +314,25 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn mremap() {
+    // TODO(Shaohua): Not implememented
+}
+
+/// Synchronize a file with memory map.
+pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let flags = flags as usize;
+        let ret = syscall3(SYS_MSYNC, addr, len, flags);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Unmap files or devices from memory.
 pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     unsafe {
@@ -329,7 +348,7 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
 }
 
 /// Open and possibly create a file.
-pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
+pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
         let flags = flags as usize;
@@ -339,7 +358,8 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<isize, Errno> {
         if reti < 0 && reti >= -256 {
             return Err(-reti);
         } else {
-            return Ok(reti);
+            let ret = ret as i32;
+            return Ok(ret);
         }
     }
 }
@@ -357,6 +377,7 @@ pub fn pause() -> Result<(), Errno> {
     }
 }
 
+/// Create a pipe
 pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     unsafe {
         let pipefd_ptr = pipefd.as_mut_ptr() as usize;
@@ -480,6 +501,24 @@ pub fn rt_sigprocmask() {
 
 pub fn rt_sigreturn() {
     // TODO(Shaohua): Not implemented
+}
+
+/// Yield the processor.
+pub fn sched_yield() -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall0(SYS_SCHED_YIELD);
+        let reti = ret as isize;
+        if reti < 0 && reti >= -256 {
+            return Err(-reti);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Waiting one or more file descriptors become ready.
+pub fn select() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Set the group ID of the calling process to `gid`.

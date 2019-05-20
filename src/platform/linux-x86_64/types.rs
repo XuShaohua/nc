@@ -19,6 +19,8 @@ pub type gid_t = u32;
 pub type ino_t = usize;
 pub type key_t = i32;
 pub type mode_t = u32;
+pub type msglen_t = usize;
+pub type msgqnum_t = usize;
 pub type nlink_t = usize;
 pub type off_t = isize;
 pub type pid_t = i32;
@@ -93,21 +95,6 @@ pub struct pollfd_t {
 pub struct iovec_t {
     pub iov_base: usize,
     pub iov_len:  size_t,
-}
-
-/// Data structure used to pass permission information to IPC operations.
-#[derive(Debug)]
-#[derive(Default)]
-pub struct ipc_perm_t {
-    key:        key_t,  // Key.
-    pub uid:    uid_t,  // Owner's user ID.
-    pub gid:    gid_t,  // Owner's group ID.
-    pub cuid:   uid_t,  // Creator's user ID.
-    pub cgid:   gid_t,  // Creator's group ID.
-    pub mode:   u16,    // Read/write permission.
-    pad1:       u16,
-    pub seq:    u16,    // Sequence number.
-    pad2:       u16,
 }
 
 /// Data structure describing a shared memory segment
@@ -193,7 +180,7 @@ impl core::fmt::Debug for utsname_t {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         unsafe{
         write!(f, "utsname_t {{ sysname: {}, nodename: {}, release: {}, \
-               version: {}, machine: {}, domainname: {}",
+               version: {}, machine: {}, domainname: {} }}",
                core::str::from_utf8_unchecked(&self.sysname),
                core::str::from_utf8_unchecked(&self.nodename),
                core::str::from_utf8_unchecked(&self.release),
@@ -225,4 +212,78 @@ pub struct sembuf_t {
     pub sem_num: u16, // semaphore number
     pub sem_op:  i16, // semaphore operation
     pub sem_flg: i16, // operation flag
+}
+
+/// message buffer for `msgsnd` and `msgrcv` calls.
+pub struct msgbuf_t {
+    pub mtype: isize,   // type of message
+    pub mtext: [u8; 1], // message text
+}
+
+impl core::fmt::Debug for msgbuf_t {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        unsafe{
+        write!(f, "msgbuf_t {{ mtype: {}, mtext: {} }}",
+               self.mtype, core::str::from_utf8_unchecked(&self.mtext),
+               )
+        }
+    }
+}
+
+impl Default for msgbuf_t {
+    fn default() -> Self {
+        msgbuf_t {
+            mtype: 0,
+            mtext: [0; 1],
+        }
+    }
+}
+
+
+/// Buffer for `msgctl` calls `IPC_INFO`, `MSG_INFO`.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct msginfo_t {
+    pub msgpool: i32,
+    pub msgmap:  i32,
+    pub msgmax:  i32,
+    pub msgmnb:  i32,
+    pub msgmni:  i32,
+    pub msgssz:  i32,
+    pub msgtql:  i32,
+    pub msgseg:  u16,
+}
+
+/// Data structure used to pass permission information to IPC operations.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct ipc_perm_t {
+    key:        key_t, // Key.
+    pub uid:    uid_t, // Owner's user ID.
+    pub gid:    gid_t, // Owner's group ID.
+    pub cuid:   uid_t, // Creator's user ID.
+    pub cgid:   gid_t, // Creator's group ID.
+    pub mode:   u16,   // Read/write permission.
+    pad1:       u16,
+    seq:        u16,   // Sequence number.
+    pad2:       u16,
+    reserved1:  usize,
+    reserved2:  usize,
+}
+
+/// Structure of record for one message inside the kernel.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct msqid_ds {
+    pub msg_perm:   ipc_perm_t, // structure describing operation permission
+    pub msg_stime:  time_t,     // time of last msgsnd command
+    pub msg_rtime:  time_t,     // time of last msgrcv command
+    pub msg_ctime:  time_t,     // time of last change
+    msg_cbytes:     usize,      // current number of bytes on queue
+    pub msg_qnum:   msgqnum_t,  // number of messages currently on queue
+    pub msg_qbytes: msglen_t,   // max number of bytes allowed on queue
+    pub msg_lspid:  pid_t,      // pid of last msgsnd()
+    pub msg_lrpid:  pid_t,      // pid of last msgrcv()
+    reserved4:      usize,
+    reserved5:      usize,
 }

@@ -169,6 +169,16 @@ pub const IPC_INFO: i32 = 3;
 
 pub const IPC_PRIVATE: key_t = 0;
 
+/// msgrcv options
+pub const MSG_NOERROR: i32 = 010000; // No error if message is too big.
+pub const MSG_EXCEPT:  i32 = 020000; // Recv any msg except of specified type.
+pub const MSG_COPY:    i32 = 040000; // Copy (not remove) all queue messages.
+
+/// ipcs ctl commands
+pub const MSG_STAT:     i32 = 11;
+pub const MSG_INFO:     i32 = 12;
+pub const MSG_STAT_ANY: i32 = 13;
+
 /// Socket types
 pub const SOCK_STREAM:    i32 = 1;
 pub const SOCK_DGRAM:     i32 = 2;

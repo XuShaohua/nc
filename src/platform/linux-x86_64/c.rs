@@ -534,6 +534,70 @@ pub fn mremap() {
     // TODO(Shaohua): Not implememented
 }
 
+pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds) -> Result<i32, Errno> {
+    unsafe {
+        let msqid = msqid as usize;
+        let cmd = cmd as usize;
+        let buf_ptr = buf as *mut msqid_ds as usize;
+        let ret = syscall3(SYS_MSGCTL, msqid, cmd, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Get a System V message queue identifier.
+pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
+    unsafe {
+        let key = key as usize;
+        let msgflg = msgflg as usize;
+        let ret = syscall2(SYS_MSGGET, key, msgflg);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+pub fn msgrcv(msqid: i32, msgq: usize, msgsz: size_t, msgtyp: isize) -> Result<ssize_t, Errno> {
+    unsafe {
+        let msqid = msqid as usize;
+        let msgsz = msgsz as usize;
+        let msgtyp = msgtyp as usize;
+        let ret = syscall4(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Append the message to a System V message queue.
+pub fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
+    unsafe {
+        let msqid = msqid as usize;
+        let msgsz = msgsz as usize;
+        let msgflg = msgflg as usize;
+        let ret = syscall4(SYS_MSGSND, msqid, msgq, msgsz, msgflg);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Synchronize a file with memory map.
 pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     unsafe {
@@ -1081,6 +1145,19 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
             return Err(ret);
         } else {
             return Ok(ret);
+        }
+    }
+}
+
+/// Detach the System V shared memory segment.
+pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall1(SYS_SHMDT, shmaddr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }

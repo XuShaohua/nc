@@ -238,6 +238,26 @@ pub fn fanotify_mask() {
     // TODO(Shaohua): Not implemented.
 }
 
+/// Manipulate file descriptor.
+pub fn fcntl() {
+    // TODO(Shaohua): Not implemented.
+}
+
+/// Apply or remove an advisory lock on an open file.
+pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let operation = operation as usize;
+        let ret = syscall2(SYS_FLOCK, fd, operation);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Create a child process.
 pub fn fork() -> Result<pid_t, Errno> {
     unsafe {

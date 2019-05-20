@@ -347,3 +347,9 @@ pub const IP_CHECKSUM:              i32 = 23;
 pub const IP_BIND_ADDRESS_NO_PORT:  i32 = 24;
 pub const IP_RECVFRAGSIZE:          i32 = 25;
 
+/// Operations for the `flock` call.
+pub const LOCK_SH:      i32 = 1;  // Shared lock.
+pub const LOCK_EX:      i32 = 2;  // Exclusive lock.
+pub const LOCK_UN:      i32 = 8;  // Unlock.
+pub const LOCK_ATOMIC:  i32 = 16; // Atomic update.
+

@@ -2,7 +2,7 @@
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
-use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall6};
+use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
 fn c_str(s: &str) -> [u8; 128]{
     // TODO(Shaohua): Simplify ops
@@ -387,8 +387,23 @@ pub fn getsockname(sockfd: i32, addr: &mut sockaddr_in_t,
     }
 }
 
-pub fn getsockopt() {
-    // TODO(Shaohua): Not implemented
+/// Get options on sockets
+pub fn getsockopt(sockfd: i32, level: i32, optname: i32, optval: &mut usize,
+                  optlen: &mut socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let level = level as usize;
+        let optname = optname as usize;
+        let optval_ptr = optval as *mut usize as usize;
+        let optlen_ptr = optlen as *mut socklen_t as usize;
+        let ret = syscall5(SYS_GETSOCKOPT, sockfd, level, optname, optval_ptr, optlen_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Get the real user ID of the calling process.
@@ -988,8 +1003,22 @@ pub fn setsid() -> Result<pid_t, Errno> {
     }
 }
 
-pub fn setsockopt() {
-    // TODO(Shaohua): Not implemented
+/// Set options on sockets.
+pub fn setsockopt(sockfd: i32, level: i32, optname: i32, optval: usize,
+                  optlen: socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let level = level as usize;
+        let optname = optname as usize;
+        let optlen = optlen as usize;
+        let ret = syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set the effective user ID of the calling process to `uid`.
@@ -1173,8 +1202,22 @@ pub fn vfork() -> Result<pid_t, Errno> {
     }
 }
 
-pub fn wait4() {
-    // TODO(Shaohua): Not implemented.
+/// Wait for process to change state.
+pub fn wait4(pid: pid_t, wstatus: &mut i32, options: i32,
+             rusage: &mut rusage_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let wstatus_ptr = wstatus as *mut i32 as usize;
+        let options = options as usize;
+        let rusage_ptr = rusage as *mut rusage_t as usize;
+        let ret = syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 pub fn waitid() {
@@ -1212,9 +1255,18 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     }
 }
 
-pub fn uname() -> Result<(), Errno> {
-    // TODO(Shaohua): Not implemented
-    Ok(())
+/// Get name and information about current kernel.
+pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
+    unsafe {
+        let buf_ptr = buf as *mut utsname_t as usize;
+        let ret = syscall1(SYS_UNAME, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 pub fn vmsplice() {

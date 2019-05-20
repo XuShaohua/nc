@@ -314,6 +314,21 @@ pub fn fsync(fd: i32) -> Result<(), Errno> {
     }
 }
 
+/// Truncate an opened file to a specified length.
+pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let length = length as usize;
+        let ret = syscall2(SYS_FTRUNCATE, fd, length);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Get the effective group ID of the calling process.
 pub fn getegid() -> gid_t {
     unsafe {
@@ -1346,6 +1361,21 @@ pub fn timerfd_gettime() {
 
 pub fn timerfd_settime() {
     // TODO(Shaohua): Not implemented
+}
+
+/// Truncate a file to a specified length.
+pub fn truncate(path: &str, length: off_t) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let length = length as usize;
+        let ret = syscall2(SYS_TRUNCATE, path, length);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Create a child process and wait until it is terminated.

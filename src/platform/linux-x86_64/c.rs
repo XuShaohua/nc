@@ -94,6 +94,20 @@ pub fn brk(addr: usize) -> Result<(), Errno> {
     }
 }
 
+/// Change working directory.
+pub fn chdir(path: &str) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let ret = syscall1(SYS_CHDIR, path);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn clone() {
     // TODO(Shaohua): Not implemented
 }
@@ -238,6 +252,20 @@ pub fn fanotify_mask() {
     // TODO(Shaohua): Not implemented.
 }
 
+/// Change working directory.
+pub fn fchdir(fd: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let ret = syscall1(SYS_FCHDIR, fd);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Manipulate file descriptor.
 pub fn fcntl() {
     // TODO(Shaohua): Not implemented.
@@ -327,6 +355,11 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+/// Get directory entries.
+pub fn getdents() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Get the effective group ID of the calling process.

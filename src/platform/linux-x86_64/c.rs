@@ -135,11 +135,47 @@ pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
     }
 }
 
+pub fn epoll_create() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn epoll_create1() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn epoll_ctl() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn epoll_pwait() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn epoll_wait() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn eventfd() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn eventfd2() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Terminate current process.
 pub fn exit(status: u8) {
     unsafe {
         syscall1(SYS_EXIT, status as usize);
     }
+}
+
+pub fn fanotify_init() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn fanotify_mask() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Create a child process.
@@ -419,6 +455,46 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     }
 }
 
+pub fn inotify_add_watch() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn inotify_init() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn inotify_init1() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn inotify_rm_watch() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_getsetattr() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_notify() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_open() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_timedreceive() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_timedsend() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_unlink() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Open and possibly create a file.
 pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
@@ -546,6 +622,14 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
             return Ok(ret);
         }
     }
+}
+
+pub fn pipe() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn pipe2() {
+    // TODO(Shaohua): Not implemented
 }
 
 pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
@@ -840,6 +924,14 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn splice() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn tee() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Sync a file segment to disk
 pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno>{
     unsafe {
@@ -908,5 +1000,14 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
             return Ok(ret as ssize_t);
         }
     }
+}
+
+pub fn uname() -> Result<(), Errno> {
+    // TODO(Shaohua): Not implemented
+    Ok()
+}
+
+pub fn vmsplice() {
+    // TODO(Shaohua): Not implemented
 }
 

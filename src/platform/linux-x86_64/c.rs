@@ -590,6 +590,37 @@ pub fn mincore() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Create a directory.
+pub fn mkdir(path: &str, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_MKDIR, path, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Create a directory.
+pub fn mkdirat(dirfd: i32, path: &str, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let path = c_str(path).as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall3(SYS_MKDIRAT, dirfd, path, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Map files or devices into memory.
 pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Result<usize, Errno> {
     unsafe {
@@ -939,12 +970,27 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
     }
 }
 
+/// Change name or location of a file.
 pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
     unsafe {
         let oldpath = c_str(oldpath).as_ptr() as usize;
         let newpath = c_str(newpath).as_ptr() as usize;
         let ret = syscall2(SYS_RENAME, oldpath, newpath);
         if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Delete a directory.
+pub fn rmdir(path: &str) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let ret = syscall1(SYS_RMDIR, path);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());

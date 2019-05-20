@@ -142,6 +142,23 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
     }
 }
 
+/// Create a file.
+/// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
+pub fn creat(path: &str, mode: mode_t) -> Result<i32, Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_CREAT, path, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 pub fn dup(oldfd: i32) -> Result<isize, Errno> {
@@ -809,6 +826,23 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
         let flags = flags as usize;
         let mode = mode as usize;
         let ret = syscall3(SYS_OPEN, path, flags, mode);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Open and possibly create a file within a directory.
+pub fn openat(dirfd: i32, path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let path = c_str(path).as_ptr() as usize;
+        let flags = flags as usize;
+        let mode = mode as usize;
+        let ret = syscall4(SYS_OPENAT, dirfd, path, flags, mode);
         if is_errno(ret) {
             return Err(ret);
         } else {

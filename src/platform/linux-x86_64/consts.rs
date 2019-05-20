@@ -16,17 +16,28 @@ pub const S_IXOTH: mode_t = S_IXGRP >> 3;
 pub const S_IRWXO: mode_t = S_IRWXG >> 3;
 
 /// open() flags
-pub const O_RDONLY:   i32 = 0o0;
-pub const O_WRONLY:   i32 = 0o1;
-pub const O_RDWR:     i32 = 0o2;
-pub const O_CREAT:    i32 = 0o100;
-pub const O_EXCL:     i32 = 0o200;
-pub const O_NOCTTY:   i32 = 0o400;
-pub const O_TRUNC:    i32 = 0o1000;
-pub const O_APPEND:   i32 = 0o2000;
-pub const O_NONBLOCK: i32 = 0o4000;
-pub const O_ASYNC:    i32 = 0o20000;
-pub const O_SYNC:     i32 = 0o4010000;
+pub const O_RDONLY:     i32 = 0o0;
+pub const O_WRONLY:     i32 = 0o1;
+pub const O_RDWR:       i32 = 0o2;
+pub const O_ACCMODE:    i32 = 0o003;
+pub const O_CREAT:      i32 = 0o100;
+pub const O_EXCL:       i32 = 0o200;
+pub const O_NOCTTY:     i32 = 0o400;
+pub const O_TRUNC:      i32 = 0o1000;
+pub const O_APPEND:     i32 = 0o2000;
+pub const O_NONBLOCK:   i32 = 0o4000;
+pub const O_DSYNC:      i32 = 0o10000;
+pub const O_ASYNC:      i32 = 0o20000;
+pub const O_DIRECT:     i32 = 0o40000;
+pub const O_LARGEFILE:  i32 = 0o100000;
+pub const O_DIRECTORY:  i32 = 0o200000;
+pub const O_NOFOLLOW:   i32 = 0o400000;
+pub const O_NOATIME:    i32 = 0o1000000;
+pub const O_CLOEXEC:    i32 = 0o2000000;
+pub const O_SYNC:       i32 = 0o4010000;
+pub const O_FSYNC:      i32 = O_SYNC;
+pub const O_PATH:       i32 = 0o10000000;
+pub const O_TMPFILE:    i32 = (0o20000000 | O_DIRECTORY);
 
 /// access() mode
 pub const R_OK: i32 = 4;

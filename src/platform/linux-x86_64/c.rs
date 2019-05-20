@@ -21,6 +21,27 @@ pub fn is_errno(ret: usize) -> bool {
     return reti < 0 && reti >= -256;
 }
 
+
+/// Accept a connection on a socket.
+pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let addr_ptr = addr as *mut sockaddr_in_t as usize;
+        let addrlen_ptr = addrlen as *mut socklen_t as usize;
+        let ret = syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn accept4() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Check user's permission for a file.
 pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
     unsafe {
@@ -42,6 +63,22 @@ pub fn alarm(seconds: u32) -> u32 {
         let ret = syscall1(SYS_ALARM, seconds);
         let ret = ret as u32;
         return ret;
+    }
+}
+
+/// Bind a name to a socket.
+pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let addr_ptr = addr as *const sockaddr_in_t as usize;
+        let addrlen = addrlen as usize;
+        let ret = syscall3(SYS_BIND, sockfd, addr_ptr, addrlen);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
     }
 }
 
@@ -67,6 +104,23 @@ pub fn close(fd: i32) -> Result<(), Errno> {
         let fd = fd as usize;
         let ret = syscall1(SYS_CLOSE, fd);
         if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Initialize a connection on a socket.
+pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        // TODO(Shaohua): Use sockaddr_t generic type.
+        let addr_ptr = addr as *const sockaddr_in_t as usize;
+        let addrlen = addrlen as usize;
+        let ret = syscall3(SYS_CONNECT, sockfd, addr_ptr, addrlen);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());
@@ -256,6 +310,23 @@ pub fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
     }
 }
 
+/// Get name of connected peer socket.
+pub fn getpeername(sockfd: i32, addr: &mut sockaddr_in_t,
+                   addrlen: &mut socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let addr_ptr = addr as *mut sockaddr_in_t as usize;
+        let addrlen_ptr = addrlen as *mut socklen_t as usize;
+        let ret = syscall3(SYS_GETPEERNAME, sockfd, addr_ptr, addrlen_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Returns the PGID(process group ID) of the process specified by `pid`.
 pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     unsafe {
@@ -299,6 +370,27 @@ pub fn getresuid() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Get current address to which the socket `sockfd` is bound.
+pub fn getsockname(sockfd: i32, addr: &mut sockaddr_in_t, 
+                   addrlen: &mut socklen_t) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let addr_ptr = addr as *mut sockaddr_in_t as usize;
+        let addrlen_ptr = addrlen as *mut socklen_t as usize;
+        let ret = syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn getsockopt() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Get the real user ID of the calling process.
 pub fn getuid() -> uid_t {
     unsafe {
@@ -317,6 +409,21 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
         let signal = signal as usize;
         let ret = syscall2(SYS_KILL, pid, signal);
         if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Listen for connections on a socket.
+pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let backlog = backlog as usize;
+        let ret = syscall2(SYS_LISTEN, sockfd, backlog);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());
@@ -366,6 +473,10 @@ pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn mbind() {
+    // TODO(Shaohua): Not implemented
 }
 
 pub fn mincore() {
@@ -614,6 +725,49 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     }
 }
 
+/// Receive a message from a socket.
+pub fn recvfrom(sockfd: i32, buf: &mut [u8], flags: i32, src_addr: &mut sockaddr_in_t,
+                addrlen: &mut socklen_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buflen = buf.len();
+        let flags = flags as usize;
+        let src_addr_ptr = src_addr as *mut sockaddr_in_t as usize;
+        let addrlen_ptr = addrlen as *mut socklen_t as usize;
+        let ret = syscall6(SYS_RECVFROM, sockfd, buf_ptr, buflen, flags,
+                           src_addr_ptr, addrlen_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+pub fn recvmmsg() {
+    // TODO(Shaohua): Not implemented
+}
+
+/// Receive a msg from a socket.
+pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let msg_ptr = msg as *mut msghdr_t as usize;
+        let flags = flags as usize;
+        let ret = syscall3(SYS_RECVMSG, sockfd, msg_ptr, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
     unsafe {
         let oldpath = c_str(oldpath).as_ptr() as usize;
@@ -675,6 +829,43 @@ pub fn sendfile(out_fd: i32, in_fd: i32, offset: &mut off_t,
     }
 }
 
+/// Send a message on a socket. Allow sending ancillary data.
+pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let msg_ptr = msg as *const msghdr_t as usize;
+        let flags = flags as usize;
+        let ret = syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Send a message on a socket.
+pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
+              addrlen: socklen_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let buf_ptr = buf.as_ptr() as usize;
+        let buflen = buf.len() as usize;
+        let flags = flags as usize;
+        let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
+        let addrlen = addrlen as usize;
+        let ret = syscall6(SYS_SENDTO, sockfd, buf_ptr, buflen, flags, dest_addr_ptr, addrlen);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
 
 /// Set the group ID of the calling process to `gid`.
 pub fn setgid(gid: gid_t) -> Result<(), Errno> {
@@ -797,6 +988,10 @@ pub fn setsid() -> Result<pid_t, Errno> {
     }
 }
 
+pub fn setsockopt() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Set the effective user ID of the calling process to `uid`.
 pub fn setuid(uid: uid_t) -> Result<(), Errno> {
     unsafe {
@@ -855,7 +1050,47 @@ pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
     }
 }
 
+/// Shutdown part of a full-duplex connection.
+pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let how = how as usize;
+        let ret = syscall2(SYS_SHUTDOWN, sockfd, how);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn signalfd() {
+    // TODO(Shaohua): Not implemented
+}
+
+/// Create an endpoint for communication.
+pub fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> {
+    unsafe {
+        let domain = domain as usize;
+        let sock_type = sock_type as usize;
+        let protocol = protocol as usize;
+        let ret = syscall3(SYS_SOCKET, domain, sock_type, protocol);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+pub fn socketpair() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn splice() {
     // TODO(Shaohua): Not implemented
 }
 
@@ -894,14 +1129,6 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn splice() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn tee() {
-    // TODO(Shaohua): Not implemented
-}
-
 /// Sync a file segment to disk
 pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno>{
     unsafe {
@@ -916,6 +1143,22 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
             return Ok(());
         }
     }
+}
+
+pub fn tee() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timerfd_create() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timerfd_gettime() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timerfd_settime() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Create a child process and wait until it is terminated.

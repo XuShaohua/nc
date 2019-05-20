@@ -10,6 +10,8 @@
 /// * unsigned short int -> u16, 2 bytes.
 /// * short int -> i16, 2 bytes.
 
+pub type be16_t = u16;
+pub type be32_t = u32;
 pub type blksize_t = isize;
 pub type blkcnt_t = isize;
 pub type dev_t = usize;
@@ -20,7 +22,9 @@ pub type mode_t = u32;
 pub type nlink_t = usize;
 pub type off_t = isize;
 pub type pid_t = i32;
+pub type sa_family_t = u16;
 pub type size_t = usize;
+pub type socklen_t = u32;
 pub type ssize_t = isize;
 pub type time_t = isize;
 pub type nfds_t = usize;
@@ -121,3 +125,32 @@ pub struct shmid_ds {
     pub shm_nattch: shmatt_t, // number of current attaches
 }
 
+/// Internet address.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct in_addr_t {
+    pub s_addr: be32_t,
+}
+
+/// Structure describing an Internet (IP) socket address.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct sockaddr_in_t {
+    pub sin_family: sa_family_t,    // Address family
+    pub sin_port: be16_t,           // Port number
+    pub sin_addr: in_addr_t,        // Internet address
+    pad: [u8; 16 - 2 - 2 - 4],         // Pad to size of `struct sockaddr_t'.
+}
+
+/// Structure describing messages sent by `sendmsg` and received by `recvmsg`.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct msghdr_t {
+    pub msg_name:       usize,      // Address to send to/receive from.
+    pub msg_namelen:    socklen_t,  // Length of address data.
+    pub msg_iov:        iovec_t,    // Vector of data to send/receive into.
+    pub msg_iovlen:     size_t,     // Number of elements in the vector.
+    pub msg_control:    usize,      // Ancillary data (eg BSD filedesc passing).
+    pub msg_controllen: size_t,     // Ancillary data buffer length.
+    msg_flags:          i32,        // Flags on received message.
+}

@@ -15,15 +15,20 @@ fn c_str(s: &str) -> [u8; 128]{
     return buf;
 }
 
+#[inline(always)]
+pub fn is_errno(ret: usize) -> bool {
+    let reti = ret as isize;
+    return reti < 0 && reti >= -256;
+}
+
 /// Check user's permission for a file.
 pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
         let mode = mode as usize;
         let ret = syscall2(SYS_ACCESS, path, mode);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -44,9 +49,8 @@ pub fn alarm(seconds: u32) -> u32 {
 pub fn brk(addr: usize) -> Result<(), Errno> {
     unsafe {
         let ret = syscall1(SYS_BRK, addr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -62,9 +66,8 @@ pub fn close(fd: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let ret = syscall1(SYS_CLOSE, fd);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -77,9 +80,8 @@ pub fn dup(oldfd: i32) -> Result<isize, Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let ret = syscall1(SYS_DUP, oldfd);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as isize;
             return Ok(ret);
@@ -94,9 +96,8 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
         let oldfd = oldfd as usize;
         let newfd = newfd as usize;
         let ret = syscall2(SYS_DUP2, oldfd, newfd);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -110,9 +111,8 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
         let newfd = newfd as usize;
         let flags = flags as usize;
         let ret = syscall3(SYS_DUP3, oldfd, newfd, flags);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -120,6 +120,7 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 }
 
 /// Execute a new program.
+/*
 pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
     unsafe {
         let filename = c_str(filename).as_ptr() as usize;
@@ -133,6 +134,11 @@ pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+*/
+pub fn execve() -> Result<(), Errno> {
+    // TODO(Shaohua): Not implemented
+    Ok(())
 }
 
 pub fn epoll_create() {
@@ -182,11 +188,11 @@ pub fn fanotify_mask() {
 pub fn fork() -> Result<pid_t, Errno> {
     unsafe {
         let ret = syscall0(SYS_FORK);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
-            return Ok(ret as pid_t);
+            let ret = ret as pid_t;
+            return Ok(ret);
         }
     }
 }
@@ -198,9 +204,8 @@ pub fn fstat(fd: i32) -> Result<stat_t, Errno> {
         let mut statbuf = stat_t::default();
         let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
         let ret = syscall2(SYS_FSTAT, fd, statbuf_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(statbuf);
         }
@@ -243,9 +248,8 @@ pub fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
         let which = which as usize;
         let curr_val_ptr = curr_val as *mut itimerval_t as usize;
         let ret = syscall2(SYS_GETITIMER, which, curr_val_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -257,9 +261,8 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     unsafe {
         let pid = pid as usize;
         let ret = syscall1(SYS_GETPGID, pid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as pid_t;
             return Ok(ret);
@@ -313,9 +316,8 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
         let pid = pid as usize;
         let signal = signal as usize;
         let ret = syscall2(SYS_KILL, pid, signal);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -329,9 +331,8 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
         let offset = offset as usize;
         let whence = whence as usize;
         let ret = syscall3(SYS_LSEEK, fd, offset, whence);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -345,9 +346,8 @@ pub fn lstat(path: &str) -> Result<stat_t, Errno> {
         let mut statbuf = stat_t::default();
         let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
         let ret = syscall2(SYS_STAT, path, statbuf_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(statbuf);
         }
@@ -360,9 +360,8 @@ pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
         let len = len as usize;
         let advice = advice as usize;
         let ret = syscall3(SYS_MADVISE, addr, len, advice);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -383,9 +382,8 @@ pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Resul
         let fd = fd as usize;
         let offset = offset as usize;
         let ret = syscall6(SYS_MMAP, addr, len, prot, flags, fd, offset);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(ret);
         }
@@ -398,9 +396,8 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
         let len = len as usize;
         let prot = prot as usize;
         let ret = syscall3(SYS_MPROTECT, addr, len, prot);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -417,9 +414,8 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
         let len = len as usize;
         let flags = flags as usize;
         let ret = syscall3(SYS_MSYNC, addr, len, flags);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -431,9 +427,8 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     unsafe {
         let len = len as usize;
         let ret = syscall2(SYS_MUNMAP, addr, len);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -446,9 +441,8 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
         let req_ptr = req as *const timespec_t as usize;
         let rem_ptr = rem as *mut timespec_t as usize;
         let ret = syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -502,9 +496,8 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
         let flags = flags as usize;
         let mode = mode as usize;
         let ret = syscall3(SYS_OPEN, path, flags, mode);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as i32;
             return Ok(ret);
@@ -516,9 +509,8 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
 pub fn pause() -> Result<(), Errno> {
     unsafe {
         let ret = syscall0(SYS_PAUSE);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -530,13 +522,16 @@ pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     unsafe {
         let pipefd_ptr = pipefd.as_mut_ptr() as usize;
         let ret = syscall1(SYS_PAUSE, pipefd_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
     }
+}
+
+pub fn pipe2() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Wait for some event on file descriptors.
@@ -546,9 +541,8 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
         let nfds = fds.len() as usize;
         let timeout = timeout as usize;
         let ret = syscall3(SYS_POLL, fds_ptr, nfds, timeout);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -563,9 +557,8 @@ pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno>
         let len = buf.len() as usize;
         let offset = offset as usize;
         let ret = syscall4(SYS_PREAD64, fd, buf_ptr, len, offset);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
@@ -581,9 +574,8 @@ pub fn pwrite(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
         let len = buf.len() as usize;
         let offset = offset as usize;
         let ret = syscall4(SYS_PWRITE64, fd, buf_ptr, len, offset);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(ret as ssize_t);
         }
@@ -597,9 +589,8 @@ pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
         let buf_ptr = buf.as_mut_ptr() as usize;
         let len = buf.len() as usize;
         let ret = syscall3(SYS_READ, fd, buf_ptr, len);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
@@ -614,9 +605,8 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
         let iov_ptr = iov.as_mut_ptr() as usize;
         let len = iov.len() as usize;
         let ret = syscall3(SYS_READV, fd, iov_ptr, len);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
@@ -624,22 +614,13 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     }
 }
 
-pub fn pipe() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn pipe2() {
-    // TODO(Shaohua): Not implemented
-}
-
 pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
     unsafe {
         let oldpath = c_str(oldpath).as_ptr() as usize;
         let newpath = c_str(newpath).as_ptr() as usize;
         let ret = syscall2(SYS_RENAME, oldpath, newpath);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -663,9 +644,8 @@ pub fn rt_sigreturn() {
 pub fn sched_yield() -> Result<(), Errno> {
     unsafe {
         let ret = syscall0(SYS_SCHED_YIELD);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -686,9 +666,8 @@ pub fn sendfile(out_fd: i32, in_fd: i32, offset: &mut off_t,
         let offset_ptr = offset as *mut off_t as usize;
         let count = count as usize;
         let ret = syscall4(SYS_SENDFILE, out_fd, in_fd, offset_ptr, count);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
@@ -696,14 +675,14 @@ pub fn sendfile(out_fd: i32, in_fd: i32, offset: &mut off_t,
     }
 }
 
+
 /// Set the group ID of the calling process to `gid`.
 pub fn setgid(gid: gid_t) -> Result<(), Errno> {
     unsafe {
         let gid = gid as usize;
         let ret = syscall1(SYS_SETGID, gid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -724,9 +703,8 @@ pub fn setitimer(which: i32, new_val: &itimerval_t,
         let new_val_ptr = new_val as *const itimerval_t as usize;
         let old_val_ptr = old_val as *mut itimerval_t as usize;
         let ret = syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -739,9 +717,8 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
         let pid = pid as usize;
         let pgid = pgid as usize;
         let ret = syscall2(SYS_SETPGID, pid, pgid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -754,9 +731,8 @@ pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
         let rgid = rgid as usize;
         let egid = egid as usize;
         let ret = syscall2(SYS_SETREGID, rgid, egid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -770,9 +746,8 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
         let ruid = ruid as usize;
         let euid = euid as usize;
         let ret = syscall2(SYS_SETREUID, ruid, euid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -786,9 +761,8 @@ pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
         let egid = egid as usize;
         let sgid = sgid as usize;
         let ret = syscall3(SYS_SETREUID, rgid, egid, sgid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -802,9 +776,8 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
         let euid = euid as usize;
         let suid = suid as usize;
         let ret = syscall3(SYS_SETREUID, ruid, euid, suid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -815,12 +788,24 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
 pub fn setsid() -> Result<pid_t, Errno> {
     unsafe {
         let ret = syscall0(SYS_SETSID);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as pid_t;
             return Ok(ret);
+        }
+    }
+}
+
+/// Set the effective user ID of the calling process to `uid`.
+pub fn setuid(uid: uid_t) -> Result<(), Errno> {
+    unsafe {
+        let uid = uid as usize;
+        let ret = syscall1(SYS_SETUID, uid);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }
@@ -831,9 +816,8 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
         let shmid = shmid as usize;
         let shmflg = shmflg as usize;
         let ret = syscall3(SYS_SHMAT, shmid, shmaddr, shmflg);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(ret);
         }
@@ -847,9 +831,8 @@ pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds) -> Result<i32, Errno> {
         let cmd = cmd as usize;
         let buf_ptr = buf as *mut shmid_ds as usize;
         let ret = syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             let ret = ret as i32;
             return Ok(ret);
@@ -864,27 +847,16 @@ pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
         let size = size as usize;
         let shmflg = shmflg as usize;
         let ret = syscall3(SYS_SHMGET, key, size, shmflg);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
     }
 }
 
-/// Set the effective user ID of the calling process to `uid`.
-pub fn setuid(uid: uid_t) -> Result<(), Errno> {
-    unsafe {
-        let uid = uid as usize;
-        let ret = syscall1(SYS_SETUID, uid);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
-        } else {
-            return Ok(());
-        }
-    }
+pub fn signalfd() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Get file status about a file.
@@ -894,9 +866,8 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
         let mut statbuf = stat_t::default();
         let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
         let ret = syscall2(SYS_STAT, path, statbuf_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(statbuf);
         }
@@ -915,9 +886,8 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let ret = syscall1(SYS_SYNCFS, fd);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -940,9 +910,8 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
         let nbytes = nbytes as usize;
         let flags = flags as usize;
         let ret = syscall4(SYS_SYNC_FILE_RANGE, fd, offset, nbytes, flags);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(());
         }
@@ -953,9 +922,8 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
 pub fn vfork() -> Result<pid_t, Errno> {
     unsafe {
         let ret = syscall0(SYS_VFORK);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(ret as pid_t);
         }
@@ -977,11 +945,11 @@ pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
         let buf_ptr = buf.as_ptr() as usize;
         let len = buf.len() as usize;
         let ret = syscall3(SYS_WRITE, fd, buf_ptr, len);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
-            return Ok(ret as ssize_t);
+            let ret = ret as ssize_t;
+            return Ok(ret);
         }
     }
 }
@@ -993,9 +961,8 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
         let iov_ptr = iov.as_ptr() as usize;
         let len = iov.len() as usize;
         let ret = syscall3(SYS_WRITE, fd, iov_ptr, len);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        if is_errno(ret) {
+            return Err(ret);
         } else {
             return Ok(ret as ssize_t);
         }
@@ -1004,7 +971,7 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
 
 pub fn uname() -> Result<(), Errno> {
     // TODO(Shaohua): Not implemented
-    Ok()
+    Ok(())
 }
 
 pub fn vmsplice() {

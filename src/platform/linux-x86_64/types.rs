@@ -217,3 +217,12 @@ impl Default for utsname_t {
         }
     }
 }
+
+/// Structure used for argument to `semop' to describe operations.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct sembuf_t {
+    pub sem_num: u16, // semaphore number
+    pub sem_op:  i16, // semaphore operation
+    pub sem_flg: i16, // operation flag
+}

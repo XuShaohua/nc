@@ -169,7 +169,6 @@ pub const IPC_INFO: i32 = 3;
 
 pub const IPC_PRIVATE: key_t = 0;
 
-
 /// Socket types
 pub const SOCK_STREAM:    i32 = 1;
 pub const SOCK_DGRAM:     i32 = 2;

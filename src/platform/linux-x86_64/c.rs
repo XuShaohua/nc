@@ -826,6 +826,43 @@ pub fn select() {
     // TODO(Shaohua): Not implemented.
 }
 
+pub fn semctl() {
+    // TODO(Shaohua): Not implemented.
+}
+
+/// Get a System V semphore set identifier.
+pub fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> {
+    unsafe {
+        let key = key as usize;
+        let nsems = nsems as usize;
+        let semflg = semflg as usize;
+        let ret = syscall3(SYS_SEMGET, key, nsems, semflg);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// System V semphore operations.
+pub fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
+    unsafe {
+        let semid = semid as usize;
+        let sops_ptr = sops.as_ptr() as usize;
+        let nops = sops.len();
+        let ret = syscall3(SYS_SEMOP, semid, sops_ptr, nops);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Transfer data between two file descriptors.
 pub fn sendfile(out_fd: i32, in_fd: i32, offset: &mut off_t,
                 count: size_t) -> Result<ssize_t, Errno> {

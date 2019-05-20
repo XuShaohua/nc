@@ -243,6 +243,20 @@ pub fn fcntl() {
     // TODO(Shaohua): Not implemented.
 }
 
+/// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
+pub fn fdatasync(fd: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let ret = syscall1(SYS_FDATASYNC, fd);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Apply or remove an advisory lock on an open file.
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     unsafe {
@@ -286,8 +300,18 @@ pub fn fstat(fd: i32) -> Result<stat_t, Errno> {
     }
 }
 
-pub fn fsync() {
-    // TODO(Shaohua): Not implemented
+/// Flush all modified in-core data refered by `fd` to disk.
+pub fn fsync(fd: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let ret = syscall1(SYS_FSYNC, fd);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Get the effective group ID of the calling process.

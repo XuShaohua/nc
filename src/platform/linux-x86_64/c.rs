@@ -230,6 +230,14 @@ pub fn exit(status: u8) {
     }
 }
 
+/// Exit all threads in a process's thread group.
+pub fn exit_group(status: i32) {
+    unsafe {
+        let status = status as usize;
+        let _ret = syscall1(SYS_EXIT_GROUP, status);
+    }
+}
+
 pub fn fanotify_init() {
     // TODO(Shaohua): Not implemented.
 }
@@ -403,6 +411,15 @@ pub fn getsockopt(sockfd: i32, level: i32, optname: i32, optval: &mut usize,
         } else {
             return Ok(());
         }
+    }
+}
+
+/// Get the caller's thread ID (TID).
+pub fn gettid() -> pid_t {
+    unsafe {
+        let ret = syscall0(SYS_GETTID);
+        let ret = ret as pid_t;
+        return ret;
     }
 }
 
@@ -1183,6 +1200,35 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
     }
 }
 
+/// Stop swapping to file/device.
+pub fn swapoff(path: &str) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let ret = syscall1(SYS_SWAPOFF, path);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Start swapping to file/device.
+pub fn swapon(path: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let flags = flags as usize;
+        let ret = syscall2(SYS_SWAPON, path, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Commit filesystem caches to disk.
 pub fn sync() {
     unsafe {
@@ -1233,6 +1279,37 @@ pub fn timerfd_gettime() {
 
 pub fn timerfd_settime() {
     // TODO(Shaohua): Not implemented
+}
+
+/// Send a signal to a thread.
+pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
+    unsafe {
+        let tgid = tgid as usize;
+        let tid = tid as usize;
+        let sig = sig as usize;
+        let ret = syscall3(SYS_TGKILL, tgid, tid, sig);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Send a signal to a thread (obsolete).
+pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
+    unsafe {
+        let tid = tid as usize;
+        let sig = sig as usize;
+        let ret = syscall2(SYS_TKILL, tid, sig);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Create a child process and wait until it is terminated.

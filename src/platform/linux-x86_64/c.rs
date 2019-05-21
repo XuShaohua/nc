@@ -413,6 +413,67 @@ pub fn getuid() -> uid_t {
     }
 }
 
+/// Add a watch to an initialized inotify instance.
+pub fn inotify_add_watch(fd: i32, path: &str, mask: u32) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let path = c_str(path).as_ptr() as usize;
+        let mask = mask as usize;
+        let ret = syscall3(SYS_INOTIFY_ADD_WATCH, fd, path, mask);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Initialize an inotify instance.
+pub fn inotify_init() -> Result<i32, Errno> {
+    unsafe {
+        let ret = syscall0(SYS_INOTIFY_INIT);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Initialize an inotify instance.
+pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let ret = syscall1(SYS_INOTIFY_INIT1, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Remove an existing watch from an inotify instance.
+pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let wd = wd as usize;
+        let ret = syscall2(SYS_INOTIFY_RM_WATCH, fd, wd);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn ioctl() {
     // TODO(Shaohua): Not implemented
 }
@@ -530,6 +591,30 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn mq_getsetattr() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_notify() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_open() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_timedreceive() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_timedsend() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_unlink() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn mremap() {
     // TODO(Shaohua): Not implememented
 }
@@ -573,46 +658,6 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
             return Ok(());
         }
     }
-}
-
-pub fn inotify_add_watch() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn inotify_init() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn inotify_init1() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn inotify_rm_watch() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_getsetattr() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_notify() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_open() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_timedreceive() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_timedsend() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_unlink() {
-    // TODO(Shaohua): Not implemented
 }
 
 /// Open and possibly create a file.

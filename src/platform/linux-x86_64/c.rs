@@ -730,6 +730,38 @@ pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     }
 }
 
+/// Make a new name for a file.
+pub fn link(oldpath: &str, newpath: &str) -> Result<(), Errno> {
+    unsafe {
+        let oldpath_ptr = oldpath.as_ptr() as usize;
+        let newpath_ptr = newpath.as_ptr() as usize;
+        let ret = syscall2(SYS_LINK, oldpath_ptr, newpath_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Make a new name for a file.
+pub fn linkat(olddfd: i32, oldpath: &str, newdfd: i32, newpath: &str) -> Result<(), Errno> {
+    unsafe {
+        let olddfd = olddfd as usize;
+        let oldpath_ptr = oldpath.as_ptr() as usize;
+        let newdfd = newdfd as usize;
+        let newpath_ptr = newpath.as_ptr() as usize;
+        let ret = syscall4(SYS_LINKAT, olddfd, oldpath_ptr, newdfd, newpath_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Listen for connections on a socket.
 pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
     unsafe {
@@ -1171,7 +1203,7 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 }
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
-pub fn reboot(magic: i32, magci2: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
     unsafe {
         let magic = magic as usize;
         let magic2 = magci2 as usize;
@@ -1936,6 +1968,36 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
     unsafe {
         let buf_ptr = buf as *mut utsname_t as usize;
         let ret = syscall1(SYS_UNAME, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Delete a name and possibly the file it refers to.
+pub fn unlink(pathname: &str) -> Result<(), Errno> {
+    unsafe {
+        let pathname_ptr = pathname.as_ptr() as usize;
+        let ret = syscall1(SYS_UNLINK, pathname_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Delete a name and possibly the file it refers to.
+pub fn unlinkat(dfd: i32, pathname: &str, flag: i32) -> Result<(), Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let pathname_ptr = pathname.as_ptr() as usize;
+        let flag = flag as usize;
+        let ret = syscall3(SYS_UNLINKAT, dfd, pathname_ptr, flag);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);

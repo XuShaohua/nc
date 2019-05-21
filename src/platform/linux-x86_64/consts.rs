@@ -402,3 +402,21 @@ pub const LINUX_REBOOT_CMD_RESTART2:   u32 = 0xA1B2C3D4;
 pub const LINUX_REBOOT_CMD_SW_SUSPEND: u32 = 0xD000FCE2;
 pub const LINUX_REBOOT_CMD_KEXEC:      u32 = 0x45584543;
 
+/// Kinds of resource limit
+pub const RLIMIT_CPU:        i32 = 0; // Per-process CPU limit, in seconds.
+pub const RLIMIT_FSIZE:      i32 = 1; // Largest file that can be created, in bytes.
+pub const RLIMIT_DATA:       i32 = 2; // Maximum size of data segment, in bytes.
+pub const RLIMIT_STACK:      i32 = 3; // Maximum size of stack segment, in bytes.
+pub const RLIMIT_CORE:       i32 = 4; // Largest core file that can be created, in bytes.
+pub const RLIMIT_RSS:        i32 = 5; // Largest resident set size, in bytes.
+pub const RLIMIT_NPROC:      i32 = 6; // Number of processes.
+pub const RLIMIT_NOFILE:     i32 = 7; // Number of open files.
+pub const RLIMIT_AS:         i32 = 9; // Address space limit.
+pub const RLIMIT_MEMLOCK:    i32 = 8; // Locked-in-memory address space.
+pub const RLIMIT_LOCKS:      i32 = 10; // Maximum number of file locks.
+pub const RLIMIT_SIGPENDING: i32 = 11; // Maximum number of pending signals.
+pub const RLIMIT_MSGQUEUE:   i32 = 12; // Maximum bytes in POSIX message queues.
+pub const RLIMIT_NICE:       i32 = 13; // Maximum nice priority allowed to raise to.
+pub const RLIMIT_RTPRIO:     i32 = 14; // Maximum realtime priority
+pub const RLIMIT_RTTIME:     i32 = 15; // Maximum CPU time in µs for RT tasks.
+pub const RLIMIT_NLIMITS:    i32 = 16;

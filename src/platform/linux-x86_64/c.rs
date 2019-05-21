@@ -583,6 +583,21 @@ pub fn getresuid() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Get resource limit.
+pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
+    unsafe {
+        let resource = resource as usize;
+        let rlim_ptr = rlim as *mut rlimit_t as usize;
+        let ret = syscall2(SYS_GETRLIMIT, resource, rlim_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Get current address to which the socket `sockfd` is bound.
 pub fn getsockname(sockfd: i32, addr: &mut sockaddr_in_t, 
                    addrlen: &mut socklen_t) -> Result<(), Errno> {

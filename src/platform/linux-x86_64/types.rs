@@ -32,6 +32,7 @@ pub type ssize_t = isize;
 pub type time_t = isize;
 pub type nfds_t = usize;
 pub type uid_t = u32;
+pub type rlimit_t = usize;
 pub type shmatt_t = usize; // Type to count number of shared memory attaches.
 pub type suseconds_t = isize; // Signed count of microseconds.
 
@@ -321,4 +322,5 @@ pub struct timezone_t {
     pub tz_minuteswest: i32, // minutes west of Greenwich
     pub tz_dsttime:     i32, // type of dst correction
 }
+
 

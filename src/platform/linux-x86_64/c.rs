@@ -958,6 +958,39 @@ pub fn mkdirat(dirfd: i32, path: &str, mode: mode_t) -> Result<(), Errno> {
     }
 }
 
+/// Create a special or ordinary file.
+pub fn mknod(path: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let mode = mode as usize;
+        let dev = dev as usize;
+        let ret = syscall3(SYS_MKNOD, path_ptr, mode, dev);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Create a special or ordinary file.
+pub fn mknodat(dirfd: i32, path: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let path_ptr = path.as_ptr() as usize;
+        let mode = mode as usize;
+        let dev = dev as usize;
+        let ret = syscall4(SYS_MKNODAT, dirfd, path_ptr, mode, dev);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Map files or devices into memory.
 pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Result<usize, Errno> {
     unsafe {

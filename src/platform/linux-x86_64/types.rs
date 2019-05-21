@@ -14,6 +14,7 @@ pub type be16_t = u16;
 pub type be32_t = u32;
 pub type blksize_t = isize;
 pub type blkcnt_t = isize;
+pub type clock_t = isize;
 pub type dev_t = usize;
 pub type gid_t = u32;
 pub type ino_t = usize;
@@ -287,3 +288,29 @@ pub struct msqid_ds {
     reserved4:      usize,
     reserved5:      usize,
 }
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct sysinfo_t {
+   pub uptime:    isize,      // Seconds since boot
+   pub loads:     [usize; 3], // 1, 5, and 15 minute load averages
+   pub totalram:  usize,      // Total usable main memory size
+   pub freeram:   usize,      // Available memory size
+   pub sharedram: usize,      // Amount of shared memory
+   pub bufferram: usize,      // Memory used by buffers
+   pub totalswap: usize,      // Total swap space size
+   pub freeswap:  usize,      // Swap space still available
+   pub procs:     u16,        // Number of current processes
+   pad:           [u8; 22],   // Pads structure to 64 bytes
+}
+
+/// Structure describing CPU time used by a process and its children.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct tms_t {
+    pub tms_utime:  clock_t, // User CPU time.
+    pub tms_stime:  clock_t, // System CPU time.
+    pub tms_cutime: clock_t, // User CPU time of dead children.
+    pub tms_cstime: clock_t, // System CPU time of dead children.
+}
+

@@ -108,6 +108,37 @@ pub fn chdir(path: &str) -> Result<(), Errno> {
     }
 }
 
+/// Change permissions of a file.
+pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = filename.as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_CHMOD, filename_ptr, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = filename.as_ptr() as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let ret = syscall3(SYS_CHOWN, filename_ptr, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn clone() {
     // TODO(Shaohua): Not implemented
 }
@@ -261,6 +292,14 @@ pub fn exit(status: u8) {
     }
 }
 
+/// Exit all threads in a process's thread group.
+pub fn exit_group(status: i32) {
+    unsafe {
+        let status = status as usize;
+        let _ret = syscall1(SYS_EXIT_GROUP, status);
+    }
+}
+
 pub fn fanotify_init() {
     // TODO(Shaohua): Not implemented.
 }
@@ -274,6 +313,21 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let ret = syscall1(SYS_FCHDIR, fd);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change permissions of a file.
+pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_FCHMOD, fd, mode);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -302,12 +356,62 @@ pub fn fdatasync(fd: i32) -> Result<(), Errno> {
     }
 }
 
+/// Change permissions of a file.
+pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let filename_ptr = filename.as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let ret = syscall3(SYS_FCHOWN, fd, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Apply or remove an advisory lock on an open file.
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let operation = operation as usize;
         let ret = syscall2(SYS_FLOCK, fd, operation);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn fchownat(dirfd: i32, filename: &str, user: uid_t, group: gid_t, flag: i32) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let filename_ptr = filename.as_ptr() as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let flag = flag as usize;
+        let ret = syscall5(SYS_FCHOWNAT, dirfd, filename_ptr, user, group, flag);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -515,10 +619,80 @@ pub fn getsockopt(sockfd: i32, level: i32, optname: i32, optval: &mut usize,
     }
 }
 
+/// Get the caller's thread ID (TID).
+pub fn gettid() -> pid_t {
+    unsafe {
+        let ret = syscall0(SYS_GETTID);
+        let ret = ret as pid_t;
+        return ret;
+    }
+}
+
 /// Get the real user ID of the calling process.
 pub fn getuid() -> uid_t {
     unsafe {
         return syscall0(SYS_GETUID) as uid_t;
+    }
+}
+
+/// Add a watch to an initialized inotify instance.
+pub fn inotify_add_watch(fd: i32, path: &str, mask: u32) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let path = c_str(path).as_ptr() as usize;
+        let mask = mask as usize;
+        let ret = syscall3(SYS_INOTIFY_ADD_WATCH, fd, path, mask);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Initialize an inotify instance.
+pub fn inotify_init() -> Result<i32, Errno> {
+    unsafe {
+        let ret = syscall0(SYS_INOTIFY_INIT);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Initialize an inotify instance.
+pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let ret = syscall1(SYS_INOTIFY_INIT1, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Remove an existing watch from an inotify instance.
+pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let wd = wd as usize;
+        let ret = syscall2(SYS_INOTIFY_RM_WATCH, fd, wd);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
     }
 }
 
@@ -533,6 +707,22 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
         let signal = signal as usize;
         let ret = syscall2(SYS_KILL, pid, signal);
         if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = filename.as_ptr() as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let ret = syscall3(SYS_LCHOWN, filename_ptr, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());
@@ -670,6 +860,30 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn mq_getsetattr() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_notify() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_open() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_timedreceive() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_timedsend() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn mq_unlink() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn mremap() {
     // TODO(Shaohua): Not implememented
 }
@@ -777,46 +991,6 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
             return Ok(());
         }
     }
-}
-
-pub fn inotify_add_watch() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn inotify_init() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn inotify_init1() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn inotify_rm_watch() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_getsetattr() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_notify() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_open() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_timedreceive() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_timedsend() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn mq_unlink() {
-    // TODO(Shaohua): Not implemented
 }
 
 /// Open and possibly create a file.
@@ -945,6 +1119,41 @@ pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     }
 }
 
+/// Read value of a symbolic link.
+pub fn readlink(path: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        let ret = syscall3(SYS_READLINK, path_ptr, buf_ptr, buf_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Read value of a symbolic link.
+pub fn readlinkat(dirfd: i32, path: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let path_ptr = path.as_ptr() as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        let ret = syscall4(SYS_READLINKAT, dirfd, path_ptr, buf_ptr, buf_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Read from a file descriptor into multiple buffers.
 pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     unsafe {
@@ -957,6 +1166,22 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
+        }
+    }
+}
+
+/// Reboot or enable/disable Ctrl-Alt-Del.
+pub fn reboot(magic: i32, magci2: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+    unsafe {
+        let magic = magic as usize;
+        let magic2 = magci2 as usize;
+        let cmd = cmd as usize;
+        let ret = syscall4(SYS_REBOOT, magic, magic2, cmd, arg);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }
@@ -1155,6 +1380,21 @@ pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
     }
 }
 
+/// Set NIS domain name.
+pub fn setdomainname(name: &str) -> Result<(), Errno> {
+    unsafe {
+        let name_ptr = c_str(name).as_ptr() as usize;
+        let name_len = name.len() as usize;
+        let ret = syscall2(SYS_SETDOMAINNAME, name_ptr, name_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Set the group ID of the calling process to `gid`.
 pub fn setgid(gid: gid_t) -> Result<(), Errno> {
     unsafe {
@@ -1172,6 +1412,21 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 pub fn setgroups() -> Result<(), Errno> {
     // TODO(Shaohua): not implemented
     Ok(())
+}
+
+/// Set hostname
+pub fn sethostname(name: &str) -> Result<(), Errno> {
+    unsafe {
+        let name_ptr = name.as_ptr() as usize;
+        let name_len = name.len();
+        let ret = syscall2(SYS_SETHOSTNAME, name_ptr, name_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set value of an interval timer.
@@ -1424,6 +1679,66 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
     }
 }
 
+/// Stop swapping to file/device.
+pub fn swapoff(path: &str) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let ret = syscall1(SYS_SWAPOFF, path);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Start swapping to file/device.
+pub fn swapon(path: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let path = c_str(path).as_ptr() as usize;
+        let flags = flags as usize;
+        let ret = syscall2(SYS_SWAPON, path, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Make a new name for a file.
+pub fn symlink(oldname: &str, newname: &str) -> Result<(), Errno> {
+    unsafe {
+        let oldname_ptr = oldname.as_ptr() as usize;
+        let newname_ptr = newname.as_ptr() as usize;
+        let ret = syscall2(SYS_SYMLINK, oldname_ptr, newname_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Make a new name for a file.
+pub fn symlinkat(oldname: &str, newfd: i32, newname: &str) -> Result<(), Errno> {
+    unsafe {
+        let oldname_ptr = oldname.as_ptr() as usize;
+        let newfd = newfd as usize;
+        let newname_ptr = newname.as_ptr() as usize;
+        let ret = syscall3(SYS_SYMLINKAT, oldname_ptr, newfd, newname_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Commit filesystem caches to disk.
 pub fn sync() {
     unsafe {
@@ -1460,6 +1775,20 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
     }
 }
 
+/// Return system information.
+pub fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
+    unsafe {
+        let info_ptr = info as *mut sysinfo_t as usize;
+        let ret = syscall1(SYS_SYSINFO, info_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn tee() {
     // TODO(Shaohua): Not implemented
 }
@@ -1482,6 +1811,37 @@ pub fn truncate(path: &str, length: off_t) -> Result<(), Errno> {
         let path = c_str(path).as_ptr() as usize;
         let length = length as usize;
         let ret = syscall2(SYS_TRUNCATE, path, length);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Send a signal to a thread.
+pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
+    unsafe {
+        let tgid = tgid as usize;
+        let tid = tid as usize;
+        let sig = sig as usize;
+        let ret = syscall3(SYS_TGKILL, tgid, tid, sig);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Send a signal to a thread (obsolete).
+pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
+    unsafe {
+        let tid = tid as usize;
+        let sig = sig as usize;
+        let ret = syscall2(SYS_TKILL, tid, sig);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -1552,6 +1912,21 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
             return Err(ret);
         } else {
             return Ok(ret as ssize_t);
+        }
+    }
+}
+
+/// Set file mode creation mask.
+pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
+    unsafe {
+        let mode = mode as usize;
+        let ret = syscall1(SYS_UMASK, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as mode_t;
+            return Ok(ret);
         }
     }
 }

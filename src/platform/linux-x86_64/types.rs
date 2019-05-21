@@ -14,6 +14,7 @@ pub type be16_t = u16;
 pub type be32_t = u32;
 pub type blksize_t = isize;
 pub type blkcnt_t = isize;
+pub type compat_fsid_t = [i32; 2];
 pub type clock_t = isize;
 pub type dev_t = usize;
 pub type gid_t = u32;
@@ -323,3 +324,19 @@ pub struct timezone_t {
     pub tz_dsttime:     i32, // type of dst correction
 }
 
+#[derive(Debug)]
+#[derive(Default)]
+pub struct statfs_t {
+    pub f_type:     isize,
+    pub f_bsize:    isize,
+	pub f_frsize:   isize,
+	pub f_blocks:   isize,
+	pub f_bfree:    isize,
+	pub f_files:    isize,
+	pub f_ffree:    isize,
+	pub f_bavail:   isize,
+	pub f_fsid:     compat_fsid_t,
+	pub f_namelen:  isize,
+	pub _flags:     isize,
+	pub f_spare:    [isize; 5],
+}

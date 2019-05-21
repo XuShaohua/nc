@@ -457,6 +457,21 @@ pub fn fstat(fd: i32) -> Result<stat_t, Errno> {
     }
 }
 
+/// Get filesystem statistics.
+pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_ptr = buf as *mut statfs_t as usize;
+        let ret = syscall2(SYS_FSTATFS, fd, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Flush all modified in-core data refered by `fd` to disk.
 pub fn fsync(fd: i32) -> Result<(), Errno> {
     unsafe {
@@ -1889,6 +1904,21 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
     }
 }
 
+/// Get filesystem statistics.
+pub fn statfs(path: &str, buf: &mut statfs_t) -> Result<(), Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let buf_ptr = buf as *mut statfs_t as usize;
+        let ret = syscall2(SYS_STATFS, path_ptr, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Stop swapping to file/device.
 pub fn swapoff(path: &str) -> Result<(), Errno> {
     unsafe {
@@ -2208,6 +2238,20 @@ pub fn unlinkat(dfd: i32, pathname: &str, flag: i32) -> Result<(), Errno> {
         let pathname_ptr = pathname.as_ptr() as usize;
         let flag = flag as usize;
         let ret = syscall3(SYS_UNLINKAT, dfd, pathname_ptr, flag);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Load shared library.
+pub fn uselib(library: &str) -> Result<(), Errno> {
+    unsafe {
+        let library_ptr = library.as_ptr() as usize;
+        let ret = syscall1(SYS_USELIB, library_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);

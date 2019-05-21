@@ -786,6 +786,41 @@ pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     }
 }
 
+/// Read value of a symbolic link.
+pub fn readlink(path: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        let ret = syscall3(SYS_READLINK, path_ptr, buf_ptr, buf_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Read value of a symbolic link.
+pub fn readlinkat(dirfd: i32, path: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let path_ptr = path.as_ptr() as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        let ret = syscall4(SYS_READLINKAT, dirfd, path_ptr, buf_ptr, buf_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Read from a file descriptor into multiple buffers.
 pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     unsafe {
@@ -798,6 +833,22 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
+        }
+    }
+}
+
+/// Reboot or enable/disable Ctrl-Alt-Del.
+pub fn reboot(magic: i32, magci2: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+    unsafe {
+        let magic = magic as usize;
+        let magic2 = magci2 as usize;
+        let cmd = cmd as usize;
+        let ret = syscall4(SYS_REBOOT, magic, magic2, cmd, arg);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }
@@ -944,6 +995,21 @@ pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
     }
 }
 
+/// Set NIS domain name.
+pub fn setdomainname(name: &str) -> Result<(), Errno> {
+    unsafe {
+        let name_ptr = c_str(name).as_ptr() as usize;
+        let name_len = name.len() as usize;
+        let ret = syscall2(SYS_SETDOMAINNAME, name_ptr, name_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Set the group ID of the calling process to `gid`.
 pub fn setgid(gid: gid_t) -> Result<(), Errno> {
     unsafe {
@@ -961,6 +1027,21 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 pub fn setgroups() -> Result<(), Errno> {
     // TODO(Shaohua): not implemented
     Ok(())
+}
+
+/// Set hostname
+pub fn sethostname(name: &str) -> Result<(), Errno> {
+    unsafe {
+        let name_ptr = name.as_ptr() as usize;
+        let name_len = name.len();
+        let ret = syscall2(SYS_SETHOSTNAME, name_ptr, name_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set value of an interval timer.
@@ -1220,6 +1301,37 @@ pub fn swapon(path: &str, flags: i32) -> Result<(), Errno> {
         let path = c_str(path).as_ptr() as usize;
         let flags = flags as usize;
         let ret = syscall2(SYS_SWAPON, path, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Make a new name for a file.
+pub fn symlink(oldname: &str, newname: &str) -> Result<(), Errno> {
+    unsafe {
+        let oldname_ptr = oldname.as_ptr() as usize;
+        let newname_ptr = newname.as_ptr() as usize;
+        let ret = syscall2(SYS_SYMLINK, oldname_ptr, newname_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Make a new name for a file.
+pub fn symlinkat(oldname: &str, newfd: i32, newname: &str) -> Result<(), Errno> {
+    unsafe {
+        let oldname_ptr = oldname.as_ptr() as usize;
+        let newfd = newfd as usize;
+        let newname_ptr = newname.as_ptr() as usize;
+        let ret = syscall3(SYS_SYMLINKAT, oldname_ptr, newfd, newname_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);

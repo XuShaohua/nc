@@ -217,3 +217,20 @@ impl Default for utsname_t {
         }
     }
 }
+
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct sysinfo_t {
+   pub uptime:    isize,      // Seconds since boot
+   pub loads:     [usize; 3], // 1, 5, and 15 minute load averages
+   pub totalram:  usize,      // Total usable main memory size
+   pub freeram:   usize,      // Available memory size
+   pub sharedram: usize,      // Amount of shared memory
+   pub bufferram: usize,      // Memory used by buffers
+   pub totalswap: usize,      // Total swap space size
+   pub freeswap:  usize,      // Swap space still available
+   pub procs:     u16,        // Number of current processes
+   pad:           [u8; 22],   // Pads structure to 64 bytes
+}
+

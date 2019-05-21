@@ -94,6 +94,37 @@ pub fn brk(addr: usize) -> Result<(), Errno> {
     }
 }
 
+/// Change permissions of a file.
+pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = filename.as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_CHMOD, filename_ptr, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = filename.as_ptr() as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let ret = syscall3(SYS_CHOWN, filename_ptr, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn clone() {
     // TODO(Shaohua): Not implemented
 }
@@ -244,6 +275,71 @@ pub fn fanotify_init() {
 
 pub fn fanotify_mask() {
     // TODO(Shaohua): Not implemented.
+}
+
+/// Change permissions of a file.
+pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let mode = mode as usize;
+        let ret = syscall2(SYS_FCHMOD, fd, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change permissions of a file.
+pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let filename_ptr = filename.as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let ret = syscall3(SYS_FCHOWN, fd, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn fchownat(dirfd: i32, filename: &str, user: uid_t, group: gid_t, flag: i32) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let filename_ptr = filename.as_ptr() as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let flag = flag as usize;
+        let ret = syscall5(SYS_FCHOWNAT, dirfd, filename_ptr, user, group, flag);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Create a child process.
@@ -502,6 +598,22 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
         let signal = signal as usize;
         let ret = syscall2(SYS_KILL, pid, signal);
         if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change ownership of a file.
+pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = filename.as_ptr() as usize;
+        let user = user as usize;
+        let group = group as usize;
+        let ret = syscall3(SYS_LCHOWN, filename_ptr, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());
@@ -1377,6 +1489,20 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
     }
 }
 
+/// Return system information.
+pub fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
+    unsafe {
+        let info_ptr = info as *mut sysinfo_t as usize;
+        let ret = syscall1(SYS_SYSINFO, info_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn tee() {
     // TODO(Shaohua): Not implemented
 }
@@ -1485,6 +1611,21 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
             return Err(ret);
         } else {
             return Ok(ret as ssize_t);
+        }
+    }
+}
+
+/// Set file mode creation mask.
+pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
+    unsafe {
+        let mode = mode as usize;
+        let ret = syscall1(SYS_UMASK, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as mode_t;
+            return Ok(ret);
         }
     }
 }

@@ -314,3 +314,11 @@ pub struct tms_t {
     pub tms_cstime: clock_t, // System CPU time of dead children.
 }
 
+/// Structure representing a timezone.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct timezone_t {
+    pub tz_minuteswest: i32, // minutes west of Greenwich
+    pub tz_dsttime:     i32, // type of dst correction
+}
+

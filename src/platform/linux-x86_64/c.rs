@@ -628,6 +628,21 @@ pub fn gettid() -> pid_t {
     }
 }
 
+/// Get time.
+pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
+    unsafe {
+        let timeval_ptr = timeval as *mut timeval_t as usize;
+        let tz_ptr = tz as *mut timezone_t as usize;
+        let ret = syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Get the real user ID of the calling process.
 pub fn getuid() -> uid_t {
     unsafe {
@@ -1572,6 +1587,20 @@ pub fn setsockopt(sockfd: i32, level: i32, optname: i32, optval: usize,
         let optname = optname as usize;
         let optlen = optlen as usize;
         let ret = syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
+    unsafe {
+        let timeval_ptr = timeval as *const timeval_t as usize;
+        let tz_ptr = tz as *const timezone_t as usize;
+        let ret = syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);

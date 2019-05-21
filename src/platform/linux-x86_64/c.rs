@@ -94,6 +94,14 @@ pub fn brk(addr: usize) -> Result<(), Errno> {
     }
 }
 
+pub fn capget() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn capset() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Change working directory.
 pub fn chdir(path: &str) -> Result<(), Errno> {
     unsafe {
@@ -505,8 +513,19 @@ pub fn getgid() -> gid_t {
 }
 
 /// Get list of supplementary group Ids.
-pub fn getgroups() {
-    // TODO(Shaohua): Not implemented
+pub fn getgroups(size: i32, group_list: &mut[gid_t]) -> Result<i32, Errno> {
+    unsafe {
+        let size = size as usize;
+        let group_ptr = group_list.as_mut_ptr() as usize;
+        let ret = syscall2(SYS_GETGROUPS, size, group_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Get value of an interval timer.
@@ -575,12 +594,36 @@ pub fn getppid() -> pid_t {
     }
 }
 
-pub fn getresgid() {
-    // TODO(Shaohua): Not implemented
+/// Get real, effect and saved group ID.
+pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
+    unsafe {
+        let rgid_ptr = rgid as *mut gid_t as usize;
+        let egid_ptr = egid as *mut gid_t as usize;
+        let sgid_ptr = sgid as *mut gid_t as usize;
+        let ret = syscall3(SYS_GETRESGID, rgid_ptr, egid_ptr, sgid_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn getresuid() {
-    // TODO(Shaohua): Not implemented
+/// Get real, effect and saved user ID.
+pub fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result<(), Errno> {
+    unsafe {
+        let ruid_ptr = ruid as *mut uid_t as usize;
+        let euid_ptr = euid as *mut uid_t as usize;
+        let suid_ptr = suid as *mut uid_t as usize;
+        let ret = syscall3(SYS_GETRESUID, ruid_ptr, euid_ptr, suid_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Get resource limit.
@@ -595,6 +638,31 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
         } else {
             return Ok(());
         }
+    }
+}
+
+/// Get resource usage.
+pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
+    unsafe {
+        let who = who as usize;
+        let usage_ptr = usage as *mut rusage_t as usize;
+        let ret = syscall2(SYS_GETRUSAGE, who, usage_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Get session Id.
+pub fn getsid(pid: pid_t) -> pid_t {
+    unsafe {
+        let pid = pid as usize;
+        let ret = syscall1(SYS_GETSID, pid);
+        let ret = ret as pid_t;
+        return ret;
     }
 }
 
@@ -947,7 +1015,7 @@ pub fn mq_unlink() {
 }
 
 pub fn mremap() {
-    // TODO(Shaohua): Not implememented
+    // TODO(Shaohua): Not implemented
 }
 
 pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds) -> Result<i32, Errno> {
@@ -1147,6 +1215,10 @@ pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno>
             return Ok(ret);
         }
     }
+}
+
+pub fn ptrace() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Write to a file descriptor without changing file offset.
@@ -1457,6 +1529,26 @@ pub fn setdomainname(name: &str) -> Result<(), Errno> {
     }
 }
 
+/// Set group identify used for filesystem checkes.
+pub fn setfsgid(fsgid: gid_t) -> gid_t {
+    unsafe {
+        let fsgid = fsgid as usize;
+        let ret = syscall1(SYS_SETFSGID, fsgid);
+        let ret = ret as gid_t;
+        return ret;
+    }
+}
+
+/// Set user identify used for filesystem checkes.
+pub fn setfsuid(fsuid: uid_t) -> uid_t {
+    unsafe {
+        let fsuid = fsuid as usize;
+        let ret = syscall1(SYS_SETFSUID, fsuid);
+        let ret = ret as uid_t;
+        return ret;
+    }
+}
+
 /// Set the group ID of the calling process to `gid`.
 pub fn setgid(gid: gid_t) -> Result<(), Errno> {
     unsafe {
@@ -1471,9 +1563,18 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set list of supplementary group Ids.
-pub fn setgroups() -> Result<(), Errno> {
-    // TODO(Shaohua): not implemented
-    Ok(())
+pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
+    unsafe {
+        let group_ptr = group_list.as_ptr() as usize;
+        let group_len = group_list.len();
+        let ret = syscall2(SYS_SETGROUPS, group_ptr, group_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set hostname
@@ -1865,6 +1966,23 @@ pub fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
     }
 }
 
+/// Read and/or clear kernel message ring buffer; set console_loglevel
+pub fn syslog(action: i32, buf: &mut str) -> Result<i32, Errno> {
+    unsafe {
+        let action = action as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        let ret = syscall3(SYS_SYSLOG, action, buf_ptr, buf_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
 pub fn tee() {
     // TODO(Shaohua): Not implemented
 }
@@ -1879,6 +1997,21 @@ pub fn timerfd_gettime() {
 
 pub fn timerfd_settime() {
     // TODO(Shaohua): Not implemented
+}
+
+/// Get process times.
+pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
+    unsafe {
+        let buf_ptr = buf as *mut tms_t as usize;
+        let ret = syscall1(SYS_TIMES, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as usize;
+            return Err(ret);
+        } else {
+            let ret = ret as clock_t;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Truncate a file to a specified length.

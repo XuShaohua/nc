@@ -420,3 +420,20 @@ pub const RLIMIT_NICE:       i32 = 13; // Maximum nice priority allowed to raise
 pub const RLIMIT_RTPRIO:     i32 = 14; // Maximum realtime priority
 pub const RLIMIT_RTTIME:     i32 = 15; // Maximum CPU time in µs for RT tasks.
 pub const RLIMIT_NLIMITS:    i32 = 16;
+
+/// Actions used in `syslog()`.
+pub const SYSLOG_ACTION_CLOSE:         i32 = 0; // Close the log.  Currently a NOP.
+pub const SYSLOG_ACTION_OPEN:          i32 = 1; // Open the log. Currently a NOP.
+pub const SYSLOG_ACTION_READ:          i32 = 2; // Read from the log.
+pub const SYSLOG_ACTION_READ_ALL:      i32 = 3; // Read all messages remaining in the ring buffer.
+pub const SYSLOG_ACTION_READ_CLEAR:    i32 = 4; // Read and clear all messages remaining in the ring buffer
+pub const SYSLOG_ACTION_CLEAR:         i32 = 5; // Clear ring buffer.
+pub const SYSLOG_ACTION_CONSOLE_OFF:   i32 = 6; // Disable printk's to console
+pub const SYSLOG_ACTION_CONSOLE_ON:    i32 = 7; // Enable printk's to console
+pub const SYSLOG_ACTION_CONSOLE_LEVEL: i32 = 8; // Set level of messages printed to console
+pub const SYSLOG_ACTION_SIZE_UNREAD:   i32 = 9; // Return number of unread characters in the log buffer
+pub const SYSLOG_ACTION_SIZE_BUFFER:   i32 = 10; // Return size of the log buffer
+
+pub const SYSLOG_FROM_READER: i32 = 0;
+pub const SYSLOG_FROM_PROC:   i32 = 1;
+

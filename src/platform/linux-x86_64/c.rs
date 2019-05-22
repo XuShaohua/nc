@@ -1131,8 +1131,19 @@ pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Resul
 }
 
 /// Mount filesystem.
-pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: usize) {
-    // TODO(Shaohua):
+pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: usize) -> Result<(), Errno> {
+    unsafe {
+        let dev_name_ptr = dev_name.as_ptr() as usize;
+        let dir_name_ptr = dir_name.as_ptr() as usize;
+        let fs_type_ptr = fs_type.as_ptr() as usize;
+        let ret = syscall5(SYS_MOUNT, dev_name_ptr, dir_name_ptr, fs_type_ptr, flags, data);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set protection on a region of memory.
@@ -2431,6 +2442,21 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
         } else {
             let ret = ret as mode_t;
             return Ok(ret);
+        }
+    }
+}
+
+/// Umount filesystem.
+pub fn umount2(name: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let name_ptr = name.as_ptr() as usize;
+        let flags = flags as usize;
+        let ret = syscall2(SYS_UMOUNT2, name_ptr, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }

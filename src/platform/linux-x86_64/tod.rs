@@ -16,3 +16,4 @@ pub const SYS_SCHED_GET_PRIORITY_MIN: Sysno = 147;
 pub const SYS_SCHED_RR_GET_INTERVAL: Sysno = 148;
 pub const SYS_MODIFY_LDT: Sysno = 154;
 pub const SYS_ARCH_PRCTL: Sysno = 158;
+pub const SYS_SETRLIMIT: Sysno = 160;

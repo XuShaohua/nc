@@ -57,6 +57,20 @@ pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
+/// Switch process accounting.
+pub fn acct(filename: &str) -> Result<(), Errno> {
+    unsafe {
+        let filepath_ptr = filename.as_ptr() as usize;
+        let ret = syscall1(SYS_ACCT, filepath_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Tune kernel clock. Returns clock state on success.
 pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     unsafe {
@@ -154,6 +168,20 @@ pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
         let user = user as usize;
         let group = group as usize;
         let ret = syscall3(SYS_CHOWN, filename_ptr, user, group);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change the root directory.
+pub fn chroot(path: &str) -> Result<(), Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let ret = syscall1(SYS_CHROOT, path_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -1102,6 +1130,11 @@ pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Resul
     }
 }
 
+/// Mount filesystem.
+pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: usize) {
+    // TODO(Shaohua):
+}
+
 /// Set protection on a region of memory.
 pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     unsafe {
@@ -1914,6 +1947,7 @@ pub fn setsockopt(sockfd: i32, level: i32, optname: i32, optval: usize,
     }
 }
 
+/// Set system time and timezone.
 pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
     unsafe {
         let timeval_ptr = timeval as *const timeval_t as usize;

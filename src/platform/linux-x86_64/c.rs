@@ -2,6 +2,7 @@
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
+use super::consts;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
 fn c_str(s: &str) -> [u8; 128]{
@@ -606,6 +607,25 @@ pub fn getpid() -> pid_t {
 pub fn getppid() -> pid_t {
     unsafe {
         return syscall0(SYS_GETPPID) as pid_t;
+    }
+}
+
+/// Get program scheduling priority.
+pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
+    unsafe {
+        let which = which as usize;
+        let who = who as usize;
+        let ret = syscall2(SYS_GETPRIORITY, which, who);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let mut ret = ret as i32;
+            if ret > consts::PRIO_MAX {
+                ret = consts::PRIO_MAX - ret;
+            }
+            return Ok(ret);
+        }
     }
 }
 
@@ -1670,6 +1690,21 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     }
 }
 
+pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
+    unsafe {
+        let which = which as usize;
+        let who = who as usize;
+        let prio = prio as usize;
+        let ret = syscall3(SYS_SETPRIORITY, which, who, prio);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Set real and effective group IDs of the calling process.
 pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     unsafe {
@@ -2011,6 +2046,23 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
             return Err(ret);
         } else {
             return Ok(());
+        }
+    }
+}
+
+/// Get filesystem type information.
+pub fn sysfs(option: i32, arg1: usize, arg2: usize) -> Result<i32, Errno> {
+    unsafe {
+        let option = option as usize;
+        let arg1 = arg1 as usize;
+        let arg2 = arg2 as usize;
+        let ret = syscall3(SYS_SYSFS, option, arg1, arg2);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
         }
     }
 }

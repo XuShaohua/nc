@@ -437,3 +437,12 @@ pub const SYSLOG_ACTION_SIZE_BUFFER:   i32 = 10; // Return size of the log buffe
 pub const SYSLOG_FROM_READER: i32 = 0;
 pub const SYSLOG_FROM_PROC:   i32 = 1;
 
+/// Priority limits.
+pub const PRIO_MIN: i32 = -20; // Minimum priority a process can have.
+pub const PRIO_MAX: i32 = 20;  // Maximum priority a process can have.
+
+/// The type of the `which` argument to `getpriority` and `setpriority`.
+pub const PRIO_PROCESS: i32 = 0; // WHO is a process ID.
+pub const PRIO_PGRP:    i32 = 1; // WHO is a process group ID.
+pub const PRIO_USER:    i32 = 2; // WHO is a user ID.
+

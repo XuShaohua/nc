@@ -1026,6 +1026,49 @@ pub fn mknodat(dirfd: i32, path: &str, mode: mode_t, dev: dev_t) -> Result<(), E
     }
 }
 
+/// Lock memory.
+pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let ret = syscall2(SYS_MLOCK, addr, len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Lock memory.
+pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let flags = flags as usize;
+        let ret = syscall3(SYS_MLOCK2, addr, len, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Lock memory.
+pub fn mlockall(flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let ret = syscall1(SYS_MLOCKALL, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Map files or devices into memory.
 pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Result<usize, Errno> {
     unsafe {
@@ -1157,6 +1200,33 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
         let flags = flags as usize;
         let ret = syscall3(SYS_MSYNC, addr, len, flags);
         if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Unlock memory.
+pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let ret = syscall2(SYS_MUNLOCK, addr, len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Unlock memory.
+pub fn munlockall() -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall0(SYS_MUNLOCKALL);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());

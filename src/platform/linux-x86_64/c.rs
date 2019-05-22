@@ -352,6 +352,22 @@ pub fn exit_group(status: i32) {
     }
 }
 
+/// Check user's permission for a file.
+pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let filename_ptr = filename.as_ptr() as usize;
+        let mode = mode as usize;
+        let ret = syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn fanotify_init() {
     // TODO(Shaohua): Not implemented.
 }
@@ -543,6 +559,14 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn futex() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn futimesat() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Get directory entries.
@@ -873,6 +897,24 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 }
 
 pub fn ioctl() {
+    // TODO(Shaohua): Not implemented
+}
+
+/// Set port input/output permissions.
+pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
+    unsafe {
+        let turn_on = turn_on as usize;
+        let ret = syscall3(SYS_IOPERM, from, num, turn_on);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn iopl() {
     // TODO(Shaohua): Not implemented
 }
 
@@ -1320,6 +1362,10 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     }
 }
 
+pub fn newfstatat() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Open and possibly create a file.
 pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
@@ -1412,6 +1458,10 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn ppoll() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Read from a file descriptor without changing file offset.
 pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno> {
     unsafe {
@@ -1448,6 +1498,10 @@ pub fn prctl(option: i32, arg2: usize, arg3: usize, arg4: usize, arg5: usize) ->
     }
 }
 
+pub fn pselect6() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn ptrace() {
     // TODO(Shaohua): Not implemented
 }
@@ -1480,6 +1534,22 @@ pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
         } else {
             let ret = ret as ssize_t;
             return Ok(ret);
+        }
+    }
+}
+
+/// Initialize file head into page cache.
+pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let count = count as usize;
+        let ret = syscall3(SYS_READAHEAD, fd, offset, count);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }
@@ -1600,6 +1670,39 @@ pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
         let oldpath = c_str(oldpath).as_ptr() as usize;
         let newpath = c_str(newpath).as_ptr() as usize;
         let ret = syscall2(SYS_RENAME, oldpath, newpath);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change name or location of a file.
+pub fn renameat(olddfd:i32, oldpath: &str, newdfd: i32, newpath: &str) -> Result<(), Errno> {
+    unsafe {
+        let olddfd = olddfd as usize;
+        let oldpath = c_str(oldpath).as_ptr() as usize;
+        let newdfd = newdfd as usize;
+        let newpath = c_str(newpath).as_ptr() as usize;
+        let ret = syscall4(SYS_RENAMEAT, olddfd, oldpath, newdfd, newpath);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Change name or location of a file.
+pub fn renameat2(olddfd:i32, oldpath: &str, newdfd: i32, newpath: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let olddfd = olddfd as usize;
+        let oldpath = c_str(oldpath).as_ptr() as usize;
+        let newdfd = newdfd as usize;
+        let newpath = c_str(newpath).as_ptr() as usize;
+        let flags = flags as usize;
+        let ret = syscall5(SYS_RENAMEAT2, olddfd, oldpath, newdfd, newpath, flags);
         if is_errno(ret) {
             return Err(ret);
         } else {
@@ -2280,6 +2383,20 @@ pub fn tee() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Get time in seconds.
+pub fn time() -> Result<time_t, Errno> {
+    unsafe {
+        let ret = syscall0(SYS_TIME);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as time_t;
+            return Ok(ret);
+        }
+    }
+}
+
 pub fn timerfd_create() {
     // TODO(Shaohua): Not implemented
 }
@@ -2496,6 +2613,20 @@ pub fn unlinkat(dfd: i32, pathname: &str, flag: i32) -> Result<(), Errno> {
         let pathname_ptr = pathname.as_ptr() as usize;
         let flag = flag as usize;
         let ret = syscall3(SYS_UNLINKAT, dfd, pathname_ptr, flag);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Disassociate parts of the process execution context
+pub fn unshare(flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let ret = syscall1(SYS_UNSHARE, flags);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);

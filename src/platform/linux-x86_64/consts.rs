@@ -110,10 +110,16 @@ pub const SA_NODEFER:   i32 = 0x40000000;
 pub const SA_RESETHAND: i32 = 0x80000000;
 
 /// lseek() whence
-pub const SEEK_SET: i32 = 0;
-pub const SEEK_CUR: i32 = 1;
-pub const SEEK_END: i32 = 2;
+pub const SEEK_SET:  i32 = 0; // seek relative to beginning of file
+pub const SEEK_CUR:  i32 = 1; // seek relative to current file position
+pub const SEEK_END:  i32 = 2; // seek relative to end of file
+pub const SEEK_DATA: i32 = 3; // seek to the next data
+pub const SEEK_HOLE: i32 = 4; // seek to the next hole
+pub const SEEK_MAX:  i32 = SEEK_HOLE;
 
+pub const RENAME_NOREPLACE: i32 = 1; // Don't overwrite target
+pub const RENAME_EXCHANGE:  i32 = 2; // Exchange source and dest
+pub const RENAME_WHITEOUT:  i32 = 4; // Whiteout source
 
 /// Poll event
 pub const POLLIN:     i32 = 0x001;
@@ -595,4 +601,31 @@ pub const TIME_OOP:   i32 = 3; // leap second in progress
 pub const TIME_WAIT:  i32 = 4; // leap second has occurred
 pub const TIME_ERROR: i32 = 5; // clock not synchronized
 pub const TIME_BAD:   i32 = TIME_ERROR; // bw compat
+
+/// Cloning flags
+pub const CSIGNAL:              i32 = 0x000000ff; // signal mask to be sent at exit
+pub const CLONE_VM:             i32 = 0x00000100; // set if VM shared between processes
+pub const CLONE_FS:             i32 = 0x00000200; // set if fs info shared between processes
+pub const CLONE_FILES:          i32 = 0x00000400; // set if open files shared between processes
+pub const CLONE_SIGHAND:        i32 = 0x00000800; // set if signal handlers and blocked signals shared
+pub const CLONE_PTRACE:         i32 = 0x00002000; // set if we want to let tracing continue on the child too
+pub const CLONE_VFORK:          i32 = 0x00004000; // set if the parent wants the child to wake it up on mm_release
+pub const CLONE_PARENT:         i32 = 0x00008000; // set if we want to have the same parent as the cloner
+pub const CLONE_THREAD:         i32 = 0x00010000; // Same thread group?
+pub const CLONE_NEWNS:          i32 = 0x00020000; // New mount namespace group
+pub const CLONE_SYSVSEM:        i32 = 0x00040000; // share system V SEM_UNDO semantics
+pub const CLONE_SETTLS:         i32 = 0x00080000; // create a new TLS for the child
+pub const CLONE_PARENT_SETTID:  i32 = 0x00100000; // set the TID in the parent
+pub const CLONE_CHILD_CLEARTID: i32 = 0x00200000; // clear the TID in the child
+pub const CLONE_DETACHED:       i32 = 0x00400000; // Unused, ignored
+pub const CLONE_UNTRACED:       i32 = 0x00800000; // set if the tracing process can't force CLONE_PTRACE on this clone
+pub const CLONE_CHILD_SETTID:   i32 = 0x01000000; // set the TID in the child
+pub const CLONE_NEWCGROUP:      i32 = 0x02000000; // New cgroup namespace
+pub const CLONE_NEWUTS:         i32 = 0x04000000; // New utsname namespace
+pub const CLONE_NEWIPC:         i32 = 0x08000000; // New ipc namespace
+pub const CLONE_NEWUSER:        i32 = 0x10000000; // New user namespace
+pub const CLONE_NEWPID:         i32 = 0x20000000; // New pid namespace
+pub const CLONE_NEWNET:         i32 = 0x40000000; // New network namespace
+#[allow(overflowing_literals)]
+pub const CLONE_IO:             i32 = 0x80000000; // Clone io context
 

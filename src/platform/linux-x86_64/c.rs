@@ -1370,6 +1370,25 @@ pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno>
     }
 }
 
+/// Operations on a process.
+pub fn prctl(option: i32, arg2: usize, arg3: usize, arg4: usize, arg5: usize) -> Result<i32, Errno> {
+    unsafe {
+        let option = option as usize;
+        let arg2 = arg2 as usize;
+        let arg3 = arg3 as usize;
+        let arg4 = arg4 as usize;
+        let arg5 = arg5 as usize;
+        let ret = syscall5(SYS_PRCTL, option, arg2, arg3, arg4, arg5);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
 pub fn ptrace() {
     // TODO(Shaohua): Not implemented
 }

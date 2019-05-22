@@ -468,3 +468,90 @@ pub const CTL_FRV:     i32 = 9898; // frv specific sysctls
 /// CTL_BUS names:
 pub const CTL_BUS_ISA: i32 = 1; // ISA
 
+/// Values to pass as first argument to `prctl`.
+pub const PR_SET_PDEATHSIG:            i32 = 1; // Second arg is a signal
+pub const PR_GET_PDEATHSIG:            i32 = 2; // Second arg is a ptr to return the signal
+pub const PR_GET_DUMPABLE:             i32 = 3; // Get current->mm->dumpable
+pub const PR_SET_DUMPABLE:             i32 = 4; // Set current->mm->dumpable
+pub const PR_GET_UNALIGN:              i32 = 5; // Get unaligned access control bits (if meaningful)
+pub const PR_SET_UNALIGN:              i32 = 6; // Set unaligned access control bits (if meaningful)
+pub const PR_GET_KEEPCAPS:             i32 = 7; // Get whether or not to drop capabilities on setuid() away from uid 0
+pub const PR_SET_KEEPCAPS:             i32 = 8;  // Set whether or not to drop capabilities on setuid() away from uid 0
+pub const PR_GET_FPEMU:                i32 = 9; // Get floating-point emulation control bits (if meaningful)
+pub const PR_SET_FPEMU:                i32 = 10; // Set floating-point emulation control bits (if meaningful)
+pub const PR_GET_FPEXC:                i32 = 11; // Get floating-point exception mode (if meaningful)
+pub const PR_SET_FPEXC:                i32 = 12; // Get floating-point exception mode (if meaningful)
+pub const PR_GET_TIMING:               i32 = 13; // Get whether use statistical/accurate process timing
+pub const PR_SET_TIMING:               i32 = 14; // Get whether use statistical/accurate process timing
+pub const PR_SET_NAME:                 i32 = 15; // Set process name
+pub const PR_GET_NAME:                 i32 = 16; // Get process name
+pub const PR_GET_ENDIAN:               i32 = 19; // Get process endian
+pub const PR_SET_ENDIAN:               i32 = 20; // Set process endian
+pub const PR_GET_SECCOMP:              i32 = 21; // Get process seccomp mode
+pub const PR_SET_SECCOMP:              i32 = 22; // Set process seccomp mode
+pub const PR_CAPBSET_READ:             i32 = 23; // Get the capability bounding set
+pub const PR_CAPBSET_DROP:             i32 = 24; // Set the capability bounding set
+pub const PR_GET_TSC:                  i32 = 25; // Get the process' ability to use the timestamp counter instruction
+pub const PR_SET_TSC:                  i32 = 26; // Set the process' ability to use the timestamp counter instruction
+pub const PR_GET_SECUREBITS:           i32 = 27; // Get securebits (as per security/commoncap.c)
+pub const PR_SET_SECUREBITS:           i32 = 28; // Set securebits (as per security/commoncap.c)
+pub const PR_SET_TIMERSLACK:           i32 = 29; // Set the timerslack as used by poll/select/nanosleep
+pub const PR_GET_TIMERSLACK:           i32 = 30; // Get the timerslack as used by poll/select/nanosleep
+pub const PR_TASK_PERF_EVENTS_DISABLE: i32 = 31;
+pub const PR_TASK_PERF_EVENTS_ENABLE:  i32 = 32;
+pub const PR_MCE_KILL:                 i32 = 33; // Set early/late kill mode for hwpoison memory corruption.
+pub const PR_MCE_KILL_GET:             i32 = 34;
+pub const PR_SET_MM:                   i32 = 35;
+
+pub const PR_UNALIGN_NOPRINT: i32 = 1; // silently fix up unaligned user accesses
+pub const PR_UNALIGN_SIGBUS:  i32 = 2; // generate SIGBUS on unaligned user access
+
+pub const PR_FPEMU_NOPRINT: i32 = 1; // silently emulate fp operations accesses
+pub const PR_FPEMU_SIGFPE:  i32 = 2; // don't emulate fp operations, send SIGFPE instead
+
+pub const PR_FP_EXC_DISABLED:  i32 = 0; // FP exceptions disabled
+pub const PR_FP_EXC_NONRECOV:  i32 = 1; // async non-recoverable exc. mode 
+pub const PR_FP_EXC_ASYNC:     i32 = 2; // async recoverable exception mode
+pub const PR_FP_EXC_PRECISE:   i32 = 3; // precise exception mode
+pub const PR_FP_EXC_SW_ENABLE: i32 = 0x80; // Use FPEXC for FP exception enables
+pub const PR_FP_EXC_DIV:       i32 = 0x010000; // floating point divide by zero
+pub const PR_FP_EXC_OVF:       i32 = 0x020000; // floating point overflow
+pub const PR_FP_EXC_UND:       i32 = 0x040000; // floating point underflow
+pub const PR_FP_EXC_RES:       i32 = 0x080000; // floating point inexact result
+pub const PR_FP_EXC_INV:       i32 = 0x100000; // floating point invalid operation
+
+pub const PR_TIMING_STATISTICAL: i32 = 0; // Normal, traditional, statistical process timing
+pub const PR_TIMING_TIMESTAMP:   i32 = 1; // Accurate timestamp based process timing
+
+pub const PR_ENDIAN_BIG:        i32 = 0;
+pub const PR_ENDIAN_LITTLE:     i32 = 1; // True little endian mode
+pub const PR_ENDIAN_PPC_LITTLE: i32 = 2; // "PowerPC" pseudo little endian
+
+pub const PR_TSC_ENABLE:  i32 = 1; // allow the use of the timestamp counter
+pub const PR_TSC_SIGSEGV: i32 = 2; // throw a SIGSEGV instead of reading the TSC
+
+
+pub const PR_MCE_KILL_CLEAR: i32 = 0;
+pub const PR_MCE_KILL_SET:   i32 = 1;
+
+pub const PR_MCE_KILL_LATE:    i32 = 0;
+pub const PR_MCE_KILL_EARLY:   i32 = 1;
+pub const PR_MCE_KILL_DEFAULT: i32 = 2;
+
+/// Tune up process memory map specifics.
+pub const PR_SET_MM_START_CODE:  i32 = 1;
+pub const PR_SET_MM_END_CODE:    i32 = 2;
+pub const PR_SET_MM_START_DATA:  i32 = 3;
+pub const PR_SET_MM_END_DATA:    i32 = 4;
+pub const PR_SET_MM_START_STACK: i32 = 5;
+pub const PR_SET_MM_START_BRK:   i32 = 6;
+pub const PR_SET_MM_BRK:         i32 = 7;
+pub const PR_SET_MM_ARG_START:   i32 = 8;
+pub const PR_SET_MM_ARG_END:     i32 = 9;
+pub const PR_SET_MM_ENV_START:   i32 = 10;
+pub const PR_SET_MM_ENV_END:     i32 = 11;
+pub const PR_SET_MM_AUXV:        i32 = 12;
+pub const PR_SET_MM_EXE_FILE:    i32 = 13;
+pub const PR_SET_MM_MAP:         i32 = 14;
+pub const PR_SET_MM_MAP_SIZE:    i32 = 15;
+

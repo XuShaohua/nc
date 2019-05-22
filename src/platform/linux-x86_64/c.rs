@@ -1323,6 +1323,21 @@ pub fn pipe2() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Change the root filesystem.
+pub fn pivotroot(new_root: &str, put_old: &str) -> Result<(), Errno> {
+    unsafe {
+        let new_root_ptr = new_root.as_ptr() as usize;
+        let put_old_ptr = put_old.as_ptr() as usize;
+        let ret = syscall2(SYS_PIVOT_ROOT, new_root_ptr, put_old_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Wait for some event on file descriptors.
 pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     unsafe {
@@ -2120,6 +2135,20 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
     }
 }
 
+/// Read/write system parameters.
+pub fn sysctl(args: &mut sysctl_args_t) -> Result<(), Errno> {
+    unsafe {
+        let args_ptr = args as *mut sysctl_args_t as usize;
+        let ret = syscall1(SYS__SYSCTL, args_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Get filesystem type information.
 pub fn sysfs(option: i32, arg1: usize, arg2: usize) -> Result<i32, Errno> {
     unsafe {
@@ -2253,6 +2282,19 @@ pub fn vfork() -> Result<pid_t, Errno> {
             return Err(ret);
         } else {
             return Ok(ret as pid_t);
+        }
+    }
+}
+
+/// Virtually hang up the current terminal.
+pub fn vhangup() -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall0(SYS_VHANGUP);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }

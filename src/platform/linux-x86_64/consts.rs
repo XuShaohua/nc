@@ -446,3 +446,25 @@ pub const PRIO_PROCESS: i32 = 0; // WHO is a process ID.
 pub const PRIO_PGRP:    i32 = 1; // WHO is a process group ID.
 pub const PRIO_USER:    i32 = 2; // WHO is a user ID.
 
+pub const CTL_MAXNAME: i32 = 10; // how many path components do we allow in a call to sysctl
+
+/// `sysctl` names
+pub const CTL_KERN:    i32 = 1;    // General kernel info and control
+pub const CTL_VM:      i32 = 2;    // VM management
+pub const CTL_NET:     i32 = 3;    // Networking
+pub const CTL_PROC:    i32 = 4;    // removal breaks strace(1) compilation
+pub const CTL_FS:      i32 = 5;    // Filesystems
+pub const CTL_DEBUG:   i32 = 6;    // Debugging
+pub const CTL_DEV:     i32 = 7;    // Devices
+pub const CTL_BUS:     i32 = 8;    // Busses
+pub const CTL_ABI:     i32 = 9;    // Binary emulation
+pub const CTL_CPU:     i32 = 10;   // CPU stuff (speed scaling, etc)
+pub const CTL_ARLAN:   i32 = 254;  // arlan wireless driver
+pub const CTL_S390DBF: i32 = 5677; // s390 debug
+pub const CTL_SUNRPC:  i32 = 7249; // sunrpc debug
+pub const CTL_PM:      i32 = 9899; // frv power management
+pub const CTL_FRV:     i32 = 9898; // frv specific sysctls
+
+/// CTL_BUS names:
+pub const CTL_BUS_ISA: i32 = 1; // ISA
+

@@ -14,3 +14,4 @@ pub const SYS_SCHED_GETSCHEDULER: Sysno = 145;
 pub const SYS_SCHED_GET_PRIORITY_MAX: Sysno = 146;
 pub const SYS_SCHED_GET_PRIORITY_MIN: Sysno = 147;
 pub const SYS_SCHED_RR_GET_INTERVAL: Sysno = 148;
+pub const SYS_MODIFY_LDT: Sysno = 154;

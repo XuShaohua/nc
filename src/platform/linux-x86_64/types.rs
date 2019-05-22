@@ -340,3 +340,16 @@ pub struct statfs_t {
 	pub _flags:     isize,
 	pub f_spare:    [isize; 5],
 }
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct sysctl_args_t {
+    pub name:    usize, // to int
+	pub nlen:    i32,
+	pub oldval:  usize,
+    pub oldlenp: usize, // to size_t
+	pub newval:  usize,
+	pub newlen:  size_t,
+    unused:      [usize; 4],
+}
+

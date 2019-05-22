@@ -555,3 +555,44 @@ pub const PR_SET_MM_EXE_FILE:    i32 = 13;
 pub const PR_SET_MM_MAP:         i32 = 14;
 pub const PR_SET_MM_MAP_SIZE:    i32 = 15;
 
+
+/// Mode codes (timex_t.mode)
+pub const ADJ_OFFSET:    i32 = 0x0001; // time offset
+pub const ADJ_FREQUENCY: i32 = 0x0002; // frequency offset
+pub const ADJ_MAXERROR:  i32 = 0x0004; // maximum time error
+pub const ADJ_ESTERROR:  i32 = 0x0008; // estimated time error
+pub const ADJ_STATUS:    i32 = 0x0010; // clock status
+pub const ADJ_TIMECONST: i32 = 0x0020; // pll time constant
+pub const ADJ_TAI:       i32 = 0x0080; // set TAI offset
+pub const ADJ_SETOFFSET: i32 = 0x0100; // add 'time' to current time
+pub const ADJ_MICRO:     i32 = 0x1000; // select microsecond resolution
+pub const ADJ_NANO:      i32 = 0x2000; // select nanosecond resolution
+pub const ADJ_TICK:      i32 = 0x4000; // tick value
+
+/// Status codes (timex_t.status)
+pub const STA_PLL:       i32 = 0x0001; // enable PLL updates (rw)
+pub const STA_PPSFREQ:   i32 = 0x0002; // enable PPS freq discipline (rw)
+pub const STA_PPSTIME:   i32 = 0x0004; // enable PPS time discipline (rw)
+pub const STA_FLL:       i32 = 0x0008; // select frequency-lock mode (rw)
+pub const STA_INS:       i32 = 0x0010; // insert leap (rw)
+pub const STA_DEL:       i32 = 0x0020; // delete leap (rw)
+pub const STA_UNSYNC:    i32 = 0x0040; // clock unsynchronized (rw)
+pub const STA_FREQHOLD:  i32 = 0x0080; // hold frequency (rw)
+pub const STA_PPSSIGNAL: i32 = 0x0100; // PPS signal present (ro)
+pub const STA_PPSJITTER: i32 = 0x0200; // PPS signal jitter exceeded (ro)
+pub const STA_PPSWANDER: i32 = 0x0400; // PPS signal wander exceeded (ro)
+pub const STA_PPSERROR:  i32 = 0x0800; // PPS signal calibration error (ro)
+pub const STA_CLOCKERR:  i32 = 0x1000; // clock hardware fault (ro)
+pub const STA_NANO:      i32 = 0x2000; // resolution (0 = us, 1 = ns) (ro)
+pub const STA_MODE:      i32 = 0x4000; // mode (0 = PLL, 1 = FLL) (ro)
+pub const STA_CLK:       i32 = 0x8000; // clock source (0 = A, 1 = B) (ro)
+
+/// Clock states (time_state)
+pub const TIME_OK:    i32 = 0; // clock synchronized, no leap second
+pub const TIME_INS:   i32 = 1; // insert leap second
+pub const TIME_DEL:   i32 = 2; // delete leap second
+pub const TIME_OOP:   i32 = 3; // leap second in progress
+pub const TIME_WAIT:  i32 = 4; // leap second has occurred
+pub const TIME_ERROR: i32 = 5; // clock not synchronized
+pub const TIME_BAD:   i32 = TIME_ERROR; // bw compat
+

@@ -57,6 +57,21 @@ pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
+/// Tune kernel clock. Returns clock state on success.
+pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
+    unsafe {
+        let buf_ptr = buf as *mut timex_t as usize;
+        let ret = syscall1(SYS_ADJTIMEX, buf_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
 /// set an alarm clock for delivery of a signal.
 pub fn alarm(seconds: u32) -> u32 {
     unsafe {

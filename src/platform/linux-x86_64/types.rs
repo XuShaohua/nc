@@ -353,3 +353,29 @@ pub struct sysctl_args_t {
     unused:      [usize; 4],
 }
 
+/// To discipline kernel clock oscillator
+#[derive(Debug)]
+#[derive(Default)]
+pub struct timex_t {
+    pub modes:     u32,   // mode selector
+    pub offset:    isize, // time offset (usec)
+    pub freq:      isize, // frequency offset (scaled ppm)
+    pub maxerror:  isize, // maximum error (usec)
+    pub esterror:  isize, // estimated error (usec)
+    pub status:    i32,   // clock command/status
+    pub constant:  isize, // pll time constant
+    pub precision: isize, // clock precision (usec) (read only)
+    pub tolerance: isize, // clock frequency tolerance (ppm), (read only)
+    pub time:      timeval_t, // (read only, except for ADJ_SETOFFSET)
+    pub tick:      isize, // (modified) usecs between clock ticks
+    pub ppsfreq:   isize, // pps frequency (scaled ppm) (ro)
+    pub jitter:    isize, // pps jitter (us) (ro)
+    pub shift:     i32,   // interval duration (s) (shift) (ro)
+    pub stabil:    isize, // pps stability (scaled ppm) (ro)
+    pub jitcnt:    isize, // jitter limit exceeded (ro)
+    pub calcnt:    isize, // calibration intervals (ro)
+    pub errcnt:    isize, // calibration errors (ro)
+    pub stbcnt:    isize, // stability limit exceeded (ro)
+    pub tai:       i32,   // TAI offset (ro)
+}
+

@@ -1946,12 +1946,43 @@ pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno
     }
 }
 
-/// Set scheduling paramters.
-pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
+/// Get static priority max value.
+pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
+    unsafe {
+        let policy = policy as usize;
+        let ret = syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Get static priority min value.
+pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
+    unsafe {
+        let policy = policy as usize;
+        let ret = syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Get a thread's CPU affinity mask.
+pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;
-        let param_ptr = param as *const sched_param_t as usize;
-        let ret = syscall2(SYS_SCHED_SETPARAM, pid, param_ptr);
+        let len = len as usize;
+        let user_mask_ptr = user_mask as *mut usize as usize;
+        let ret = syscall3(SYS_SCHED_GETAFFINITY, pid, len, user_mask_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -1972,6 +2003,52 @@ pub fn sched_getschedular(pid: pid_t) -> Result<i32, Errno> {
         } else {
             let ret = ret as i32;
             return Ok(ret);
+        }
+    }
+}
+
+/// Get the SCHED_RR interval for the named process.
+pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let interval_ptr = interval as *mut timespec_t as usize;
+        let ret = syscall2(SYS_SCHED_RR_GET_INTERVAL, pid, interval_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return OK(());
+        }
+    }
+}
+
+/// Set a thread's CPU affinity mask.
+pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let len = len as usize;
+        let user_mask_ptr = user_mask as *mut usize as usize;
+        let ret = syscall3(SYS_SCHED_SETAFFINITY, pid, len, user_mask_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set scheduling paramters.
+pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let param_ptr = param as *const sched_param_t as usize;
+        let ret = syscall2(SYS_SCHED_SETPARAM, pid, param_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }

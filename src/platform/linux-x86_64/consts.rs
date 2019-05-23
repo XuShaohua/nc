@@ -629,3 +629,52 @@ pub const CLONE_NEWNET:         i32 = 0x40000000; // New network namespace
 #[allow(overflowing_literals)]
 pub const CLONE_IO:             i32 = 0x80000000; // Clone io context
 
+/// Names of the interval timers, and structure defining a timer setting:
+pub const ITIMER_REAL:    i32 = 0;
+pub const ITIMER_VIRTUAL: i32 = 1;
+pub const ITIMER_PROF:    i32 = 2;
+
+/// The IDs of the various system clocks (for POSIX.1b interval timers):
+pub const CLOCK_REALTIME:           i32 = 0;
+pub const CLOCK_MONOTONIC:          i32 = 1;
+pub const CLOCK_PROCESS_CPUTIME_ID: i32 = 2;
+pub const CLOCK_THREAD_CPUTIME_ID:  i32 = 3;
+pub const CLOCK_MONOTONIC_RAW:      i32 = 4;
+pub const CLOCK_REALTIME_COARSE:    i32 = 5;
+pub const CLOCK_MONOTONIC_COARSE:   i32 = 6;
+pub const CLOCK_BOOTTIME:           i32 = 7;
+pub const CLOCK_REALTIME_ALARM:     i32 = 8;
+pub const CLOCK_BOOTTIME_ALARM:     i32 = 9;
+pub const CLOCK_SGI_CYCLE:          i32 = 10; // (do not use)
+pub const CLOCK_TAI:                i32 = 11; // (do not use)
+pub const CLOCKS_MASK:              i32 = (CLOCK_REALTIME | CLOCK_MONOTONIC);
+pub const CLOCKS_MONO:              i32 = CLOCK_MONOTONIC;
+pub const MAX_CLOCKS:               i32 = 16;
+
+/// The various flags for setting POSIX.1b interval timers:
+pub const TIMER_ABSTIME: i32 = 0x01;
+
+/// For waitid
+pub const WNOHANG:    i32 = 0x00000001;
+pub const WUNTRACED:  i32 = 0x00000002;
+pub const WSTOPPED:   i32 = WUNTRACED;
+pub const WEXITED:    i32 = 0x00000004;
+pub const WCONTINUED: i32 = 0x00000008;
+pub const WNOWAIT:    i32 = 0x01000000; // Don't reap, just poll status.
+pub const WNOTHREAD:  i32 = 0x20000000; // Don't wait on children of other threads in this group
+pub const WALL:       i32 = 0x40000000; // Wait on all children, regardless of type
+#[allow(overflowing_literals)]
+pub const WCLONE:     i32 = 0x80000000; // Wait only on non-SIGCHLD children
+
+/// First argument to waitid:
+pub const P_AL:   i32 = 0;
+pub const P_PID:  i32 = 1;
+pub const P_PGID: i32 = 2;
+
+/// eventfd.h
+pub const EFD_SEMAPHORE:          i32 = (1 << 0);
+pub const EFD_CLOEXEC:            i32 = O_CLOEXEC;
+pub const EFD_NONBLOCK:           i32 = O_NONBLOCK;
+pub const EFD_SHARED_FCNTL_FLAGS: i32 = (O_CLOEXEC | O_NONBLOCK);
+pub const EFD_FLAGS_SET:          i32 = (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE);
+

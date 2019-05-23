@@ -329,12 +329,35 @@ pub fn epoll_wait() {
     // TODO(Shaohua): Not implemented
 }
 
-pub fn eventfd() {
-    // TODO(Shaohua): Not implemented
+/// Create a file descriptor for event notification.
+pub fn eventfd(count: u32) -> Result<i32, Errno> {
+    unsafe {
+        let count = count as usize;
+        let ret = syscall1(SYS_EVENTFD, count);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn eventfd2() {
-    // TODO(Shaohua): Not implemented
+/// Create a file descriptor for event notification.
+pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let count = count as usize;
+        let flags = flags as usize;
+        let ret = syscall2(SYS_EVENTFD2, count, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Terminate current process.

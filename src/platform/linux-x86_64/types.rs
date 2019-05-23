@@ -61,6 +61,13 @@ pub struct timeval_t {
 
 #[derive(Debug)]
 #[derive(Default)]
+pub struct itimerspec_t {
+    pub it_interval: timespec_t, // timer period
+    pub it_value:    timespec_t, // timer expiration
+}
+
+#[derive(Debug)]
+#[derive(Default)]
 pub struct itimerval_t {
     pub it_interval: timeval_t, // Value to put into `it_value' when the timer expires.
     pub it_value:    timeval_t, // Time to the next timer expiration.

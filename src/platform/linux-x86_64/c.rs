@@ -530,6 +530,72 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
     }
 }
 
+/// Get extended attribute value.
+pub fn fgetxattr(fd: i32,name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        let ret = syscall4(SYS_FGETXATTR, fd, name_ptr, value, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// List extended attribute names.
+pub fn flistxattr(fd: i32, list: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let list_ptr = list.as_mut_ptr() as usize;
+        let len = list.len();
+        let ret = syscall3(SYS_FLISTXATTR, fd, list_ptr, len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Remove an extended attribute.
+pub fn frmovexattr(fd: i32, name: &str) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let ret = syscall2(SYS_FREMOVEXATTR, fd, name_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set extended attribute value.
+pub fn fsetxattr(fd: i32,name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        let ret = syscall4(SYS_FSETXATTR, fd, name_ptr, value, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Apply or remove an advisory lock on an open file.
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     unsafe {
@@ -641,6 +707,23 @@ pub fn futex() {
 
 pub fn futimesat() {
     // TODO(Shaohua): Not implemented.
+}
+
+/// Get extended attribute value.
+pub fn getxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        let ret = syscall4(SYS_GETXATTR, path_ptr, name_ptr, value, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Determine CPU and NUMA node on which the calling thread is running.
@@ -1055,6 +1138,72 @@ pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     }
 }
 
+/// Get extended attribute value.
+pub fn lgetxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        let ret = syscall4(SYS_LGETXATTR, path_ptr, name_ptr, value, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// List extended attribute names.
+pub fn llistxattr(path: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let list_ptr = list.as_mut_ptr() as usize;
+        let len = list.len();
+        let ret = syscall3(SYS_LLISTXATTR, path_ptr, list_ptr, len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Remove an extended attribute.
+pub fn lrmovexattr(path: &str, name: &str) -> Result<(), Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let ret = syscall2(SYS_LREMOVEXATTR, path_ptr, name_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set extended attribute value.
+pub fn lsetxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        let ret = syscall4(SYS_LSETXATTR, path_ptr, name_ptr, value, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Make a new name for a file.
 pub fn link(oldpath: &str, newpath: &str) -> Result<(), Errno> {
     unsafe {
@@ -1098,6 +1247,23 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
             return Err(ret);
         } else {
             return Ok(());
+        }
+    }
+}
+
+/// List extended attribute names.
+pub fn listxattr(path: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let list_ptr = list.as_mut_ptr() as usize;
+        let len = list.len();
+        let ret = syscall3(SYS_LISTXATTR, path_ptr, list_ptr, len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
         }
     }
 }
@@ -1886,6 +2052,21 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
     }
 }
 
+/// Remove an extended attribute.
+pub fn rmovexattr(path: &str, name: &str) -> Result<(), Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let ret = syscall2(SYS_REMOVEXATTR, path_ptr, name_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Change name or location of a file.
 pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
     unsafe {
@@ -2460,6 +2641,23 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
             return Err(ret);
         } else {
             return Ok(());
+        }
+    }
+}
+
+/// Set extended attribute value.
+pub fn setxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        let ret = syscall4(SYS_SETXATTR, path_ptr, name_ptr, value, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
         }
     }
 }

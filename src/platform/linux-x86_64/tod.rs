@@ -1,4 +1,3 @@
-
 pub const SYS_RT_SIGPENDING: Sysno = 127;
 pub const SYS_RT_SIGTIMEDWAIT: Sysno = 128;
 pub const SYS_RT_SIGQUEUEINFO: Sysno = 129;
@@ -13,18 +12,6 @@ pub const SYS_SETRLIMIT: Sysno = 160;
 pub const SYS_QUERY_MODULE: Sysno = 178;
 pub const SYS_QUOTACTL: Sysno = 179;
 pub const SYS_NFSSERVCTL: Sysno = 180;
-pub const SYS_SETXATTR: Sysno = 188;
-pub const SYS_LSETXATTR: Sysno = 189;
-pub const SYS_FSETXATTR: Sysno = 190;
-pub const SYS_GETXATTR: Sysno = 191;
-pub const SYS_LGETXATTR: Sysno = 192;
-pub const SYS_FGETXATTR: Sysno = 193;
-pub const SYS_LISTXATTR: Sysno = 194;
-pub const SYS_LLISTXATTR: Sysno = 195;
-pub const SYS_FLISTXATTR: Sysno = 196;
-pub const SYS_REMOVEXATTR: Sysno = 197;
-pub const SYS_LREMOVEXATTR: Sysno = 198;
-pub const SYS_FREMOVEXATTR: Sysno = 199;
 pub const SYS_SET_THREAD_AREA: Sysno = 205;
 pub const SYS_GET_THREAD_AREA: Sysno = 211;
 pub const SYS_IO_SETUP: Sysno = 206;
@@ -61,9 +48,5 @@ pub const SYS_BPF: Sysno = 321;
 pub const SYS_EXECVEAT: Sysno = 322;
 pub const SYS_USERFAULTFD: Sysno = 323;
 pub const SYS_MEMBARRIER: Sysno = 324;
-pub const SYS_PKEY_MPROTECT: Sysno = 329;
-pub const SYS_PKEY_ALLOC: Sysno = 330;
-pub const SYS_PKEY_FREE: Sysno = 331;
 pub const SYS_IO_PGETEVENTS: Sysno = 333;
 pub const SYS_RSEQ: Sysno = 334;
-

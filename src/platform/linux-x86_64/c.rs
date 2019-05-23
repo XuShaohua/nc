@@ -442,12 +442,38 @@ pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), 
     }
 }
 
-pub fn fanotify_init() {
-    // TODO(Shaohua): Not implemented.
+/// Create and initialize fanotify group.
+pub fn fanotify_init(flags: u32, event_f_flags: u32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let event_f_flags = event_f_flags as usize;
+        let ret = syscall2(SYS_FANOTIFY_INIT, flags, event_f_flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn fanotify_mask() {
-    // TODO(Shaohua): Not implemented.
+/// Add, remove, or modify an fanotify mark on a filesystem object
+pub fn fanotify_mask(fanotify_fd: i32, flags: u32, mask: u64, fd: i32, pathname: &str) -> Result<(), Errno> {
+    unsafe {
+        let fanotify_fd = fanotify_fd as usize;
+        let flags = flags as usize;
+        let mask = mask as usize;
+        let fd = fd as usize;
+        let pathname_ptr = pathname.as_ptr() as usize;
+        let ret = syscall5(SYS_FANOTIFY_MARK, fanotify_fd, flags, mask, fd, pathname_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Change working directory.

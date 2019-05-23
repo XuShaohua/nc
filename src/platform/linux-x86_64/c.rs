@@ -238,6 +238,27 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
     }
 }
 
+/// Copy a range of data from one file to another.
+pub fn copy_file_range(fd_in: i32, off_in: &mut loff_t, fd_out: i32, off_out: &mut loff_t,
+                       len: size_t, flags: u32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd_in = fd_in as usize;
+        let off_in_ptr = off_in as *mut loff_t as usize;
+        let fd_out = fd_out as usize;
+        let off_out_ptr = off_out as *mut loff_t as usize;
+        let len = len as usize;
+        let flags = flags as usize;
+        let ret = syscall6(SYS_COPY_FILE_RANGE, fd_in, off_in_ptr, fd_out, off_out_ptr, len, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Create a file.
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
 pub fn creat(path: &str, mode: mode_t) -> Result<i32, Errno> {

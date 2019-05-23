@@ -109,6 +109,10 @@ pub fn alarm(seconds: u32) -> u32 {
     }
 }
 
+pub fn arch_prctl() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Bind a name to a socket.
 pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     unsafe {
@@ -123,6 +127,10 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
             return Ok(());
         }
     }
+}
+
+pub fn bpf() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Change data segment size.
@@ -202,6 +210,10 @@ pub fn chroot(path: &str) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn clock_adjtime() {
+    // TODO(Shaohua): Not implemented
 }
 
 pub fn clone() {
@@ -341,6 +353,10 @@ pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
 pub fn execve() -> Result<(), Errno> {
     // TODO(Shaohua): Not implemented
     Ok(())
+}
+
+pub fn execveat() {
+    // TODO(Shaohua): Not implemented
 }
 
 pub fn epoll_create() {
@@ -573,6 +589,10 @@ pub fn fgetxattr(fd: i32,name: &str, value: usize, size: size_t) -> Result<ssize
     }
 }
 
+pub fn finit_module() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// List extended attribute names.
 pub fn flistxattr(fd: i32, list: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
@@ -732,6 +752,14 @@ pub fn futex() {
 }
 
 pub fn futimesat() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn get_robust_list() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn get_thread_area() {
     // TODO(Shaohua): Not implemented.
 }
 
@@ -1112,6 +1140,30 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn io_cancel() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_destroy() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_getevents() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_pgetevents() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_setup() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_submit() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn ioctl() {
     // TODO(Shaohua): Not implemented
 }
@@ -1131,6 +1183,14 @@ pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
 }
 
 pub fn iopl() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn kcmp() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn kexec_file_load() {
     // TODO(Shaohua): Not implemented
 }
 
@@ -1196,6 +1256,10 @@ pub fn llistxattr(path: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
             return Ok(ret);
         }
     }
+}
+
+pub fn lookup_dcookie() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Remove an extended attribute.
@@ -1342,6 +1406,14 @@ pub fn mbind() {
     // TODO(Shaohua): Not implemented
 }
 
+pub fn membarrier() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn memfd_create() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn mincore() {
     // TODO(Shaohua): Not implemented
 }
@@ -1471,6 +1543,10 @@ pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Resul
     }
 }
 
+pub fn modify_ldt() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Mount filesystem.
 pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: usize) -> Result<(), Errno> {
     unsafe {
@@ -1485,6 +1561,10 @@ pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: 
             return Ok(());
         }
     }
+}
+
+pub fn move_pages() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Set protection on a region of memory.
@@ -1647,6 +1727,10 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     }
 }
 
+pub fn name_to_handle_at() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// High resolution sleep.
 pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     unsafe {
@@ -1665,6 +1749,10 @@ pub fn newfstatat() {
     // TODO(Shaohua): Not implemented
 }
 
+pub fn nfsserverctl() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Open and possibly create a file.
 pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
@@ -1679,6 +1767,10 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
             return Ok(ret);
         }
     }
+}
+
+fn open_by_handle_at() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Open and possibly create a file within a directory.
@@ -1708,6 +1800,14 @@ pub fn pause() -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn perf_event_open() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn personality() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Create a pipe
@@ -1880,6 +1980,18 @@ pub fn preadv2(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize,
     }
 }
 
+pub fn prlimit64() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn process_vm_readv() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn process_vm_writev() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn pselect6() {
     // TODO(Shaohua): Not implemented
 }
@@ -1934,6 +2046,14 @@ pub fn pwritev2(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize,
             return Ok(ret);
         }
     }
+}
+
+pub fn query_module() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn quotactl() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Read from a file descriptor.
@@ -2154,12 +2274,23 @@ pub fn rmdir(path: &str) -> Result<(), Errno> {
     }
 }
 
+pub fn rseq() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn rt_sigaction() -> Result<(), Errno> {
     // TODO(Shaohua): Not implemented
     Ok(())
 }
 
+pub fn rt_sigpending() {
+}
+
 pub fn rt_sigprocmask() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn rt_sigqueueinfo() {
     // TODO(Shaohua): Not implemented
 }
 
@@ -2167,17 +2298,18 @@ pub fn rt_sigreturn() {
     // TODO(Shaohua): Not implemented
 }
 
-/// Yield the processor.
-pub fn sched_yield() -> Result<(), Errno> {
-    unsafe {
-        let ret = syscall0(SYS_SCHED_YIELD);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
-    }
+pub fn rt_sigsuspend() {
+    // TODO(Shaohua): Not implemented
 }
+
+pub fn rt_sigtimedwait() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn rt_tgsigqueueinfo() {
+    // TODO(Shaohua): Not implemented
+}
+
 
 /// Get scheduling paramters.
 pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
@@ -2240,6 +2372,10 @@ pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
     }
 }
 
+pub fn sched_getattr() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Get scheduling parameter.
 pub fn sched_getschedular(pid: pid_t) -> Result<i32, Errno> {
     unsafe {
@@ -2286,6 +2422,10 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
     }
 }
 
+pub fn sched_setattr() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Set scheduling paramters.
 pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     unsafe {
@@ -2315,6 +2455,22 @@ pub fn sched_setschedular(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
             return Ok(());
         }
     }
+}
+
+/// Yield the processor.
+pub fn sched_yield() -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall0(SYS_SCHED_YIELD);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn seccomp() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Waiting one or more file descriptors become ready.
@@ -2394,6 +2550,10 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
     }
 }
 
+pub fn sendmmsg() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Send a message on a socket.
 pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
               addrlen: socklen_t) -> Result<ssize_t, Errno> {
@@ -2413,6 +2573,14 @@ pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
             return Ok(ret);
         }
     }
+}
+
+pub fn set_robust_list() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn set_thread_area() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Set NIS domain name.
@@ -2612,6 +2780,10 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
     }
 }
 
+pub fn setrlimit() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Create a new session if the calling process is not a process group leader.
 pub fn setsid() -> Result<pid_t, Errno> {
     unsafe {
@@ -2759,6 +2931,10 @@ pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn sigaltstack() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Create a file descriptor to accept signals.
@@ -3362,6 +3538,18 @@ pub fn uselib(library: &str) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn userfaultfd() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn ustat() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn utime() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Change time timestamps with nanosecond precision.

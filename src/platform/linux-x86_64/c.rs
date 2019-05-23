@@ -786,6 +786,22 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
     }
 }
 
+/// Obtain a series of random bytes.
+pub fn getrandom(buf: &mut [u8], flags: u32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        let ret = syscall2(SYS_GETRANDOM, buf_ptr, buf_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Get real, effect and saved group ID.
 pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
     unsafe {

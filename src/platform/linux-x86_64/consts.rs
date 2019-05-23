@@ -704,3 +704,7 @@ pub const STATX_ATTR_NODUMP:     i32 = 0x00000040; // [I] File is not to be dump
 pub const STATX_ATTR_ENCRYPTED:  i32 = 0x00000800; // [I] File requires key to decrypt in fs
 pub const STATX_ATTR_AUTOMOUNT:  i32 = 0x00001000; // Dir: Automount trigger
 
+/// Flags for `getrandom`. (random.h)
+pub const GRND_NONBLOCK: i32 = 0x0001; // Don't block and return EAGAIN instead
+pub const GRND_RANDOM:   i32 = 0x0002; // Use the /dev/random pool instead of /dev/urandom
+

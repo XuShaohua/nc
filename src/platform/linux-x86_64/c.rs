@@ -391,6 +391,23 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
+/// Manipulate file space.
+pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let mode = mode as usize;
+        let offset = offset as usize;
+        let len = len as usize;
+        let ret = syscall4(SYS_FALLOCATE, fd, mode, offset, len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 pub fn fanotify_init() {
     // TODO(Shaohua): Not implemented.
 }

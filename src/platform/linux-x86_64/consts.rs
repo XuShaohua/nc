@@ -758,3 +758,71 @@ pub const MAP_FILE: i32 = 0;
 pub const PKEY_DISABLE_ACCESS: i32 = 0x1;
 pub const PKEY_DISABLE_WRITE:  i32 = 0x2;
 pub const PKEY_ACCESS_MASK:    i32 = (PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE);
+
+/// fanotify.h
+pub const FAN_ACCESS:        i32 = 0x00000001; // File was accessed
+pub const FAN_MODIFY:        i32 = 0x00000002; // File was modified
+pub const FAN_ATTRIB:        i32 = 0x00000004; // Metadata changed
+pub const FAN_CLOSE_WRITE:   i32 = 0x00000008; // Writtable file closed
+pub const FAN_CLOSE_NOWRITE: i32 = 0x00000010; // Unwrittable file closed
+pub const FAN_OPEN:          i32 = 0x00000020; // File was opened
+pub const FAN_MOVED_FROM:    i32 = 0x00000040; // File was moved from X
+pub const FAN_MOVED_TO:      i32 = 0x00000080; // File was moved to Y
+pub const FAN_CREATE:        i32 = 0x00000100; // Subfile was created
+pub const FAN_DELETE:        i32 = 0x00000200; // Subfile was deleted
+pub const FAN_DELETE_SELF:   i32 = 0x00000400; // Self was deleted
+pub const FAN_MOVE_SELF:     i32 = 0x00000800; // Self was moved
+pub const FAN_OPEN_EXEC:     i32 = 0x00001000; // File was opened for exec
+
+pub const FAN_Q_OVERFLOW: i32 = 0x00004000; // Event queued overflowed
+
+pub const FAN_OPEN_PERM:      i32 = 0x00010000; // File open in perm check
+pub const FAN_ACCESS_PERM:    i32 = 0x00020000; // File accessed in perm check
+pub const FAN_OPEN_EXEC_PERM: i32 = 0x00040000;  // File open/exec in perm check
+
+pub const FAN_ONDIR: i32 = 0x40000000; // event occurred against dir
+
+pub const FAN_EVENT_ON_CHILD: i32 = 0x08000000; // interested in child events */
+
+pub const FAN_CLOSE: i32 = (FAN_CLOSE_WRITE | FAN_CLOSE_NOWRITE);
+pub const FAN_MOVE:  i32 = (FAN_MOVED_FROM | FAN_MOVED_TO);
+
+/// flags used for fanotify_init()
+pub const FAN_CLOEXEC:  i32 = 0x00000001;
+pub const FAN_NONBLOCK: i32 =0x00000002;
+
+pub const FAN_CLASS_NOTIF:       i32 = 0x00000000;
+pub const FAN_CLASS_CONTENT:     i32 = 0x00000004;
+pub const FAN_CLASS_PRE_CONTENT: i32 = 0x00000008;
+
+
+pub const FAN_UNLIMITED_QUEUE: i32 = 0x00000010;
+pub const FAN_UNLIMITED_MARKS: i32 = 0x00000020;
+pub const FAN_ENABLE_AUDIT:    i32 = 0x00000040;
+
+pub const FAN_REPORT_TID: i32 = 0x00000100;
+pub const FAN_REPORT_FID: i32 = 0x00000200;
+
+pub const FAN_MARK_ADD:                 i32 = 0x00000001;
+pub const FAN_MARK_REMOVE:              i32 = 0x00000002;
+pub const FAN_MARK_DONT_FOLLOW:         i32 = 0x00000004;
+pub const FAN_MARK_ONLYDIR:             i32 = 0x00000008;
+pub const FAN_MARK_IGNORED_MASK:        i32 = 0x00000020;
+pub const FAN_MARK_IGNORED_SURV_MODIFY: i32 = 0x00000040;
+pub const FAN_MARK_FLUSH:               i32 = 0x00000080;
+
+pub const FAN_MARK_INODE:      i32 = 0x00000000;
+pub const FAN_MARK_MOUNT:      i32 = 0x00000010;
+pub const FAN_MARK_FILESYSTEM: i32 = 0x00000100;
+
+pub const FANOTIFY_METADATA_VERSION: i32 = 3;
+
+pub const FAN_EVENT_INFO_TYPE_FID: i32 = 1;
+
+/// Legit userspace responses to a _PERM event
+pub const FAN_ALLOW: i32 = 0x01;
+pub const FAN_DENY:  i32 = 0x02;
+pub const FAN_AUDIT: i32 = 0x10; // Bit mask to create audit record for result
+
+pub const FAN_NOFD: i32 = -1; // No fd set in event
+

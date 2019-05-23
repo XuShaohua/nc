@@ -57,7 +57,6 @@ pub const SYS_NAME_TO_HANDLE_AT: Sysno = 303;
 pub const SYS_OPEN_BY_HANDLE_AT: Sysno = 304;
 pub const SYS_CLOCK_ADJTIME: Sysno = 305;
 pub const SYS_SENDMMSG: Sysno = 307;
-pub const SYS_SETNS: Sysno = 308;
 pub const SYS_PROCESS_VM_READV: Sysno = 310;
 pub const SYS_PROCESS_VM_WRITEV: Sysno = 311;
 pub const SYS_KCMP: Sysno = 312;

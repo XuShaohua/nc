@@ -791,7 +791,8 @@ pub fn getrandom(buf: &mut [u8], flags: u32) -> Result<ssize_t, Errno> {
     unsafe {
         let buf_ptr = buf.as_mut_ptr() as usize;
         let buf_len = buf.len();
-        let ret = syscall2(SYS_GETRANDOM, buf_ptr, buf_len);
+        let flags = flags as usize;
+        let ret = syscall3(SYS_GETRANDOM, buf_ptr, buf_len, flags);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -2123,7 +2124,7 @@ pub fn setitimer(which: i32, new_val: &itimerval_t,
 }
 
 /// Reassociate thread with a namespace.
-pub fn setns(fd: i32, nstype: i32) -> Result(), Errno> {
+pub fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let nstype = nstype as usize;

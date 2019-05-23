@@ -2459,16 +2459,52 @@ pub fn time() -> Result<time_t, Errno> {
     }
 }
 
-pub fn timerfd_create() {
-    // TODO(Shaohua): Not implemented
+/// Create a timer that notifies via a file descriptor.
+pub fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let clockid = clockid as usize;
+        let flags = flags as usize;
+        let ret = syscall2(SYS_TIMERFD_CREATE, clockid, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn timerfd_gettime() {
-    // TODO(Shaohua): Not implemented
+/// Get current timer via a file descriptor.
+pub fn timerfd_gettime(ufd: i32, otmr: &mut itimerval_t) -> Result<(), Errno> {
+    unsafe {
+        let ufd = ufd as usize;
+        let otmr_ptr = otmr as *mut itimerval_t as usize;
+        let ret = syscall2(SYS_TIMERFD_GETTIME, ufd, otmr_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn timerfd_settime() {
-    // TODO(Shaohua): Not implemented
+/// Set current timer via a file descriptor.
+pub fn timerfd_settime(ufd: i32, flags: i32, utmr: &itimerval_t, otmr: &mut itimerval_t) -> Result<(), Errno> {
+    unsafe {
+        let ufd = ufd as usize;
+        let flags = flags as usize;
+        let utmr_ptr = utmr as *const itimerval_t as usize;
+        let otmr_ptr = otmr as *mut itimerval_t as usize;
+        let ret = syscall4(SYS_TIMERFD_SETTIME, ufd, flags, utmr_ptr, otmr_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Get process times.

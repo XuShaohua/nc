@@ -2122,6 +2122,21 @@ pub fn setitimer(which: i32, new_val: &itimerval_t,
     }
 }
 
+/// Reassociate thread with a namespace.
+pub fn setns(fd: i32, nstype: i32) -> Result(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let nstype = nstype as usize;
+        let ret = syscall2(SYS_SETNS, fd, nstype);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
 pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     unsafe {

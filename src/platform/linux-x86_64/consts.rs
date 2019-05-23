@@ -726,3 +726,5 @@ pub const SCHED_FLAG_RECLAIM:       i32 = 0x02;
 pub const SCHED_FLAG_DL_OVERRUN:    i32 = 0x04;
 pub const SCHED_FLAG_ALL: i32 = (SCHED_FLAG_RESET_ON_FORK | SCHED_FLAG_RECLAIM | SCHED_FLAG_DL_OVERRUN);
 
+pub const SCHED_ATTR_SIZE_VER0: i32 = 48; // sizeof first published struct
+

@@ -434,7 +434,27 @@ pub struct timex_t {
 }
 
 /// Cache for getcpu() to speed it up. (cpu.h)
+#[derive(Debug)]
+#[derive(Default)]
 pub struct getcpu_cache_t {
     pub blob: [usize; 16], // 16 == 128 / sizeof(long)
+}
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct sched_param_t {
+    pub sched_priority: i32,
+}
+
+/// Extended scheduling parameters data structure.
+struct sched_attr_t {
+    pub size:           u32, // size of the structure, for fwd/bwd compat.
+    pub sched_policy:   u32, // task's scheduling policy
+    pub sched_flags:    u64, // for customizing the scheduler behaviour
+    pub sched_nice:     i32, // task's nice value. (SCHED_NORMAL/BATCH)
+    pub sched_priority: u32, // task's static priority (SCHED_FIFO/RR)
+    pub sched_runtime:  u64, // representative of the task's runtime
+    pub sched_deadline: u64, // representative of the task's deadline
+    pub sched_period:   u64, // representative of the task's period
 }
 

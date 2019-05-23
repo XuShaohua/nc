@@ -1931,6 +1931,36 @@ pub fn sched_yield() -> Result<(), Errno> {
     }
 }
 
+/// Get scheduling paramters.
+pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let param_ptr = param as *mut sched_param_t as usize;
+        let ret = syscall2(SYS_SCHED_GETPARAM, pid, param_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set scheduling paramters.
+pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let param_ptr = param as *const sched_param_t as usize;
+        let ret = syscall2(SYS_SCHED_SETPARAM, pid, param_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Waiting one or more file descriptors become ready.
 pub fn select() {
     // TODO(Shaohua): Not implemented.

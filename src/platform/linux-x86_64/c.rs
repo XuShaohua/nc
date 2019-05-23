@@ -39,8 +39,21 @@ pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) ->
     }
 }
 
-pub fn accept4() {
-    // TODO(Shaohua): Not implemented
+/// Accept a connection on a socket.
+pub fn accept4(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t, flags: i32) -> Result<() ,Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let addr_ptr = addr as *mut sockaddr_in_t as usize;
+        let addrlen_ptr = addrlen as *mut socklen_t as usize;
+        let flags = flags as usize;
+        let ret = syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Check user's permission for a file.
@@ -1452,10 +1465,10 @@ pub fn pause() -> Result<(), Errno> {
 }
 
 /// Create a pipe
-pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
+pub fn pipe2(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     unsafe {
         let pipefd_ptr = pipefd.as_mut_ptr() as usize;
-        let ret = syscall1(SYS_PAUSE, pipefd_ptr);
+        let ret = syscall1(SYS_PIPE, pipefd_ptr);
         if is_errno(ret) {
             return Err(ret);
         } else {
@@ -1464,8 +1477,18 @@ pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     }
 }
 
-pub fn pipe2() {
-    // TODO(Shaohua): Not implemented
+/// Create a pipe.
+pub fn pipe(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let pipefd_ptr = pipefd.as_mut_ptr() as usize;
+        let flags = flags as usize;
+        let ret = syscall2(SYS_PIPE, pipefd_ptr, flags);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Change the root filesystem.

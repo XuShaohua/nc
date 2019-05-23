@@ -45,3 +45,5 @@ pub const SYS_LOOKUP_DCOOKIE: Sysno = 212;
 pub const SYS_SET_ROBUST_LIST: Sysno = 273;
 pub const SYS_GET_ROBUST_LIST: Sysno = 274;
 pub const SYS_MOVE_PAGES: Sysno = 279;
+pub const SYS_TIMERFD_SETTIME: Sysno = 286;
+pub const SYS_TIMERFD_GETTIME: Sysno = 287;

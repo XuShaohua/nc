@@ -1961,6 +1961,37 @@ pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     }
 }
 
+/// Get scheduling parameter.
+pub fn sched_getschedular(pid: pid_t) -> Result<i32, Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let ret = syscall1(SYS_SCHED_GETSCHEDULER, pid);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Set scheduling parameter.
+pub fn sched_setschedular(pid: pid_t, policy: i32, param: &sched_param_t) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let policy = policy as usize;
+        let param_ptr = param as *const sched_param_t as usize;
+        let ret = syscall3(SYS_SCHED_SETSCHEDULER, pid, policy, param_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Waiting one or more file descriptors become ready.
 pub fn select() {
     // TODO(Shaohua): Not implemented.

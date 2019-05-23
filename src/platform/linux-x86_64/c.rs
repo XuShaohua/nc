@@ -1560,6 +1560,47 @@ pub fn pivotroot(new_root: &str, put_old: &str) -> Result<(), Errno> {
     }
 }
 
+/// Create a new protection key.
+pub fn pkey_alloc(flags: usize, init_val: usize) -> Result<i32, Errno> {
+    unsafe {
+        let ret = syscall2(SYS_PKEY_ALLOC, flags, init_val);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Free a protection key.
+pub fn pkey_free(pkey: i32) -> Result<(), Errno> {
+    unsafe {
+        let pkey = pkey as usize;
+        let ret = syscall1(SYS_PKEY_FREE, pkey);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set protection on a region of memory.
+pub fn pkey_mprotect(start: usize, len: size_t, prot: usize, pkey: i32) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let pkey = pkey as usize;
+        let ret = syscall4(SYS_PKEY_MPROTECT, start, len, prot, pkey);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Wait for some event on file descriptors.
 pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     unsafe {
@@ -2017,7 +2058,7 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
             let ret = ret as Errno;
             return Err(ret);
         } else {
-            return OK(());
+            return Ok(());
         }
     }
 }

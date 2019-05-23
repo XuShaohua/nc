@@ -42,3 +42,6 @@ pub const SYS_IO_GETEVENTS: Sysno = 208;
 pub const SYS_IO_SUBMIT: Sysno = 209;
 pub const SYS_IO_CANCEL: Sysno = 210;
 pub const SYS_LOOKUP_DCOOKIE: Sysno = 212;
+pub const SYS_SET_ROBUST_LIST: Sysno = 273;
+pub const SYS_GET_ROBUST_LIST: Sysno = 274;
+pub const SYS_MOVE_PAGES: Sysno = 279;

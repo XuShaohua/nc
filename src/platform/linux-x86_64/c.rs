@@ -2162,8 +2162,39 @@ pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn signalfd() {
-    // TODO(Shaohua): Not implemented
+/// Create a file descriptor to accept signals.
+pub fn signalfd(fd: i32, mask: &[sigset_t]) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let mask_ptr = mask.as_ptr() as usize;
+        let mask_len = mask.len() as usize;
+        let ret = syscall3(SYS_SIGNALFD, fd, mask_ptr, mask_len);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Create a file descriptor to accept signals.
+pub fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let mask_ptr = mask.as_ptr() as usize;
+        let mask_len = mask.len() as usize;
+        let flags = flags as usize;
+        let ret = syscall4(SYS_SIGNALFD4, fd, mask_ptr, mask_len, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Create an endpoint for communication.
@@ -2187,8 +2218,25 @@ pub fn socketpair() {
     // TODO(Shaohua): Not implemented
 }
 
-pub fn splice() {
-    // TODO(Shaohua): Not implemented
+/// Splice data to/from pipe.
+pub fn splice(fd_in: i32, off_in: &mut loff_t, fd_out: i32, off_out: &mut loff_t,
+              len: size_t, flags: u32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd_in = fd_in as usize;
+        let off_in_ptr = off_in as *mut loff_t as usize;
+        let fd_out = fd_out as usize;
+        let off_out_ptr = off_out as *mut loff_t as usize;
+        let len = len as usize;
+        let flags = flags as usize;
+        let ret = syscall6(SYS_SPLICE, fd_in, off_in_ptr, fd_out, off_out_ptr, len, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Get file status about a file.
@@ -2379,8 +2427,22 @@ pub fn syslog(action: i32, buf: &mut str) -> Result<i32, Errno> {
     }
 }
 
-pub fn tee() {
-    // TODO(Shaohua): Not implemented
+/// Duplicate pipe content.
+pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd_in = fd_in as usize;
+        let fd_out = fd_out as usize;
+        let len = len as usize;
+        let flags = flags as usize;
+        let ret = syscall4(SYS_TEE, fd_in, fd_out, len, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Get time in seconds.
@@ -2650,7 +2712,37 @@ pub fn uselib(library: &str) -> Result<(), Errno> {
     }
 }
 
-pub fn vmsplice() {
-    // TODO(Shaohua): Not implemented
+/// Change time timestamps with nanosecond precision.
+pub fn utimensat(dirfd: i32, pathname: &str, times: &[timespec_t; 2], flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let pathname_ptr = pathname.as_ptr() as usize;
+        let times_ptr = times.as_ptr() as usize;
+        let flags = flags as usize;
+        let ret = syscall4(SYS_UTIMENSAT, dirfd, pathname_ptr, times_ptr, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Splice user page into a pipe.
+pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let iov_ptr = iov as *const iovec_t as usize;
+        let flags = flags as usize;
+        let ret = syscall4(SYS_VMSPLICE, fd, iov_ptr, nr_segs, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
 }
 

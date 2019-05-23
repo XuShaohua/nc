@@ -7,6 +7,7 @@
 /// * void* -> usize, pointer address, 4 bytes on x86, 8 bytes on x86_64.
 /// * int -> i32, 4 bytes.
 /// * unsigned int -> u32, 4 bytes.
+/// * unsigned -> u32, 4 bytes.
 /// * unsigned short int -> u16, 2 bytes.
 /// * short int -> i16, 2 bytes.
 
@@ -430,5 +431,10 @@ pub struct timex_t {
     pub errcnt:    isize, // calibration errors (ro)
     pub stbcnt:    isize, // stability limit exceeded (ro)
     pub tai:       i32,   // TAI offset (ro)
+}
+
+/// Cache for getcpu() to speed it up. (cpu.h)
+pub struct getcpu_cache_t {
+    pub blob: [usize; 16], // 16 == 128 / sizeof(long)
 }
 

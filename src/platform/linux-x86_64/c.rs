@@ -643,6 +643,22 @@ pub fn futimesat() {
     // TODO(Shaohua): Not implemented.
 }
 
+/// Determine CPU and NUMA node on which the calling thread is running.
+pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Result<(), Errno> {
+    unsafe {
+        let cpu_ptr = cpu as *mut u32 as usize;
+        let node_ptr = node as *mut u32 as usize;
+        let cache_ptr = cache as *mut getcpu_cache_t as usize;
+        let ret = syscall3(SYS_GETCPU, cpu_ptr, node_ptr, cache_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
 /// Get directory entries.
 pub fn getdents() {
     // TODO(Shaohua): Not implemented.

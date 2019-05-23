@@ -1525,6 +1525,25 @@ pub fn ppoll() {
     // TODO(Shaohua): Not implemented
 }
 
+/// Operations on a process.
+pub fn prctl(option: i32, arg2: usize, arg3: usize, arg4: usize, arg5: usize) -> Result<i32, Errno> {
+    unsafe {
+        let option = option as usize;
+        let arg2 = arg2 as usize;
+        let arg3 = arg3 as usize;
+        let arg4 = arg4 as usize;
+        let arg5 = arg5 as usize;
+        let ret = syscall5(SYS_PRCTL, option, arg2, arg3, arg4, arg5);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
 /// Read from a file descriptor without changing file offset.
 pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno> {
     unsafe {
@@ -1542,20 +1561,33 @@ pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno>
     }
 }
 
-/// Operations on a process.
-pub fn prctl(option: i32, arg2: usize, arg3: usize, arg4: usize, arg5: usize) -> Result<i32, Errno> {
+/// Read from a file descriptor without changing file offset.
+pub fn preadv(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
     unsafe {
-        let option = option as usize;
-        let arg2 = arg2 as usize;
-        let arg3 = arg3 as usize;
-        let arg4 = arg4 as usize;
-        let arg5 = arg5 as usize;
-        let ret = syscall5(SYS_PRCTL, option, arg2, arg3, arg4, arg5);
+        let fd = fd as usize;
+        let vec_ptr = vec as *const iovec_t as usize;
+        let ret = syscall5(SYS_PREADV, fd, vec_ptr, vlen, pos_l, pos_h);
         if is_errno(ret) {
-            let ret = ret as Errno;
             return Err(ret);
         } else {
-            let ret = ret as i32;
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Read from a file descriptor without changing file offset.
+pub fn preadv2(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize,
+               flags: rwf_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let vec_ptr = vec as *const iovec_t as usize;
+        let flags = flags as usize;
+        let ret = syscall6(SYS_PREADV2, fd, vec_ptr, vlen, pos_l, pos_h, flags);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
             return Ok(ret);
         }
     }
@@ -1581,6 +1613,38 @@ pub fn pwrite(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
             return Err(ret);
         } else {
             return Ok(ret as ssize_t);
+        }
+    }
+}
+
+/// Write to a file descriptor without changing file offset.
+pub fn pwritev(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let vec_ptr = vec as *const iovec_t as usize;
+        let ret = syscall5(SYS_PWRITEV, fd, vec_ptr, vlen, pos_l, pos_h);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Write to a file descriptor without changing file offset.
+pub fn pwritev2(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize,
+                flags: rwf_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let vec_ptr = vec as *const iovec_t as usize;
+        let flags = flags as usize;
+        let ret = syscall6(SYS_PWRITEV2, fd, vec_ptr, vlen, pos_l, pos_h, flags);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            let ret = ret as ssize_t;
+            return Ok(ret);
         }
     }
 }
@@ -2313,6 +2377,23 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
             return Err(ret);
         } else {
             return Ok(statbuf);
+        }
+    }
+}
+
+/// Get file status about a file (extended).
+pub fn statx(dirfd: i32, path: &str, flags: i32, mask: u32, buf: &mut statx_t) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let path = c_str(path).as_ptr() as usize;
+        let flags = flags as usize;
+        let mask = mask as usize;
+        let buf_ptr = buf as *mut statx_t as usize;
+        let ret = syscall5(SYS_STATX, dirfd, path, flags, mask, buf_ptr);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
         }
     }
 }

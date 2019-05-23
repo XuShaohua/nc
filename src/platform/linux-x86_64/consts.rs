@@ -678,3 +678,29 @@ pub const EFD_NONBLOCK:           i32 = O_NONBLOCK;
 pub const EFD_SHARED_FCNTL_FLAGS: i32 = (O_CLOEXEC | O_NONBLOCK);
 pub const EFD_FLAGS_SET:          i32 = (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE);
 
+/// stat.h
+/// Flags to be stx_mask
+pub const STATX_TYPE:        u32 = 0x00000001; // Want/got stx_mode & S_IFMT
+pub const STATX_MODE:        u32 = 0x00000002; // Want/got stx_mode & ~S_IFMT
+pub const STATX_NLINK:       u32 = 0x00000004; // Want/got stx_nlink
+pub const STATX_UID:         u32 = 0x00000008; // Want/got stx_uid
+pub const STATX_GID:         u32 = 0x00000010; // Want/got stx_gid
+pub const STATX_ATIME:       u32 = 0x00000020; // Want/got stx_atime
+pub const STATX_MTIME:       u32 = 0x00000040; // Want/got stx_mtime
+pub const STATX_CTIME:       u32 = 0x00000080; // Want/got stx_ctime
+pub const STATX_INO:         u32 = 0x00000100; // Want/got stx_ino
+pub const STATX_SIZE:        u32 = 0x00000200; // Want/got stx_size
+pub const STATX_BLOCKS:      u32 = 0x00000400; // Want/got stx_blocks
+pub const STATX_BASIC_STATS: u32 = 0x000007ff; // The stuff in the normal stat struct
+pub const STATX_BTIME:       u32 = 0x00000800; // Want/got stx_btime
+pub const STATX_ALL:         u32 = 0x00000fff; // All currently supported flags
+pub const STATX__RESERVED:   u32 = 0x80000000; // Reserved for future struct statx expansion
+
+/// Attributes to be found in stx_attributes and masked in stx_attributes_mask.
+pub const STATX_ATTR_COMPRESSED: i32 = 0x00000004; // [I] File is compressed by the fs
+pub const STATX_ATTR_IMMUTABLE:  i32 = 0x00000010; // [I] File is marked immutable
+pub const STATX_ATTR_APPEND:     i32 = 0x00000020; // [I] File is append-only
+pub const STATX_ATTR_NODUMP:     i32 = 0x00000040; // [I] File is not to be dumped
+pub const STATX_ATTR_ENCRYPTED:  i32 = 0x00000800; // [I] File requires key to decrypt in fs
+pub const STATX_ATTR_AUTOMOUNT:  i32 = 0x00001000; // Dir: Automount trigger
+

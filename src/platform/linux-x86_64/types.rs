@@ -27,6 +27,7 @@ pub type msgqnum_t = usize;
 pub type nlink_t = usize;
 pub type off_t = isize;
 pub type pid_t = i32;
+pub type rwf_t = i32;
 pub type sa_family_t = u16;
 pub type sigset_t = usize;
 pub type size_t = usize;
@@ -75,22 +76,65 @@ pub struct itimerval_t {
 #[derive(Debug)]
 #[derive(Default)]
 pub struct stat_t {
-    pub st_dev: dev_t,         // ID of device containing file
-    pub st_ino: ino_t,         // Inode number
-    pub st_nlink: nlink_t,     // Number of hard links
-    pub st_mode: mode_t,       // File type and mode
-    pub st_uid: uid_t,         // User ID of owner
-    pub st_gid: gid_t,         // Group ID of owner
-    __pad0: isize,
-    pub st_rdev: dev_t,        // Device ID (if special file)
-    pub st_size: off_t,        // Total size, in bytes
-    pub st_blksize: blksize_t,     // Block size for filesystem I/O
-    pub st_blocks: blkcnt_t,       // Number of 512B blocks allocated
-    pub st_atim: timespec_t,  // Time of last access
-    pub st_mtim: timespec_t,  // Time of last modification
-    pub st_ctim: timespec_t,  // Time of last status change
+    pub st_dev:     dev_t,      // ID of device containing file
+    pub st_ino:     ino_t,      // Inode number
+    pub st_nlink:   nlink_t,    // Number of hard links
+    pub st_mode:    mode_t,     // File type and mode
+    pub st_uid:     uid_t,      // User ID of owner
+    pub st_gid:     gid_t,      // Group ID of owner
+    pad0:           isize,
+    pub st_rdev:    dev_t,      // Device ID (if special file)
+    pub st_size:    off_t,      // Total size, in bytes
+    pub st_blksize: blksize_t,  // Block size for filesystem I/O
+    pub st_blocks:  blkcnt_t,   // Number of 512B blocks allocated
+    pub st_atim:    timespec_t, // Time of last access
+    pub st_mtim:    timespec_t, // Time of last modification
+    pub st_ctim:    timespec_t, // Time of last status change
 
     // TODO(Shaohua): Add another pad
+}
+
+/// Timestamp structure for the timestamps in struct statx_t.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct statx_timestamp_t {
+    pub tv_sec:  i64,
+    pub tv_nsec: u32,
+    reserved:    i32,
+}
+
+/// Structures for the extended file attribute retrieval system call `statx`.
+#[derive(Debug)]
+#[derive(Default)]
+pub struct statx_t {
+    /* 0x00 */
+    pub stx_mask:       u32, // What results were written [uncond]
+    pub stx_blksize:    u32, // Preferred general I/O size [uncond]
+    pub stx_attributes: u64, // Flags conveying information about the file [uncond]
+    /* 0x10 */
+    pub stx_nlink: u32, // Number of hard links
+    pub stx_uid:   u32, // User ID of owner
+    pub stx_gid:   u32, // Group ID of owner
+    pub stx_mode:  u16, // File mode
+    spare0:        [u16; 1],
+    /* 0x20 */
+    pub stx_ino:             u64, // Inode number
+    pub stx_size:            u64, // File size 
+    pub stx_blocks:          u64, // Number of 512-byte blocks allocated
+    pub stx_attributes_mask: u64,// Mask to show what's supported in stx_attributes
+    /* 0x40 */
+    pub stx_atime: statx_timestamp_t, // Last access time
+    pub stx_btime: statx_timestamp_t, // File creation time
+    pub stx_ctime: statx_timestamp_t, // Last attribute change time
+    pub stx_mtime: statx_timestamp_t, // Last data modification time
+    /* 0x80 */
+    pub stx_rdev_major: u32, // Device ID of special file [if bdev/cdev]
+    pub stx_rdev_minor: u32,
+    pub stx_dev_major:  u32, // ID of device containing file [uncond]
+    pub stx_dev_minor:  u32,
+    /* 0x90 */
+    pub spare2: [u64; 14], // Spare space for future expansion
+    /* 0x100 */
 }
 
 /// Data structure describing a polling request.

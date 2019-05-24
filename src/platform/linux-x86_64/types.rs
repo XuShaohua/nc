@@ -447,7 +447,7 @@ pub struct sched_param_t {
 }
 
 /// Extended scheduling parameters data structure.
-struct sched_attr_t {
+pub struct sched_attr_t {
     pub size:           u32, // size of the structure, for fwd/bwd compat.
     pub sched_policy:   u32, // task's scheduling policy
     pub sched_flags:    u64, // for customizing the scheduler behaviour
@@ -456,5 +456,24 @@ struct sched_attr_t {
     pub sched_runtime:  u64, // representative of the task's runtime
     pub sched_deadline: u64, // representative of the task's deadline
     pub sched_period:   u64, // representative of the task's period
+}
+
+/// TODO(Shaohua):
+pub struct bpf_attr_t {
+}
+
+
+/// capability.h
+pub struct cap_user_header_t {
+    pub version: u32,
+    pub pid: i32,
+}
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct cap_user_data_t {
+    pub effective:   u32,
+    pub permitted:   u32,
+    pub inheritable: u32,
 }
 

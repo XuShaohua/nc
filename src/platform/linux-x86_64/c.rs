@@ -128,8 +128,21 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
     }
 }
 
-pub fn bpf() {
-    // TODO(Shaohua): Not implemented
+/// Perform a command on an extended BPF map or program
+pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
+    unsafe {
+        let cmd = cmd as usize;
+        let attr_ptr = attr as *mut bpf_attr_t as usize;
+        let size = size as usize;
+        let ret = syscall3(SYS_BPF, cmd, attr_ptr, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Change data segment size.
@@ -144,12 +157,34 @@ pub fn brk(addr: usize) -> Result<(), Errno> {
     }
 }
 
-pub fn capget() {
-    // TODO(Shaohua): Not implemented
+/// Get capabilities of thread.
+pub fn capget(hdrp: &mut cap_user_header_t, data: &mut cap_user_data_t) -> Result<(), Errno> {
+    unsafe {
+        let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
+        let data_ptr = data as *mut cap_user_data_t as usize;
+        let ret = syscall2(SYS_CAPGET, hdrp_ptr, data_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn capset() {
-    // TODO(Shaohua): Not implemented
+/// Set capabilities of thread.
+pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<(), Errno> {
+    unsafe {
+        let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
+        let data_ptr = data as *const cap_user_data_t as usize;
+        let ret = syscall2(SYS_CAPSET, hdrp_ptr, data_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Change working directory.

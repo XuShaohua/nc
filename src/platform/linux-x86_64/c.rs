@@ -409,24 +409,87 @@ pub fn execveat() {
     // TODO(Shaohua): Not implemented
 }
 
-pub fn epoll_create() {
-    // TODO(Shaohua): Not implemented
+/// Open an epoll file descriptor.
+pub fn epoll_create(size: i32) -> Result<i32, Errno> {
+    unsafe {
+        let size = size as usize;
+        let ret = syscall1(SYS_EPOLL_CREATE, size);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn epoll_create1() {
-    // TODO(Shaohua): Not implemented
+/// Open an epoll file descriptor.
+pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let ret = syscall1(SYS_EPOLL_CREATE1, flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn epoll_ctl() {
-    // TODO(Shaohua): Not implemented
+/// Control interface for an epoll file descriptor.
+pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Result<(), Errno> {
+    unsafe {
+        let epfd = epfd as usize;
+        let op = op as usize;
+        let fd = fd as usize;
+        let event_ptr = event as *mut epoll_event_t as usize;
+        let ret = syscall4(SYS_EPOLL_CTL, epfd, op, fd, event_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn epoll_pwait() {
-    // TODO(Shaohua): Not implemented
+/// Wait for an I/O event on an epoll file descriptor.
+pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> Result<i32, Errno> {
+    unsafe {
+        let epfd = epfd as usize;
+        let op = op as usize;
+        let fd = fd as usize;
+        let events_ptr = events as *mut epoll_event_t as usize;
+        let ret = syscall4(SYS_EPOLL_PWAIT, epfd, op, fd, events_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn epoll_wait() {
-    // TODO(Shaohua): Not implemented
+/// Wait for an I/O event on an epoll file descriptor.
+pub fn epoll_wait(epfd: i32, events: &mut epoll_event_t, maxevents: i32, timeout: i32) -> Result<i32, Errno> {
+    unsafe {
+        let epfd = epfd as usize;
+        let events_ptr = events as *mut epoll_event_t as usize;
+        let maxevents = maxevents as usize;
+        let timeout = timeout as usize;
+        let ret = syscall4(SYS_EPOLL_WAIT, epfd, events_ptr, maxevents, timeout);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Create a file descriptor for event notification.

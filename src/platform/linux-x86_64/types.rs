@@ -28,6 +28,7 @@ pub type msgqnum_t = usize;
 pub type nlink_t = usize;
 pub type off_t = isize;
 pub type pid_t = i32;
+pub type poll_t = u32;
 pub type rwf_t = i32;
 pub type sa_family_t = u16;
 pub type sigset_t = usize;
@@ -475,5 +476,11 @@ pub struct cap_user_data_t {
     pub effective:   u32,
     pub permitted:   u32,
     pub inheritable: u32,
+}
+
+/// eventpoll.h
+pub struct epoll_event_t {
+    pub events: poll_t,
+    pub data: u64,
 }
 

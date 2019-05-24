@@ -1,5 +1,5 @@
 
-use super::types::{mode_t, key_t};
+use super::types::{mode_t, key_t, poll_t};
 
 /// open() mode
 pub const S_IRUSR: mode_t = 0o400;
@@ -842,4 +842,39 @@ pub const XATTR_SIZE_MAX: i32 = 65536; // size of an extended attribute value (6
 pub const XATTR_LIST_MAX: i32 = 65536; // size of extended attribute namelist (64k)
 
 pub const RTSIG_MAX: i32 = 32;
+
+/// eventpoll.h
+pub const EPOLL_CLOEXEC: i32 = O_CLOEXEC; // Flags for epoll_create1.
+
+/// Valid opcodes to issue to sys_epoll_ctl()
+pub const EPOLL_CTL_ADD: i32 = 1;
+pub const EPOLL_CTL_DEL: i32 = 2;
+pub const EPOLL_CTL_MOD: i32 = 3;
+
+/// Epoll event masks
+pub const EPOLLIN:     poll_t = 0x00000001;
+pub const EPOLLPRI:    poll_t = 0x00000002;
+pub const EPOLLOUT:    poll_t = 0x00000004;
+pub const EPOLLERR:    poll_t = 0x00000008;
+pub const EPOLLHUP:    poll_t = 0x00000010;
+pub const EPOLLNVAL:   poll_t = 0x00000020;
+pub const EPOLLRDNORM: poll_t = 0x00000040;
+pub const EPOLLRDBAND: poll_t = 0x00000080;
+pub const EPOLLWRNORM: poll_t = 0x00000100;
+pub const EPOLLWRBAND: poll_t = 0x00000200;
+pub const EPOLLMSG:    poll_t = 0x00000400;
+pub const EPOLLRDHUP:  poll_t = 0x00002000;
+
+/// Set exclusive wakeup mode for the target file descriptor
+pub const EPOLLEXCLUSIVE: poll_t = (1 << 28);
+
+/// Request the handling of system wakeup events so as to prevent system suspends
+/// from happening while those events are being processed.
+pub const EPOLLWAKEUP: poll_t = (1 << 29);
+
+/// Set the One Shot behaviour for the target file descriptor
+pub const EPOLLONESHOT: poll_t = (1 << 30);
+
+/// Set the Edge Triggered behaviour for the target file descriptor
+pub const EPOLLET: poll_t = (1 << 31);
 

@@ -250,6 +250,22 @@ pub fn clock_adjtime() {
     // TODO(Shaohua): Not implemented
 }
 
+pub fn clock_getres() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn clock_gettime() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn clock_nanosleep() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn clock_settime() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn clone() {
     // TODO(Shaohua): Not implemented
 }

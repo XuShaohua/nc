@@ -5,7 +5,7 @@ use super::types::*;
 use super::consts;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
-fn c_str(s: &str) -> [u8; 128]{
+fn c_str(s: &str) -> [u8; 128] {
     // TODO(Shaohua): Simplify ops
     let mut buf: [u8; 128] = [42; 128];
     for (i, b) in s.bytes().enumerate() {
@@ -21,7 +21,6 @@ pub fn is_errno(ret: usize) -> bool {
     let reti = ret as isize;
     return reti < 0 && reti >= -256;
 }
-
 
 /// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {

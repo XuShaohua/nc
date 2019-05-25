@@ -22,6 +22,17 @@ pub fn is_errno(ret: usize) -> bool {
     return reti < 0 && reti >= -256;
 }
 
+#[inline(always)]
+pub fn is_errno2(ret: usize) -> Result<(), Errno>{
+    let reti = ret as isize;
+    if reti < 0 && reti >= -256 {
+        let reti = (-reti) as Errno;
+        return Err(reti);
+    } else {
+        return Ok(());
+    }
+}
+
 /// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
     unsafe {
@@ -401,12 +412,9 @@ pub fn dup(oldfd: i32) -> Result<isize, Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let ret = syscall1(SYS_DUP, oldfd);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            let ret = ret as isize;
-            return Ok(ret);
-        }
+        is_errno2(ret)?;
+        let ret = ret as isize;
+        return Ok(ret);
     }
 }
 
@@ -417,11 +425,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
         let oldfd = oldfd as usize;
         let newfd = newfd as usize;
         let ret = syscall2(SYS_DUP2, oldfd, newfd);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        is_errno2(ret)
     }
 }
 
@@ -432,34 +436,19 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
         let newfd = newfd as usize;
         let flags = flags as usize;
         let ret = syscall3(SYS_DUP3, oldfd, newfd, flags);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        is_errno2(ret)
     }
 }
 
 /// Execute a new program.
-/*
-pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
+pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
     unsafe {
         let filename = c_str(filename).as_ptr() as usize;
-        let argv_ptr = argv as *const [str] as usize;
-        let env_ptr = env as *const [str] as usize;
+        let argv_ptr = argv.as_ptr() as usize;
+        let env_ptr = env.as_ptr() as usize;
         let ret = syscall3(SYS_EXECVE, filename, argv_ptr, env_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
-        } else {
-            return Ok(());
-        }
+        is_errno2(ret)
     }
-}
-*/
-pub fn execve() -> Result<(), Errno> {
-    // TODO(Shaohua): Not implemented
-    Ok(())
 }
 
 pub fn execveat() {

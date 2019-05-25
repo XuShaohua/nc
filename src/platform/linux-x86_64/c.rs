@@ -246,24 +246,81 @@ pub fn chroot(path: &str) -> Result<(), Errno> {
     }
 }
 
-pub fn clock_adjtime() {
-    // TODO(Shaohua): Not implemented
+pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tx_ptr = tx as *mut timex_t as usize;
+        let ret = syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn clock_getres() {
-    // TODO(Shaohua): Not implemented
+/// Get resolution(precision) of the specific clock.
+pub fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t ) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tp_ptr = tp as *mut timespec_t as usize;
+        let ret = syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn clock_gettime() {
-    // TODO(Shaohua): Not implemented
+/// Get time of specific clock.
+pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tp_ptr = tp as *mut timespec_t as usize;
+        let ret = syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn clock_nanosleep() {
-    // TODO(Shaohua): Not implemented
+/// High resolution sleep with a specific clock.
+pub fn clock_nanosleep(which_clock: clockid_t, flags: i32, rqtp: &timespec_t,
+                       rmtp: &mut timespec_t) -> Result<(), Errno>{
+    unsafe {
+        let which_clock = which_clock as usize;
+        let flags = flags as usize;
+        let rqtp_ptr = rqtp as *const timespec_t as usize;
+        let rmtp_ptr = rmtp as *mut timespec_t as usize;
+        let ret = syscall4(SYS_CLOCK_NANOSLEEP, which_clock, flags, rqtp_ptr, rmtp_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
-pub fn clock_settime() {
-    // TODO(Shaohua): Not implemented
+/// Set time of specific clock.
+pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tp_ptr = tp as *const timespec_t as usize;
+        let ret = syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 pub fn clone() {
@@ -1882,7 +1939,7 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     }
 }
 
-fn open_by_handle_at() {
+pub fn open_by_handle_at() {
     // TODO(Shaohua): Not implemented.
 }
 

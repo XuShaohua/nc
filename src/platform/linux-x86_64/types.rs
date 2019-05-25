@@ -17,6 +17,7 @@ pub type blksize_t = isize;
 pub type blkcnt_t = isize;
 pub type compat_fsid_t = [i32; 2];
 pub type clock_t = isize;
+pub type clockid_t = i32;
 pub type dev_t = usize;
 pub type gid_t = u32;
 pub type ino_t = usize;

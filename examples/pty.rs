@@ -32,6 +32,7 @@ fn open_pty() -> Result<(i32, i32), nc::Errno> {
 }
 
 fn main() {
-    let ret = open_pty();
-    println!("ret: {:?}", ret);
+    if let Ok((pty, tty)) = open_pty() {
+        println!("pty: {}, tty: {}", pty, tty);
+    }
 }

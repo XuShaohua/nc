@@ -1214,8 +1214,18 @@ pub fn io_submit() {
     // TODO(Shaohua): Not implemented
 }
 
-pub fn ioctl() {
-    // TODO(Shaohua): Not implemented
+pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let cmd = cmd as usize;
+        let ret = syscall3(SYS_IOCTL, fd, cmd, arg);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Set port input/output permissions.

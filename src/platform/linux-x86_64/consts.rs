@@ -920,27 +920,33 @@ pub const TCSBRKP:      i32 = 0x5425;
 pub const TIOCSBRK:     i32 = 0x5427;
 pub const TIOCCBRK:     i32 = 0x5428;
 pub const TIOCGSID:     i32 = 0x5429;
-//pub const TCGETS2		_IOR('T', 0x2A, struct termios2);
-//pub const TCSETS2		_IOW('T', 0x2B, struct termios2);
-//pub const TCSETSW2	_IOW('T', 0x2C, struct termios2);
-//pub const TCSETSF2	_IOW('T', 0x2D, struct termios2);
+pub const TCGETS2:      i32 = 0x402C542B;
+#[allow(overflowing_literals)]
+pub const TCSETS2:      i32 = 0x802C542A;
+pub const TCSETSW2:     i32 = 0x402C542C;
+pub const TCSETSF2:     i32 = 0x402C542D;
 pub const TIOCGRS485:   i32 = 0x542E;
 pub const TIOCSRS485:   i32 = 0x542F;
-pub const TIOCGPTN: _IOR('T', 0x30, unsigned int);
-//pub const TIOCSPTLCK: _IOW('T', 0x31, int);
-//pub const TIOCGDEV	_IOR('T', 0x32, unsigned int);
+#[allow(overflowing_literals)]
+pub const TIOCGPTN:     i32 = 0x80045430;
+pub const TIOCSPTLCK:   i32 = 0x40045431;
+#[allow(overflowing_literals)]
+pub const TIOCGDEV:     i32 = 0x80045432;
 pub const TCGETX:       i32 = 0x5432;
 pub const TCSETX:       i32 = 0x5433;
 pub const TCSETXF:      i32 = 0x5434;
 pub const TCSETXW:      i32 = 0x5435;
-//pub const TIOCSIG		_IOW('T', 0x36, int)  /* pty: generate signal */
+pub const TIOCSIG:      i32 = 0x40045436; // pty: generate signal
 pub const TIOCVHANGUP:  i32 = 0x5437;
-//pub const TIOCGPKT	_IOR('T', 0x38, int) /* Get packet mode state */
-pub const TIOCGPTLCK	_IOR('T', 0x39, int) /* Get Pty lock state */
-//pub const TIOCGEXCL	_IOR('T', 0x40, int) /* Get exclusive mode state */
-//pub const TIOCGPTPEER	_IO('T', 0x41) /* Safely open the slave */
-//pub const TIOCGISO7816	_IOR('T', 0x42, struct serial_iso7816)
-//pub const TIOCSISO7816	_IOWR('T', 0x43, struct serial_iso7816)
+#[allow(overflowing_literals)]
+pub const TIOCGPKT:     i32 = 0x80045438; // Get packet mode state
+#[allow(overflowing_literals)]
+pub const TIOCGPTLCK:   i32 = 0x80045439; // Get Pty lock state
+#[allow(overflowing_literals)]
+pub const TIOCGEXCL:    i32 = 0x80045440; // Get exclusive mode state
+pub const TIOCGPTPEER:  i32 = 0x5441; // Safely open the slave
+//pub const TIOCGISO7816: i32 = ;
+//pub const TIOCSISO7816: i32 = ;
 
 pub const FIONCLEX: i32 = 0x5450;
 pub const FIOCLEX:  i32 = 0x5451;

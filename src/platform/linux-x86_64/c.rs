@@ -18,12 +18,13 @@ fn c_str(s: &str) -> [u8; 128] {
 
 #[inline(always)]
 pub fn is_errno(ret: usize) -> bool {
+    //return ret >= 0xfffffffffffff001;
     let reti = ret as isize;
     return reti < 0 && reti >= -256;
 }
 
 #[inline(always)]
-pub fn is_errno2(ret: usize) -> Result<(), Errno>{
+pub fn check_errno(ret: usize) -> Result<(), Errno> {
     let reti = ret as isize;
     if reti < 0 && reti >= -256 {
         let reti = (-reti) as Errno;
@@ -40,12 +41,7 @@ pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) ->
         let addr_ptr = addr as *mut sockaddr_in_t as usize;
         let addrlen_ptr = addrlen as *mut socklen_t as usize;
         let ret = syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -57,12 +53,7 @@ pub fn accept4(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t, f
         let addrlen_ptr = addrlen as *mut socklen_t as usize;
         let flags = flags as usize;
         let ret = syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -72,11 +63,7 @@ pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
         let path = c_str(path).as_ptr() as usize;
         let mode = mode as usize;
         let ret = syscall2(SYS_ACCESS, path, mode);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -85,12 +72,7 @@ pub fn acct(filename: &str) -> Result<(), Errno> {
     unsafe {
         let filepath_ptr = filename.as_ptr() as usize;
         let ret = syscall1(SYS_ACCT, filepath_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -99,13 +81,9 @@ pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     unsafe {
         let buf_ptr = buf as *mut timex_t as usize;
         let ret = syscall1(SYS_ADJTIMEX, buf_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            let ret = ret as i32;
-            return Ok(ret);
-        }
+        check_errno(ret)?;
+        let ret = ret as i32;
+        return Ok(ret);
     }
 }
 
@@ -130,12 +108,7 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
         let addr_ptr = addr as *const sockaddr_in_t as usize;
         let addrlen = addrlen as usize;
         let ret = syscall3(SYS_BIND, sockfd, addr_ptr, addrlen);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -146,13 +119,9 @@ pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
         let attr_ptr = attr as *mut bpf_attr_t as usize;
         let size = size as usize;
         let ret = syscall3(SYS_BPF, cmd, attr_ptr, size);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            let ret = ret as i32;
-            return Ok(ret);
-        }
+        check_errno(ret)?;
+        let ret = ret as i32;
+        return Ok(ret);
     }
 }
 
@@ -160,11 +129,7 @@ pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
 pub fn brk(addr: usize) -> Result<(), Errno> {
     unsafe {
         let ret = syscall1(SYS_BRK, addr);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -174,12 +139,7 @@ pub fn capget(hdrp: &mut cap_user_header_t, data: &mut cap_user_data_t) -> Resul
         let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
         let data_ptr = data as *mut cap_user_data_t as usize;
         let ret = syscall2(SYS_CAPGET, hdrp_ptr, data_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -189,12 +149,7 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
         let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
         let data_ptr = data as *const cap_user_data_t as usize;
         let ret = syscall2(SYS_CAPSET, hdrp_ptr, data_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -203,12 +158,7 @@ pub fn chdir(path: &str) -> Result<(), Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
         let ret = syscall1(SYS_CHDIR, path);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -218,12 +168,7 @@ pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
         let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
         let ret = syscall2(SYS_CHMOD, filename_ptr, mode);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -234,12 +179,7 @@ pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
         let user = user as usize;
         let group = group as usize;
         let ret = syscall3(SYS_CHOWN, filename_ptr, user, group);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -248,12 +188,7 @@ pub fn chroot(path: &str) -> Result<(), Errno> {
     unsafe {
         let path_ptr = path.as_ptr() as usize;
         let ret = syscall1(SYS_CHROOT, path_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -262,12 +197,7 @@ pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Err
         let which_clock = which_clock as usize;
         let tx_ptr = tx as *mut timex_t as usize;
         let ret = syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -277,12 +207,7 @@ pub fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t ) -> Result<(), 
         let which_clock = which_clock as usize;
         let tp_ptr = tp as *mut timespec_t as usize;
         let ret = syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -412,7 +337,7 @@ pub fn dup(oldfd: i32) -> Result<isize, Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let ret = syscall1(SYS_DUP, oldfd);
-        is_errno2(ret)?;
+        check_errno(ret)?;
         let ret = ret as isize;
         return Ok(ret);
     }
@@ -425,7 +350,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
         let oldfd = oldfd as usize;
         let newfd = newfd as usize;
         let ret = syscall2(SYS_DUP2, oldfd, newfd);
-        is_errno2(ret)
+        check_errno(ret)
     }
 }
 
@@ -436,7 +361,7 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
         let newfd = newfd as usize;
         let flags = flags as usize;
         let ret = syscall3(SYS_DUP3, oldfd, newfd, flags);
-        is_errno2(ret)
+        check_errno(ret)
     }
 }
 
@@ -447,7 +372,7 @@ pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> 
         let argv_ptr = argv.as_ptr() as usize;
         let env_ptr = env.as_ptr() as usize;
         let ret = syscall3(SYS_EXECVE, filename, argv_ptr, env_ptr);
-        is_errno2(ret)
+        check_errno(ret)
     }
 }
 
@@ -460,13 +385,9 @@ pub fn epoll_create(size: i32) -> Result<i32, Errno> {
     unsafe {
         let size = size as usize;
         let ret = syscall1(SYS_EPOLL_CREATE, size);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            let ret = ret as i32;
-            return Ok(ret);
-        }
+        check_errno(ret)?;
+        let ret = ret as i32;
+        return Ok(ret);
     }
 }
 
@@ -1328,12 +1249,7 @@ pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
         let fd = fd as usize;
         let cmd = cmd as usize;
         let ret = syscall3(SYS_IOCTL, fd, cmd, arg);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -3190,11 +3106,8 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
         let mut statbuf = stat_t::default();
         let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
         let ret = syscall2(SYS_STAT, path, statbuf_ptr);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(statbuf);
-        }
+        check_errno(ret)?;
+        return Ok(statbuf);
     }
 }
 
@@ -3207,11 +3120,7 @@ pub fn statx(dirfd: i32, path: &str, flags: i32, mask: u32, buf: &mut statx_t) -
         let mask = mask as usize;
         let buf_ptr = buf as *mut statx_t as usize;
         let ret = syscall5(SYS_STATX, dirfd, path, flags, mask, buf_ptr);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 

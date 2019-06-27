@@ -365,6 +365,54 @@ pub const IP_CHECKSUM:              i32 = 23;
 pub const IP_BIND_ADDRESS_NO_PORT:  i32 = 24;
 pub const IP_RECVFRAGSIZE:          i32 = 25;
 
+
+/// TCP general constants
+pub const TCP_MSS_DEFAULT		 536U	/* IPv4 (RFC1122, RFC2581) */
+pub const TCP_MSS_DESIRED		1220U	/* IPv6 (tunneled), EDNS0 (RFC3226) */
+
+/// TCP socket options
+pub const TCP_NODELAY:              i32 = 1; // Turn off Nagle's algorithm.
+pub const TCP_MAXSEG:               i32 = 2; // Limit MSS
+pub const TCP_CORK:                 i32 = 3; // Never send partially complete segments
+pub const TCP_KEEPIDLE:             i32 = 4; // Start keeplives after this period
+pub const TCP_KEEPINTVL:            i32 = 5; // Interval between keepalives
+pub const TCP_KEEPCNT:              i32 = 6; // Number of keepalives before death
+pub const TCP_SYNCNT:               i32 = 7; // Number of SYN retransmits
+pub const TCP_LINGER2:              i32 = 8; // Life time of orphaned FIN-WAIT-2 state
+pub const TCP_DEFER_ACCEPT:         i32 = 9; // Wake up listener only when data arrive
+pub const TCP_WINDOW_CLAMP:         i32 = 10; // Bound advertised window
+pub const TCP_INFO:                 i32 = 11; // Information about this connection.
+pub const TCP_QUICKACK:             i32 = 12; // Block/reenable quick acks
+pub const TCP_CONGESTION:           i32 = 13; // Congestion control algorithm
+pub const TCP_MD5SIG:               i32 = 14; // TCP MD5 Signature (RFC2385)
+pub const TCP_THIN_LINEAR_TIMEOUTS: i32 = 16; // Use linear timeouts for thin streams
+pub const TCP_THIN_DUPACK:          i32 = 17; // Fast retrans. after 1 dupack
+pub const TCP_USER_TIMEOUT:         i32 = 18; // How long for loss retry before timeout
+pub const TCP_REPAIR:               i32 = 19; // TCP sock is under repair right now
+pub const TCP_REPAIR_QUEUE:         i32 = 20;
+pub const TCP_QUEUE_SEQ:            i32 = 21;
+pub const TCP_REPAIR_OPTIONS:       i32 = 22;
+pub const TCP_FASTOPEN:             i32 = 23; // Enable FastOpen on listeners
+pub const TCP_TIMESTAMP:            i32 = 24;
+pub const TCP_NOTSENT_LOWAT:        i32 = 25; // limit number of unsent bytes in write queue
+pub const TCP_CC_INFO:              i32 = 26; // Get Congestion Control (optional) info
+pub const TCP_SAVE_SYN:             i32 = 27; // Record SYN headers for new connections
+pub const TCP_SAVED_SYN:            i32 = 28; // Get SYN headers recorded for connection
+pub const TCP_REPAIR_WINDOW:        i32 = 29; // Get/set window parameters
+pub const TCP_FASTOPEN_CONNECT:     i32 = 30; // Attempt FastOpen with connect
+pub const TCP_ULP:                  i32 = 31; // Attach a ULP to a TCP connection
+pub const TCP_MD5SIG_EXT:           i32 = 32; // TCP MD5 Signature with extensions
+pub const TCP_FASTOPEN_KEY:         i32 = 33; // Set the key for Fast Open (cookie)
+pub const TCP_FASTOPEN_NO_COOKIE:   i32 = 34; // Enable TFO without a TFO cookie
+pub const TCP_ZEROCOPY_RECEIVE:     i32 = 35;
+pub const TCP_INQ:                  i32 = 36; // Notify bytes available to read as a cmsg on read
+
+pub const TCP_CM_INQ: i32 = TCP_INQ;
+
+pub const TCP_REPAIR_ON:        i32 = 1;
+pub const TCP_REPAIR_OFF:       i32 = 0;
+pub const TCP_REPAIR_OFF_NO_WP: i32 = -1; // Turn off without window probes
+
 /// Operations for the `flock` call.
 pub const LOCK_SH:      i32 = 1;  // Shared lock.
 pub const LOCK_EX:      i32 = 2;  // Exclusive lock.

@@ -16,28 +16,77 @@ pub const S_IXOTH: mode_t = S_IXGRP >> 3;
 pub const S_IRWXO: mode_t = S_IRWXG >> 3;
 
 /// open() flags
-pub const O_RDONLY:     i32 = 0o0;
-pub const O_WRONLY:     i32 = 0o1;
-pub const O_RDWR:       i32 = 0o2;
-pub const O_ACCMODE:    i32 = 0o003;
-pub const O_CREAT:      i32 = 0o100;
-pub const O_EXCL:       i32 = 0o200;
-pub const O_NOCTTY:     i32 = 0o400;
-pub const O_TRUNC:      i32 = 0o1000;
-pub const O_APPEND:     i32 = 0o2000;
-pub const O_NONBLOCK:   i32 = 0o4000;
-pub const O_DSYNC:      i32 = 0o10000;
-pub const O_ASYNC:      i32 = 0o20000;
-pub const O_DIRECT:     i32 = 0o40000;
-pub const O_LARGEFILE:  i32 = 0o100000;
-pub const O_DIRECTORY:  i32 = 0o200000;
-pub const O_NOFOLLOW:   i32 = 0o400000;
-pub const O_NOATIME:    i32 = 0o1000000;
-pub const O_CLOEXEC:    i32 = 0o2000000;
-pub const O_SYNC:       i32 = 0o4010000;
-pub const O_FSYNC:      i32 = O_SYNC;
-pub const O_PATH:       i32 = 0o10000000;
-pub const O_TMPFILE:    i32 = (0o20000000 | O_DIRECTORY);
+pub const O_RDONLY:         i32 = 0o0;
+pub const O_WRONLY:         i32 = 0o1;
+pub const O_RDWR:           i32 = 0o2;
+pub const O_ACCMODE:        i32 = 0o003;
+pub const O_CREAT:          i32 = 0o100;
+pub const O_EXCL:           i32 = 0o200;
+pub const O_NOCTTY:         i32 = 0o400;
+pub const O_TRUNC:          i32 = 0o1000;
+pub const O_APPEND:         i32 = 0o2000;
+pub const O_NONBLOCK:       i32 = 0o4000;
+pub const O_DSYNC:          i32 = 0o10000;
+pub const O_ASYNC:          i32 = 0o20000;
+pub const O_DIRECT:         i32 = 0o40000;
+pub const O_LARGEFILE:      i32 = 0o100000;
+pub const O_DIRECTORY:      i32 = 0o200000;
+pub const O_NOFOLLOW:       i32 = 0o400000;
+pub const O_NOATIME:        i32 = 0o1000000;
+pub const O_CLOEXEC:        i32 = 0o2000000;
+pub const O_SYNC:           i32 = 0o4010000;
+pub const O_FSYNC:          i32 = O_SYNC;
+pub const O_PATH:           i32 = 0o10000000;
+pub const O_TMPFILE:        i32 = (0o20000000 | O_DIRECTORY);
+pub const O_TMPFILE_MASK:   i32 = (O_TMPFILE | O_CREAT);
+
+/// Used in fcntl().
+pub const F_DUPFD:          i32 = 0 ; // dup
+pub const F_GETFD:          i32 = 1; // get close_on_exec
+pub const F_SETFD:          i32 = 2; // set/clear close_on_exec
+pub const F_GETFL:          i32 = 3; // get file->f_flags
+pub const F_SETFL:          i32 = 4; // set file->f_flags
+pub const F_GETLK:          i32 = 5;
+pub const F_SETLK:          i32 = 6;
+pub const F_SETLKW:         i32 = 7;
+pub const F_SETOWN:         i32 = 8;
+pub const F_GETOWN:         i32 = 9;
+pub const F_SETSIG:         i32 = 10;
+pub const F_GETSIG:         i32 = 11;
+pub const F_GETLK64:        i32 = 12;
+pub const F_SETLK64:        i32 = 13;
+pub const F_SETLKW64:       i32 = 14;
+pub const F_SETOWN_EX:      i32 = 15;
+pub const F_GETOWN_EX:      i32 = 16;
+pub const F_GETOWNER_UIDS:  i32 = 17;
+
+pub const F_OFD_GETLK:  i32 = 36;
+pub const F_OFD_SETLK:  i32 = 37;
+pub const F_OFD_SETLKW: i32 = 38;
+
+pub const F_OWNER_TID:  i32 = 0;
+pub const F_OWNER_PID:  i32 = 1;
+pub const F_OWNER_PGRP: i32 = 2;
+pub const FD_CLOEXEC:   i32 = 1;
+
+// for posix fcntl() and lockf()
+pub const F_RDLCK: i32 = 0;
+pub const F_WRLCK: i32 = 1;
+pub const F_UNLCK: i32 = 2;
+pub const F_EXLCK: i32 = 4;
+pub const F_SHLCK: i32 = 8;
+
+pub const LOCK_SH: i32 = 1; // shared lock
+pub const LOCK_EX: i32 = 2; // exclusive lock
+pub const LOCK_NB: i32 = 4; // or'd with one of the above to prevent blocking
+pub const LOCK_UN: i32 = 8; // remove lock
+
+pub const LOCK_MAND:    i32 = 32; // This is a mandatory flock
+pub const LOCK_READ:    i32 = 64; // which allows concurrent read operations
+pub const LOCK_WRITE:   i32 = 128; // which allows concurrent write operations
+pub const LOCK_RW:      i32 = 192; // which allows concurrent read & write ops
+
+pub const F_LINUX_SPECIFIC_BASE: i32 = 1024;
 
 /// access() mode
 pub const R_OK: i32 = 4;

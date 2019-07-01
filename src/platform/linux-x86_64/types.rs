@@ -485,3 +485,20 @@ pub struct epoll_event_t {
     pub data: u64,
 }
 
+/// fcntl.h
+pub struct flock {
+    pub l_type: i16,
+    pub l_whence: i16,
+    pub l_start: off_t,
+    pub l_len: off_t,
+    pub l_pid: pid_t,
+}
+
+pub struct flock64 {
+    pub l_type: i16,
+    pub l_whence: i16,
+    pub l_start: loff_t,
+    pub l_len: loff_t,
+    pub l_pid: pid_t,
+}
+

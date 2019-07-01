@@ -76,11 +76,12 @@ pub const F_UNLCK: i32 = 2;
 pub const F_EXLCK: i32 = 4;
 pub const F_SHLCK: i32 = 8;
 
-pub const LOCK_SH: i32 = 1; // shared lock
-pub const LOCK_EX: i32 = 2; // exclusive lock
-pub const LOCK_NB: i32 = 4; // or'd with one of the above to prevent blocking
-pub const LOCK_UN: i32 = 8; // remove lock
-
+/// Operations for the `flock` call.
+pub const LOCK_SH:      i32 = 1; // shared lock
+pub const LOCK_EX:      i32 = 2; // exclusive lock
+pub const LOCK_NB:      i32 = 4; // or'd with one of the above to prevent blocking
+pub const LOCK_UN:      i32 = 8; // remove lock
+pub const LOCK_ATOMIC:  i32 = 16; // Atomic update.
 pub const LOCK_MAND:    i32 = 32; // This is a mandatory flock
 pub const LOCK_READ:    i32 = 64; // which allows concurrent read operations
 pub const LOCK_WRITE:   i32 = 128; // which allows concurrent write operations
@@ -416,8 +417,8 @@ pub const IP_RECVFRAGSIZE:          i32 = 25;
 
 
 /// TCP general constants
-pub const TCP_MSS_DEFAULT		 536U	/* IPv4 (RFC1122, RFC2581) */
-pub const TCP_MSS_DESIRED		1220U	/* IPv6 (tunneled), EDNS0 (RFC3226) */
+pub const TCP_MSS_DEFAULT: i32 = 536; // IPv4 (RFC1122, RFC2581)
+pub const TCP_MSS_DESIRED: i32 = 1220; // IPv6 (tunneled), EDNS0 (RFC3226)
 
 /// TCP socket options
 pub const TCP_NODELAY:              i32 = 1; // Turn off Nagle's algorithm.
@@ -461,12 +462,6 @@ pub const TCP_CM_INQ: i32 = TCP_INQ;
 pub const TCP_REPAIR_ON:        i32 = 1;
 pub const TCP_REPAIR_OFF:       i32 = 0;
 pub const TCP_REPAIR_OFF_NO_WP: i32 = -1; // Turn off without window probes
-
-/// Operations for the `flock` call.
-pub const LOCK_SH:      i32 = 1;  // Shared lock.
-pub const LOCK_EX:      i32 = 2;  // Exclusive lock.
-pub const LOCK_UN:      i32 = 8;  // Unlock.
-pub const LOCK_ATOMIC:  i32 = 16; // Atomic update.
 
 pub const AT_FDCWD:              i32 = -100;
 pub const AT_SYMLINK_NOFOLLOW:   i32 = 0x100;

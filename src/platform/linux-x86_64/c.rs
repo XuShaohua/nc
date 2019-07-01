@@ -521,6 +521,10 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn fadvice64() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Manipulate file space.
 pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     unsafe {
@@ -878,6 +882,10 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 
 /// Get directory entries.
 pub fn getdents() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn getdents64() {
     // TODO(Shaohua): Not implemented.
 }
 
@@ -2283,8 +2291,12 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
     }
 }
 
+pub fn remap_file_pages() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Remove an extended attribute.
-pub fn rmovexattr(path: &str, name: &str) -> Result<(), Errno> {
+pub fn removexattr(path: &str, name: &str) -> Result<(), Errno> {
     unsafe {
         let path_ptr = path.as_ptr() as usize;
         let name_ptr = name.as_ptr() as usize;
@@ -2343,6 +2355,10 @@ pub fn renameat2(olddfd:i32, oldpath: &str, newdfd: i32, newpath: &str, flags: i
             return Ok(());
         }
     }
+}
+
+pub fn restart_syscall() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Delete a directory.
@@ -2668,6 +2684,10 @@ pub fn set_thread_area() {
     // TODO(Shaohua): Not implemented.
 }
 
+pub fn set_tid_address() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Set NIS domain name.
 pub fn setdomainname(name: &str) -> Result<(), Errno> {
     unsafe {
@@ -2898,6 +2918,10 @@ pub fn setsockopt(sockfd: i32, level: i32, optname: i32, optval: usize,
             return Ok(());
         }
     }
+}
+
+pub fn settimedop() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Set system time and timezone.
@@ -3327,6 +3351,26 @@ pub fn time() -> Result<time_t, Errno> {
             return Ok(ret);
         }
     }
+}
+
+pub fn timer_create() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_delete() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_getoverrun() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_gettime() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_settime() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Create a timer that notifies via a file descriptor.

@@ -16,28 +16,78 @@ pub const S_IXOTH: mode_t = S_IXGRP >> 3;
 pub const S_IRWXO: mode_t = S_IRWXG >> 3;
 
 /// open() flags
-pub const O_RDONLY:     i32 = 0o0;
-pub const O_WRONLY:     i32 = 0o1;
-pub const O_RDWR:       i32 = 0o2;
-pub const O_ACCMODE:    i32 = 0o003;
-pub const O_CREAT:      i32 = 0o100;
-pub const O_EXCL:       i32 = 0o200;
-pub const O_NOCTTY:     i32 = 0o400;
-pub const O_TRUNC:      i32 = 0o1000;
-pub const O_APPEND:     i32 = 0o2000;
-pub const O_NONBLOCK:   i32 = 0o4000;
-pub const O_DSYNC:      i32 = 0o10000;
-pub const O_ASYNC:      i32 = 0o20000;
-pub const O_DIRECT:     i32 = 0o40000;
-pub const O_LARGEFILE:  i32 = 0o100000;
-pub const O_DIRECTORY:  i32 = 0o200000;
-pub const O_NOFOLLOW:   i32 = 0o400000;
-pub const O_NOATIME:    i32 = 0o1000000;
-pub const O_CLOEXEC:    i32 = 0o2000000;
-pub const O_SYNC:       i32 = 0o4010000;
-pub const O_FSYNC:      i32 = O_SYNC;
-pub const O_PATH:       i32 = 0o10000000;
-pub const O_TMPFILE:    i32 = (0o20000000 | O_DIRECTORY);
+pub const O_RDONLY:         i32 = 0o0;
+pub const O_WRONLY:         i32 = 0o1;
+pub const O_RDWR:           i32 = 0o2;
+pub const O_ACCMODE:        i32 = 0o003;
+pub const O_CREAT:          i32 = 0o100;
+pub const O_EXCL:           i32 = 0o200;
+pub const O_NOCTTY:         i32 = 0o400;
+pub const O_TRUNC:          i32 = 0o1000;
+pub const O_APPEND:         i32 = 0o2000;
+pub const O_NONBLOCK:       i32 = 0o4000;
+pub const O_DSYNC:          i32 = 0o10000;
+pub const O_ASYNC:          i32 = 0o20000;
+pub const O_DIRECT:         i32 = 0o40000;
+pub const O_LARGEFILE:      i32 = 0o100000;
+pub const O_DIRECTORY:      i32 = 0o200000;
+pub const O_NOFOLLOW:       i32 = 0o400000;
+pub const O_NOATIME:        i32 = 0o1000000;
+pub const O_CLOEXEC:        i32 = 0o2000000;
+pub const O_SYNC:           i32 = 0o4010000;
+pub const O_FSYNC:          i32 = O_SYNC;
+pub const O_PATH:           i32 = 0o10000000;
+pub const O_TMPFILE:        i32 = (0o20000000 | O_DIRECTORY);
+pub const O_TMPFILE_MASK:   i32 = (O_TMPFILE | O_CREAT);
+
+/// Used in fcntl().
+pub const F_DUPFD:          i32 = 0 ; // dup
+pub const F_GETFD:          i32 = 1; // get close_on_exec
+pub const F_SETFD:          i32 = 2; // set/clear close_on_exec
+pub const F_GETFL:          i32 = 3; // get file->f_flags
+pub const F_SETFL:          i32 = 4; // set file->f_flags
+pub const F_GETLK:          i32 = 5;
+pub const F_SETLK:          i32 = 6;
+pub const F_SETLKW:         i32 = 7;
+pub const F_SETOWN:         i32 = 8;
+pub const F_GETOWN:         i32 = 9;
+pub const F_SETSIG:         i32 = 10;
+pub const F_GETSIG:         i32 = 11;
+pub const F_GETLK64:        i32 = 12;
+pub const F_SETLK64:        i32 = 13;
+pub const F_SETLKW64:       i32 = 14;
+pub const F_SETOWN_EX:      i32 = 15;
+pub const F_GETOWN_EX:      i32 = 16;
+pub const F_GETOWNER_UIDS:  i32 = 17;
+
+pub const F_OFD_GETLK:  i32 = 36;
+pub const F_OFD_SETLK:  i32 = 37;
+pub const F_OFD_SETLKW: i32 = 38;
+
+pub const F_OWNER_TID:  i32 = 0;
+pub const F_OWNER_PID:  i32 = 1;
+pub const F_OWNER_PGRP: i32 = 2;
+pub const FD_CLOEXEC:   i32 = 1;
+
+// for posix fcntl() and lockf()
+pub const F_RDLCK: i32 = 0;
+pub const F_WRLCK: i32 = 1;
+pub const F_UNLCK: i32 = 2;
+pub const F_EXLCK: i32 = 4;
+pub const F_SHLCK: i32 = 8;
+
+/// Operations for the `flock` call.
+pub const LOCK_SH:      i32 = 1; // shared lock
+pub const LOCK_EX:      i32 = 2; // exclusive lock
+pub const LOCK_NB:      i32 = 4; // or'd with one of the above to prevent blocking
+pub const LOCK_UN:      i32 = 8; // remove lock
+pub const LOCK_ATOMIC:  i32 = 16; // Atomic update.
+pub const LOCK_MAND:    i32 = 32; // This is a mandatory flock
+pub const LOCK_READ:    i32 = 64; // which allows concurrent read operations
+pub const LOCK_WRITE:   i32 = 128; // which allows concurrent write operations
+pub const LOCK_RW:      i32 = 192; // which allows concurrent read & write ops
+
+pub const F_LINUX_SPECIFIC_BASE: i32 = 1024;
 
 /// access() mode
 pub const R_OK: i32 = 4;
@@ -365,11 +415,53 @@ pub const IP_CHECKSUM:              i32 = 23;
 pub const IP_BIND_ADDRESS_NO_PORT:  i32 = 24;
 pub const IP_RECVFRAGSIZE:          i32 = 25;
 
-/// Operations for the `flock` call.
-pub const LOCK_SH:      i32 = 1;  // Shared lock.
-pub const LOCK_EX:      i32 = 2;  // Exclusive lock.
-pub const LOCK_UN:      i32 = 8;  // Unlock.
-pub const LOCK_ATOMIC:  i32 = 16; // Atomic update.
+
+/// TCP general constants
+pub const TCP_MSS_DEFAULT: i32 = 536; // IPv4 (RFC1122, RFC2581)
+pub const TCP_MSS_DESIRED: i32 = 1220; // IPv6 (tunneled), EDNS0 (RFC3226)
+
+/// TCP socket options
+pub const TCP_NODELAY:              i32 = 1; // Turn off Nagle's algorithm.
+pub const TCP_MAXSEG:               i32 = 2; // Limit MSS
+pub const TCP_CORK:                 i32 = 3; // Never send partially complete segments
+pub const TCP_KEEPIDLE:             i32 = 4; // Start keeplives after this period
+pub const TCP_KEEPINTVL:            i32 = 5; // Interval between keepalives
+pub const TCP_KEEPCNT:              i32 = 6; // Number of keepalives before death
+pub const TCP_SYNCNT:               i32 = 7; // Number of SYN retransmits
+pub const TCP_LINGER2:              i32 = 8; // Life time of orphaned FIN-WAIT-2 state
+pub const TCP_DEFER_ACCEPT:         i32 = 9; // Wake up listener only when data arrive
+pub const TCP_WINDOW_CLAMP:         i32 = 10; // Bound advertised window
+pub const TCP_INFO:                 i32 = 11; // Information about this connection.
+pub const TCP_QUICKACK:             i32 = 12; // Block/reenable quick acks
+pub const TCP_CONGESTION:           i32 = 13; // Congestion control algorithm
+pub const TCP_MD5SIG:               i32 = 14; // TCP MD5 Signature (RFC2385)
+pub const TCP_THIN_LINEAR_TIMEOUTS: i32 = 16; // Use linear timeouts for thin streams
+pub const TCP_THIN_DUPACK:          i32 = 17; // Fast retrans. after 1 dupack
+pub const TCP_USER_TIMEOUT:         i32 = 18; // How long for loss retry before timeout
+pub const TCP_REPAIR:               i32 = 19; // TCP sock is under repair right now
+pub const TCP_REPAIR_QUEUE:         i32 = 20;
+pub const TCP_QUEUE_SEQ:            i32 = 21;
+pub const TCP_REPAIR_OPTIONS:       i32 = 22;
+pub const TCP_FASTOPEN:             i32 = 23; // Enable FastOpen on listeners
+pub const TCP_TIMESTAMP:            i32 = 24;
+pub const TCP_NOTSENT_LOWAT:        i32 = 25; // limit number of unsent bytes in write queue
+pub const TCP_CC_INFO:              i32 = 26; // Get Congestion Control (optional) info
+pub const TCP_SAVE_SYN:             i32 = 27; // Record SYN headers for new connections
+pub const TCP_SAVED_SYN:            i32 = 28; // Get SYN headers recorded for connection
+pub const TCP_REPAIR_WINDOW:        i32 = 29; // Get/set window parameters
+pub const TCP_FASTOPEN_CONNECT:     i32 = 30; // Attempt FastOpen with connect
+pub const TCP_ULP:                  i32 = 31; // Attach a ULP to a TCP connection
+pub const TCP_MD5SIG_EXT:           i32 = 32; // TCP MD5 Signature with extensions
+pub const TCP_FASTOPEN_KEY:         i32 = 33; // Set the key for Fast Open (cookie)
+pub const TCP_FASTOPEN_NO_COOKIE:   i32 = 34; // Enable TFO without a TFO cookie
+pub const TCP_ZEROCOPY_RECEIVE:     i32 = 35;
+pub const TCP_INQ:                  i32 = 36; // Notify bytes available to read as a cmsg on read
+
+pub const TCP_CM_INQ: i32 = TCP_INQ;
+
+pub const TCP_REPAIR_ON:        i32 = 1;
+pub const TCP_REPAIR_OFF:       i32 = 0;
+pub const TCP_REPAIR_OFF_NO_WP: i32 = -1; // Turn off without window probes
 
 pub const AT_FDCWD:              i32 = -100;
 pub const AT_SYMLINK_NOFOLLOW:   i32 = 0x100;
@@ -877,4 +969,103 @@ pub const EPOLLONESHOT: poll_t = (1 << 30);
 
 /// Set the Edge Triggered behaviour for the target file descriptor
 pub const EPOLLET: poll_t = (1 << 31);
+
+/// For tty ioctl. Defined in ioctls.h
+pub const TCGETS:       i32 = 0x5401;
+pub const TCSETS:       i32 = 0x5402;
+pub const TCSETSW:      i32 = 0x5403;
+pub const TCSETSF:      i32 = 0x5404;
+pub const TCGETA:       i32 = 0x5405;
+pub const TCSETA:       i32 = 0x5406;
+pub const TCSETAW:      i32 = 0x5407;
+pub const TCSETAF:      i32 = 0x5408;
+pub const TCSBRK:       i32 = 0x5409;
+pub const TCXONC:       i32 = 0x540A;
+pub const TCFLSH:       i32 = 0x540B;
+pub const TIOCEXCL:     i32 = 0x540C;
+pub const TIOCNXCL:     i32 = 0x540D;
+pub const TIOCSCTTY:    i32 = 0x540E;
+pub const TIOCGPGRP:    i32 = 0x540F;
+pub const TIOCSPGRP:    i32 = 0x5410;
+pub const TIOCOUTQ:     i32 = 0x5411;
+pub const TIOCSTI:      i32 = 0x5412;
+pub const TIOCGWINSZ:   i32 = 0x5413;
+pub const TIOCSWINSZ:   i32 = 0x5414;
+pub const TIOCMGET:     i32 = 0x5415;
+pub const TIOCMBIS:     i32 = 0x5416;
+pub const TIOCMBIC:     i32 = 0x5417;
+pub const TIOCMSET:     i32 = 0x5418;
+pub const TIOCGSOFTCAR: i32 = 0x5419;
+pub const TIOCSSOFTCAR: i32 = 0x541A;
+pub const FIONREAD:     i32 = 0x541B;
+pub const TIOCINQ:      i32 = FIONREAD;
+pub const TIOCLINUX:    i32 = 0x541C;
+pub const TIOCCONS:     i32 = 0x541D;
+pub const TIOCGSERIAL:  i32 = 0x541E;
+pub const TIOCSSERIAL:  i32 = 0x541F;
+pub const TIOCPKT:      i32 = 0x5420;
+pub const FIONBIO:      i32 = 0x5421;
+pub const TIOCNOTTY:    i32 = 0x5422;
+pub const TIOCSETD:     i32 = 0x5423;
+pub const TIOCGETD:     i32 = 0x5424;
+pub const TCSBRKP:      i32 = 0x5425;
+pub const TIOCSBRK:     i32 = 0x5427;
+pub const TIOCCBRK:     i32 = 0x5428;
+pub const TIOCGSID:     i32 = 0x5429;
+pub const TCGETS2:      i32 = 0x402C542B;
+#[allow(overflowing_literals)]
+pub const TCSETS2:      i32 = 0x802C542A;
+pub const TCSETSW2:     i32 = 0x402C542C;
+pub const TCSETSF2:     i32 = 0x402C542D;
+pub const TIOCGRS485:   i32 = 0x542E;
+pub const TIOCSRS485:   i32 = 0x542F;
+#[allow(overflowing_literals)]
+pub const TIOCGPTN:     i32 = 0x80045430;
+pub const TIOCSPTLCK:   i32 = 0x40045431;
+#[allow(overflowing_literals)]
+pub const TIOCGDEV:     i32 = 0x80045432;
+pub const TCGETX:       i32 = 0x5432;
+pub const TCSETX:       i32 = 0x5433;
+pub const TCSETXF:      i32 = 0x5434;
+pub const TCSETXW:      i32 = 0x5435;
+pub const TIOCSIG:      i32 = 0x40045436; // pty: generate signal
+pub const TIOCVHANGUP:  i32 = 0x5437;
+#[allow(overflowing_literals)]
+pub const TIOCGPKT:     i32 = 0x80045438; // Get packet mode state
+#[allow(overflowing_literals)]
+pub const TIOCGPTLCK:   i32 = 0x80045439; // Get Pty lock state
+#[allow(overflowing_literals)]
+pub const TIOCGEXCL:    i32 = 0x80045440; // Get exclusive mode state
+pub const TIOCGPTPEER:  i32 = 0x5441; // Safely open the slave
+//pub const TIOCGISO7816: i32 = ;
+//pub const TIOCSISO7816: i32 = ;
+
+pub const FIONCLEX: i32 = 0x5450;
+pub const FIOCLEX:  i32 = 0x5451;
+
+pub const TIOCSERCONFIG:    i32 = 0x5453;
+pub const TIOCSERGWILD:     i32 = 0x5454;
+pub const TIOCSERSWILD:     i32 = 0x5455;
+pub const TIOCGLCKTRMIOS:   i32 = 0x5456;
+pub const TIOCSLCKTRMIOS:   i32 = 0x5457;
+pub const TIOCSERGSTRUCT:   i32 = 0x5458;
+pub const TIOCSERGETLSR:    i32 = 0x5459;
+pub const TIOCSERGETMULTI:  i32 = 0x545A;
+pub const TIOCSERSETMULTI:  i32 = 0x545B;
+pub const TIOCMIWAIT:       i32 = 0x545C;
+pub const TIOCGICOUNT:      i32 = 0x545D;
+
+pub const FIOQSIZE: i32 = 0x5460;
+
+// Used for packet mode
+pub const TIOCPKT_DATA:         i32 = 0;
+pub const TIOCPKT_FLUSHREAD:    i32 = 1;
+pub const TIOCPKT_FLUSHWRITE:   i32 = 2;
+pub const TIOCPKT_STOP:         i32 = 4;
+pub const TIOCPKT_START:        i32 = 8;
+pub const TIOCPKT_NOSTOP:       i32 = 16;
+pub const TIOCPKT_DOSTOP:       i32 = 32;
+pub const TIOCPKT_IOCTL:        i32 = 64;
+
+pub const TIOCSER_TEMT: i32 = 0x01;
 

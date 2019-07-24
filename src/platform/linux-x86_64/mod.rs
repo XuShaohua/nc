@@ -5,9 +5,11 @@ pub mod errno;
 pub mod sysno;
 pub mod types;
 
+use sysno::SysNo;
+
 // Copy from kmcallister/syscall.rs
 #[inline(always)]
-pub unsafe fn syscall0(n: usize) -> usize {
+pub unsafe fn syscall0(n: SysNo) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
                    : "{rax}"(n)
@@ -17,7 +19,7 @@ pub unsafe fn syscall0(n: usize) -> usize {
 }
 
 #[inline(always)]
-pub unsafe fn syscall1(n: usize, a1: usize) -> usize {
+pub unsafe fn syscall1(n: SysNo, a1: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
                    : "{rax}"(n), "{rdi}"(a1)
@@ -27,7 +29,7 @@ pub unsafe fn syscall1(n: usize, a1: usize) -> usize {
 }
 
 #[inline(always)]
-pub unsafe fn syscall2(n: usize, a1: usize, a2: usize) -> usize {
+pub unsafe fn syscall2(n: SysNo, a1: usize, a2: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
                    : "{rax}"(n), "{rdi}"(a1), "{rsi}"(a2)
@@ -37,7 +39,7 @@ pub unsafe fn syscall2(n: usize, a1: usize, a2: usize) -> usize {
 }
 
 #[inline(always)]
-pub unsafe fn syscall3(n: usize, a1: usize, a2: usize, a3: usize) -> usize {
+pub unsafe fn syscall3(n: SysNo, a1: usize, a2: usize, a3: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
                    : "{rax}"(n), "{rdi}"(a1), "{rsi}"(a2), "{rdx}"(a3)
@@ -47,7 +49,7 @@ pub unsafe fn syscall3(n: usize, a1: usize, a2: usize, a3: usize) -> usize {
 }
 
 #[inline(always)]
-pub unsafe fn syscall4(n: usize, a1: usize, a2: usize, a3: usize,
+pub unsafe fn syscall4(n: SysNo, a1: usize, a2: usize, a3: usize,
                        a4: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
@@ -60,7 +62,7 @@ pub unsafe fn syscall4(n: usize, a1: usize, a2: usize, a3: usize,
 
 
 #[inline(always)]
-pub unsafe fn syscall5(n: usize, a1: usize, a2: usize, a3: usize,
+pub unsafe fn syscall5(n: SysNo, a1: usize, a2: usize, a3: usize,
                        a4: usize, a5: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)
@@ -72,7 +74,7 @@ pub unsafe fn syscall5(n: usize, a1: usize, a2: usize, a3: usize,
 }
 
 #[inline(always)]
-pub unsafe fn syscall6(n: usize, a1: usize, a2: usize, a3: usize,
+pub unsafe fn syscall6(n: SysNo, a1: usize, a2: usize, a3: usize,
                        a4: usize, a5: usize, a6: usize) -> usize {
     let ret: usize;
     asm!("syscall" : "={rax}"(ret)

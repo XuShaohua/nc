@@ -447,7 +447,7 @@ pub struct sched_param_t {
 }
 
 /// Extended scheduling parameters data structure.
-struct sched_attr_t {
+pub struct sched_attr_t {
     pub size:           u32, // size of the structure, for fwd/bwd compat.
     pub sched_policy:   u32, // task's scheduling policy
     pub sched_flags:    u64, // for customizing the scheduler behaviour

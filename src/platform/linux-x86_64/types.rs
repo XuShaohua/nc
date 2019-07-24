@@ -17,6 +17,7 @@ pub type blksize_t = isize;
 pub type blkcnt_t = isize;
 pub type compat_fsid_t = [i32; 2];
 pub type clock_t = isize;
+pub type clockid_t = i32;
 pub type dev_t = usize;
 pub type gid_t = u32;
 pub type ino_t = usize;
@@ -28,6 +29,7 @@ pub type msgqnum_t = usize;
 pub type nlink_t = usize;
 pub type off_t = isize;
 pub type pid_t = i32;
+pub type poll_t = u32;
 pub type rwf_t = i32;
 pub type sa_family_t = u16;
 pub type sigset_t = usize;
@@ -456,5 +458,47 @@ pub struct sched_attr_t {
     pub sched_runtime:  u64, // representative of the task's runtime
     pub sched_deadline: u64, // representative of the task's deadline
     pub sched_period:   u64, // representative of the task's period
+}
+
+/// TODO(Shaohua):
+pub struct bpf_attr_t {
+}
+
+
+/// capability.h
+pub struct cap_user_header_t {
+    pub version: u32,
+    pub pid: i32,
+}
+
+#[derive(Debug)]
+#[derive(Default)]
+pub struct cap_user_data_t {
+    pub effective:   u32,
+    pub permitted:   u32,
+    pub inheritable: u32,
+}
+
+/// eventpoll.h
+pub struct epoll_event_t {
+    pub events: poll_t,
+    pub data: u64,
+}
+
+/// fcntl.h
+pub struct flock {
+    pub l_type: i16,
+    pub l_whence: i16,
+    pub l_start: off_t,
+    pub l_len: off_t,
+    pub l_pid: pid_t,
+}
+
+pub struct flock64 {
+    pub l_type: i16,
+    pub l_whence: i16,
+    pub l_start: loff_t,
+    pub l_len: loff_t,
+    pub l_pid: pid_t,
 }
 

@@ -5,7 +5,7 @@ use super::types::*;
 use super::consts;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
-fn c_str(s: &str) -> [u8; 128]{
+fn c_str(s: &str) -> [u8; 128] {
     // TODO(Shaohua): Simplify ops
     let mut buf: [u8; 128] = [42; 128];
     for (i, b) in s.bytes().enumerate() {
@@ -18,10 +18,21 @@ fn c_str(s: &str) -> [u8; 128]{
 
 #[inline(always)]
 pub fn is_errno(ret: usize) -> bool {
+    //return ret >= 0xfffffffffffff001;
     let reti = ret as isize;
     return reti < 0 && reti >= -256;
 }
 
+#[inline(always)]
+pub fn check_errno(ret: usize) -> Result<(), Errno> {
+    let reti = ret as isize;
+    if reti < 0 && reti >= -256 {
+        let reti = (-reti) as Errno;
+        return Err(reti);
+    } else {
+        return Ok(());
+    }
+}
 
 /// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
@@ -30,12 +41,7 @@ pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) ->
         let addr_ptr = addr as *mut sockaddr_in_t as usize;
         let addrlen_ptr = addrlen as *mut socklen_t as usize;
         let ret = syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -47,12 +53,7 @@ pub fn accept4(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t, f
         let addrlen_ptr = addrlen as *mut socklen_t as usize;
         let flags = flags as usize;
         let ret = syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -62,11 +63,7 @@ pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
         let path = c_str(path).as_ptr() as usize;
         let mode = mode as usize;
         let ret = syscall2(SYS_ACCESS, path, mode);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -75,12 +72,7 @@ pub fn acct(filename: &str) -> Result<(), Errno> {
     unsafe {
         let filepath_ptr = filename.as_ptr() as usize;
         let ret = syscall1(SYS_ACCT, filepath_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -89,13 +81,9 @@ pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     unsafe {
         let buf_ptr = buf as *mut timex_t as usize;
         let ret = syscall1(SYS_ADJTIMEX, buf_ptr);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            let ret = ret as i32;
-            return Ok(ret);
-        }
+        check_errno(ret)?;
+        let ret = ret as i32;
+        return Ok(ret);
     }
 }
 
@@ -109,6 +97,10 @@ pub fn alarm(seconds: u32) -> u32 {
     }
 }
 
+pub fn arch_prctl() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Bind a name to a socket.
 pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     unsafe {
@@ -116,12 +108,20 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
         let addr_ptr = addr as *const sockaddr_in_t as usize;
         let addrlen = addrlen as usize;
         let ret = syscall3(SYS_BIND, sockfd, addr_ptr, addrlen);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
+    }
+}
+
+/// Perform a command on an extended BPF map or program
+pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
+    unsafe {
+        let cmd = cmd as usize;
+        let attr_ptr = attr as *mut bpf_attr_t as usize;
+        let size = size as usize;
+        let ret = syscall3(SYS_BPF, cmd, attr_ptr, size);
+        check_errno(ret)?;
+        let ret = ret as i32;
+        return Ok(ret);
     }
 }
 
@@ -129,20 +129,28 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
 pub fn brk(addr: usize) -> Result<(), Errno> {
     unsafe {
         let ret = syscall1(SYS_BRK, addr);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
-pub fn capget() {
-    // TODO(Shaohua): Not implemented
+/// Get capabilities of thread.
+pub fn capget(hdrp: &mut cap_user_header_t, data: &mut cap_user_data_t) -> Result<(), Errno> {
+    unsafe {
+        let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
+        let data_ptr = data as *mut cap_user_data_t as usize;
+        let ret = syscall2(SYS_CAPGET, hdrp_ptr, data_ptr);
+        check_errno(ret)
+    }
 }
 
-pub fn capset() {
-    // TODO(Shaohua): Not implemented
+/// Set capabilities of thread.
+pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<(), Errno> {
+    unsafe {
+        let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
+        let data_ptr = data as *const cap_user_data_t as usize;
+        let ret = syscall2(SYS_CAPSET, hdrp_ptr, data_ptr);
+        check_errno(ret)
+    }
 }
 
 /// Change working directory.
@@ -150,12 +158,7 @@ pub fn chdir(path: &str) -> Result<(), Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
         let ret = syscall1(SYS_CHDIR, path);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -165,12 +168,7 @@ pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
         let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
         let ret = syscall2(SYS_CHMOD, filename_ptr, mode);
-        if is_errno(ret) {
-            let ret = ret as Errno;
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -181,6 +179,44 @@ pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
         let user = user as usize;
         let group = group as usize;
         let ret = syscall3(SYS_CHOWN, filename_ptr, user, group);
+        check_errno(ret)
+    }
+}
+
+/// Change the root directory.
+pub fn chroot(path: &str) -> Result<(), Errno> {
+    unsafe {
+        let path_ptr = path.as_ptr() as usize;
+        let ret = syscall1(SYS_CHROOT, path_ptr);
+        check_errno(ret)
+    }
+}
+
+pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tx_ptr = tx as *mut timex_t as usize;
+        let ret = syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr);
+        check_errno(ret)
+    }
+}
+
+/// Get resolution(precision) of the specific clock.
+pub fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t ) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tp_ptr = tp as *mut timespec_t as usize;
+        let ret = syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr);
+        check_errno(ret)
+    }
+}
+
+/// Get time of specific clock.
+pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tp_ptr = tp as *mut timespec_t as usize;
+        let ret = syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -190,11 +226,30 @@ pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     }
 }
 
-/// Change the root directory.
-pub fn chroot(path: &str) -> Result<(), Errno> {
+/// High resolution sleep with a specific clock.
+pub fn clock_nanosleep(which_clock: clockid_t, flags: i32, rqtp: &timespec_t,
+                       rmtp: &mut timespec_t) -> Result<(), Errno>{
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
-        let ret = syscall1(SYS_CHROOT, path_ptr);
+        let which_clock = which_clock as usize;
+        let flags = flags as usize;
+        let rqtp_ptr = rqtp as *const timespec_t as usize;
+        let rmtp_ptr = rmtp as *mut timespec_t as usize;
+        let ret = syscall4(SYS_CLOCK_NANOSLEEP, which_clock, flags, rqtp_ptr, rmtp_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+/// Set time of specific clock.
+pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let which_clock = which_clock as usize;
+        let tp_ptr = tp as *const timespec_t as usize;
+        let ret = syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr);
         if is_errno(ret) {
             let ret = ret as Errno;
             return Err(ret);
@@ -282,12 +337,9 @@ pub fn dup(oldfd: i32) -> Result<isize, Errno> {
     unsafe {
         let oldfd = oldfd as usize;
         let ret = syscall1(SYS_DUP, oldfd);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            let ret = ret as isize;
-            return Ok(ret);
-        }
+        check_errno(ret)?;
+        let ret = ret as isize;
+        return Ok(ret);
     }
 }
 
@@ -298,11 +350,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
         let oldfd = oldfd as usize;
         let newfd = newfd as usize;
         let ret = syscall2(SYS_DUP2, oldfd, newfd);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -313,7 +361,61 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
         let newfd = newfd as usize;
         let flags = flags as usize;
         let ret = syscall3(SYS_DUP3, oldfd, newfd, flags);
+        check_errno(ret)
+    }
+}
+
+/// Execute a new program.
+pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+    unsafe {
+        let filename = c_str(filename).as_ptr() as usize;
+        let argv_ptr = argv.as_ptr() as usize;
+        let env_ptr = env.as_ptr() as usize;
+        let ret = syscall3(SYS_EXECVE, filename, argv_ptr, env_ptr);
+        check_errno(ret)
+    }
+}
+
+pub fn execveat() {
+    // TODO(Shaohua): Not implemented
+}
+
+/// Open an epoll file descriptor.
+pub fn epoll_create(size: i32) -> Result<i32, Errno> {
+    unsafe {
+        let size = size as usize;
+        let ret = syscall1(SYS_EPOLL_CREATE, size);
+        check_errno(ret)?;
+        let ret = ret as i32;
+        return Ok(ret);
+    }
+}
+
+/// Open an epoll file descriptor.
+pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let ret = syscall1(SYS_EPOLL_CREATE1, flags);
         if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
+}
+
+/// Control interface for an epoll file descriptor.
+pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Result<(), Errno> {
+    unsafe {
+        let epfd = epfd as usize;
+        let op = op as usize;
+        let fd = fd as usize;
+        let event_ptr = event as *mut epoll_event_t as usize;
+        let ret = syscall4(SYS_EPOLL_CTL, epfd, op, fd, event_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
             return Err(ret);
         } else {
             return Ok(());
@@ -321,46 +423,40 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     }
 }
 
-/// Execute a new program.
-/*
-pub fn execve(filename: &str, argv: &[str], env: &[str]) -> Result<(), Errno> {
+/// Wait for an I/O event on an epoll file descriptor.
+pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> Result<i32, Errno> {
     unsafe {
-        let filename = c_str(filename).as_ptr() as usize;
-        let argv_ptr = argv as *const [str] as usize;
-        let env_ptr = env as *const [str] as usize;
-        let ret = syscall3(SYS_EXECVE, filename, argv_ptr, env_ptr);
-        let reti = ret as isize;
-        if reti < 0 && reti >= -256 {
-            return Err(-reti);
+        let epfd = epfd as usize;
+        let op = op as usize;
+        let fd = fd as usize;
+        let events_ptr = events as *mut epoll_event_t as usize;
+        let ret = syscall4(SYS_EPOLL_PWAIT, epfd, op, fd, events_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
         } else {
-            return Ok(());
+            let ret = ret as i32;
+            return Ok(ret);
         }
     }
 }
-*/
-pub fn execve() -> Result<(), Errno> {
-    // TODO(Shaohua): Not implemented
-    Ok(())
-}
 
-pub fn epoll_create() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn epoll_create1() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn epoll_ctl() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn epoll_pwait() {
-    // TODO(Shaohua): Not implemented
-}
-
-pub fn epoll_wait() {
-    // TODO(Shaohua): Not implemented
+/// Wait for an I/O event on an epoll file descriptor.
+pub fn epoll_wait(epfd: i32, events: &mut epoll_event_t, maxevents: i32, timeout: i32) -> Result<i32, Errno> {
+    unsafe {
+        let epfd = epfd as usize;
+        let events_ptr = events as *mut epoll_event_t as usize;
+        let maxevents = maxevents as usize;
+        let timeout = timeout as usize;
+        let ret = syscall4(SYS_EPOLL_WAIT, epfd, events_ptr, maxevents, timeout);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
 /// Create a file descriptor for event notification.
@@ -425,6 +521,10 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn fadvice64() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Manipulate file space.
 pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     unsafe {
@@ -442,12 +542,38 @@ pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), 
     }
 }
 
-pub fn fanotify_init() {
-    // TODO(Shaohua): Not implemented.
+/// Create and initialize fanotify group.
+pub fn fanotify_init(flags: u32, event_f_flags: u32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        let event_f_flags = event_f_flags as usize;
+        let ret = syscall2(SYS_FANOTIFY_INIT, flags, event_f_flags);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            let ret = ret as i32;
+            return Ok(ret);
+        }
+    }
 }
 
-pub fn fanotify_mask() {
-    // TODO(Shaohua): Not implemented.
+/// Add, remove, or modify an fanotify mark on a filesystem object
+pub fn fanotify_mask(fanotify_fd: i32, flags: u32, mask: u64, fd: i32, pathname: &str) -> Result<(), Errno> {
+    unsafe {
+        let fanotify_fd = fanotify_fd as usize;
+        let flags = flags as usize;
+        let mask = mask as usize;
+        let fd = fd as usize;
+        let pathname_ptr = pathname.as_ptr() as usize;
+        let ret = syscall5(SYS_FANOTIFY_MARK, fanotify_fd, flags, mask, fd, pathname_ptr);
+        if is_errno(ret) {
+            let ret = ret as Errno;
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
 }
 
 /// Change working directory.
@@ -545,6 +671,10 @@ pub fn fgetxattr(fd: i32,name: &str, value: usize, size: size_t) -> Result<ssize
             return Ok(ret);
         }
     }
+}
+
+pub fn finit_module() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// List extended attribute names.
@@ -709,6 +839,14 @@ pub fn futimesat() {
     // TODO(Shaohua): Not implemented.
 }
 
+pub fn get_robust_list() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn get_thread_area() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Get extended attribute value.
 pub fn getxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     unsafe {
@@ -744,6 +882,10 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 
 /// Get directory entries.
 pub fn getdents() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn getdents64() {
     // TODO(Shaohua): Not implemented.
 }
 
@@ -1086,8 +1228,37 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn ioctl() {
+pub fn io_cancel() {
     // TODO(Shaohua): Not implemented
+}
+
+pub fn io_destroy() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_getevents() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_pgetevents() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_setup() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn io_submit() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let cmd = cmd as usize;
+        let ret = syscall3(SYS_IOCTL, fd, cmd, arg);
+        check_errno(ret)
+    }
 }
 
 /// Set port input/output permissions.
@@ -1105,6 +1276,14 @@ pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
 }
 
 pub fn iopl() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn kcmp() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn kexec_file_load() {
     // TODO(Shaohua): Not implemented
 }
 
@@ -1170,6 +1349,10 @@ pub fn llistxattr(path: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
             return Ok(ret);
         }
     }
+}
+
+pub fn lookup_dcookie() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Remove an extended attribute.
@@ -1316,6 +1499,14 @@ pub fn mbind() {
     // TODO(Shaohua): Not implemented
 }
 
+pub fn membarrier() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn memfd_create() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn mincore() {
     // TODO(Shaohua): Not implemented
 }
@@ -1445,6 +1636,10 @@ pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Resul
     }
 }
 
+pub fn modify_ldt() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Mount filesystem.
 pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: usize) -> Result<(), Errno> {
     unsafe {
@@ -1459,6 +1654,10 @@ pub fn mount(dev_name: &str, dir_name: &str, fs_type: &str, flags: usize, data: 
             return Ok(());
         }
     }
+}
+
+pub fn move_pages() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Set protection on a region of memory.
@@ -1621,6 +1820,10 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     }
 }
 
+pub fn name_to_handle_at() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// High resolution sleep.
 pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     unsafe {
@@ -1639,6 +1842,10 @@ pub fn newfstatat() {
     // TODO(Shaohua): Not implemented
 }
 
+pub fn nfsserverctl() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Open and possibly create a file.
 pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
@@ -1653,6 +1860,10 @@ pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
             return Ok(ret);
         }
     }
+}
+
+pub fn open_by_handle_at() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Open and possibly create a file within a directory.
@@ -1682,6 +1893,14 @@ pub fn pause() -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn perf_event_open() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn personality() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Create a pipe
@@ -1854,6 +2073,18 @@ pub fn preadv2(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize,
     }
 }
 
+pub fn prlimit64() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn process_vm_readv() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn process_vm_writev() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn pselect6() {
     // TODO(Shaohua): Not implemented
 }
@@ -1908,6 +2139,14 @@ pub fn pwritev2(fd: i32, vec: &iovec_t, vlen: usize, pos_l: usize, pos_h: usize,
             return Ok(ret);
         }
     }
+}
+
+pub fn query_module() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn quotactl() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Read from a file descriptor.
@@ -2052,8 +2291,12 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
     }
 }
 
+pub fn remap_file_pages() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Remove an extended attribute.
-pub fn rmovexattr(path: &str, name: &str) -> Result<(), Errno> {
+pub fn removexattr(path: &str, name: &str) -> Result<(), Errno> {
     unsafe {
         let path_ptr = path.as_ptr() as usize;
         let name_ptr = name.as_ptr() as usize;
@@ -2114,6 +2357,10 @@ pub fn renameat2(olddfd:i32, oldpath: &str, newdfd: i32, newpath: &str, flags: i
     }
 }
 
+pub fn restart_syscall() {
+    // TODO(Shaohua): Not implemented
+}
+
 /// Delete a directory.
 pub fn rmdir(path: &str) -> Result<(), Errno> {
     unsafe {
@@ -2128,12 +2375,23 @@ pub fn rmdir(path: &str) -> Result<(), Errno> {
     }
 }
 
+pub fn rseq() {
+    // TODO(Shaohua): Not implemented
+}
+
 pub fn rt_sigaction() -> Result<(), Errno> {
     // TODO(Shaohua): Not implemented
     Ok(())
 }
 
+pub fn rt_sigpending() {
+}
+
 pub fn rt_sigprocmask() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn rt_sigqueueinfo() {
     // TODO(Shaohua): Not implemented
 }
 
@@ -2141,17 +2399,18 @@ pub fn rt_sigreturn() {
     // TODO(Shaohua): Not implemented
 }
 
-/// Yield the processor.
-pub fn sched_yield() -> Result<(), Errno> {
-    unsafe {
-        let ret = syscall0(SYS_SCHED_YIELD);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
-    }
+pub fn rt_sigsuspend() {
+    // TODO(Shaohua): Not implemented
 }
+
+pub fn rt_sigtimedwait() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn rt_tgsigqueueinfo() {
+    // TODO(Shaohua): Not implemented
+}
+
 
 /// Get scheduling paramters.
 pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
@@ -2214,6 +2473,10 @@ pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
     }
 }
 
+pub fn sched_getattr() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Get scheduling parameter.
 pub fn sched_getschedular(pid: pid_t) -> Result<i32, Errno> {
     unsafe {
@@ -2260,6 +2523,10 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
     }
 }
 
+pub fn sched_setattr() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Set scheduling paramters.
 pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     unsafe {
@@ -2289,6 +2556,22 @@ pub fn sched_setschedular(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
             return Ok(());
         }
     }
+}
+
+/// Yield the processor.
+pub fn sched_yield() -> Result<(), Errno> {
+    unsafe {
+        let ret = syscall0(SYS_SCHED_YIELD);
+        if is_errno(ret) {
+            return Err(ret);
+        } else {
+            return Ok(());
+        }
+    }
+}
+
+pub fn seccomp() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Waiting one or more file descriptors become ready.
@@ -2368,6 +2651,10 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
     }
 }
 
+pub fn sendmmsg() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Send a message on a socket.
 pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
               addrlen: socklen_t) -> Result<ssize_t, Errno> {
@@ -2387,6 +2674,18 @@ pub fn sendto(sockfd: i32, buf: &[u8], flags: i32, dest_addr: &sockaddr_in_t,
             return Ok(ret);
         }
     }
+}
+
+pub fn set_robust_list() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn set_thread_area() {
+    // TODO(Shaohua): Not implemented.
+}
+
+pub fn set_tid_address() {
+    // TODO(Shaohua): Not implemented.
 }
 
 /// Set NIS domain name.
@@ -2586,6 +2885,10 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
     }
 }
 
+pub fn setrlimit() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Create a new session if the calling process is not a process group leader.
 pub fn setsid() -> Result<pid_t, Errno> {
     unsafe {
@@ -2615,6 +2918,10 @@ pub fn setsockopt(sockfd: i32, level: i32, optname: i32, optval: usize,
             return Ok(());
         }
     }
+}
+
+pub fn settimedop() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Set system time and timezone.
@@ -2735,6 +3042,10 @@ pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
     }
 }
 
+pub fn sigaltstack() {
+    // TODO(Shaohua): Not implemented.
+}
+
 /// Create a file descriptor to accept signals.
 pub fn signalfd(fd: i32, mask: &[sigset_t]) -> Result<i32, Errno> {
     unsafe {
@@ -2819,11 +3130,8 @@ pub fn stat(path: &str) -> Result<stat_t, Errno> {
         let mut statbuf = stat_t::default();
         let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
         let ret = syscall2(SYS_STAT, path, statbuf_ptr);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(statbuf);
-        }
+        check_errno(ret)?;
+        return Ok(statbuf);
     }
 }
 
@@ -2836,11 +3144,7 @@ pub fn statx(dirfd: i32, path: &str, flags: i32, mask: u32, buf: &mut statx_t) -
         let mask = mask as usize;
         let buf_ptr = buf as *mut statx_t as usize;
         let ret = syscall5(SYS_STATX, dirfd, path, flags, mask, buf_ptr);
-        if is_errno(ret) {
-            return Err(ret);
-        } else {
-            return Ok(());
-        }
+        check_errno(ret)
     }
 }
 
@@ -3047,6 +3351,26 @@ pub fn time() -> Result<time_t, Errno> {
             return Ok(ret);
         }
     }
+}
+
+pub fn timer_create() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_delete() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_getoverrun() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_gettime() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn timer_settime() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Create a timer that notifies via a file descriptor.
@@ -3336,6 +3660,18 @@ pub fn uselib(library: &str) -> Result<(), Errno> {
             return Ok(());
         }
     }
+}
+
+pub fn userfaultfd() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn ustat() {
+    // TODO(Shaohua): Not implemented
+}
+
+pub fn utime() {
+    // TODO(Shaohua): Not implemented
 }
 
 /// Change time timestamps with nanosecond precision.

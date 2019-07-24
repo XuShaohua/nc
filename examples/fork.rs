@@ -13,6 +13,15 @@ fn main() {
                 eprintln!("fork() error!");
             } else {
                 println!("child process: {}", pid);
+                let args = [""];
+                let env = [""];
+                match nc::execve("/bin/ls", &args, &env) {
+                    Ok(_) => {
+                    },
+                    Err(errno) => {
+                        eprintln!("`ls` got err: {}", errno);
+                    }
+                }
             }
         },
         Err(errno) => {

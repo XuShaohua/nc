@@ -592,13 +592,12 @@ pub fn fork() -> Result<pid_t, Errno> {
 }
 
 /// Get file status about a file descriptor.
-pub fn fstat(fd: i32) -> Result<stat_t, Errno> {
+pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
-        let mut statbuf = stat_t::default();
-        let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
+        let statbuf_ptr = statbuf as *mut stat_t as usize;
         return syscall2(SYS_FSTAT, fd, statbuf_ptr)
-            .map(|_ret| statbuf);
+            .map(|_ret| ());
     }
 }
 
@@ -1110,13 +1109,12 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 }
 
 /// Get file status about a file, without following symbolic.
-pub fn lstat(path: &str) -> Result<stat_t, Errno> {
+pub fn lstat(path: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
-        let mut statbuf = stat_t::default();
-        let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
+        let statbuf_ptr = statbuf as *mut stat_t as usize;
         return syscall2(SYS_STAT, path, statbuf_ptr)
-            .map(|_ret| statbuf);
+            .map(|_ret| ());
     }
 }
 
@@ -2312,14 +2310,12 @@ pub fn splice(fd_in: i32, off_in: &mut loff_t, fd_out: i32, off_out: &mut loff_t
 }
 
 /// Get file status about a file.
-pub fn stat(path: &str) -> Result<stat_t, Errno> {
+pub fn stat(path: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     unsafe {
         let path = c_str(path).as_ptr() as usize;
-        let mut statbuf = stat_t::default();
-        let statbuf_ptr = &mut statbuf as *mut stat_t as usize;
-        // TODO(Shaohua): Simplify
+        let statbuf_ptr = statbuf as *mut stat_t as usize;
         return syscall2(SYS_STAT, path, statbuf_ptr)
-            .map(|_| statbuf);
+            .map(|_| ());
     }
 }
 
@@ -2706,13 +2702,12 @@ pub fn userfaultfd(flags: i32) -> Result<i32, Errno> {
 }
 
 /// Get filesystem statistics
-pub fn ustat(dev: dev_t) -> Result<ustat_t, Errno> {
+pub fn ustat(dev: dev_t, ubuf: &mut ustat_t) -> Result<(), Errno> {
     unsafe {
         let dev = dev as usize;
-        let mut ubuf = ustat_t::default();
-        let ubuf_ptr = &mut ubuf as *mut ustat_t as usize;
+        let ubuf_ptr = ubuf as *mut ustat_t as usize;
         return syscall2(SYS_USTAT, dev, ubuf_ptr)
-            .map(|_ret| ubuf);
+            .map(|_ret| ());
     }
 }
 

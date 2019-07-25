@@ -635,8 +635,15 @@ pub fn futex() {
     // TODO(Shaohua): Not implemented.
 }
 
-pub fn futimesat() {
-    // TODO(Shaohua): Not implemented.
+/// Change timestamp of a file relative to a directory file discriptor.
+pub fn futimesat(dirfd: i32, pathname: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let pathname_ptr = pathname.as_ptr() as usize;
+        let times_ptr = times.as_ptr() as usize;
+        return syscall3(SYS_FUTIMESAT, dirfd, pathname_ptr, times_ptr)
+            .map(|_ret| ());
+    }
 }
 
 pub fn get_robust_list() {
@@ -2588,8 +2595,17 @@ pub fn wait4(pid: pid_t, wstatus: &mut i32, options: i32,
     }
 }
 
-pub fn waitid() {
-    // TODO(Shaohua): Not implemented
+/// Wait for process to change state
+pub fn waitid(which: i32, pid: pid_t, info: &mut siginfo_t, options: i32, ru: &mut rusage_t) -> Result<(), Errno> {
+    unsafe {
+        let which = which as usize;
+        let pid = pid as usize;
+        let info_ptr = info as *mut siginfo_t as usize;
+        let options = options as usize;
+        let ru_ptr = ru as *mut rusage_t as usize;
+        return syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr)
+            .map(|_ret| ());
+    }
 }
 
 /// Write to a file descriptor.
@@ -2680,8 +2696,13 @@ pub fn uselib(library: &str) -> Result<(), Errno> {
     }
 }
 
-pub fn userfaultfd() {
-    // TODO(Shaohua): Not implemented
+/// Create a file descriptor to handle page faults in user space.
+pub fn userfaultfd(flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let flags = flags as usize;
+        return syscall1(SYS_USERFAULTFD, flags)
+            .map(|ret| ret as i32);
+    }
 }
 
 /// Get filesystem statistics
@@ -2698,9 +2719,19 @@ pub fn ustat(dev: dev_t) -> Result<ustat_t, Errno> {
 /// Change file last access and modification time.
 pub fn utime(filename: &str, times: &utimbuf_t) -> Result<(), Errno> {
     unsafe {
-        let filename = c_str(filename).as_ptr() as usize;
+        let filename_ptr = c_str(filename).as_ptr() as usize;
         let times_ptr = times as *const utimbuf_t as usize;
-        return syscall2(SYS_UTIME, filename, times_ptr)
+        return syscall2(SYS_UTIME, filename_ptr, times_ptr)
+            .map(|_ret| ());
+    }
+}
+
+/// Change file last access and modification time.
+pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
+    unsafe {
+        let filename_ptr = c_str(filename).as_ptr() as usize;
+        let times_ptr = times.as_ptr() as usize;
+        return syscall2(SYS_UTIMES, filename_ptr, times_ptr)
             .map(|_ret| ());
     }
 }

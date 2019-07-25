@@ -517,3 +517,14 @@ pub struct utimbuf_t {
     pub actime: time_t,
     pub modtime: time_t,
 }
+
+/// siginfo.h
+// TODO(Shaohua): Add optional pad.
+#[derive(Default)]
+pub struct siginfo_t {
+    pub si_signo: i32,
+    pub si_errno: i32,
+    pub si_code: i32,
+    // TODO(Shaohua): Add union fields.
+    //pub si_fields:
+}

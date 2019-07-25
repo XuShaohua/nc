@@ -2022,7 +2022,6 @@ pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
 
 /// Set user identify used for filesystem checkes.
 pub fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
-    // TODO(Shaohua): Simplify return value.
     unsafe {
         let fsuid = fsuid as usize;
         return syscall1(SYS_SETFSUID, fsuid)
@@ -2144,8 +2143,14 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
     }
 }
 
-pub fn setrlimit() {
-    // TODO(Shaohua): Not implemented.
+/// Set resource limit
+pub fn setrlimit(resource: u32, rlimit: &rlimit_t) -> Result<(), Errno> {
+    unsafe {
+        let resource = resource as usize;
+        let rlimit_ptr = rlimit as *const rlimit_t as usize;
+        return syscall2(SYS_SETRLIMIT, resource, rlimit_ptr)
+            .map(|_ret| ());
+    }
 }
 
 /// Create a new session if the calling process is not a process group leader.
@@ -2167,10 +2172,6 @@ pub fn setsockopt(sockfd: i32, level: i32, optname: i32, optval: usize,
         return syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen)
             .map(|_ret| ());
     }
-}
-
-pub fn settimedop() {
-    // TODO(Shaohua): Not implemented
 }
 
 /// Set system time and timezone.
@@ -2252,8 +2253,14 @@ pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn sigaltstack() {
-    // TODO(Shaohua): Not implemented.
+/// Get/set signal stack context.
+pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
+    unsafe {
+        let uss_ptr = uss as *const sigaltstack_t as usize;
+        let uoss_ptr = uoss as *mut sigaltstack_t as usize;
+        return syscall2(SYS_SIGALTSTACK, uss_ptr, uoss_ptr)
+            .map(|_ret| ());
+    }
 }
 
 /// Create a file descriptor to accept signals.
@@ -2290,8 +2297,16 @@ pub fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> 
     }
 }
 
-pub fn socketpair() {
-    // TODO(Shaohua): Not implemented
+/// Create a pair of connected socket.
+pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Result<(), Errno> {
+    unsafe {
+        let domain = domain as usize;
+        let type_ = type_ as usize;
+        let protocol = protocol as usize;
+        let sv_ptr = sv.as_ptr() as usize;
+        return syscall4(SYS_SOCKETPAIR, domain, type_, protocol, sv_ptr)
+            .map(|_ret| ());
+    }
 }
 
 /// Splice data to/from pipe.

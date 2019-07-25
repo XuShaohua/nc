@@ -528,3 +528,11 @@ pub struct siginfo_t {
     // TODO(Shaohua): Add union fields.
     //pub si_fields:
 }
+
+/// signal.h
+pub struct sigaltstack_t {
+    pub ss_sp: usize,
+	pub ss_flags: i32,
+	pub ss_size: size_t,
+}
+

@@ -18,6 +18,7 @@ pub type blkcnt_t = isize;
 pub type compat_fsid_t = [i32; 2];
 pub type clock_t = isize;
 pub type clockid_t = i32;
+pub type daddr_t = i32;
 pub type dev_t = usize;
 pub type gid_t = u32;
 pub type ino_t = usize;
@@ -26,6 +27,7 @@ pub type loff_t = i64;
 pub type mode_t = u32;
 pub type msglen_t = usize;
 pub type msgqnum_t = usize;
+pub type nfds_t = usize;
 pub type nlink_t = usize;
 pub type off_t = isize;
 pub type pid_t = i32;
@@ -37,7 +39,6 @@ pub type size_t = usize;
 pub type socklen_t = u32;
 pub type ssize_t = isize;
 pub type time_t = isize;
-pub type nfds_t = usize;
 pub type uid_t = u32;
 pub type rlimit_t = usize;
 pub type shmatt_t = usize; // Type to count number of shared memory attaches.
@@ -502,3 +503,17 @@ pub struct flock64 {
     pub l_pid: pid_t,
 }
 
+#[derive(Debug)]
+#[derive(Default)]
+pub struct ustat_t {
+    f_tfree: daddr_t,
+    f_tinode: ino_t,
+	pub f_fname: [u8; 6],
+    pub f_fpack: [u8; 6],
+}
+
+/// utime.h
+pub struct utimbuf_t {
+    pub actime: time_t,
+    pub modtime: time_t,
+}

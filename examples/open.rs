@@ -6,6 +6,7 @@ fn main() {
     let fd = nc::open(path,
                       nc::O_CREAT | nc::O_RDWR,
                       nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH)
+        .map_err(|err| eprintln!("err: {}", err))
         .expect("Failed to open file!");
     println!("fd: {:?}", fd);
 

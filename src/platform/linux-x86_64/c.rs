@@ -1,18 +1,19 @@
+extern crate alloc;
 
+use alloc::vec::Vec;
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
 use super::consts;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
-fn c_str(s: &str) -> [u8; 128] {
-    // TODO(Shaohua): Simplify ops
-    let mut buf: [u8; 128] = [42; 128];
-    for (i, b) in s.bytes().enumerate() {
-        buf[i] = b;
+fn c_str(s: &str) -> Vec<u8> {
+    let str_len = s.len();
+    let mut buf : Vec<u8> = Vec::with_capacity(str_len + 1);
+    for b in s.bytes() {
+        buf.push(b);
     }
-    // TODO(Shaohua): Assert length
-    buf[s.len()] = 0;
+    buf.push(0);
     return buf;
 }
 
@@ -2683,12 +2684,25 @@ pub fn userfaultfd() {
     // TODO(Shaohua): Not implemented
 }
 
-pub fn ustat() {
-    // TODO(Shaohua): Not implemented
+/// Get filesystem statistics
+pub fn ustat(dev: dev_t) -> Result<ustat_t, Errno> {
+    unsafe {
+        let dev = dev as usize;
+        let mut ubuf = ustat_t::default();
+        let ubuf_ptr = &mut ubuf as *mut ustat_t as usize;
+        return syscall2(SYS_USTAT, dev, ubuf_ptr)
+            .map(|_ret| ubuf);
+    }
 }
 
-pub fn utime() {
-    // TODO(Shaohua): Not implemented
+/// Change file last access and modification time.
+pub fn utime(filename: &str, times: &utimbuf_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = c_str(filename).as_ptr() as usize;
+        let times_ptr = times as *const utimbuf_t as usize;
+        return syscall2(SYS_UTIME, filename, times_ptr)
+            .map(|_ret| ());
+    }
 }
 
 /// Change time timestamps with nanosecond precision.

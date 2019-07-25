@@ -3,7 +3,7 @@ extern crate nc;
 
 fn main() {
     let fd = nc::open("/etc/passwd", nc::O_RDONLY, 0)
-        .expect("Failed to open file");
+        .expect("failed to open file");
 
     let mut buf: [u8; 256] = [0; 256];
     loop {

@@ -6,7 +6,7 @@ homepage = "https://github.com/xushaohua/nc"
 repository = "https://github.com/xushaohua/nc"
 description = "Process native call without `std`"
 edition = "2018"
-license = "gpl3"
+license = "Apache-2.0"
 license_file = "LICENSE"
 publish = true
 

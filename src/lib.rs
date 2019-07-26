@@ -4,6 +4,8 @@
 
 #![allow(non_camel_case_types)]
 #![feature(asm)]
+#![feature(const_raw_ptr_deref)]
+#![feature(const_slice_len)]
 #![no_std]
 
 pub mod c_str;

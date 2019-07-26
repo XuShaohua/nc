@@ -2,8 +2,9 @@
 extern crate nc;
 
 fn main() {
-    match nc::stat("/etc/passwd") {
-        Ok(statbuf) => {
+    let mut statbuf = nc::stat_t::default();
+    match nc::stat("/etc/passwd", &mut statbuf) {
+        Ok(_) => {
             println!("s: {:?}", statbuf);
         },
         Err(errno) => {

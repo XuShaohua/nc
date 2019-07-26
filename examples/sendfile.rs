@@ -12,7 +12,8 @@ fn main() {
                           nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH)
         .expect("Failed to open passwd copy file");
 
-    let stat = nc::fstat(in_fd)
+    let mut stat = nc::stat_t::default();
+    nc::fstat(in_fd, &mut stat)
         .expect("Failed to get file stat!");
     println!("stat: {:?}", stat);
 

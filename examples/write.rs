@@ -10,7 +10,7 @@ fn main() {
         },
         Err(errno) => {
             println!("errno: {}", errno);
-            if errno == nc::ERR_BADF {
+            if errno == nc::EBADF {
                 println!("Error: bad file descriptor");
             }
         }

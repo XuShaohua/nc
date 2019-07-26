@@ -7,15 +7,6 @@ use super::types::*;
 use super::consts;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
-fn c_str(s: &str) -> [u8; 128] {
-    let mut buf: [u8; 128] = [42; 128];
-    for (i, b) in s.bytes().enumerate() {
-        buf[i] = b;
-    }
-    buf[s.len()] = 0;
-    return buf;
-}
-
 /// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
     unsafe {

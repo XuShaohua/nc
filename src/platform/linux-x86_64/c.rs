@@ -31,20 +31,22 @@ pub fn accept4(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t, f
 }
 
 /// Check user's permission for a file.
-pub fn access(path: &str, mode: i32) -> Result<(), Errno> {
+pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path).as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall2(SYS_ACCESS, path, mode)
+        return syscall2(SYS_ACCESS, filename_ptr, mode)
             .map(|_ret| ());
     }
 }
 
 /// Switch process accounting.
-pub fn acct(path: &str) -> Result<(), Errno> {
+pub fn acct(filename: &str) -> Result<(), Errno> {
     unsafe {
-        let filepath_ptr = path.as_ptr() as usize;
-        return syscall1(SYS_ACCT, filepath_ptr)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall1(SYS_ACCT, filename_ptr)
             .map(|_ret| ());
     }
 }
@@ -121,40 +123,44 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 }
 
 /// Change working directory.
-pub fn chdir(path: &str) -> Result<(), Errno> {
+pub fn chdir(filename: &str) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path).as_ptr() as usize;
-        return syscall1(SYS_CHDIR, path)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall1(SYS_CHDIR, filename_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Change permissions of a file.
-pub fn chmod(path: &str, mode: mode_t) -> Result<(), Errno> {
+pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall2(SYS_CHMOD, path_ptr, mode)
+        return syscall2(SYS_CHMOD, filename_ptr, mode)
             .map(|_ret| ());
     }
 }
 
 /// Change ownership of a file.
-pub fn chown(path: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
+pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let user = user as usize;
         let group = group as usize;
-        return syscall3(SYS_CHOWN, path_ptr, user, group)
+        return syscall3(SYS_CHOWN, filename_ptr, user, group)
             .map(|_ret| ());
     }
 }
 
 /// Change the root directory.
-pub fn chroot(path: &str) -> Result<(), Errno> {
+pub fn chroot(filename: &str) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
-        return syscall1(SYS_CHROOT, path_ptr)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall1(SYS_CHROOT, filename_ptr)
             .map(|_ret| ());
     }
 }
@@ -253,11 +259,12 @@ pub fn copy_file_range(fd_in: i32, off_in: &mut loff_t, fd_out: i32, off_out: &m
 
 /// Create a file.
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
-pub fn creat(path: &str, mode: mode_t) -> Result<i32, Errno> {
+pub fn creat(filename: &str, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
-        let path = CString::new(path).as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall2(SYS_CREAT, path, mode)
+        return syscall2(SYS_CREAT, filename_ptr, mode)
             .map(|ret| ret as i32);
     }
 }
@@ -295,16 +302,18 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 }
 
 /// Execute a new program.
-pub fn execve(path: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path).as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let argv_ptr = argv.as_ptr() as usize;
         let env_ptr = env.as_ptr() as usize;
-        return syscall3(SYS_EXECVE, path, argv_ptr, env_ptr)
+        return syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr)
             .map(|_ret| ());
     }
 }
 
+/// Execute a new program relative to a directory file descriptor.
 pub fn execveat() {
     // TODO(Shaohua): Not implemented
 }
@@ -399,12 +408,13 @@ pub fn exit_group(status: i32) {
 }
 
 /// Check user's permission for a file.
-pub fn faccessat(dfd: i32, path: &str, mode: i32) -> Result<(), Errno> {
+pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     unsafe {
         let dfd = dfd as usize;
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall3(SYS_FACCESSAT, dfd, path_ptr, mode)
+        return syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode)
             .map(|_ret| ());
     }
 }
@@ -436,14 +446,16 @@ pub fn fanotify_init(flags: u32, event_f_flags: u32) -> Result<i32, Errno> {
 }
 
 /// Add, remove, or modify an fanotify mark on a filesystem object
-pub fn fanotify_mask(fanotify_fd: i32, flags: u32, mask: u64, fd: i32, pathname: &str) -> Result<(), Errno> {
+pub fn fanotify_mask(fanotify_fd: i32, flags: u32, mask: u64, fd: i32,
+                     filename: &str) -> Result<(), Errno> {
     unsafe {
         let fanotify_fd = fanotify_fd as usize;
         let flags = flags as usize;
         let mask = mask as usize;
         let fd = fd as usize;
-        let pathname_ptr = pathname.as_ptr() as usize;
-        return syscall5(SYS_FANOTIFY_MARK, fanotify_fd, flags, mask, fd, pathname_ptr)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall5(SYS_FANOTIFY_MARK, fanotify_fd, flags, mask, fd, filename_ptr)
             .map(|_ret| ());
     }
 }
@@ -482,12 +494,13 @@ pub fn fdatasync(fd: i32) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
-pub fn fchmodat(dirfd: i32, path: &str, mode: mode_t) -> Result<(), Errno> {
+pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall3(SYS_FCHMODAT, dirfd, path_ptr, mode)
+        return syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode)
             .map(|_ret| ());
     }
 }
@@ -561,14 +574,15 @@ pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
-pub fn fchownat(dirfd: i32, path: &str, user: uid_t, group: gid_t, flag: i32) -> Result<(), Errno> {
+pub fn fchownat(dirfd: i32, filename: &str, user: uid_t, group: gid_t, flag: i32) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let user = user as usize;
         let group = group as usize;
         let flag = flag as usize;
-        return syscall5(SYS_FCHOWNAT, dirfd, path_ptr, user, group, flag)
+        return syscall5(SYS_FCHOWNAT, dirfd, filename_ptr, user, group, flag)
             .map(|_ret| ());
     }
 }
@@ -625,12 +639,13 @@ pub fn futex() {
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
-pub fn futimesat(dirfd: i32, pathname: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
+pub fn futimesat(dirfd: i32, filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let pathname_ptr = pathname.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let times_ptr = times.as_ptr() as usize;
-        return syscall3(SYS_FUTIMESAT, dirfd, pathname_ptr, times_ptr)
+        return syscall3(SYS_FUTIMESAT, dirfd, filename_ptr, times_ptr)
             .map(|_ret| ());
     }
 }
@@ -644,12 +659,14 @@ pub fn get_thread_area() {
 }
 
 /// Get extended attribute value.
-pub fn getxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let name = CString::new(name);
         let name_ptr = name.as_ptr() as usize;
         let size = size as usize;
-        return syscall4(SYS_GETXATTR, path_ptr, name_ptr, value, size)
+        return syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size)
             .map(|ret| ret as ssize_t);
     }
 }
@@ -885,12 +902,13 @@ pub fn getuid() -> uid_t {
 }
 
 /// Add a watch to an initialized inotify instance.
-pub fn inotify_add_watch(fd: i32, path: &str, mask: u32) -> Result<i32, Errno> {
+pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errno> {
     unsafe {
         let fd = fd as usize;
-        let path = CString::new(path).as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mask = mask as usize;
-        return syscall3(SYS_INOTIFY_ADD_WATCH, fd, path, mask)
+        return syscall3(SYS_INOTIFY_ADD_WATCH, fd, filename_ptr, mask)
             .map(|ret| ret as i32);
     }
 }
@@ -987,34 +1005,38 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
-pub fn lchown(path: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
+pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let user = user as usize;
         let group = group as usize;
-        return syscall3(SYS_LCHOWN, path_ptr, user, group)
+        return syscall3(SYS_LCHOWN, filename_ptr, user, group)
             .map(|_ret| ());
     }
 }
 
 /// Get extended attribute value.
-pub fn lgetxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub fn lgetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let name = CString::new(name);
         let name_ptr = name.as_ptr() as usize;
         let size = size as usize;
-        return syscall4(SYS_LGETXATTR, path_ptr, name_ptr, value, size)
+        return syscall4(SYS_LGETXATTR, filename_ptr, name_ptr, value, size)
             .map(|ret| ret as ssize_t);
     }
 }
 
 /// List extended attribute names.
-pub fn llistxattr(path: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn llistxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let list_ptr = list.as_mut_ptr() as usize;
         let len = list.len();
-        return syscall3(SYS_LLISTXATTR, path_ptr, list_ptr, len)
+        return syscall3(SYS_LLISTXATTR, filename_ptr, list_ptr, len)
             .map(|ret| ret as ssize_t);
     }
 }
@@ -1024,46 +1046,52 @@ pub fn lookup_dcookie() {
 }
 
 /// Remove an extended attribute.
-pub fn lrmovexattr(path: &str, name: &str) -> Result<(), Errno> {
+pub fn lrmovexattr(filename: &str, name: &str) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let name = CString::new(name);
         let name_ptr = name.as_ptr() as usize;
-        return syscall2(SYS_LREMOVEXATTR, path_ptr, name_ptr)
+        return syscall2(SYS_LREMOVEXATTR, filename_ptr, name_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Set extended attribute value.
-pub fn lsetxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub fn lsetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let name = CString::new(name);
         let name_ptr = name.as_ptr() as usize;
         let size = size as usize;
-        return syscall4(SYS_LSETXATTR, path_ptr, name_ptr, value, size)
+        return syscall4(SYS_LSETXATTR, filename_ptr, name_ptr, value, size)
             .map(|ret| ret as ssize_t);
     }
 }
 
 /// Make a new name for a file.
-pub fn link(oldpath: &str, newpath: &str) -> Result<(), Errno> {
+pub fn link(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
     unsafe {
-        let oldpath = CString::new(oldpath);
-        let oldpath_ptr = oldpath.as_ptr() as usize;
-        let newpath = CString::new(newpath);
-        let newpath_ptr = newpath.as_ptr() as usize;
-        return syscall2(SYS_LINK, oldpath_ptr, newpath_ptr)
+        let oldfilename = CString::new(oldfilename);
+        let oldfilename_ptr = oldfilename.as_ptr() as usize;
+        let newfilename = CString::new(newfilename);
+        let newfilename_ptr = newfilename.as_ptr() as usize;
+        return syscall2(SYS_LINK, oldfilename_ptr, newfilename_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Make a new name for a file.
-pub fn linkat(olddfd: i32, oldpath: &str, newdfd: i32, newpath: &str) -> Result<(), Errno> {
+pub fn linkat(olddfd: i32, oldfilename: &str, newdfd: i32, newfilename: &str) -> Result<(), Errno> {
     unsafe {
         let olddfd = olddfd as usize;
-        let oldpath_ptr = oldpath.as_ptr() as usize;
+        let oldfilename = CString::new(oldfilename);
+        let oldfilename_ptr = oldfilename.as_ptr() as usize;
         let newdfd = newdfd as usize;
-        let newpath_ptr = newpath.as_ptr() as usize;
-        return syscall4(SYS_LINKAT, olddfd, oldpath_ptr, newdfd, newpath_ptr)
+        let newfilename = CString::new(newfilename);
+        let newfilename_ptr = newfilename.as_ptr() as usize;
+        return syscall4(SYS_LINKAT, olddfd, oldfilename_ptr, newdfd, newfilename_ptr)
             .map(|_ret| ());
     }
 }
@@ -1079,12 +1107,13 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 }
 
 /// List extended attribute names.
-pub fn listxattr(path: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn listxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let list_ptr = list.as_mut_ptr() as usize;
         let len = list.len();
-        return syscall3(SYS_LISTXATTR, path_ptr, list_ptr, len)
+        return syscall3(SYS_LISTXATTR, filename_ptr, list_ptr, len)
             .map(|ret| ret as ssize_t);
     }
 }
@@ -1101,12 +1130,12 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 }
 
 /// Get file status about a file, without following symbolic.
-pub fn lstat(path: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
+pub fn lstat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let statbuf_ptr = statbuf as *mut stat_t as usize;
-        return syscall2(SYS_STAT, path_ptr, statbuf_ptr)
+        return syscall2(SYS_STAT, filename_ptr, statbuf_ptr)
             .map(|_ret| ());
     }
 }
@@ -1138,47 +1167,49 @@ pub fn mincore() {
 }
 
 /// Create a directory.
-pub fn mkdir(path: &str, mode: mode_t) -> Result<(), Errno> {
+pub fn mkdir(filename: &str, mode: mode_t) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall2(SYS_MKDIR, path_ptr, mode)
+        return syscall2(SYS_MKDIR, filename_ptr, mode)
             .map(|_ret| ());
     }
 }
 
 /// Create a directory.
-pub fn mkdirat(dirfd: i32, path: &str, mode: mode_t) -> Result<(), Errno> {
+pub fn mkdirat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
-        return syscall3(SYS_MKDIRAT, dirfd, path_ptr, mode)
+        return syscall3(SYS_MKDIRAT, dirfd, filename_ptr, mode)
             .map(|_ret| ());
     }
 }
 
 /// Create a special or ordinary file.
-pub fn mknod(path: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
+pub fn mknod(filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
         let dev = dev as usize;
-        return syscall3(SYS_MKNOD, path_ptr, mode, dev)
+        return syscall3(SYS_MKNOD, filename_ptr, mode, dev)
             .map(|_ret| ());
     }
 }
 
 /// Create a special or ordinary file.
-pub fn mknodat(dirfd: i32, path: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
+pub fn mknodat(dirfd: i32, filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let mode = mode as usize;
         let dev = dev as usize;
-        return syscall4(SYS_MKNODAT, dirfd, path_ptr, mode, dev)
+        return syscall4(SYS_MKNODAT, dirfd, filename_ptr, mode, dev)
             .map(|_ret| ());
     }
 }
@@ -1381,13 +1412,13 @@ pub fn nfsserverctl() {
 }
 
 /// Open and possibly create a file.
-pub fn open(path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
+pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let flags = flags as usize;
         let mode = mode as usize;
-        return syscall3(SYS_OPEN, path_ptr, flags, mode)
+        return syscall3(SYS_OPEN, filename_ptr, flags, mode)
             .map(|ret| ret as i32);
     }
 }
@@ -1397,14 +1428,14 @@ pub fn open_by_handle_at() {
 }
 
 /// Open and possibly create a file within a directory.
-pub fn openat(dirfd: i32, path: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
+pub fn openat(dirfd: i32, filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let flags = flags as usize;
         let mode = mode as usize;
-        return syscall4(SYS_OPENAT, dirfd, path_ptr, flags, mode)
+        return syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode)
             .map(|ret| ret as i32);
     }
 }
@@ -1628,24 +1659,26 @@ pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
 }
 
 /// Read value of a symbolic link.
-pub fn readlink(path: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn readlink(filename: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let buf_ptr = buf.as_mut_ptr() as usize;
         let buf_len = buf.len();
-        return syscall3(SYS_READLINK, path_ptr, buf_ptr, buf_len)
+        return syscall3(SYS_READLINK, filename_ptr, buf_ptr, buf_len)
             .map(|ret| ret as ssize_t);
     }
 }
 
 /// Read value of a symbolic link.
-pub fn readlinkat(dirfd: i32, path: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn readlinkat(dirfd: i32, filename: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let buf_ptr = buf.as_mut_ptr() as usize;
         let buf_len = buf.len();
-        return syscall4(SYS_READLINKAT, dirfd, path_ptr, buf_ptr, buf_len)
+        return syscall4(SYS_READLINKAT, dirfd, filename_ptr, buf_ptr, buf_len)
             .map(|ret| ret as ssize_t);
     }
 }
@@ -1708,52 +1741,53 @@ pub fn remap_file_pages() {
 }
 
 /// Remove an extended attribute.
-pub fn removexattr(path: &str, name: &str) -> Result<(), Errno> {
+pub fn removexattr(filename: &str, name: &str) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let name_ptr = name.as_ptr() as usize;
-        return syscall2(SYS_REMOVEXATTR, path_ptr, name_ptr)
+        return syscall2(SYS_REMOVEXATTR, filename_ptr, name_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Change name or location of a file.
-pub fn rename(oldpath: &str, newpath: &str) -> Result<(), Errno> {
+pub fn rename(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
     unsafe {
-        let oldpath = CString::new(oldpath);
-        let oldpath_ptr = oldpath.as_ptr() as usize;
-        let newpath = CString::new(newpath);
-        let newpath_ptr = newpath.as_ptr() as usize;
-        return syscall2(SYS_RENAME, oldpath_ptr, newpath_ptr)
+        let oldfilename = CString::new(oldfilename);
+        let oldfilename_ptr = oldfilename.as_ptr() as usize;
+        let newfilename = CString::new(newfilename);
+        let newfilename_ptr = newfilename.as_ptr() as usize;
+        return syscall2(SYS_RENAME, oldfilename_ptr, newfilename_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Change name or location of a file.
-pub fn renameat(olddfd:i32, oldpath: &str, newdfd: i32, newpath: &str) -> Result<(), Errno> {
-    unsafe {
-        let olddfd = olddfd as usize;
-        let oldpath = CString::new(oldpath);
-        let oldpath_ptr = oldpath.as_ptr() as usize;
-        let newdfd = newdfd as usize;
-        let newpath = CString::new(newpath);
-        let newpath_ptr = newpath.as_ptr() as usize;
-        return syscall4(SYS_RENAMEAT, olddfd, oldpath_ptr, newdfd, newpath_ptr)
-            .map(|_ret| ());
-    }
-}
-
-/// Change name or location of a file.
-pub fn renameat2(olddfd:i32, oldpath: &str, newdfd: i32, newpath: &str, flags: i32) -> Result<(), Errno> {
+pub fn renameat(olddfd:i32, oldfilename: &str, newdfd: i32, newfilename: &str) -> Result<(), Errno> {
     unsafe {
         let olddfd = olddfd as usize;
-        let oldpath = CString::new(oldpath);
-        let oldpath_ptr = oldpath.as_ptr() as usize;
+        let oldfilename = CString::new(oldfilename);
+        let oldfilename_ptr = oldfilename.as_ptr() as usize;
         let newdfd = newdfd as usize;
-        let newpath = CString::new(newpath);
-        let newpath_ptr = newpath.as_ptr() as usize;
+        let newfilename = CString::new(newfilename);
+        let newfilename_ptr = newfilename.as_ptr() as usize;
+        return syscall4(SYS_RENAMEAT, olddfd, oldfilename_ptr, newdfd, newfilename_ptr)
+            .map(|_ret| ());
+    }
+}
+
+/// Change name or location of a file.
+pub fn renameat2(olddfd:i32, oldfilename: &str, newdfd: i32, newfilename: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let olddfd = olddfd as usize;
+        let oldfilename = CString::new(oldfilename);
+        let oldfilename_ptr = oldfilename.as_ptr() as usize;
+        let newdfd = newdfd as usize;
+        let newfilename = CString::new(newfilename);
+        let newfilename_ptr = newfilename.as_ptr() as usize;
         let flags = flags as usize;
-        return syscall5(SYS_RENAMEAT2, olddfd, oldpath_ptr, newdfd, newpath_ptr, flags)
+        return syscall5(SYS_RENAMEAT2, olddfd, oldfilename_ptr, newdfd, newfilename_ptr, flags)
             .map(|_ret| ());
     }
 }
@@ -1763,11 +1797,11 @@ pub fn restart_syscall() {
 }
 
 /// Delete a directory.
-pub fn rmdir(path: &str) -> Result<(), Errno> {
+pub fn rmdir(filename: &str) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
-        return syscall1(SYS_RMDIR, path_ptr)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall1(SYS_RMDIR, filename_ptr)
             .map(|_ret| ());
     }
 }
@@ -2199,12 +2233,13 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
-pub fn setxattr(path: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub fn setxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let name_ptr = name.as_ptr() as usize;
         let size = size as usize;
-        return syscall4(SYS_SETXATTR, path_ptr, name_ptr, value, size)
+        return syscall4(SYS_SETXATTR, filename_ptr, name_ptr, value, size)
             .map(|ret| ret as ssize_t);
     }
 }
@@ -2330,57 +2365,58 @@ pub fn splice(fd_in: i32, off_in: &mut loff_t, fd_out: i32, off_out: &mut loff_t
 }
 
 /// Get file status about a file.
-pub fn stat(path: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
+pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let statbuf_ptr = statbuf as *mut stat_t as usize;
-        return syscall2(SYS_STAT, path_ptr, statbuf_ptr)
+        return syscall2(SYS_STAT, filename_ptr, statbuf_ptr)
             .map(|_| ());
     }
 }
 
 /// Get file status about a file (extended).
-pub fn statx(dirfd: i32, path: &str, flags: i32, mask: u32, buf: &mut statx_t) -> Result<(), Errno> {
+pub fn statx(dirfd: i32, filename: &str, flags: i32, mask: u32, buf: &mut statx_t) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let flags = flags as usize;
         let mask = mask as usize;
         let buf_ptr = buf as *mut statx_t as usize;
-        return syscall5(SYS_STATX, dirfd, path_ptr, flags, mask, buf_ptr)
+        return syscall5(SYS_STATX, dirfd, filename_ptr, flags, mask, buf_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Get filesystem statistics.
-pub fn statfs(path: &str, buf: &mut statfs_t) -> Result<(), Errno> {
+pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     unsafe {
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let buf_ptr = buf as *mut statfs_t as usize;
-        return syscall2(SYS_STATFS, path_ptr, buf_ptr)
+        return syscall2(SYS_STATFS, filename_ptr, buf_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Stop swapping to file/device.
-pub fn swapoff(path: &str) -> Result<(), Errno> {
+pub fn swapoff(filename: &str) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
-        return syscall1(SYS_SWAPOFF, path_ptr)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall1(SYS_SWAPOFF, filename_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Start swapping to file/device.
-pub fn swapon(path: &str, flags: i32) -> Result<(), Errno> {
+pub fn swapon(filename: &str, flags: i32) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let flags = flags as usize;
-        return syscall2(SYS_SWAPON, path_ptr, flags)
+        return syscall2(SYS_SWAPON, filename_ptr, flags)
             .map(|_ret| ());
     }
 }
@@ -2556,12 +2592,12 @@ pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 }
 
 /// Truncate a file to a specified length.
-pub fn truncate(path: &str, length: off_t) -> Result<(), Errno> {
+pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let length = length as usize;
-        return syscall2(SYS_TRUNCATE, path_ptr, length)
+        return syscall2(SYS_TRUNCATE, filename_ptr, length)
             .map(|_ret| ());
     }
 }
@@ -2680,21 +2716,23 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
-pub fn unlink(pathname: &str) -> Result<(), Errno> {
+pub fn unlink(filename: &str) -> Result<(), Errno> {
     unsafe {
-        let pathname_ptr = pathname.as_ptr() as usize;
-        return syscall1(SYS_UNLINK, pathname_ptr)
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        return syscall1(SYS_UNLINK, filename_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Delete a name and possibly the file it refers to.
-pub fn unlinkat(dfd: i32, pathname: &str, flag: i32) -> Result<(), Errno> {
+pub fn unlinkat(dfd: i32, filename: &str, flag: i32) -> Result<(), Errno> {
     unsafe {
         let dfd = dfd as usize;
-        let pathname_ptr = pathname.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let flag = flag as usize;
-        return syscall3(SYS_UNLINKAT, dfd, pathname_ptr, flag)
+        return syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag)
             .map(|_ret| ());
     }
 }
@@ -2737,35 +2775,36 @@ pub fn ustat(dev: dev_t, ubuf: &mut ustat_t) -> Result<(), Errno> {
 }
 
 /// Change file last access and modification time.
-pub fn utime(path: &str, times: &utimbuf_t) -> Result<(), Errno> {
+pub fn utime(filename: &str, times: &utimbuf_t) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let times_ptr = times as *const utimbuf_t as usize;
-        return syscall2(SYS_UTIME, path_ptr, times_ptr)
+        return syscall2(SYS_UTIME, filename_ptr, times_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Change file last access and modification time.
-pub fn utimes(path: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
+pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
     unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let times_ptr = times.as_ptr() as usize;
-        return syscall2(SYS_UTIMES, path_ptr, times_ptr)
+        return syscall2(SYS_UTIMES, filename_ptr, times_ptr)
             .map(|_ret| ());
     }
 }
 
 /// Change time timestamps with nanosecond precision.
-pub fn utimensat(dirfd: i32, pathname: &str, times: &[timespec_t; 2], flags: i32) -> Result<(), Errno> {
+pub fn utimensat(dirfd: i32, filename: &str, times: &[timespec_t; 2], flags: i32) -> Result<(), Errno> {
     unsafe {
         let dirfd = dirfd as usize;
-        let pathname_ptr = pathname.as_ptr() as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
         let times_ptr = times.as_ptr() as usize;
         let flags = flags as usize;
-        return syscall4(SYS_UTIMENSAT, dirfd, pathname_ptr, times_ptr, flags)
+        return syscall4(SYS_UTIMENSAT, dirfd, filename_ptr, times_ptr, flags)
             .map(|_ret| ());
     }
 }

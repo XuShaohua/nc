@@ -25,6 +25,7 @@ pub type ino_t = usize;
 pub type key_t = i32;
 pub type loff_t = i64;
 pub type mode_t = u32;
+pub type mqd_t = i32;
 pub type msglen_t = usize;
 pub type msgqnum_t = usize;
 pub type nfds_t = usize;
@@ -40,6 +41,7 @@ pub type socklen_t = u32;
 pub type ssize_t = isize;
 pub type time_t = isize;
 pub type uid_t = u32;
+pub type umode_t = u16;
 pub type rlimit_t = usize;
 pub type shmatt_t = usize; // Type to count number of shared memory attaches.
 pub type suseconds_t = isize; // Signed count of microseconds.
@@ -529,10 +531,35 @@ pub struct siginfo_t {
     //pub si_fields:
 }
 
+// TODO(Shaohua): Fix union type
+#[derive(Default)]
+pub struct sigval_t {
+	pub sival_int: i32,
+	//void __user *sival_ptr;
+}
+
+#[derive(Default)]
+pub struct sigevent_t {
+	pub sigev_value: sigval_t,
+	pub sigev_signo: i32,
+	pub sigev_notify: i32,
+    // TODO(Shaohua): Fix union error
+}
+
 /// signal.h
 pub struct sigaltstack_t {
     pub ss_sp: usize,
 	pub ss_flags: i32,
 	pub ss_size: size_t,
+}
+
+/// mqueue.h
+#[derive(Default)]
+pub struct mq_attr_t {
+    pub mq_flags: isize, // message queue flags
+    pub mq_maxmsg: isize, // maximum number of messages
+    pub mq_msgsize: isize, // maximum message size
+    pub mq_curmsgs: isize, // number of messages currently queued
+    pub __reserved: [isize; 4], // ignored for input, zeroed for output
 }
 

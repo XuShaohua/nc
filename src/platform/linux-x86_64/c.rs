@@ -1301,28 +1301,75 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn mq_getsetattr() {
-    // TODO(Shaohua): Not implemented
+/// Get/set message queue attributes
+pub fn mq_getsetattr(mqdes: mqd_t, new_attr: &mut mq_attr_t, old_attr: &mut mq_attr_t) -> Result<mqd_t, Errno> {
+    unsafe {
+        let mqdes = mqdes as usize;
+        let new_attr_ptr = new_attr as *mut mq_attr_t as usize;
+        let old_attr_ptr = old_attr as *mut mq_attr_t as usize;
+        return syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr)
+            .map(|ret| ret as mqd_t);
+    }
 }
 
-pub fn mq_notify() {
-    // TODO(Shaohua): Not implemented
+/// Register for notification when a message is available
+pub fn mq_notify(mqdes: mqd_t, notification: &sigevent_t) -> Result<(), Errno> {
+    unsafe {
+        let mqdes = mqdes as usize;
+        let notification_ptr = notification as *const sigevent_t as usize;
+        return syscall2(SYS_MQ_NOTIFY, mqdes, notification_ptr)
+            .map(|_ret| ());
+    }
 }
 
-pub fn mq_open() {
-    // TODO(Shaohua): Not implemented
+pub fn mq_open(name: &str, oflag: i32, mode: umode_t, attr: &mut mq_attr_t) -> Result<mqd_t, Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let oflag = oflag as usize;
+        let mode = mode as usize;
+        let attr_ptr = attr as *mut mq_attr_t as usize;
+        return syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr)
+            .map(|ret| ret as mqd_t);
+    }
 }
 
-pub fn mq_timedreceive() {
-    // TODO(Shaohua): Not implemented
+/// Receive a message from a message queue
+pub fn mq_timedreceive(mqdes: mqd_t, msg: &str, msg_prio: u32, abs_timeout: &timespec_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let mqdes = mqdes as usize;
+        let msg = CString::new(msg);
+        let msg_ptr = msg.as_ptr() as usize;
+        let msg_len = msg.len();
+        let msg_prio = msg_prio as usize;
+        let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+        return syscall5(SYS_MQ_TIMEDRECEIVE, mqdes, msg_ptr, msg_len, msg_prio, abs_timeout_ptr)
+            .map(|ret| ret as ssize_t);
+    }
 }
 
-pub fn mq_timedsend() {
-    // TODO(Shaohua): Not implemented
+/// Send message to a message queue
+pub fn mq_timedsend(mqdes: mqd_t, msg: &str, msg_prio: u32, abs_timeout: &timespec_t) -> Result<(), Errno> {
+    unsafe {
+        let mqdes = mqdes as usize;
+        let msg = CString::new(msg);
+        let msg_ptr = msg.as_ptr() as usize;
+        let msg_len = msg.len();
+        let msg_prio = msg_prio as usize;
+        let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+        return syscall5(SYS_MQ_TIMEDSEND, mqdes, msg_ptr, msg_len, msg_prio, abs_timeout_ptr)
+            .map(|_ret| ());
+    }
 }
 
-pub fn mq_unlink() {
-    // TODO(Shaohua): Not implemented
+/// Remove a message queue
+pub fn mq_unlink(name: &str) -> Result<(), Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        return syscall1(SYS_MQ_UNLINK, name_ptr)
+            .map(|_ret| ());
+    }
 }
 
 pub fn mremap() {

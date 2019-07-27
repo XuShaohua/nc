@@ -1069,3 +1069,125 @@ pub const TIOCPKT_IOCTL:        i32 = 64;
 
 pub const TIOCSER_TEMT: i32 = 0x01;
 
+/// mqueue.h
+pub const MQ_PRIO_MAX: i32 = 32768;
+
+// per-uid limit of kernel memory used by mqueue, in bytes
+pub const MQ_BYTES_MAX: i32 = 819200;
+
+pub const NOTIFY_NONE:          i32 = 0;
+pub const NOTIFY_WOKENUP:       i32 = 1;
+pub const NOTIFY_REMOVED:       i32 = 2;
+pub const NOTIFY_COOKIE_LEN:    i32 = 32;
+
+/// siginfo.h
+pub const SI_MAX_SIZE: i32 = 128;
+
+/// si_code values
+/// Digital reserves positive values for kernel-generated signals.
+pub const SI_USER:      i32 = 0; // sent by kill, sigsend, raise
+pub const SI_KERNEL:    i32 = 0x80; // sent by the kernel from somewhere
+pub const SI_QUEUE:     i32 = -1; // sent by sigqueue
+pub const SI_TIMER:     i32 = -2; // sent by timer expiration
+pub const SI_MESGQ:     i32 = -3; // sent by real time mesq state change
+pub const SI_ASYNCIO:   i32 = -4; // sent by AIO completion
+pub const SI_SIGIO:     i32 = -5; // sent by queued SIGIO
+pub const SI_TKILL:     i32 = -6; // sent by tkill system call
+pub const SI_DETHREAD:  i32 = -7; // sent by execve() killing subsidiary threads
+pub const SI_ASYNCNL:   i32 = -60; // sent by glibc async name lookup completion
+
+/// SIGILL si_codes
+pub const ILL_ILLOPC:   i32 = 1; // illegal opcode
+pub const ILL_ILLOPN:   i32 = 2; // illegal operand
+pub const ILL_ILLADR:   i32 = 3; // illegal addressing mode
+pub const ILL_ILLTRP:   i32 = 4; // illegal trap
+pub const ILL_PRVOPC:   i32 = 5; // privileged opcode
+pub const ILL_PRVREG:   i32 = 6; // privileged register
+pub const ILL_COPROC:   i32 = 7; // coprocessor error
+pub const ILL_BADSTK:   i32 = 8; // internal stack error
+pub const ILL_BADIADDR: i32 = 9; // unimplemented instruction address
+pub const __ILL_BREAK:  i32 = 10; // illegal break
+pub const __ILL_BNDMOD: i32 = 11; // bundle-update (modification) in progress
+pub const NSIGILL:      i32 = 11;
+
+/// SIGFPE si_codes
+pub const FPE_INTDIV:   i32 = 1; // integer divide by zero
+pub const FPE_INTOVF:   i32 = 2; // integer overflow
+pub const FPE_FLTDIV:   i32 = 3; // floating point divide by zero
+pub const FPE_FLTOVF:   i32 = 4; // floating point overflow
+pub const FPE_FLTUND:   i32 = 5; // floating point underflow
+pub const FPE_FLTRES:   i32 = 6; // floating point inexact result
+pub const FPE_FLTINV:   i32 = 7; // floating point invalid operation
+pub const FPE_FLTSUB:   i32 = 8; // subscript out of range
+pub const __FPE_DECOVF: i32 = 9; // decimal overflow
+pub const __FPE_DECDIV: i32 = 10; // decimal division by zero
+pub const __FPE_DECERR: i32 = 11; // packed decimal error
+pub const __FPE_INVASC: i32 = 12; // invalid ASCII digit
+pub const __FPE_INVDEC: i32 = 13; // invalid decimal digit
+pub const FPE_FLTUNK:   i32 = 14; // undiagnosed floating-point exception
+pub const FPE_CONDTRAP: i32 = 15; // trap on condition
+pub const NSIGFPE:      i32 = 15;
+
+/// SIGSEGV si_codes
+pub const SEGV_MAPERR:  i32 = 1; // address not mapped to object
+pub const SEGV_ACCERR:  i32 = 2; // invalid permissions for mapped object
+pub const SEGV_BNDERR:  i32 = 3; // failed address bound checks
+pub const SEGV_PKUERR:  i32 = 4; // failed protection key checks
+pub const SEGV_ACCADI:  i32 = 5; // ADI not enabled for mapped object
+pub const SEGV_ADIDERR: i32 = 6; // Disrupting MCD error
+pub const SEGV_ADIPERR: i32 = 7; // Precise MCD exception
+pub const NSIGSEGV:     i32 = 7;
+
+/// SIGBUS si_codes
+pub const BUS_ADRALN:       i32 = 1; // invalid address alignment
+pub const BUS_ADRERR:       i32 = 2; // non-existent physical address
+pub const BUS_OBJERR:       i32 = 3; // object specific hardware error
+// hardware memory error consumed on a machine check: action required
+pub const BUS_MCEERR_AR:    i32 = 4;
+// hardware memory error detected in process but not consumed: action optional
+pub const BUS_MCEERR_AO:    i32 = 5;
+pub const NSIGBUS:          i32 = 5;
+
+/// SIGTRAP si_codes
+pub const TRAP_BRKPT:   i32 = 1; // process breakpoint
+pub const TRAP_TRACE:   i32 = 2; // process trace trap
+pub const TRAP_BRANCH:  i32 = 3; // process taken branch trap
+pub const TRAP_HWBKPT:  i32 = 4; // hardware breakpoint/watchpoint
+pub const TRAP_UNK:     i32 = 5; // undiagnosed trap
+pub const NSIGTRAP:     i32 = 5;
+
+/// SIGCHLD si_codes
+pub const CLD_EXITED:       i32 = 1; // child has exited
+pub const CLD_KILLED:       i32 = 2; // child was killed
+pub const CLD_DUMPED:       i32 = 3; // child terminated abnormally
+pub const CLD_TRAPPED:      i32 = 4; // traced child has trapped
+pub const CLD_STOPPED:      i32 = 5; // child has stopped
+pub const CLD_CONTINUED:    i32 = 6; // stopped child has continued
+pub const NSIGCHLD:         i32 = 6;
+
+/// SIGPOLL (or any other signal without signal specific si_codes) si_codes
+pub const POLL_IN:  i32 = 1; // data input available
+pub const POLL_OUT: i32 = 2; // output buffers available
+pub const POLL_MSG: i32 = 3; // input message available
+pub const POLL_ERR: i32 = 4; // i/o error
+pub const POLL_PRI: i32 = 5; // high priority input available
+pub const POLL_HUP: i32 = 6; // device disconnected
+pub const NSIGPOLL: i32 = 6;
+
+/// SIGSYS si_codes
+pub const SYS_SECCOMP:  i32 = 1;	// seccomp triggered
+pub const NSIGSYS:      i32 = 1;
+
+/// SIGEMT si_codes
+pub const EMT_TAGOVF:   i32 = 1; // tag overflow
+pub const NSIGEMT:      i32 = 1;
+
+/// sigevent definitions
+pub const SIGEV_SIGNAL:     i32 = 0; // notify via signal
+pub const SIGEV_NONE:       i32 = 1; // other notification: meaningless
+pub const SIGEV_THREAD:     i32 = 2; // deliver via thread creation
+pub const SIGEV_THREAD_ID:  i32 = 4; // deliver to thread
+
+pub const SIGEV_MAX_SIZE: i32 = 64;
+// TODO(Shaohua): Define SIGEV_PAD_SIZE
+

@@ -314,8 +314,17 @@ pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> 
 }
 
 /// Execute a new program relative to a directory file descriptor.
-pub fn execveat() {
-    // TODO(Shaohua): Not implemented
+pub fn execveat(fd: i32, filename: &str, argv: &[&str], env: &[&str], flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let argv_ptr = argv.as_ptr() as usize;
+        let env_ptr = env.as_ptr() as usize;
+        let flags = flags as usize;
+        return syscall5(SYS_EXECVEAT, fd, filename_ptr, argv_ptr, env_ptr, flags)
+            .map(|_ret| ());
+    }
 }
 
 /// Open an epoll file descriptor.
@@ -419,8 +428,16 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn fadvice64() {
-    // TODO(Shaohua): Not implemented
+/// Predeclare an access pattern for file data.
+pub fn fadvise64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let len = len as usize;
+        let advice = advice as usize;
+        return syscall4(SYS_FADVISE64, fd, offset, len, advice)
+            .map(|_ret| ());
+    }
 }
 
 /// Manipulate file space.

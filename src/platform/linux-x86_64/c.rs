@@ -1372,8 +1372,13 @@ pub fn mq_unlink(name: &str) -> Result<(), Errno> {
     }
 }
 
-pub fn mremap() {
-    // TODO(Shaohua): Not implemented
+/// Remap a virtual memory address
+pub fn mremap(addr: usize, old_len: size_t, new_len: size_t, flags: usize, new_addr: usize) -> Result<usize, Errno> {
+    unsafe {
+        let old_len = old_len as usize;
+        let new_len = new_len as usize;
+        return syscall5(SYS_MREMAP, addr, old_len, new_len, flags, new_addr);
+    }
 }
 
 pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds) -> Result<i32, Errno> {
@@ -1467,13 +1472,29 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     }
 }
 
-pub fn newfstatat() {
-    // TODO(Shaohua): Not implemented
+/// Get file status
+pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> Result<(), Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let statbuf_ptr = statbuf as *mut stat_t as usize;
+        let flag = flag as usize;
+        return syscall4(SYS_NEWFSTATAT, dfd, filename_ptr, statbuf_ptr, flag)
+            .map(|_ret| ());
+    }
 }
 
-pub fn nfsserverctl() {
-    // TODO(Shaohua): Not implemented
-}
+/// Access kernel NFS daemon
+//pub fn nfsservctl(cmd: i32, arg: &mut nfsctl_arg_t, resp: &mut fsctl_res_t) -> Result<(), Errno> {
+//    unsafe {
+//        let cmd = cmd as usize;
+//        let arg_ptr = arg as *mut nfsctl_arg_t as usize;
+//        let resp_ptr = resp as *mut fsctl_res_t as usize;
+//        return syscall3(SYS_NFSSERVCTL, cmd, arg_ptr, resp_ptr)
+//            .map(|_ret| ());
+//    }
+//}
 
 /// Open and possibly create a file.
 pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {

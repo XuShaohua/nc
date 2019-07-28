@@ -40,6 +40,7 @@ pub type size_t = usize;
 pub type socklen_t = u32;
 pub type ssize_t = isize;
 pub type time_t = isize;
+pub type timer_t = i32;
 pub type uid_t = u32;
 pub type umode_t = u16;
 pub type rlimit_t = usize;
@@ -54,7 +55,6 @@ pub struct timespec_t {
     pub tv_sec:  time_t, // Seconds
     pub tv_nsec: isize,  // Nanoseconds
 }
-
 
 /// A time value that is accurate to the nearest microsecond
 /// but also has a range of years.

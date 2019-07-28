@@ -2650,24 +2650,56 @@ pub fn time() -> Result<time_t, Errno> {
     }
 }
 
-pub fn timer_create() {
-    // TODO(Shaohua): Not implemented
+/// Create a per-process timer
+pub fn timer_create(clock: clockid_t, event: &mut sigevent_t, timer_id: &mut timer_t) -> Result<(), Errno> {
+    unsafe {
+        let clock = clock as usize;
+        let event_ptr = event as *mut sigevent_t as usize;
+        let timer_id_ptr = timer_id as *mut timer_t as usize;
+        return syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr)
+            .map(|_ret| ());
+    }
 }
 
-pub fn timer_delete() {
-    // TODO(Shaohua): Not implemented
+/// Delete a per-process timer
+pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
+    unsafe {
+        let timer_id = timer_id as usize;
+        return syscall1(SYS_TIMER_DELETE, timer_id)
+            .map(|_ret| ());
+    }
 }
 
-pub fn timer_getoverrun() {
-    // TODO(Shaohua): Not implemented
+/// Get overrun count for a per-process timer
+pub fn timer_getoverrun(timer_id: timer_t) -> Result<(), Errno> {
+    unsafe {
+        let timer_id = timer_id as usize;
+        return syscall1(SYS_TIMER_GETOVERRUN, timer_id)
+            .map(|_ret| ());
+    }
 }
 
-pub fn timer_gettime() {
-    // TODO(Shaohua): Not implemented
+/// Fetch state of per-process timer
+pub fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), Errno> {
+    unsafe {
+        let timer_id = timer_id as usize;
+        let curr_ptr = curr as *mut itimerspec_t as usize;
+        return syscall2(SYS_TIMER_GETTIME, timer_id, curr_ptr)
+            .map(|_ret| ());
+    }
 }
 
-pub fn timer_settime() {
-    // TODO(Shaohua): Not implemented
+/// Arm/disarm state of per-process timer
+pub fn timer_settime(timer_id: timer_t, flags: i32, new_value: &itimerspec_t,
+                     old_value: &mut itimerspec_t) -> Result<(), Errno> {
+    unsafe {
+        let timer_id = timer_id as usize;
+        let flags = flags as usize;
+        let new_value_ptr = new_value as *const itimerspec_t as usize;
+        let old_value_ptr = old_value as *mut itimerspec_t as usize;
+        return syscall4(SYS_TIMER_SETTIME, timer_id, flags, new_value_ptr, old_value_ptr)
+            .map(|_ret| ());
+    }
 }
 
 /// Create a timer that notifies via a file descriptor.

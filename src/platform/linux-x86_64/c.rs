@@ -1824,8 +1824,17 @@ pub fn recvfrom(sockfd: i32, buf: &mut [u8], flags: i32, src_addr: &mut sockaddr
     }
 }
 
-pub fn recvmmsg() {
-    // TODO(Shaohua): Not implemented
+/// Receives multile messages on a socket
+pub fn recvmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32, timeout: &mut timespec_t) -> Result<i32, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
+        let vlen = msgvec.len() as usize;
+        let flags = flags as usize;
+        let timeout_ptr = timeout as *mut timespec_t as usize;
+        return syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr)
+            .map(|ret| ret as i32);
+    }
 }
 
 /// Receive a msg from a socket.
@@ -2111,8 +2120,16 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
     }
 }
 
-pub fn sendmmsg() {
-    // TODO(Shaohua): Not implemented.
+/// Send multiple messages on a socket
+pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
+        let vlen = msgvec.len() as usize;
+        let flags = flags as usize;
+        return syscall4(SYS_SENDMMSG, sockfd, msgvec_ptr, vlen, flags)
+            .map(|ret| ret as i32);
+    }
 }
 
 /// Send a message on a socket.

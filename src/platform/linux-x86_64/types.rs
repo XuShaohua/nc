@@ -203,6 +203,14 @@ pub struct msghdr_t {
     msg_flags:          i32,        // Flags on received message.
 }
 
+#[derive(Debug)]
+#[derive(Default)]
+pub struct mmsghdr_t {
+    pub msg_hdr: msghdr_t, // Message header
+    pub msg_len: u32, // Number of received bytes for header
+}
+
+
 /// Resource usage
 #[derive(Debug)]
 #[derive(Default)]
@@ -563,10 +571,10 @@ pub struct mq_attr_t {
     pub __reserved: [isize; 4], // ignored for input, zeroed for output
 }
 
-
 pub struct file_handle_t {
    pub handle_bytes: u32, // Size of f_handle [in, out]
    pub handle_type: i32,  // Handle type [out]
    // TODO(Shaohua): u8 to unsigned char
    pub f_handle: [u8; 0], // File identifier (sized by caller) [out]
 }
+

@@ -1458,8 +1458,19 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     }
 }
 
-pub fn name_to_handle_at() {
-    // TODO(Shaohua): Not implemented.
+/// Obtain handle for a filename
+pub fn name_to_handle_at(dfd: i32, filename: &str, handle: &mut file_handle_t,
+                         mount_id: &mut i32, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let handle_ptr = handle as *mut file_handle_t as usize;
+        let mount_id_ptr = mount_id as *mut i32 as usize;
+        let flags = flags as usize;
+        return syscall5(SYS_NAME_TO_HANDLE_AT, dfd, filename_ptr, handle_ptr, mount_id_ptr, flags)
+            .map(|_ret| ());
+    }
 }
 
 /// High resolution sleep.
@@ -1508,8 +1519,15 @@ pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     }
 }
 
-pub fn open_by_handle_at() {
-    // TODO(Shaohua): Not implemented.
+/// Obtain handle for an open file
+pub fn open_by_handle_at(mount_fd: i32, handle: &mut file_handle_t, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let mount_fd = mount_fd as usize;
+        let handle_ptr = handle as *mut file_handle_t as usize;
+        let flags = flags as usize;
+        return syscall3(SYS_OPEN_BY_HANDLE_AT, mount_fd, handle_ptr, flags)
+            .map(|_ret| ());
+    }
 }
 
 /// Open and possibly create a file within a directory.

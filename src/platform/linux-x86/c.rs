@@ -8,17 +8,6 @@ use super::consts;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 
 /// Accept a connection on a socket.
-pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
-    unsafe {
-        let sockfd = sockfd as usize;
-        let addr_ptr = addr as *mut sockaddr_in_t as usize;
-        let addrlen_ptr = addrlen as *mut socklen_t as usize;
-        return syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr)
-            .map(|_ret| ());
-    }
-}
-
-/// Accept a connection on a socket.
 pub fn accept4(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t, flags: i32) -> Result<() ,Errno> {
     unsafe {
         let sockfd = sockfd as usize;
@@ -1381,47 +1370,6 @@ pub fn mremap(addr: usize, old_len: size_t, new_len: size_t, flags: usize, new_a
     }
 }
 
-pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds) -> Result<i32, Errno> {
-    unsafe {
-        let msqid = msqid as usize;
-        let cmd = cmd as usize;
-        let buf_ptr = buf as *mut msqid_ds as usize;
-        return syscall3(SYS_MSGCTL, msqid, cmd, buf_ptr)
-            .map(|ret| ret as i32);
-    }
-}
-
-/// Get a System V message queue identifier.
-pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
-    unsafe {
-        let key = key as usize;
-        let msgflg = msgflg as usize;
-        return syscall2(SYS_MSGGET, key, msgflg)
-            .map(|ret| ret as i32);
-    }
-}
-
-pub fn msgrcv(msqid: i32, msgq: usize, msgsz: size_t, msgtyp: isize) -> Result<ssize_t, Errno> {
-    unsafe {
-        let msqid = msqid as usize;
-        let msgsz = msgsz as usize;
-        let msgtyp = msgtyp as usize;
-        return syscall4(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp)
-            .map(|ret| ret as ssize_t);
-    }
-}
-
-/// Append the message to a System V message queue.
-pub fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
-    unsafe {
-        let msqid = msqid as usize;
-        let msgsz = msgsz as usize;
-        let msgflg = msgflg as usize;
-        return syscall4(SYS_MSGSND, msqid, msgq, msgsz, msgflg)
-            .map(|_ret| ());
-    }
-}
-
 /// Synchronize a file with memory map.
 pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     unsafe {
@@ -1479,19 +1427,6 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
         let req_ptr = req as *const timespec_t as usize;
         let rem_ptr = rem as *mut timespec_t as usize;
         return syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr)
-            .map(|_ret| ());
-    }
-}
-
-/// Get file status
-pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> Result<(), Errno> {
-    unsafe {
-        let dfd = dfd as usize;
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let statbuf_ptr = statbuf as *mut stat_t as usize;
-        let flag = flag as usize;
-        return syscall4(SYS_NEWFSTATAT, dfd, filename_ptr, statbuf_ptr, flag)
             .map(|_ret| ());
     }
 }
@@ -2070,32 +2005,6 @@ pub fn select() {
     // TODO(Shaohua): Not implemented.
 }
 
-pub fn semctl() {
-    // TODO(Shaohua): Not implemented.
-}
-
-/// Get a System V semphore set identifier.
-pub fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> {
-    unsafe {
-        let key = key as usize;
-        let nsems = nsems as usize;
-        let semflg = semflg as usize;
-        return syscall3(SYS_SEMGET, key, nsems, semflg)
-            .map(|ret| ret as i32);
-    }
-}
-
-/// System V semphore operations.
-pub fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
-    unsafe {
-        let semid = semid as usize;
-        let sops_ptr = sops.as_ptr() as usize;
-        let nops = sops.len();
-        return syscall3(SYS_SEMOP, semid, sops_ptr, nops)
-            .map(|_ret| ());
-    }
-}
-
 /// Transfer data between two file descriptors.
 pub fn sendfile(out_fd: i32, in_fd: i32, offset: &mut off_t,
                 count: size_t) -> Result<ssize_t, Errno> {
@@ -2361,45 +2270,6 @@ pub fn setxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resul
         let size = size as usize;
         return syscall4(SYS_SETXATTR, filename_ptr, name_ptr, value, size)
             .map(|ret| ret as ssize_t);
-    }
-}
-
-/// Attach the System V shared memory segment.
-pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
-    unsafe {
-        let shmid = shmid as usize;
-        let shmflg = shmflg as usize;
-        return syscall3(SYS_SHMAT, shmid, shmaddr, shmflg);
-    }
-}
-
-/// Detach the System V shared memory segment.
-pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
-    unsafe {
-        return syscall1(SYS_SHMDT, shmaddr)
-            .map(|_ret| ());
-    }
-}
-
-/// System V shared memory control.
-pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds) -> Result<i32, Errno> {
-    unsafe {
-        let shmid = shmid as usize;
-        let cmd = cmd as usize;
-        let buf_ptr = buf as *mut shmid_ds as usize;
-        return syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr)
-            .map(|ret| ret as i32);
-    }
-}
-
-/// Allocates a System V shared memory segment.
-pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
-    unsafe {
-        let key = key as usize;
-        let size = size as usize;
-        let shmflg = shmflg as usize;
-        return syscall3(SYS_SHMGET, key, size, shmflg)
-            .map(|_ret| ());
     }
 }
 

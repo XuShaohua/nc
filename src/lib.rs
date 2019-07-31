@@ -14,6 +14,10 @@ pub mod c_str;
 #[path="platform/linux-x86_64/mod.rs"]
 pub mod platform;
 
+#[cfg(all(target_os="linux", target_arch="x86"))]
+#[path="platform/linux-x86/mod.rs"]
+pub mod platform;
+
 // Re-export functions
 pub use platform::c::*;
 pub use platform::consts::*;

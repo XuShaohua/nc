@@ -2303,10 +2303,10 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set resource limit
-pub fn setrlimit(resource: u32, rlimit: &rlimit_t) -> Result<(), Errno> {
+pub fn setrlimit(resource: u32, rlimit: rlimit_t) -> Result<(), Errno> {
     unsafe {
         let resource = resource as usize;
-        let rlimit_ptr = rlimit as *const rlimit_t as usize;
+        let rlimit_ptr = rlimit as usize;
         return syscall2(SYS_SETRLIMIT, resource, rlimit_ptr)
             .map(|_ret| ());
     }

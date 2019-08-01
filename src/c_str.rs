@@ -21,9 +21,9 @@ impl CString {
         let mut v = t.into();
         v.reserve_exact(1);
         v.push(0);
-        return CString {
+        CString {
             inner: v.into_boxed_slice(),
-        };
+        }
     }
 
     #[inline]
@@ -35,11 +35,17 @@ impl CString {
     pub const fn len(&self) -> usize {
         self.as_bytes_with_nul().len() - 1
     }
+
+    #[inline]
+    pub const fn is_empty(&self) -> bool {
+        // TODO(Shaohua): Check null bytes
+        self.as_bytes_with_nul().len() == 0
+    }
 }
 
 impl CStr {
     pub const fn as_ptr(&self) -> *const u8 {
-        return self.inner.as_ptr();
+        self.inner.as_ptr()
     }
 
     pub const unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
@@ -62,7 +68,7 @@ impl ops::Deref for CString {
     #[inline]
     fn deref(&self) -> &CStr {
         unsafe {
-            return CStr::from_bytes_with_nul_unchecked(self.as_bytes_with_nul());
+            CStr::from_bytes_with_nul_unchecked(self.as_bytes_with_nul())
         }
     }
 }

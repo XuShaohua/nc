@@ -26,18 +26,18 @@ pub const O_NOCTTY:         i32 = 0o400;
 pub const O_TRUNC:          i32 = 0o1000;
 pub const O_APPEND:         i32 = 0o2000;
 pub const O_NONBLOCK:       i32 = 0o4000;
-pub const O_DSYNC:          i32 = 0o10000;
-pub const O_ASYNC:          i32 = 0o20000;
-pub const O_DIRECT:         i32 = 0o40000;
-pub const O_LARGEFILE:      i32 = 0o100000;
-pub const O_DIRECTORY:      i32 = 0o200000;
-pub const O_NOFOLLOW:       i32 = 0o400000;
-pub const O_NOATIME:        i32 = 0o1000000;
-pub const O_CLOEXEC:        i32 = 0o2000000;
-pub const O_SYNC:           i32 = 0o4010000;
+pub const O_DSYNC:          i32 = 0o10_000;
+pub const O_ASYNC:          i32 = 0o20_000;
+pub const O_DIRECT:         i32 = 0o40_000;
+pub const O_LARGEFILE:      i32 = 0o100_000;
+pub const O_DIRECTORY:      i32 = 0o200_000;
+pub const O_NOFOLLOW:       i32 = 0o400_000;
+pub const O_NOATIME:        i32 = 0o1_000_000;
+pub const O_CLOEXEC:        i32 = 0o2_000_000;
+pub const O_SYNC:           i32 = 0o4_010_000;
 pub const O_FSYNC:          i32 = O_SYNC;
-pub const O_PATH:           i32 = 0o10000000;
-pub const O_TMPFILE:        i32 = (0o20000000 | O_DIRECTORY);
+pub const O_PATH:           i32 = 0o10_000_000;
+pub const O_TMPFILE:        i32 = (0o20_000_000 | O_DIRECTORY);
 pub const O_TMPFILE_MASK:   i32 = (O_TMPFILE | O_CREAT);
 
 /// Used in fcntl().
@@ -152,12 +152,12 @@ pub const SIG_RTMAX:  i32 = 64;
 pub const SA_NOCLDSTOP: i32 = 1;
 pub const SA_NOCLDWAIT: i32 = 2;
 pub const SA_SIGINFO:   i32 = 4;
-pub const SA_ONSTACK:   i32 = 0x08000000;
-pub const SA_RESTART:   i32 = 0x10000000;
-pub const SA_INTERRUPT: i32 = 0x20000000;
-pub const SA_NODEFER:   i32 = 0x40000000;
+pub const SA_ONSTACK:   i32 = 0x0800_0000;
+pub const SA_RESTART:   i32 = 0x1000_0000;
+pub const SA_INTERRUPT: i32 = 0x2000_0000;
+pub const SA_NODEFER:   i32 = 0x4000_0000;
 #[allow(overflowing_literals)]
-pub const SA_RESETHAND: i32 = 0x80000000;
+pub const SA_RESETHAND: i32 = 0x8000_0000;
 
 /// lseek() whence
 pub const SEEK_SET:  i32 = 0; // seek relative to beginning of file
@@ -189,8 +189,8 @@ pub const PROT_READ:      i32 = 0x1; // page can be read
 pub const PROT_WRITE:     i32 = 0x2; // page can be written
 pub const PROT_EXEC:      i32 = 0x4; // page can be executed
 pub const PROT_SEM:       i32 = 0x8; // page may be used for atomic ops
-pub const PROT_GROWSDOWN: i32 = 0x01000000; // mprotect flag: extend change to start of growsdown vma
-pub const PROT_GROWSUP:   i32 = 0x02000000; // mprotect flag: extend change to end of growsup vma
+pub const PROT_GROWSDOWN: i32 = 0x0100_0000; // mprotect flag: extend change to start of growsdown vma
+pub const PROT_GROWSUP:   i32 = 0x0200_0000; // mprotect flag: extend change to end of growsup vma
 
 /// Mmap flags
 pub const MAP_UNINITIALIZED:   i32 = 0x00;
@@ -206,11 +206,11 @@ pub const MAP_EXECUTABLE:      i32 = 0x1000;
 pub const MAP_LOCKED:          i32 = 0x2000;
 pub const MAP_NORESERVE:       i32 = 0x4000;
 pub const MAP_POPULATE:        i32 = 0x8000;
-pub const MAP_NONBLOCK:        i32 = 0x10000;
-pub const MAP_STACK:           i32 = 0x20000;
-pub const MAP_HUGETLB:         i32 = 0x40000;
-pub const MAP_SYNC:            i32 = 0x80000;
-pub const MAP_FIXED_NOREPLACE: i32 = 0x100000; // MAP_FIXED which doesn't unmap underlying mapping
+pub const MAP_NONBLOCK:        i32 = 0x10_000;
+pub const MAP_STACK:           i32 = 0x20_000;
+pub const MAP_HUGETLB:         i32 = 0x40_000;
+pub const MAP_SYNC:            i32 = 0x80_000;
+pub const MAP_FIXED_NOREPLACE: i32 = 0x100_000; // MAP_FIXED which doesn't unmap underlying mapping
 
 pub const MAP_FAILED: i32 = -1;
 
@@ -238,9 +238,9 @@ pub const IPC_INFO: i32 = 3;
 pub const IPC_PRIVATE: key_t = 0;
 
 /// msgrcv options
-pub const MSG_NOERROR: i32 = 010000; // No error if message is too big.
-pub const MSG_EXCEPT:  i32 = 020000; // Recv any msg except of specified type.
-pub const MSG_COPY:    i32 = 040000; // Copy (not remove) all queue messages.
+pub const MSG_NOERROR: i32 = 0o10_000; // No error if message is too big.
+pub const MSG_EXCEPT:  i32 = 0o20_000; // Recv any msg except of specified type.
+pub const MSG_COPY:    i32 = 0o40_000; // Copy (not remove) all queue messages.
 
 /// ipcs ctl commands
 pub const MSG_STAT:     i32 = 11;
@@ -255,8 +255,8 @@ pub const SOCK_RDM:       i32 = 4;
 pub const SOCK_SEQPACKET: i32 = 5;
 pub const SOCK_DCCP:      i32 = 6;
 pub const SOCK_PACKET:    i32 = 10;
-pub const SOCK_CLOEXEC:   i32 = 0o2000000;
-pub const SOCK_NONBLOCK:  i32 = 0o0004000;
+pub const SOCK_CLOEXEC:   i32 = 0o2_000_000;
+pub const SOCK_NONBLOCK:  i32 = 0o0_004_000;
 
 // socket domain
 pub const PF_UNSPEC:        i32 = 0;
@@ -477,11 +477,11 @@ pub const AT_STATX_SYNC_TYPE:    i32 = 0x6000;
 
 /// Magic values required to use `reboot` system call.
 #[allow(overflowing_literals)]
-pub const LINUX_REBOOT_MAGIC1:  i32 = 0xfee1dead;
-pub const LINUX_REBOOT_MAGIC2:  i32 = 672274793;
-pub const LINUX_REBOOT_MAGIC2A: i32 = 85072278;
-pub const LINUX_REBOOT_MAGIC2B: i32 = 369367448;
-pub const LINUX_REBOOT_MAGIC2C: i32 = 537993216;
+pub const LINUX_REBOOT_MAGIC1:  i32 = 0xfee1_dead;
+pub const LINUX_REBOOT_MAGIC2:  i32 = 672_274_793;
+pub const LINUX_REBOOT_MAGIC2A: i32 = 85_072_278;
+pub const LINUX_REBOOT_MAGIC2B: i32 = 369_367_448;
+pub const LINUX_REBOOT_MAGIC2C: i32 = 537_993_216;
 
 /// Commands accepted by the _reboot() system call.
 /// RESTART     Restart system using default command and mode.
@@ -492,14 +492,14 @@ pub const LINUX_REBOOT_MAGIC2C: i32 = 537993216;
 /// RESTART2    Restart system using given command string.
 /// SW_SUSPEND  Suspend system using software suspend if compiled in.
 /// KEXEC       Restart system using a previously loaded Linux kernel
-pub const LINUX_REBOOT_CMD_RESTART:    u32 = 0x01234567;
-pub const LINUX_REBOOT_CMD_HALT:       u32 = 0xCDEF0123;
-pub const LINUX_REBOOT_CMD_CAD_ON:     u32 = 0x89ABCDEF;
-pub const LINUX_REBOOT_CMD_CAD_OFF:    u32 = 0x00000000;
-pub const LINUX_REBOOT_CMD_POWER_OFF:  u32 = 0x4321FEDC;
-pub const LINUX_REBOOT_CMD_RESTART2:   u32 = 0xA1B2C3D4;
-pub const LINUX_REBOOT_CMD_SW_SUSPEND: u32 = 0xD000FCE2;
-pub const LINUX_REBOOT_CMD_KEXEC:      u32 = 0x45584543;
+pub const LINUX_REBOOT_CMD_RESTART:    u32 = 0x0123_4567;
+pub const LINUX_REBOOT_CMD_HALT:       u32 = 0xCDEF_0123;
+pub const LINUX_REBOOT_CMD_CAD_ON:     u32 = 0x89AB_CDEF;
+pub const LINUX_REBOOT_CMD_CAD_OFF:    u32 = 0x0000_0000;
+pub const LINUX_REBOOT_CMD_POWER_OFF:  u32 = 0x4321_FEDC;
+pub const LINUX_REBOOT_CMD_RESTART2:   u32 = 0xA1B2_C3D4;
+pub const LINUX_REBOOT_CMD_SW_SUSPEND: u32 = 0xD000_FCE2;
+pub const LINUX_REBOOT_CMD_KEXEC:      u32 = 0x4558_4543;
 
 /// Kinds of resource limit
 pub const RLIMIT_CPU:        i32 = 0; // Per-process CPU limit, in seconds.
@@ -613,11 +613,11 @@ pub const PR_FP_EXC_NONRECOV:  i32 = 1; // async non-recoverable exc. mode
 pub const PR_FP_EXC_ASYNC:     i32 = 2; // async recoverable exception mode
 pub const PR_FP_EXC_PRECISE:   i32 = 3; // precise exception mode
 pub const PR_FP_EXC_SW_ENABLE: i32 = 0x80; // Use FPEXC for FP exception enables
-pub const PR_FP_EXC_DIV:       i32 = 0x010000; // floating point divide by zero
-pub const PR_FP_EXC_OVF:       i32 = 0x020000; // floating point overflow
-pub const PR_FP_EXC_UND:       i32 = 0x040000; // floating point underflow
-pub const PR_FP_EXC_RES:       i32 = 0x080000; // floating point inexact result
-pub const PR_FP_EXC_INV:       i32 = 0x100000; // floating point invalid operation
+pub const PR_FP_EXC_DIV:       i32 = 0x010_000; // floating point divide by zero
+pub const PR_FP_EXC_OVF:       i32 = 0x020_000; // floating point overflow
+pub const PR_FP_EXC_UND:       i32 = 0x040_000; // floating point underflow
+pub const PR_FP_EXC_RES:       i32 = 0x080_000; // floating point inexact result
+pub const PR_FP_EXC_INV:       i32 = 0x100_000; // floating point invalid operation
 
 pub const PR_TIMING_STATISTICAL: i32 = 0; // Normal, traditional, statistical process timing
 pub const PR_TIMING_TIMESTAMP:   i32 = 1; // Accurate timestamp based process timing
@@ -721,16 +721,16 @@ pub const MAX_CLOCKS:               i32 = 16;
 pub const TIMER_ABSTIME: i32 = 0x01;
 
 /// For waitid
-pub const WNOHANG:    i32 = 0x00000001;
-pub const WUNTRACED:  i32 = 0x00000002;
+pub const WNOHANG:    i32 = 0x0000_0001;
+pub const WUNTRACED:  i32 = 0x0000_0002;
 pub const WSTOPPED:   i32 = WUNTRACED;
-pub const WEXITED:    i32 = 0x00000004;
-pub const WCONTINUED: i32 = 0x00000008;
-pub const WNOWAIT:    i32 = 0x01000000; // Don't reap, just poll status.
-pub const WNOTHREAD:  i32 = 0x20000000; // Don't wait on children of other threads in this group
-pub const WALL:       i32 = 0x40000000; // Wait on all children, regardless of type
+pub const WEXITED:    i32 = 0x0000_0004;
+pub const WCONTINUED: i32 = 0x0000_0008;
+pub const WNOWAIT:    i32 = 0x0100_0000; // Don't reap, just poll status.
+pub const WNOTHREAD:  i32 = 0x2000_0000; // Don't wait on children of other threads in this group
+pub const WALL:       i32 = 0x4000_0000; // Wait on all children, regardless of type
 #[allow(overflowing_literals)]
-pub const WCLONE:     i32 = 0x80000000; // Wait only on non-SIGCHLD children
+pub const WCLONE:     i32 = 0x8000_0000; // Wait only on non-SIGCHLD children
 
 /// First argument to waitid:
 pub const P_AL:   i32 = 0;
@@ -738,7 +738,7 @@ pub const P_PID:  i32 = 1;
 pub const P_PGID: i32 = 2;
 
 /// eventfd.h
-pub const EFD_SEMAPHORE:          i32 = (1 << 0);
+pub const EFD_SEMAPHORE:          i32 = 1;
 pub const EFD_CLOEXEC:            i32 = O_CLOEXEC;
 pub const EFD_NONBLOCK:           i32 = O_NONBLOCK;
 pub const EFD_SHARED_FCNTL_FLAGS: i32 = (O_CLOEXEC | O_NONBLOCK);
@@ -746,60 +746,60 @@ pub const EFD_FLAGS_SET:          i32 = (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE)
 
 /// stat.h
 /// Flags to be stx_mask
-pub const STATX_TYPE:        u32 = 0x00000001; // Want/got stx_mode & S_IFMT
-pub const STATX_MODE:        u32 = 0x00000002; // Want/got stx_mode & ~S_IFMT
-pub const STATX_NLINK:       u32 = 0x00000004; // Want/got stx_nlink
-pub const STATX_UID:         u32 = 0x00000008; // Want/got stx_uid
-pub const STATX_GID:         u32 = 0x00000010; // Want/got stx_gid
-pub const STATX_ATIME:       u32 = 0x00000020; // Want/got stx_atime
-pub const STATX_MTIME:       u32 = 0x00000040; // Want/got stx_mtime
-pub const STATX_CTIME:       u32 = 0x00000080; // Want/got stx_ctime
-pub const STATX_INO:         u32 = 0x00000100; // Want/got stx_ino
-pub const STATX_SIZE:        u32 = 0x00000200; // Want/got stx_size
-pub const STATX_BLOCKS:      u32 = 0x00000400; // Want/got stx_blocks
-pub const STATX_BASIC_STATS: u32 = 0x000007ff; // The stuff in the normal stat struct
-pub const STATX_BTIME:       u32 = 0x00000800; // Want/got stx_btime
-pub const STATX_ALL:         u32 = 0x00000fff; // All currently supported flags
-pub const STATX__RESERVED:   u32 = 0x80000000; // Reserved for future struct statx expansion
+pub const STATX_TYPE:        u32 = 0x0000_0001; // Want/got stx_mode & S_IFMT
+pub const STATX_MODE:        u32 = 0x0000_0002; // Want/got stx_mode & ~S_IFMT
+pub const STATX_NLINK:       u32 = 0x0000_0004; // Want/got stx_nlink
+pub const STATX_UID:         u32 = 0x0000_0008; // Want/got stx_uid
+pub const STATX_GID:         u32 = 0x0000_0010; // Want/got stx_gid
+pub const STATX_ATIME:       u32 = 0x0000_0020; // Want/got stx_atime
+pub const STATX_MTIME:       u32 = 0x0000_0040; // Want/got stx_mtime
+pub const STATX_CTIME:       u32 = 0x0000_0080; // Want/got stx_ctime
+pub const STATX_INO:         u32 = 0x0000_0100; // Want/got stx_ino
+pub const STATX_SIZE:        u32 = 0x0000_0200; // Want/got stx_size
+pub const STATX_BLOCKS:      u32 = 0x0000_0400; // Want/got stx_blocks
+pub const STATX_BASIC_STATS: u32 = 0x0000_07ff; // The stuff in the normal stat struct
+pub const STATX_BTIME:       u32 = 0x0000_0800; // Want/got stx_btime
+pub const STATX_ALL:         u32 = 0x0000_0fff; // All currently supported flags
+pub const STATX__RESERVED:   u32 = 0x8000_0000; // Reserved for future struct statx expansion
 
 /// Attributes to be found in stx_attributes and masked in stx_attributes_mask.
-pub const STATX_ATTR_COMPRESSED: i32 = 0x00000004; // [I] File is compressed by the fs
-pub const STATX_ATTR_IMMUTABLE:  i32 = 0x00000010; // [I] File is marked immutable
-pub const STATX_ATTR_APPEND:     i32 = 0x00000020; // [I] File is append-only
-pub const STATX_ATTR_NODUMP:     i32 = 0x00000040; // [I] File is not to be dumped
-pub const STATX_ATTR_ENCRYPTED:  i32 = 0x00000800; // [I] File requires key to decrypt in fs
-pub const STATX_ATTR_AUTOMOUNT:  i32 = 0x00001000; // Dir: Automount trigger
+pub const STATX_ATTR_COMPRESSED: i32 = 0x0000_0004; // [I] File is compressed by the fs
+pub const STATX_ATTR_IMMUTABLE:  i32 = 0x0000_0010; // [I] File is marked immutable
+pub const STATX_ATTR_APPEND:     i32 = 0x0000_0020; // [I] File is append-only
+pub const STATX_ATTR_NODUMP:     i32 = 0x0000_0040; // [I] File is not to be dumped
+pub const STATX_ATTR_ENCRYPTED:  i32 = 0x0000_0800; // [I] File requires key to decrypt in fs
+pub const STATX_ATTR_AUTOMOUNT:  i32 = 0x0000_1000; // Dir: Automount trigger
 
 /// Flags for `getrandom`. (random.h)
 pub const GRND_NONBLOCK: i32 = 0x0001; // Don't block and return EAGAIN instead
 pub const GRND_RANDOM:   i32 = 0x0002; // Use the /dev/random pool instead of /dev/urandom
 
 /// Cloning flags. (sched.h)
-pub const CSIGNAL:              i32 = 0x000000ff; // signal mask to be sent at exit
-pub const CLONE_VM:             i32 = 0x00000100; // set if VM shared between processes
-pub const CLONE_FS:             i32 = 0x00000200; // set if fs info shared between processes
-pub const CLONE_FILES:          i32 = 0x00000400; // set if open files shared between processes
-pub const CLONE_SIGHAND:        i32 = 0x00000800; // set if signal handlers and blocked signals shared
-pub const CLONE_PTRACE:         i32 = 0x00002000; // set if we want to let tracing continue on the child too
-pub const CLONE_VFORK:          i32 = 0x00004000; // set if the parent wants the child to wake it up on mm_release
-pub const CLONE_PARENT:         i32 = 0x00008000; // set if we want to have the same parent as the cloner
-pub const CLONE_THREAD:         i32 = 0x00010000; // Same thread group?
-pub const CLONE_NEWNS:          i32 = 0x00020000; // New mount namespace group
-pub const CLONE_SYSVSEM:        i32 = 0x00040000; // share system V SEM_UNDO semantics
-pub const CLONE_SETTLS:         i32 = 0x00080000; // create a new TLS for the child
-pub const CLONE_PARENT_SETTID:  i32 = 0x00100000; // set the TID in the parent
-pub const CLONE_CHILD_CLEARTID: i32 = 0x00200000; // clear the TID in the child
-pub const CLONE_DETACHED:       i32 = 0x00400000; // Unused, ignored
-pub const CLONE_UNTRACED:       i32 = 0x00800000; // set if the tracing process can't force CLONE_PTRACE on this clone
-pub const CLONE_CHILD_SETTID:   i32 = 0x01000000; // set the TID in the child
-pub const CLONE_NEWCGROUP:      i32 = 0x02000000; // New cgroup namespace
-pub const CLONE_NEWUTS:         i32 = 0x04000000; // New utsname namespace
-pub const CLONE_NEWIPC:         i32 = 0x08000000; // New ipc namespace
-pub const CLONE_NEWUSER:        i32 = 0x10000000; // New user namespace
-pub const CLONE_NEWPID:         i32 = 0x20000000; // New pid namespace
-pub const CLONE_NEWNET:         i32 = 0x40000000; // New network namespace
+pub const CSIGNAL:              i32 = 0x0000_00ff; // signal mask to be sent at exit
+pub const CLONE_VM:             i32 = 0x0000_0100; // set if VM shared between processes
+pub const CLONE_FS:             i32 = 0x0000_0200; // set if fs info shared between processes
+pub const CLONE_FILES:          i32 = 0x0000_0400; // set if open files shared between processes
+pub const CLONE_SIGHAND:        i32 = 0x0000_0800; // set if signal handlers and blocked signals shared
+pub const CLONE_PTRACE:         i32 = 0x0000_2000; // set if we want to let tracing continue on the child too
+pub const CLONE_VFORK:          i32 = 0x0000_4000; // set if the parent wants the child to wake it up on mm_release
+pub const CLONE_PARENT:         i32 = 0x0000_8000; // set if we want to have the same parent as the cloner
+pub const CLONE_THREAD:         i32 = 0x0001_0000; // Same thread group?
+pub const CLONE_NEWNS:          i32 = 0x0002_0000; // New mount namespace group
+pub const CLONE_SYSVSEM:        i32 = 0x0004_0000; // share system V SEM_UNDO semantics
+pub const CLONE_SETTLS:         i32 = 0x0008_0000; // create a new TLS for the child
+pub const CLONE_PARENT_SETTID:  i32 = 0x0010_0000; // set the TID in the parent
+pub const CLONE_CHILD_CLEARTID: i32 = 0x0020_0000; // clear the TID in the child
+pub const CLONE_DETACHED:       i32 = 0x0040_0000; // Unused, ignored
+pub const CLONE_UNTRACED:       i32 = 0x0080_0000; // set if the tracing process can't force CLONE_PTRACE on this clone
+pub const CLONE_CHILD_SETTID:   i32 = 0x0100_0000; // set the TID in the child
+pub const CLONE_NEWCGROUP:      i32 = 0x0200_0000; // New cgroup namespace
+pub const CLONE_NEWUTS:         i32 = 0x0400_0000; // New utsname namespace
+pub const CLONE_NEWIPC:         i32 = 0x0800_0000; // New ipc namespace
+pub const CLONE_NEWUSER:        i32 = 0x1000_0000; // New user namespace
+pub const CLONE_NEWPID:         i32 = 0x2000_0000; // New pid namespace
+pub const CLONE_NEWNET:         i32 = 0x4000_0000; // New network namespace
 #[allow(overflowing_literals)]
-pub const CLONE_IO:             i32 = 0x80000000; // Clone io context
+pub const CLONE_IO:             i32 = 0x8000_0000; // Clone io context
 
 /// Scheduling policies
 pub const SCHED_NORMAL:   i32 = 0;
@@ -811,7 +811,7 @@ pub const SCHED_IDLE:     i32 = 5;
 pub const SCHED_DEADLINE: i32 = 6;
 
 /* Can be ORed in to make sure the process is reverted back to SCHED_NORMAL on fork */
-pub const SCHED_RESET_ON_FORK: i32 = 0x40000000;
+pub const SCHED_RESET_ON_FORK: i32 = 0x4000_0000;
 
 /// For the sched_{set,get}attr() calls
 pub const SCHED_FLAG_RESET_ON_FORK: i32 = 0x01;
@@ -852,60 +852,56 @@ pub const PKEY_DISABLE_WRITE:  i32 = 0x2;
 pub const PKEY_ACCESS_MASK:    i32 = (PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE);
 
 /// fanotify.h
-pub const FAN_ACCESS:        i32 = 0x00000001; // File was accessed
-pub const FAN_MODIFY:        i32 = 0x00000002; // File was modified
-pub const FAN_ATTRIB:        i32 = 0x00000004; // Metadata changed
-pub const FAN_CLOSE_WRITE:   i32 = 0x00000008; // Writtable file closed
-pub const FAN_CLOSE_NOWRITE: i32 = 0x00000010; // Unwrittable file closed
-pub const FAN_OPEN:          i32 = 0x00000020; // File was opened
-pub const FAN_MOVED_FROM:    i32 = 0x00000040; // File was moved from X
-pub const FAN_MOVED_TO:      i32 = 0x00000080; // File was moved to Y
-pub const FAN_CREATE:        i32 = 0x00000100; // Subfile was created
-pub const FAN_DELETE:        i32 = 0x00000200; // Subfile was deleted
-pub const FAN_DELETE_SELF:   i32 = 0x00000400; // Self was deleted
-pub const FAN_MOVE_SELF:     i32 = 0x00000800; // Self was moved
-pub const FAN_OPEN_EXEC:     i32 = 0x00001000; // File was opened for exec
-
-pub const FAN_Q_OVERFLOW: i32 = 0x00004000; // Event queued overflowed
-
-pub const FAN_OPEN_PERM:      i32 = 0x00010000; // File open in perm check
-pub const FAN_ACCESS_PERM:    i32 = 0x00020000; // File accessed in perm check
-pub const FAN_OPEN_EXEC_PERM: i32 = 0x00040000;  // File open/exec in perm check
-
-pub const FAN_ONDIR: i32 = 0x40000000; // event occurred against dir
-
-pub const FAN_EVENT_ON_CHILD: i32 = 0x08000000; // interested in child events */
+pub const FAN_ACCESS:           i32 = 0x0000_0001; // File was accessed
+pub const FAN_MODIFY:           i32 = 0x0000_0002; // File was modified
+pub const FAN_ATTRIB:           i32 = 0x0000_0004; // Metadata changed
+pub const FAN_CLOSE_WRITE:      i32 = 0x0000_0008; // Writtable file closed
+pub const FAN_CLOSE_NOWRITE:    i32 = 0x0000_0010; // Unwrittable file closed
+pub const FAN_OPEN:             i32 = 0x0000_0020; // File was opened
+pub const FAN_MOVED_FROM:       i32 = 0x0000_0040; // File was moved from X
+pub const FAN_MOVED_TO:         i32 = 0x0000_0080; // File was moved to Y
+pub const FAN_CREATE:           i32 = 0x0000_0100; // Subfile was created
+pub const FAN_DELETE:           i32 = 0x0000_0200; // Subfile was deleted
+pub const FAN_DELETE_SELF:      i32 = 0x0000_0400; // Self was deleted
+pub const FAN_MOVE_SELF:        i32 = 0x0000_0800; // Self was moved
+pub const FAN_OPEN_EXEC:        i32 = 0x0000_1000; // File was opened for exec
+pub const FAN_Q_OVERFLOW:       i32 = 0x0000_4000; // Event queued overflowed
+pub const FAN_OPEN_PERM:        i32 = 0x0001_0000; // File open in perm check
+pub const FAN_ACCESS_PERM:      i32 = 0x0002_0000; // File accessed in perm check
+pub const FAN_OPEN_EXEC_PERM:   i32 = 0x0004_0000;  // File open/exec in perm check
+pub const FAN_ONDIR:            i32 = 0x4000_0000; // event occurred against dir
+pub const FAN_EVENT_ON_CHILD:   i32 = 0x0800_0000; // interested in child events */
 
 pub const FAN_CLOSE: i32 = (FAN_CLOSE_WRITE | FAN_CLOSE_NOWRITE);
 pub const FAN_MOVE:  i32 = (FAN_MOVED_FROM | FAN_MOVED_TO);
 
 /// flags used for fanotify_init()
-pub const FAN_CLOEXEC:  i32 = 0x00000001;
-pub const FAN_NONBLOCK: i32 =0x00000002;
+pub const FAN_CLOEXEC:  i32 = 0x000_00001;
+pub const FAN_NONBLOCK: i32 =0x0000_0002;
 
-pub const FAN_CLASS_NOTIF:       i32 = 0x00000000;
-pub const FAN_CLASS_CONTENT:     i32 = 0x00000004;
-pub const FAN_CLASS_PRE_CONTENT: i32 = 0x00000008;
+pub const FAN_CLASS_NOTIF:       i32 = 0x0000_0000;
+pub const FAN_CLASS_CONTENT:     i32 = 0x0000_0004;
+pub const FAN_CLASS_PRE_CONTENT: i32 = 0x0000_0008;
 
 
-pub const FAN_UNLIMITED_QUEUE: i32 = 0x00000010;
-pub const FAN_UNLIMITED_MARKS: i32 = 0x00000020;
-pub const FAN_ENABLE_AUDIT:    i32 = 0x00000040;
+pub const FAN_UNLIMITED_QUEUE: i32 = 0x0000_0010;
+pub const FAN_UNLIMITED_MARKS: i32 = 0x0000_0020;
+pub const FAN_ENABLE_AUDIT:    i32 = 0x0000_0040;
 
-pub const FAN_REPORT_TID: i32 = 0x00000100;
-pub const FAN_REPORT_FID: i32 = 0x00000200;
+pub const FAN_REPORT_TID: i32 = 0x0000_0100;
+pub const FAN_REPORT_FID: i32 = 0x0000_0200;
 
-pub const FAN_MARK_ADD:                 i32 = 0x00000001;
-pub const FAN_MARK_REMOVE:              i32 = 0x00000002;
-pub const FAN_MARK_DONT_FOLLOW:         i32 = 0x00000004;
-pub const FAN_MARK_ONLYDIR:             i32 = 0x00000008;
-pub const FAN_MARK_IGNORED_MASK:        i32 = 0x00000020;
-pub const FAN_MARK_IGNORED_SURV_MODIFY: i32 = 0x00000040;
-pub const FAN_MARK_FLUSH:               i32 = 0x00000080;
+pub const FAN_MARK_ADD:                 i32 = 0x0000_0001;
+pub const FAN_MARK_REMOVE:              i32 = 0x0000_0002;
+pub const FAN_MARK_DONT_FOLLOW:         i32 = 0x0000_0004;
+pub const FAN_MARK_ONLYDIR:             i32 = 0x0000_0008;
+pub const FAN_MARK_IGNORED_MASK:        i32 = 0x0000_0020;
+pub const FAN_MARK_IGNORED_SURV_MODIFY: i32 = 0x0000_0040;
+pub const FAN_MARK_FLUSH:               i32 = 0x0000_0080;
 
-pub const FAN_MARK_INODE:      i32 = 0x00000000;
-pub const FAN_MARK_MOUNT:      i32 = 0x00000010;
-pub const FAN_MARK_FILESYSTEM: i32 = 0x00000100;
+pub const FAN_MARK_INODE:      i32 = 0x0000_0000;
+pub const FAN_MARK_MOUNT:      i32 = 0x0000_0010;
+pub const FAN_MARK_FILESYSTEM: i32 = 0x0000_0100;
 
 pub const FANOTIFY_METADATA_VERSION: i32 = 3;
 
@@ -922,7 +918,7 @@ pub const FAN_NOFD: i32 = -1; // No fd set in event
 pub const NR_OPEN: i32 = 1024;
 
 pub const NGROUPS_MAX:    i32 = 65536; // supplemental group IDs are available
-pub const ARG_MAX:        i32 = 131072; // # bytes of args + environ for exec()
+pub const ARG_MAX:        i32 = 131_072; // # bytes of args + environ for exec()
 pub const LINK_MAX:       i32 = 127; // # links a file may have
 pub const MAX_CANON:      i32 = 255; // size of the canonical input queue
 pub const MAX_INPUT:      i32 = 255; // size of the type-ahead buffer
@@ -944,18 +940,18 @@ pub const EPOLL_CTL_DEL: i32 = 2;
 pub const EPOLL_CTL_MOD: i32 = 3;
 
 /// Epoll event masks
-pub const EPOLLIN:     poll_t = 0x00000001;
-pub const EPOLLPRI:    poll_t = 0x00000002;
-pub const EPOLLOUT:    poll_t = 0x00000004;
-pub const EPOLLERR:    poll_t = 0x00000008;
-pub const EPOLLHUP:    poll_t = 0x00000010;
-pub const EPOLLNVAL:   poll_t = 0x00000020;
-pub const EPOLLRDNORM: poll_t = 0x00000040;
-pub const EPOLLRDBAND: poll_t = 0x00000080;
-pub const EPOLLWRNORM: poll_t = 0x00000100;
-pub const EPOLLWRBAND: poll_t = 0x00000200;
-pub const EPOLLMSG:    poll_t = 0x00000400;
-pub const EPOLLRDHUP:  poll_t = 0x00002000;
+pub const EPOLLIN:     poll_t = 0x0000_0001;
+pub const EPOLLPRI:    poll_t = 0x0000_0002;
+pub const EPOLLOUT:    poll_t = 0x0000_0004;
+pub const EPOLLERR:    poll_t = 0x0000_0008;
+pub const EPOLLHUP:    poll_t = 0x0000_0010;
+pub const EPOLLNVAL:   poll_t = 0x0000_0020;
+pub const EPOLLRDNORM: poll_t = 0x0000_0040;
+pub const EPOLLRDBAND: poll_t = 0x0000_0080;
+pub const EPOLLWRNORM: poll_t = 0x0000_0100;
+pub const EPOLLWRBAND: poll_t = 0x0000_0200;
+pub const EPOLLMSG:    poll_t = 0x0000_0400;
+pub const EPOLLRDHUP:  poll_t = 0x0000_2000;
 
 /// Set exclusive wakeup mode for the target file descriptor
 pub const EPOLLEXCLUSIVE: poll_t = (1 << 28);
@@ -1012,30 +1008,30 @@ pub const TCSBRKP:      i32 = 0x5425;
 pub const TIOCSBRK:     i32 = 0x5427;
 pub const TIOCCBRK:     i32 = 0x5428;
 pub const TIOCGSID:     i32 = 0x5429;
-pub const TCGETS2:      i32 = 0x402C542B;
+pub const TCGETS2:      i32 = 0x402C_542B;
 #[allow(overflowing_literals)]
-pub const TCSETS2:      i32 = 0x802C542A;
-pub const TCSETSW2:     i32 = 0x402C542C;
-pub const TCSETSF2:     i32 = 0x402C542D;
+pub const TCSETS2:      i32 = 0x802C_542A;
+pub const TCSETSW2:     i32 = 0x402C_542C;
+pub const TCSETSF2:     i32 = 0x402C_542D;
 pub const TIOCGRS485:   i32 = 0x542E;
 pub const TIOCSRS485:   i32 = 0x542F;
 #[allow(overflowing_literals)]
-pub const TIOCGPTN:     i32 = 0x80045430;
-pub const TIOCSPTLCK:   i32 = 0x40045431;
+pub const TIOCGPTN:     i32 = 0x8004_5430;
+pub const TIOCSPTLCK:   i32 = 0x4004_5431;
 #[allow(overflowing_literals)]
-pub const TIOCGDEV:     i32 = 0x80045432;
+pub const TIOCGDEV:     i32 = 0x8004_5432;
 pub const TCGETX:       i32 = 0x5432;
 pub const TCSETX:       i32 = 0x5433;
 pub const TCSETXF:      i32 = 0x5434;
 pub const TCSETXW:      i32 = 0x5435;
-pub const TIOCSIG:      i32 = 0x40045436; // pty: generate signal
+pub const TIOCSIG:      i32 = 0x4004_5436; // pty: generate signal
 pub const TIOCVHANGUP:  i32 = 0x5437;
 #[allow(overflowing_literals)]
-pub const TIOCGPKT:     i32 = 0x80045438; // Get packet mode state
+pub const TIOCGPKT:     i32 = 0x8004_5438; // Get packet mode state
 #[allow(overflowing_literals)]
-pub const TIOCGPTLCK:   i32 = 0x80045439; // Get Pty lock state
+pub const TIOCGPTLCK:   i32 = 0x8004_5439; // Get Pty lock state
 #[allow(overflowing_literals)]
-pub const TIOCGEXCL:    i32 = 0x80045440; // Get exclusive mode state
+pub const TIOCGEXCL:    i32 = 0x8004_5440; // Get exclusive mode state
 pub const TIOCGPTPEER:  i32 = 0x5441; // Safely open the slave
 //pub const TIOCGISO7816: i32 = ;
 //pub const TIOCSISO7816: i32 = ;
@@ -1073,7 +1069,7 @@ pub const TIOCSER_TEMT: i32 = 0x01;
 pub const MQ_PRIO_MAX: i32 = 32768;
 
 // per-uid limit of kernel memory used by mqueue, in bytes
-pub const MQ_BYTES_MAX: i32 = 819200;
+pub const MQ_BYTES_MAX: i32 = 819_200;
 
 pub const NOTIFY_NONE:          i32 = 0;
 pub const NOTIFY_WOKENUP:       i32 = 1;

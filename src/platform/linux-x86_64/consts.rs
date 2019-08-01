@@ -869,10 +869,8 @@ pub const FAN_Q_OVERFLOW:       i32 = 0x0000_4000; // Event queued overflowed
 pub const FAN_OPEN_PERM:        i32 = 0x0001_0000; // File open in perm check
 pub const FAN_ACCESS_PERM:      i32 = 0x0002_0000; // File accessed in perm check
 pub const FAN_OPEN_EXEC_PERM:   i32 = 0x0004_0000;  // File open/exec in perm check
-
-pub const FAN_ONDIR: i32 = 0x4000_0000; // event occurred against dir
-
-pub const FAN_EVENT_ON_CHILD: i32 = 0x0800_0000; // interested in child events */
+pub const FAN_ONDIR:            i32 = 0x4000_0000; // event occurred against dir
+pub const FAN_EVENT_ON_CHILD:   i32 = 0x0800_0000; // interested in child events */
 
 pub const FAN_CLOSE: i32 = (FAN_CLOSE_WRITE | FAN_CLOSE_NOWRITE);
 pub const FAN_MOVE:  i32 = (FAN_MOVED_FROM | FAN_MOVED_TO);

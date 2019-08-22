@@ -1,6 +1,6 @@
 [package]
 name = "nc"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Xu Shaohua <xushaohua2016@outlook.com>"]
 homepage = "https://github.com/xushaohua/nc"
 repository = "https://github.com/xushaohua/nc"
@@ -8,7 +8,5 @@ description = "Process native call without `std`"
 edition = "2018"
 license = "Apache-2.0"
 publish = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

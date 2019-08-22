@@ -1,12 +1,13 @@
-
-extern crate core;
 extern crate alloc;
+extern crate core;
 
-use core::fmt;
-use core::fmt::Write;
-use core::ops;
 use alloc::boxed::Box;
 use alloc::vec::Vec;
+use core::fmt;
+use core::fmt::Write;
+use core::mem;
+use core::ops;
+use core::ptr;
 
 pub struct CString {
     inner: Box<[u8]>,
@@ -19,6 +20,15 @@ pub struct CStr {
 impl CString {
     pub fn new<T: Into<Vec<u8>>>(t: T) -> CString {
         let mut v = t.into();
+        v.reserve_exact(1);
+        v.push(0);
+        CString {
+            inner: v.into_boxed_slice(),
+        }
+    }
+
+    pub fn with_capacity(cap: usize) -> CString {
+        let mut v: Vec<u8> = vec![0; cap];
         v.reserve_exact(1);
         v.push(0);
         CString {
@@ -40,6 +50,30 @@ impl CString {
     pub const fn is_empty(&self) -> bool {
         // TODO(Shaohua): Check null bytes
         self.as_bytes_with_nul().len() == 0
+    }
+
+    pub fn strim_into_bytes(self) -> Vec<u8> {
+        let mut vec = self.into_inner().into_vec();
+        let mut nul_idx = 0;
+        for v in &vec {
+            if v == &0 {
+                break;
+            }
+            nul_idx += 1;
+        }
+        vec.resize(nul_idx, 0);
+        vec
+    }
+
+    pub fn into_bytes(self) -> Vec<u8> {
+        let mut vec = self.into_inner().into_vec();
+        let _nul = vec.pop();
+        vec
+    }
+
+    fn into_inner(self) -> Box<[u8]> {
+        let this = mem::ManuallyDrop::new(self);
+        unsafe { ptr::read(&this.inner) }
     }
 }
 
@@ -67,9 +101,7 @@ impl ops::Deref for CString {
 
     #[inline]
     fn deref(&self) -> &CStr {
-        unsafe {
-            CStr::from_bytes_with_nul_unchecked(self.as_bytes_with_nul())
-        }
+        unsafe { CStr::from_bytes_with_nul_unchecked(self.as_bytes_with_nul()) }
     }
 }
 
@@ -95,5 +127,12 @@ impl fmt::Debug for CStr {
             f.write_char(*byte as char)?;
         }
         write!(f, "\"")
+    }
+}
+
+impl From<CString> for Vec<u8> {
+    #[inline]
+    fn from(s: CString) -> Vec<u8> {
+        s.into_bytes()
     }
 }

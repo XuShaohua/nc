@@ -1,10 +1,12 @@
-use crate::c_str::CString;
+extern crate alloc;
 
 use super::consts;
 use super::errno::*;
 use super::sysno::*;
 use super::types::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
+use crate::c_str::CString;
+use alloc::vec::Vec;
 
 /// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
@@ -686,6 +688,15 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
         let node_ptr = node as *mut u32 as usize;
         let cache_ptr = cache as *mut getcpu_cache_t as usize;
         syscall3(SYS_GETCPU, cpu_ptr, node_ptr, cache_ptr).map(|_ret| ())
+    }
+}
+
+pub fn getcwd() -> Result<Vec<u8>, Errno> {
+    unsafe {
+        let buf_len = (consts::PATH_MAX + 1) as usize;
+        let buf = CString::with_capacity(buf_len);
+        let buf_ptr = buf.as_ptr() as usize;
+        syscall2(SYS_GETCWD, buf_ptr, buf_len).map(|_ret| buf.strim_into_bytes())
     }
 }
 

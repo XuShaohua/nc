@@ -1,6 +1,6 @@
 
 # nc
-Process native call without `std`.
+Execute system call directly. `nc` do not depend on `std`.
 
 ## Usage
 Add this to `Cargo.toml`:

@@ -1,0 +1,12 @@
+
+use crate::c_str::CString;
+
+use super::consts;
+use super::errno::*;
+use super::sysno::*;
+use super::types::*;
+use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
+
+sys read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno>;
+sys write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno>;
+sys open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno>;

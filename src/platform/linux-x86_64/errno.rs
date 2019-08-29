@@ -135,4 +135,3 @@ pub const EOWNERDEAD: Errno = 130;
 pub const ENOTRECOVERABLE: Errno = 131;
 pub const ERFKILL: Errno = 132;
 pub const EHWPOISON: Errno = 133;
-

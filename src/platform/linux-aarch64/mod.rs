@@ -27,7 +27,8 @@ pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n)
-         : "memory" "cc"
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }
@@ -39,7 +40,8 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1)
-         : "memory" "cc"
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }
@@ -51,8 +53,9 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
-           "{x1}"(a2),
-         : "memory" "cc"
+           "{x1}"(a2)
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }
@@ -66,7 +69,8 @@ pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usiz
            "{x0}"(a1),
            "{x1}"(a2),
            "{x2}"(a3)
-         : "memory" "cc"
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }
@@ -87,7 +91,8 @@ pub unsafe fn syscall4(
            "{x1}"(a2),
            "{x2}"(a3),
            "{x3}"(a4)
-         : "memory" "cc"
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }
@@ -110,7 +115,8 @@ pub unsafe fn syscall5(
            "{x2}"(a3),
            "{x3}"(a4),
            "{x4}"(a5)
-         : "memory" "cc"
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }
@@ -135,7 +141,8 @@ pub unsafe fn syscall6(
            "{x3}"(a4),
            "{x4}"(a5),
            "{x5}"(a6)
-         : "memory" "cc"
+         : "memory",
+           "cc"
          : "volatile");
     check_errno(ret)
 }

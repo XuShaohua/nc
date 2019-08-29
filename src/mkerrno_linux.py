@@ -8,12 +8,11 @@ import subprocess
 import sys
 
 
-def format_syscall(group):
+def format_errno(group):
     print("pub const E{0}: Errno = {1};".format(group[0].upper(), group[1]))
 
-
-def main():
-    cmd = ["gcc", "-E", "-dD", "/usr/include/errno.h"]
+def parse_errno(header_file="/usr/include/errno.h"):
+    cmd = ["gcc", "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
@@ -30,10 +29,16 @@ def main():
     for line in out.decode().split('\n'):
         m = errno_pattern.match(line)
         if m:
-            format_syscall(m.groups())
+            format_errno(m.groups())
 
     print("")
 
+def main():
+    if len(sys.argv) == 2:
+        find_syscall(sys.argv[1])
+    else:
+        print("Usage: %s errno.h" % sys.argv[0])
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

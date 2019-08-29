@@ -272,5 +272,15 @@ pub const SYS_PKEY_FREE: Sysno = 290;
 pub const SYS_STATX: Sysno = 291;
 pub const SYS_IO_PGETEVENTS: Sysno = 292;
 pub const SYS_RSEQ: Sysno = 293;
-pub const SYS_SYSCALLS: Sysno = 294;
-
+pub const SYS_KEXEC_FILE_LOAD: Sysno = 294;
+pub const SYS_PIDFD_SEND_SIGNAL: Sysno = 424;
+pub const SYS_IO_URING_SETUP: Sysno = 425;
+pub const SYS_IO_URING_ENTER: Sysno = 426;
+pub const SYS_IO_URING_REGISTER: Sysno = 427;
+pub const SYS_OPEN_TREE: Sysno = 428;
+pub const SYS_MOVE_MOUNT: Sysno = 429;
+pub const SYS_FSOPEN: Sysno = 430;
+pub const SYS_FSCONFIG: Sysno = 431;
+pub const SYS_FSMOUNT: Sysno = 432;
+pub const SYS_FSPICK: Sysno = 433;
+pub const SYS_SYSCALLS: Sysno = 434;

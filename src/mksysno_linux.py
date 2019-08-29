@@ -12,8 +12,8 @@ def format_syscall(group):
     print("pub const SYS_{0}: Sysno = {1};".format(group[0].upper(), group[1]))
 
 
-def main():
-    cmd = ["gcc", "-E", "-dD", "/usr/include/syscall.h"]
+def find_syscall(header_file="/usr/include/asm/unistd.h"):
+    cmd = ["gcc", "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
@@ -33,6 +33,32 @@ def main():
 
     print("")
 
+
+def is_debian():
+    p = subprocess.Popen(("which", "dpkg-architecture"), stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    return p.returncode == 0
+
+def get_debian_unistd_file():
+    p = subprocess.Popen(("dpkg-architecture", "-q", "DEB_HOST_MULTIARCH"), stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0:
+        return ""
+    return "/usr/include/{0}/asm/unistd.h".format(out.decode().strip())
+
+def main():
+    if len(sys.argv) == 1:
+        if is_debian():
+            header_file = get_debian_unistd_file()
+            if header_file:
+                find_syscall(header_file)
+                return
+        find_syscall()
+    elif len(sys.argv) == 2:
+        find_syscall(sys.argv[1])
+    else:
+        print("Usage: %s unistd.h" % sys.argv[0])
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

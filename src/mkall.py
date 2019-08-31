@@ -32,7 +32,7 @@ DEFINES = {
             "errno": "/usr/mips-linux-gnu/include/asm/errno.h",
             "sysno": "/usr/mips-linux-gnu/include/asm/unistd.h",
         },
-        "mipsel": {
+        "mipsle": {
             "compiler": "mipsel-linux-gnu-gcc-8",
             "deb": ["linux-libc-dev-mipsel-cross", "gcc-8-mipsel-linux-gnu"],
             "include": "/usr/mipsel-linux-gnu/include",
@@ -46,7 +46,7 @@ DEFINES = {
             "errno": "/usr/mips64-linux-gnuabi64/include/asm/errno.h",
             "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
         },
-        "mips64el": {
+        "mips64le": {
             "compiler": "mips64el-linux-gnuabi64-gcc-8",
             "deb": ["linux-libc-dev-mips64el-cross", "gcc-8-mips64el-linux-gnuabi64"],
             "include": "/usr/mips64el-linux-gnuabi64/include",
@@ -60,7 +60,7 @@ DEFINES = {
             "errno": "/usr/powerpc64-linux-gnu/include/asm/errno.h",
             "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
         },
-        "ppc64el": {
+        "ppc64le": {
             "compiler": "powerpc64-linux-gnu-gcc-8",
             "deb": ["linux-libc-dev-ppc64el-cross", "gcc-8-powerpc64le-linux-gnu"],
             "include": "/usr/powerpc64le-linux-gnu/include",
@@ -130,9 +130,8 @@ def parse_errno(content):
 def read_sysno(os_name, arch_name):
     compiler = get_compiler(os_name, arch_name)
     header_file = get_sysno_header(os_name, arch_name)
-    #include_dir = get_include_dir(os_name, arch_name)
-    #cmd = [compiler, "-I", include_dir, "-E", "-dD", header_file]
-    cmd = [compiler, "-E", "-dD", header_file]
+    include_dir = get_include_dir(os_name, arch_name)
+    cmd = [compiler, "-I", include_dir, "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0 or err:

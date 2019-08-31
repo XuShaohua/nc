@@ -171,6 +171,31 @@ def get_errno_header(os_name, arch_name):
 def get_sysno_header(os_name, arch_name):
     return DEFINES[os_name][arch_name]["sysno"]
 
+def get_arch_names(os_name):
+    return DEFINES[os_name].keys()
+
+def rust_fmt(filename):
+    subprocess.run(["rustfmt", filename])
+
+def gen_errno_and_sysno(os_name, arch_name):
+    folder_name = "{0}-{1}".format(os_name, arch_name)
+    platform_folder = os.path.join("platform", folder_name)
+    #os.makedirs(platform_folder, exist_ok=True)
+
+    errno_lines = read_errno(os_name, arch_name)
+    errno_content = "\n".join(errno_lines)
+    errno_file = os.path.join(platform_folder, "errno.rs")
+    with open(errno_file, "w") as fh:
+        fh.write(errno_content)
+    rust_fmt(errno_file)
+
+    sysno_lines = read_sysno(os_name, arch_name)
+    sysno_content = "\n".join(sysno_lines)
+    sysno_file = os.path.join(platform_folder, "sysno.rs")
+    with open(sysno_file, "w") as fh:
+        fh.write(sysno_content)
+    rust_fmt(sysno_file)
+
 def main():
     if len(sys.argv) != 3:
         print("Usage: %s os arch" % sys.argv[0])
@@ -188,21 +213,12 @@ def main():
 
     os_name = sys.argv[1]
     arch_name = sys.argv[2]
-    folder_name = "{0}-{1}".format(os_name, arch_name)
-    platform_folder = os.path.join("platform", folder_name)
-    #os.makedirs(platform_folder, exist_ok=True)
+    if arch_name == "all":
+        for arch_name in get_arch_names(os_name):
+            gen_errno_and_sysno(os_name, arch_name)
+    else:
+        gen_errno_and_sysno(os_name, arch_name)
 
-    errno_lines = read_errno(os_name, arch_name)
-    errno_content = "\n".join(errno_lines)
-    errno_file = os.path.join(platform_folder, "errno.rs")
-    with open(errno_file, "w") as fh:
-        fh.write(errno_content)
-
-    sysno_lines = read_sysno(os_name, arch_name)
-    sysno_content = "\n".join(sysno_lines)
-    sysno_file = os.path.join(platform_folder, "sysno.rs")
-    with open(sysno_file, "w") as fh:
-        fh.write(sysno_content)
 
 if __name__ == "__main__":
     main()

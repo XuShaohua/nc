@@ -282,4 +282,3 @@ pub const SYS_FSOPEN: Sysno = 430;
 pub const SYS_FSCONFIG: Sysno = 431;
 pub const SYS_FSMOUNT: Sysno = 432;
 pub const SYS_FSPICK: Sysno = 433;
-pub const SYS_SYSCALLS: Sysno = 434;

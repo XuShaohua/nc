@@ -4,126 +4,172 @@
 # in the LICENSE file.
 
 import os
+import re
 import subprocess
 import sys
 
 
-def install_debian_headers():
-    pkgs = [
-        #"linux-libc-dev-alpha-cross",
-        "linux-libc-dev-amd64-cross",
-        "linux-libc-dev-arm64-cross",
-        "linux-libc-dev-armel-cross",
-        "linux-libc-dev-armhf-cross",
-        #"linux-libc-dev-hppa-cross",
-        "linux-libc-dev-i386-cross",
-        #"linux-libc-dev-m68k-cross",
-        "linux-libc-dev-mips-cross",
-        "linux-libc-dev-mips64-cross",
-        "linux-libc-dev-mips64el-cross",
-        #"linux-libc-dev-mips64r6-cross",
-        #"linux-libc-dev-mips64r6el-cross",
-        "linux-libc-dev-mipsel-cross",
-        #"linux-libc-dev-mipsn32-cross",
-        #"linux-libc-dev-mipsn32el-cross",
-        #"linux-libc-dev-mipsn32r6-cross",
-        #"linux-libc-dev-mipsn32r6el-cross",
-        #"linux-libc-dev-mipsr6-cross",
-        #"linux-libc-dev-mipsr6el-cross",
-        "linux-libc-dev-powerpc-cross",
-        "linux-libc-dev-ppc64-cross",
-        "linux-libc-dev-ppc64el-cross",
-        #"linux-libc-dev-riscv64-cross",
-        "linux-libc-dev-s390x-cross",
-        #"linux-libc-dev-sh4-cross",
-        "linux-libc-dev-sparc64-cross",
-        #"linux-libc-dev-x32-cross",
+DEFINES = {
+    "linux": {
+        "aarch64": {
+            "compiler": "aarch64-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-arm64-cross", "gcc-8-aarch64-linux-gnu"],
+            "errno": "/usr/aarch64-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",
+        },
+        "arm": {
+            "compiler": "arm-linux-gnueabihf-gcc-8",
+            "deb": ["linux-libc-dev-armhf-cross", "gcc-8-arm-linux-gnueabihf"],
+            "errno": "/usr/arm-linux-gnueabihf/include/asm/errno.h",
+            "sysno": "/usr/arm-linux-gnueabihf/include/asm/unistd.h",
+        },
+        "mips": {
+            "compiler": "gcc",
+            "deb": ["linux-libc-dev-mips-cross", "gcc"],
+            "errno": "/usr/mips-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/mips-linux-gnu/include/asm/unistd.h",
+        },
+        "mipsel": {
+            "compiler": "mipsel-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-mipsel-cross", "gcc-8-mipsel-linux-gnu"],
+            "errno": "/usr/mipsel-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/mipsel-linux-gnu/include/asm/unistd.h",
+        },
+        "mips64": {
+            "compiler": "mips64-linux-gnuabi64-gcc-8",
+            "deb": ["linux-libc-dev-mips64-cross", "gcc-8-mips64-linux-gnuabi64"],
+            "errno": "/usr/mips64-linux-gnuabi64/include/asm/errno.h",
+            "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
+        },
+        "mips64el": {
+            "compiler": "mips64el-linux-gnuabi64-gcc-8",
+            "deb": ["linux-libc-dev-mips64el-cross", "gcc-8-mips64el-linux-gnuabi64"],
+            "errno": "/usr/mips64el-linux-gnuabi64/include/asm/errno.h",
+            "sysno": "/usr/mips64el-linux-gnuabi64/include/asm/unistd.h",
+        },
+        "ppc64": {
+            "compiler": "powerpc64-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-ppc64-cross", "gcc-8-powerpc64-linux-gnu"],
+            "errno": "/usr/powerpc64-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
+        },
+        "ppc64le": {
+            "compiler": "powerpc64-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-ppc64el-cross", "gcc-8-powerpc64le-linux-gnu"],
+            "errno": "/usr/powerpc64le-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/powerpc64le-linux-gnu/include/asm/unistd.h",
+        },
+        "s390x": {
+            "compiler": "s390x-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-s390x-cross", "gcc-8-s390x-linux-gnu"],
+            "errno": "/usr/s390x-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
+        },
+        "sparc64": {
+            "compiler": "sparc64-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-sparc64-cross", "gcc-8-sparc64-linux-gnu"],
+            "errno": "/usr/sparc64-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/sparc64-linux-gnu/include/asm/unistd.h",
+        },
+        "x86": {
+            "compiler": "i686-linux-gnu-gcc-8",
+            "deb": ["linux-libc-dev-i386-cross", "gcc-8-i686-linux-gnu"],
+            "errno": "/usr/i686-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/i686-linux-gnu/include/asm/unistd.h",
+        },
+        "x86_64": {
+            "compiler": "gcc",
+            "deb": ["linux-libc-dev-amd64-cross", "gcc"],
+            "errno": "/usr/x86_64-linux-gnu/include/asm/errno.h",
+            "sysno": "/usr/x86_64-linux-gnu/include/asm/unistd.h",
+        },
+    },
+}
+
+def parse_errno(compiler="gcc", header_file="/usr/include/errno.h"):
+    cmd = [compiler, "-E", "-dD", header_file]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0 or err:
+        print(err)
+        sys.exit(1)
+
+    lines = [
+        "",
+        "// Code generated by mkerrno_linux.py; DO NOT EDIT.",
+        "",
+        "pub type Errno = i32;"
+        "",
     ]
-    cmd = [
-        "sudo",
-        "apt",
-        "install",
-        "-y",
+
+    errno_pattern = re.compile("^#define E(\w+)\s+(\d+)")
+    for line in out.decode().split('\n'):
+        m = errno_pattern.match(line)
+        if m:
+            line = "pub const E{0}: Errno = {1};".format(m.group(1).upper(), m.group(2))
+            lines.append(line)
+    return lines
+
+def parse_syscall(compiler="gcc", header_file="/usr/include/asm/unistd.h"):
+    cmd = [compiler, "-E", "-dD", header_file]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0 or err:
+        print(err)
+        sys.exit(1)
+
+    lines = [
+        "",
+        "// Code generated by mksysno_linux.py; DO NOT EDIT.",
+        "",
+        "pub type Sysno = usize;",
+        "",
     ]
-    cmd.extend(pkgs)
 
-    p = subprocess.run(cmd)
-    print(p)
+    pattern = re.compile("^#define __NR_(\w+)\s+(\d+)")
+    for line in out.decode().split("\n"):
+        m = pattern.match(line)
+        if m:
+            line = "pub const SYS_{0}: Sysno = {1};".format(m.group(1).upper(), m.group(2))
+            lines.append(line)
+    return lines
 
-def get_errno_header(os, arch):
-    if os == "linux":
-        if arch == "aarch64":
-            return "/usr/aarch64-linux-gnu/include/asm/errno.h"
-        elif arch == "armel":
-            return "/usr/arm-linux-gnueabi/include/asm/errno.h"
-        elif arch == "armhf":
-            return "/usr/arm-linux-gnueabihf/include/asm/errno.h"
-        elif arch == "mips":
-            return "/usr/mips-linux-gnu/include/asm/errno.h"
-        elif arch == "mips64":
-            return "/usr/mips64-linux-gnuabi64/include/asm/errno.h"
-        elif arch == "powerpc64":
-            return "/usr/powerpc64-linux-gnu/include/asm/errno.h"
-        elif arch == "powerpc":
-            return "/usr/powerpc-linux-gnu/include/asm/errno.h"
-        elif arch == "s390x":
-            return "/usr/s390x-linux-gnu/include/asm/errno.h"
-        elif arch == "sparc64":
-            return "/usr/sparc64-linux-gnu/include/asm/errno.h"
-        elif arch == "x86":
-            return "/usr/i686-linux-gnu/include/asm/errno.h"
-        elif arch == "x86_64":
-            return "/usr/x86_64-linux-gnu/include/asm/errno.h"
-    return "/usr/include/asm/errno.h"
+def get_compiler(os_name, arch_name):
+    return DEFINES[os_name][arch_name]["compiler"]
 
-def get_sysno_header(os, arch):
-    if os == "linux":
-        if arch == "aarch64":
-            return "/usr/aarch64-linux-gnu/include/asm/unistd.h"
-        elif arch == "armel":
-            return "/usr/arm-linux-gnueabi/include/asm/unistd.h"
-        elif arch == "armhf":
-            return "/usr/arm-linux-gnueabihf/include/asm/unistd.h"
-        elif arch == "mips":
-            return "/usr/mips-linux-gnu/include/asm/unistd.h"
-        elif arch == "mips64":
-            return "/usr/mips64-linux-gnuabi64/include/asm/unistd.h"
-        elif arch == "powerpc64":
-            return "/usr/powerpc64-linux-gnu/include/asm/unistd.h"
-        elif arch == "powerpc":
-            return "/usr/powerpc-linux-gnu/include/asm/unistd.h"
-        elif arch == "s390x":
-            return "/usr/s390x-linux-gnu/include/asm/unistd.h"
-        elif arch == "sparc64":
-            return "/usr/sparc64-linux-gnu/include/asm/unistd.h"
-        elif arch == "x86":
-            return "/usr/i686-linux-gnu/include/asm/unistd.h"
-        elif arch == "x86_64":
-            return "/usr/x86_64-linux-gnu/include/asm/unistd.h"
-    return "/usr/include/asm/unistd.h"
+def get_errno_header(os_name, arch_name):
+    return DEFINES[os_name][arch_name]["errno"]
+
+def get_sysno_header(os_name, arch_name):
+    return DEFINES[os_name][arch_name]["sysno"]
 
 def main():
-    #install_debian_headers()
-
     if len(sys.argv) != 3:
         print("Usage: %s os arch" % sys.argv[0])
         sys.exit(1)
     os_name = sys.argv[1]
     arch_name = sys.argv[2]
-    if os_name == "linux":
-        errno_header = get_errno_header(os_name, arch_name)
-        from mkerrno_linux import parse_errno
-        errno_lines = parse_errno(errno_header)
-        errno_content = "\n".join(errno_lines)
-        with open("platform/{}-{}/errno.rs".format(os_name, arch_name), "w") as fh:
-            fh.write(errno_content)
+    folder_name = "{0}-{1}".format(os_name, arch_name)
+    platform_folder = os.path.join("platform", folder_name)
+    #os.makedirs(platform_folder, exist_ok=True)
 
-        unistd_header = get_sysno_header(os_name, arch_name)
-        from mksysno_linux import parse_syscall
-        sysno_lines = parse_syscall(unistd_header)
-        sysno_content = "\n".join(sysno_lines)
-        with open("platform/{}-{}/sysno.rs".format(os_name, arch_name), "w") as fh:
-            fh.write(sysno_content)
+    errno_lines = parse_errno(
+        get_compiler(os_name, arch_name),
+        get_errno_header(os_name, arch_name)
+    )
+    errno_content = "\n".join(errno_lines)
+    errno_file = os.path.join(platform_folder, "errno.rs")
+    with open(errno_file, "w") as fh:
+        fh.write(errno_content)
+
+    sysno_lines = parse_syscall(
+        get_compiler(os_name, arch_name),
+        get_sysno_header(os_name, arch_name)
+    )
+    sysno_content = "\n".join(sysno_lines)
+    sysno_file = os.path.join(platform_folder, "sysno.rs")
+    with open(sysno_file, "w") as fh:
+        fh.write(sysno_content)
 
 if __name__ == "__main__":
     main()

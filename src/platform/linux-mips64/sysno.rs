@@ -2,8 +2,6 @@
 
 pub type Sysno = usize;
 
-pub const SYS_O32_LINUX: Sysno = 4000;
-pub const SYS_O32_LINUX_SYSCALLS: Sysno = 368;
 pub const SYS_READ: Sysno = 5000;
 pub const SYS_WRITE: Sysno = 5001;
 pub const SYS_OPEN: Sysno = 5002;
@@ -332,8 +330,3 @@ pub const SYS_PKEY_FREE: Sysno = 5325;
 pub const SYS_STATX: Sysno = 5326;
 pub const SYS_RSEQ: Sysno = 5327;
 pub const SYS_IO_PGETEVENTS: Sysno = 5328;
-pub const SYS_LINUX_SYSCALLS: Sysno = 5328;
-pub const SYS_64_LINUX: Sysno = 10000;
-pub const SYS_64_LINUX_SYSCALLS: Sysno = 5328;
-pub const SYS_N32_LINUX: Sysno = 11000;
-pub const SYS_N32_LINUX_SYSCALLS: Sysno = 5332;

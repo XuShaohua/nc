@@ -25,12 +25,14 @@ DEFINES = {
             "errno": "/usr/arm-linux-gnueabihf/include/asm/errno.h",
             "sysno": "/usr/arm-linux-gnueabihf/include/asm/unistd.h",
         },
+        # debian sid does not contain gcc mips version in multiarch
         "mips": {
             "compiler": "gcc",
             "deb": ["linux-libc-dev-mips-cross", "gcc"],
             "include": "/usr/mips-linux-gnu/include",
             "errno": "/usr/mips-linux-gnu/include/asm/errno.h",
             "sysno": "/usr/mips-linux-gnu/include/asm/unistd.h",
+            "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
         },
         "mipsle": {
             "compiler": "mipsel-linux-gnu-gcc-8",
@@ -124,7 +126,11 @@ def read_sysno(os_name, arch_name):
     compiler = get_compiler(os_name, arch_name)
     header_file = get_sysno_header(os_name, arch_name)
     include_dir = get_include_dir(os_name, arch_name)
-    cmd = [compiler, "-I", include_dir, "-E", "-dD", header_file]
+    defines = get_defines(os_name, arch_name)
+    if defines:
+        cmd = [compiler, "-I", include_dir, "-E", "-dD", defines, header_file]
+    else:
+        cmd = [compiler, "-I", include_dir, "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0 or err:
@@ -134,9 +140,16 @@ def read_sysno(os_name, arch_name):
 
 def parse_sysno(content):
     def f(name, num):
+        num = int(num)
+        # Ignore deprecated syscalls
+        if num > 999:
+            return
+
         nonlocal offset
-        num = offset + int(num)
-        return "pub const SYS_{0}: Sysno = {1};".format(name.upper(), num)
+        num = offset + num
+        line = "pub const SYS_{0}: Sysno = {1};".format(name.upper(), num)
+        nonlocal lines
+        lines.append(line)
 
     lines = [
         "",
@@ -156,7 +169,7 @@ def parse_sysno(content):
 
     for line in content.split("\n"):
         # Ignore syscall
-        if line.startswith("#define __NR_syscalls"):
+        if line.startswith("#define __NR_syscalls") or "_Linux_syscalls" in line:
             continue
 
         m0 = pattern0.match(line)
@@ -167,28 +180,24 @@ def parse_sysno(content):
 
         m1 = pattern1.match(line)
         if m1:
-            line = f(m1.group(1), m1.group(2))
-            lines.append(line)
+            f(m1.group(1), m1.group(2))
             continue
 
         m2 = pattern2.match(line)
         if m2:
-            line = f(m2.group(1), m2.group(2))
-            lines.append(line)
+            f(m2.group(1), m2.group(2))
             continue
 
         m3 = pattern3.match(line)
         if m3:
             prev = int(m3.group(2))
-            line = f(m3.group(1), m3.group(2))
-            lines.append(line)
+            f(m3.group(1), m3.group(2))
             continue
 
         m4 = pattern4.match(line)
         if m4:
             num = prev + int(m4.group(2))
-            line = f(m4.group(1), str(num))
-            lines.append(line)
+            f(m4.group(1), str(num))
             continue
 
     return lines
@@ -204,6 +213,9 @@ def get_errno_header(os_name, arch_name):
 
 def get_sysno_header(os_name, arch_name):
     return DEFINES[os_name][arch_name]["sysno"]
+
+def get_defines(os_name, arch_name):
+    return DEFINES[os_name][arch_name].get("defines", "")
 
 def get_arch_names(os_name):
     return DEFINES[os_name].keys()

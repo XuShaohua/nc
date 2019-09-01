@@ -74,13 +74,6 @@ DEFINES = {
             "errno": "/usr/s390x-linux-gnu/include/asm/errno.h",
             "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
         },
-        "sparc64": {
-            "compiler": "sparc64-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-sparc64-cross", "gcc-8-sparc64-linux-gnu"],
-            "include": "/usr/sparc64-linux-gnu/include",
-            "errno": "/usr/sparc64-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/sparc64-linux-gnu/include/asm/unistd.h",
-        },
         "x86": {
             "compiler": "i686-linux-gnu-gcc-8",
             "deb": ["linux-libc-dev-i386-cross", "gcc-8-i686-linux-gnu"],

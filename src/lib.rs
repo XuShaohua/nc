@@ -27,19 +27,23 @@ pub mod platform;
 #[path = "platform/linux-mipsle/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "mips64"))]
+#[cfg(all(target_os = "linux", target_arch = "mips64", target_endian = "big"))]
 #[path = "platform/linux-mips64/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "mips64el"))]
+#[cfg(all(target_os = "linux", target_arch = "mips64", target_endian = "little"))]
 #[path = "platform/linux-mips64le/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "powerpc64"))]
+#[cfg(all(target_os = "linux", target_arch = "powerpc64", target_endian = "big"))]
 #[path = "platform/linux-ppc64/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "powerpc64le"))]
+#[cfg(all(
+    target_os = "linux",
+    target_arch = "powerpc64",
+    target_endian = "little"
+))]
 #[path = "platform/linux-ppc64le/mod.rs"]
 pub mod platform;
 

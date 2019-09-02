@@ -118,6 +118,7 @@ def main():
         fh.writelines(headers)
         for sysno in sorted(matched_sysno):
             fh.writelines(syscalls[sysno])
+    rust_fmt(call_file)
 
 if __name__ == "__main__":
     main()

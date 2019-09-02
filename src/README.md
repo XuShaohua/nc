@@ -30,8 +30,8 @@ mirrors do not support non-x86 architectures
 - [ ] sighandler types
 - [ ] implement more syscalls
 - [x] test arm
-- [ ] test mips
-- [ ] test mipsel
-- [ ] test ppc64
-- [ ] test ppc64le
+- [x] test mips
+- [x] test mipsel
+- [x] test ppc64
+- [x] test ppc64le
 - [ ] test s390x

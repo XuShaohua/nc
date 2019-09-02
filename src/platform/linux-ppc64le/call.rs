@@ -103,7 +103,7 @@ pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
     }
 }
 
-pub fn break() {
+pub fn r#break() {
     core::unimplemented!();
     // syscall0(SYS_BREAK);
 }

@@ -29,7 +29,7 @@ mirrors do not support non-x86 architectures
 - [ ] support windows
 - [ ] sighandler types
 - [ ] implement more syscalls
-- [ ] test arm
+- [x] test arm
 - [ ] test mips
 - [ ] test mipsel
 - [ ] test ppc64

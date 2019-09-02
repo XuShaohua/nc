@@ -43,10 +43,14 @@ def parse_template():
                 stack.append(line)
 
             if new_func_start and line == "}\n":
-                for line in stack:
+                for i, line in enumerate(stack):
                     if line.startswith("pub fn"):
                         m = func_name_pattern.match(line)
                         func_name = m.group(1)
+                        if func_name in ("break", ):
+                            line = line.replace(func_name, "r#%s" % func_name)
+                            stack[i] = line
+
                     elif "SYS_" in line:
                         m = syscall_pattern.match(line)
                         if m:

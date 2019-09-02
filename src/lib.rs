@@ -19,11 +19,11 @@ pub mod platform;
 #[path = "platform/linux-arm/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "mips"))]
+#[cfg(all(target_os = "linux", target_arch = "mips", target_endian = "big"))]
 #[path = "platform/linux-mips/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "mipsel"))]
+#[cfg(all(target_os = "linux", target_arch = "mips", target_endian = "little"))]
 #[path = "platform/linux-mipsle/mod.rs"]
 pub mod platform;
 

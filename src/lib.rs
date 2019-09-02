@@ -24,7 +24,7 @@ pub mod platform;
 pub mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "mipsel"))]
-#[path = "platform/linux-mipsel/mod.rs"]
+#[path = "platform/linux-mipsle/mod.rs"]
 pub mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "mips64"))]
@@ -32,15 +32,15 @@ pub mod platform;
 pub mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "mips64el"))]
-#[path = "platform/linux-mips64el/mod.rs"]
+#[path = "platform/linux-mips64le/mod.rs"]
 pub mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "powerpc64"))]
 #[path = "platform/linux-ppc64/mod.rs"]
 pub mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "powerpc64el"))]
-#[path = "platform/linux-ppc64el/mod.rs"]
+#[cfg(all(target_os = "linux", target_arch = "powerpc64le"))]
+#[path = "platform/linux-ppc64le/mod.rs"]
 pub mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "s390x"))]

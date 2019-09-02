@@ -20,7 +20,6 @@ pub fn check_errno(ret: usize) -> Result<usize, Errno> {
     }
 }
 
-// From kmcallister/syscall.rs
 #[inline(always)]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;

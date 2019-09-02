@@ -20,55 +20,59 @@ pub fn check_errno(ret: usize) -> Result<usize, Errno> {
     }
 }
 
+// From kmcallister/syscall.rs
 #[inline(always)]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    let mut n = n;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "={r7}"(ret)
-         :
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n)
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }
 
 #[inline(always)]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    let mut n = n;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "={r7}"(ret)
-         : "{r4}"(a1)
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n),
+           "{r4}"(a1)
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }
 
 #[inline(always)]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    let mut n = n;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "={r7}"(ret)
-         : "{r4}"(a1),
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n),
+           "{r4}"(a1),
            "{r5}"(a2)
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }
 
 #[inline(always)]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    let mut n = n;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "={r7}"(ret)
-         : "{r4}"(a1),
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n),
+           "{r4}"(a1),
            "{r5}"(a2),
            "{r6}"(a3)
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }
 
 #[inline(always)]
@@ -79,16 +83,18 @@ pub unsafe fn syscall4(
     a3: usize,
     a4: usize,
 ) -> Result<usize, Errno> {
-    let mut n = n;
-    let mut a4 = a4;
+    let ret: usize;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "+{r7}"(a4)
-         : "{r4}"(a1),
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n),
+           "{r4}"(a1),
            "{r5}"(a2),
-           "{r6}"(a3)
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+           "{r6}"(a3),
+           "{r7}"(a4)
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }
 
 #[inline(always)]
@@ -100,17 +106,19 @@ pub unsafe fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    let mut n = n;
-    let mut a4 = a4;
+    let ret: usize;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "+{r7}"(a4)
-         : "{r4}"(a1),
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n),
+           "{r4}"(a1),
            "{r5}"(a2),
            "{r6}"(a3),
+           "{r7}"(a4),
            "{r8}"(a5)
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }
 
 #[inline(always)]
@@ -123,16 +131,18 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    let mut n = n;
-    let mut a4 = a4;
+    let ret: usize;
+    let neg: usize;
     asm!("syscall"
-         : "+&{r2}"(n), "+{r7}"(a4)
-         : "{r4}"(a1),
+         : "=&{r2}"(ret), "={r7}"(neg)
+         : "ir"(n),
+           "{r4}"(a1),
            "{r5}"(a2),
            "{r6}"(a3),
+           "{r7}"(a4),
            "{r8}"(a5),
            "{r9}"(a6)
-         : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
+         : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
-    check_errno(n)
+    check_errno(ret)
 }

@@ -25,7 +25,7 @@ def parse_template():
         sysno = ""
         func_name = ""
         stack = []
-        syscall_pattern = re.compile(".*(SYS_\w+)")
+        syscall_pattern = re.compile("[^S]*(SYS_\w+)")
         func_name_pattern = re.compile("pub fn (\w+)")
         for line in fh:
             if line.startswith("pub fn"):
@@ -56,6 +56,7 @@ def parse_template():
                             sys.exit(1)
                         if sysno[4:].lower() != func_name:
                             print("func name and sysno mismatch :%s:%s:" % (sysno, func_name))
+                            print(line)
                             sys.exit(1)
                 new_func_start = False
                 syscalls[sysno] = stack

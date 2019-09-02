@@ -548,3 +548,7 @@ pub struct file_handle_t {
     // TODO(Shaohua): u8 to unsigned char
     pub f_handle: [u8; 0], // File identifier (sized by caller) [out]
 }
+
+// TODO(Shaohua):
+pub struct fsctl_res_t {}
+pub struct nfsctl_arg_t {}

@@ -56,7 +56,7 @@ pub mod platform;
 pub mod platform;
 
 // Re-export functions
-pub use platform::c::*;
+pub use platform::call::*;
 pub use platform::consts::*;
 pub use platform::errno::*;
 pub use platform::sysno::*;

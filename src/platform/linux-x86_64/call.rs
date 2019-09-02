@@ -8,7 +8,6 @@ use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6
 use crate::c_str::CString;
 use alloc::vec::Vec;
 
-/// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
     unsafe {
         let sockfd = sockfd as usize;
@@ -53,12 +52,22 @@ pub fn acct(filename: &str) -> Result<(), Errno> {
     }
 }
 
+pub fn add_key() {
+    core::unimplemented!();
+    // syscall0(SYS_ADD_KEY);
+}
+
 /// Tune kernel clock. Returns clock state on success.
 pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     unsafe {
         let buf_ptr = buf as *mut timex_t as usize;
         syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
     }
+}
+
+pub fn afs_syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_AFS_SYSCALL);
 }
 
 /// set an alarm clock for delivery of a signal.
@@ -71,6 +80,7 @@ pub fn alarm(seconds: u32) -> u32 {
 
 pub fn arch_prctl() {
     core::unimplemented!();
+    // syscall0(SYS_ARCH_PRCTL);
 }
 
 /// Bind a name to a socket.
@@ -208,6 +218,7 @@ pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errn
 
 pub fn clone() {
     core::unimplemented!();
+    // syscall0(SYS_CLONE);
 }
 
 /// Close a file descriptor.
@@ -269,6 +280,16 @@ pub fn creat(filename: &str, mode: mode_t) -> Result<i32, Errno> {
     }
 }
 
+pub fn create_module() {
+    core::unimplemented!();
+    // syscall0(SYS_CREATE_MODULE);
+}
+
+pub fn delete_module() {
+    core::unimplemented!();
+    // syscall0(SYS_DELETE_MODULE);
+}
+
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 pub fn dup(oldfd: i32) -> Result<isize, Errno> {
@@ -295,36 +316,6 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
         let newfd = newfd as usize;
         let flags = flags as usize;
         syscall3(SYS_DUP3, oldfd, newfd, flags).map(|_ret| ())
-    }
-}
-
-/// Execute a new program.
-pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
-    unsafe {
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let argv_ptr = argv.as_ptr() as usize;
-        let env_ptr = env.as_ptr() as usize;
-        syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr).map(|_ret| ())
-    }
-}
-
-/// Execute a new program relative to a directory file descriptor.
-pub fn execveat(
-    fd: i32,
-    filename: &str,
-    argv: &[&str],
-    env: &[&str],
-    flags: i32,
-) -> Result<(), Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let argv_ptr = argv.as_ptr() as usize;
-        let env_ptr = env.as_ptr() as usize;
-        let flags = flags as usize;
-        syscall5(SYS_EXECVEAT, fd, filename_ptr, argv_ptr, env_ptr, flags).map(|_ret| ())
     }
 }
 
@@ -355,6 +346,11 @@ pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Resu
     }
 }
 
+pub fn epoll_ctl_old() {
+    core::unimplemented!();
+    // syscall0(SYS_EPOLL_CTL_OLD);
+}
+
 /// Wait for an I/O event on an epoll file descriptor.
 pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> Result<i32, Errno> {
     unsafe {
@@ -382,6 +378,11 @@ pub fn epoll_wait(
     }
 }
 
+pub fn epoll_wait_old() {
+    core::unimplemented!();
+    // syscall0(SYS_EPOLL_WAIT_OLD);
+}
+
 /// Create a file descriptor for event notification.
 pub fn eventfd(count: u32) -> Result<i32, Errno> {
     unsafe {
@@ -396,6 +397,36 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
         let count = count as usize;
         let flags = flags as usize;
         syscall2(SYS_EVENTFD2, count, flags).map(|ret| ret as i32)
+    }
+}
+
+/// Execute a new program.
+pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let argv_ptr = argv.as_ptr() as usize;
+        let env_ptr = env.as_ptr() as usize;
+        syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr).map(|_ret| ())
+    }
+}
+
+/// Execute a new program relative to a directory file descriptor.
+pub fn execveat(
+    fd: i32,
+    filename: &str,
+    argv: &[&str],
+    env: &[&str],
+    flags: i32,
+) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let argv_ptr = argv.as_ptr() as usize;
+        let env_ptr = env.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall5(SYS_EXECVEAT, fd, filename_ptr, argv_ptr, env_ptr, flags).map(|_ret| ())
     }
 }
 
@@ -458,7 +489,7 @@ pub fn fanotify_init(flags: u32, event_f_flags: u32) -> Result<i32, Errno> {
 }
 
 /// Add, remove, or modify an fanotify mark on a filesystem object
-pub fn fanotify_mask(
+pub fn fanotify_mark(
     fanotify_fd: i32,
     flags: u32,
     mask: u64,
@@ -501,19 +532,6 @@ pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
     }
 }
 
-/// Manipulate file descriptor.
-pub fn fcntl() {
-    core::unimplemented!();
-}
-
-/// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
-pub fn fdatasync(fd: i32) -> Result<(), Errno> {
-    unsafe {
-        let fd = fd as usize;
-        syscall1(SYS_FDATASYNC, fd).map(|_ret| ())
-    }
-}
-
 /// Change permissions of a file.
 pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     unsafe {
@@ -532,58 +550,6 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
         let user = user as usize;
         let group = group as usize;
         syscall3(SYS_FCHOWN, fd, user, group).map(|_ret| ())
-    }
-}
-
-/// Get extended attribute value.
-pub fn fgetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let name_ptr = name.as_ptr() as usize;
-        let size = size as usize;
-        syscall4(SYS_FGETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
-    }
-}
-
-pub fn finit_module() {
-    core::unimplemented!();
-}
-
-/// List extended attribute names.
-pub fn flistxattr(fd: i32, list: &mut [u8]) -> Result<ssize_t, Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let list_ptr = list.as_mut_ptr() as usize;
-        let len = list.len();
-        syscall3(SYS_FLISTXATTR, fd, list_ptr, len).map(|ret| ret as ssize_t)
-    }
-}
-
-/// Remove an extended attribute.
-pub fn frmovexattr(fd: i32, name: &str) -> Result<(), Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let name_ptr = name.as_ptr() as usize;
-        syscall2(SYS_FREMOVEXATTR, fd, name_ptr).map(|_ret| ())
-    }
-}
-
-/// Set extended attribute value.
-pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let name_ptr = name.as_ptr() as usize;
-        let size = size as usize;
-        syscall4(SYS_FSETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
-    }
-}
-
-/// Apply or remove an advisory lock on an open file.
-pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let operation = operation as usize;
-        syscall2(SYS_FLOCK, fd, operation).map(|_ret| ())
     }
 }
 
@@ -606,9 +572,95 @@ pub fn fchownat(
     }
 }
 
+pub fn fcntl() {
+    core::unimplemented!();
+    // syscall0(SYS_FCNTL);
+}
+
+/// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
+pub fn fdatasync(fd: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        syscall1(SYS_FDATASYNC, fd).map(|_ret| ())
+    }
+}
+
+/// Get extended attribute value.
+pub fn fgetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        syscall4(SYS_FGETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
+    }
+}
+
+pub fn finit_module() {
+    core::unimplemented!();
+    // syscall0(SYS_FINIT_MODULE);
+}
+
+/// List extended attribute names.
+pub fn flistxattr(fd: i32, list: &mut [u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let list_ptr = list.as_mut_ptr() as usize;
+        let len = list.len();
+        syscall3(SYS_FLISTXATTR, fd, list_ptr, len).map(|ret| ret as ssize_t)
+    }
+}
+
+/// Apply or remove an advisory lock on an open file.
+pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let operation = operation as usize;
+        syscall2(SYS_FLOCK, fd, operation).map(|_ret| ())
+    }
+}
+
 /// Create a child process.
 pub fn fork() -> Result<pid_t, Errno> {
     unsafe { syscall0(SYS_FORK).map(|ret| ret as pid_t) }
+}
+
+/// Remove an extended attribute.
+pub fn fremovexattr(fd: i32, name: &str) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let name_ptr = name.as_ptr() as usize;
+        syscall2(SYS_FREMOVEXATTR, fd, name_ptr).map(|_ret| ())
+    }
+}
+
+pub fn fsconfig() {
+    core::unimplemented!();
+    // syscall0(SYS_FSCONFIG);
+}
+
+/// Set extended attribute value.
+pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        syscall4(SYS_FSETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
+    }
+}
+
+pub fn fsmount() {
+    core::unimplemented!();
+    // syscall0(SYS_FSMOUNT);
+}
+
+pub fn fsopen() {
+    core::unimplemented!();
+    // syscall0(SYS_FSOPEN);
+}
+
+pub fn fspick() {
+    core::unimplemented!();
+    // syscall0(SYS_FSPICK);
 }
 
 /// Get file status about a file descriptor.
@@ -648,6 +700,7 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
 
 pub fn futex() {
     core::unimplemented!();
+    // syscall0(SYS_FUTEX);
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
@@ -658,26 +711,6 @@ pub fn futimesat(dirfd: i32, filename: &str, times: &[timeval_t; 2]) -> Result<(
         let filename_ptr = filename.as_ptr() as usize;
         let times_ptr = times.as_ptr() as usize;
         syscall3(SYS_FUTIMESAT, dirfd, filename_ptr, times_ptr).map(|_ret| ())
-    }
-}
-
-pub fn get_robust_list() {
-    core::unimplemented!();
-}
-
-pub fn get_thread_area() {
-    core::unimplemented!();
-}
-
-/// Get extended attribute value.
-pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
-    unsafe {
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let name = CString::new(name);
-        let name_ptr = name.as_ptr() as usize;
-        let size = size as usize;
-        syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
     }
 }
 
@@ -700,13 +733,14 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
     }
 }
 
-/// Get directory entries.
 pub fn getdents() {
     core::unimplemented!();
+    // syscall0(SYS_GETDENTS);
 }
 
 pub fn getdents64() {
     core::unimplemented!();
+    // syscall0(SYS_GETDENTS64);
 }
 
 /// Get the effective group ID of the calling process.
@@ -772,6 +806,11 @@ pub fn getpgrp() -> pid_t {
 /// Get the process ID (PID) of the calling process.
 pub fn getpid() -> pid_t {
     unsafe { syscall0(SYS_GETPID).expect("getpid() failed") as pid_t }
+}
+
+pub fn getpmsg() {
+    core::unimplemented!();
+    // syscall0(SYS_GETPMSG);
 }
 
 /// Get the process ID of the parent of the calling process.
@@ -909,6 +948,43 @@ pub fn getuid() -> uid_t {
     unsafe { syscall0(SYS_GETUID).expect("getuid() failed") as uid_t }
 }
 
+/// Get extended attribute value.
+pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let size = size as usize;
+        syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    }
+}
+
+pub fn get_kernel_syms() {
+    core::unimplemented!();
+    // syscall0(SYS_GET_KERNEL_SYMS);
+}
+
+pub fn get_mempolicy() {
+    core::unimplemented!();
+    // syscall0(SYS_GET_MEMPOLICY);
+}
+
+pub fn get_robust_list() {
+    core::unimplemented!();
+    // syscall0(SYS_GET_ROBUST_LIST);
+}
+
+pub fn get_thread_area() {
+    core::unimplemented!();
+    // syscall0(SYS_GET_THREAD_AREA);
+}
+
+pub fn init_module() {
+    core::unimplemented!();
+    // syscall0(SYS_INIT_MODULE);
+}
+
 /// Add a watch to an initialized inotify instance.
 pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errno> {
     unsafe {
@@ -942,30 +1018,6 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn io_cancel() {
-    core::unimplemented!();
-}
-
-pub fn io_destroy() {
-    core::unimplemented!();
-}
-
-pub fn io_getevents() {
-    core::unimplemented!();
-}
-
-pub fn io_pgetevents() {
-    core::unimplemented!();
-}
-
-pub fn io_setup() {
-    core::unimplemented!();
-}
-
-pub fn io_submit() {
-    core::unimplemented!();
-}
-
 pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
@@ -984,14 +1036,82 @@ pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
 
 pub fn iopl() {
     core::unimplemented!();
+    // syscall0(SYS_IOPL);
+}
+
+pub fn ioprio_get() {
+    core::unimplemented!();
+    // syscall0(SYS_IOPRIO_GET);
+}
+
+pub fn ioprio_set() {
+    core::unimplemented!();
+    // syscall0(SYS_IOPRIO_SET);
+}
+
+pub fn io_cancel() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_CANCEL);
+}
+
+pub fn io_destroy() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_DESTROY);
+}
+
+pub fn io_getevents() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_GETEVENTS);
+}
+
+pub fn io_pgetevents() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_PGETEVENTS);
+}
+
+pub fn io_setup() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_SETUP);
+}
+
+pub fn io_submit() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_SUBMIT);
+}
+
+pub fn io_uring_enter() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_URING_ENTER);
+}
+
+pub fn io_uring_register() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_URING_REGISTER);
+}
+
+pub fn io_uring_setup() {
+    core::unimplemented!();
+    // syscall0(SYS_IO_URING_SETUP);
 }
 
 pub fn kcmp() {
     core::unimplemented!();
+    // syscall0(SYS_KCMP);
 }
 
 pub fn kexec_file_load() {
     core::unimplemented!();
+    // syscall0(SYS_KEXEC_FILE_LOAD);
+}
+
+pub fn kexec_load() {
+    core::unimplemented!();
+    // syscall0(SYS_KEXEC_LOAD);
+}
+
+pub fn keyctl() {
+    core::unimplemented!();
+    // syscall0(SYS_KEYCTL);
 }
 
 /// Send signal to a process.
@@ -1083,16 +1203,27 @@ pub fn llistxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
 
 pub fn lookup_dcookie() {
     core::unimplemented!();
+    // syscall0(SYS_LOOKUP_DCOOKIE);
 }
 
 /// Remove an extended attribute.
-pub fn lrmovexattr(filename: &str, name: &str) -> Result<(), Errno> {
+pub fn lremovexattr(filename: &str, name: &str) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);
         let filename_ptr = filename.as_ptr() as usize;
         let name = CString::new(name);
         let name_ptr = name.as_ptr() as usize;
         syscall2(SYS_LREMOVEXATTR, filename_ptr, name_ptr).map(|_ret| ())
+    }
+}
+
+/// Reposition file offset.
+pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let whence = whence as usize;
+        syscall3(SYS_LSEEK, fd, offset, whence).map(|_ret| ())
     }
 }
 
@@ -1105,16 +1236,6 @@ pub fn lsetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
         let name_ptr = name.as_ptr() as usize;
         let size = size as usize;
         syscall4(SYS_LSETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
-    }
-}
-
-/// Reposition file offset.
-pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let offset = offset as usize;
-        let whence = whence as usize;
-        syscall3(SYS_LSEEK, fd, offset, whence).map(|_ret| ())
     }
 }
 
@@ -1139,18 +1260,27 @@ pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
 
 pub fn mbind() {
     core::unimplemented!();
+    // syscall0(SYS_MBIND);
 }
 
 pub fn membarrier() {
     core::unimplemented!();
+    // syscall0(SYS_MEMBARRIER);
 }
 
 pub fn memfd_create() {
     core::unimplemented!();
+    // syscall0(SYS_MEMFD_CREATE);
+}
+
+pub fn migrate_pages() {
+    core::unimplemented!();
+    // syscall0(SYS_MIGRATE_PAGES);
 }
 
 pub fn mincore() {
     core::unimplemented!();
+    // syscall0(SYS_MINCORE);
 }
 
 /// Create a directory.
@@ -1237,6 +1367,7 @@ pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Resul
 
 pub fn modify_ldt() {
     core::unimplemented!();
+    // syscall0(SYS_MODIFY_LDT);
 }
 
 /// Mount filesystem.
@@ -1263,8 +1394,14 @@ pub fn mount(
     }
 }
 
+pub fn move_mount() {
+    core::unimplemented!();
+    // syscall0(SYS_MOVE_MOUNT);
+}
+
 pub fn move_pages() {
     core::unimplemented!();
+    // syscall0(SYS_MOVE_PAGES);
 }
 
 /// Set protection on a region of memory.
@@ -1507,15 +1644,14 @@ pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> 
 }
 
 /// Access kernel NFS daemon
-//pub fn nfsservctl(cmd: i32, arg: &mut nfsctl_arg_t, resp: &mut fsctl_res_t) -> Result<(), Errno> {
-//    unsafe {
-//        let cmd = cmd as usize;
-//        let arg_ptr = arg as *mut nfsctl_arg_t as usize;
-//        let resp_ptr = resp as *mut fsctl_res_t as usize;
-//        syscall3(SYS_NFSSERVCTL, cmd, arg_ptr, resp_ptr)
-//            .map(|_ret| ())
-//    }
-//}
+pub fn nfsservctl(cmd: i32, arg: &mut nfsctl_arg_t, resp: &mut fsctl_res_t) -> Result<(), Errno> {
+    unsafe {
+        let cmd = cmd as usize;
+        let arg_ptr = arg as *mut nfsctl_arg_t as usize;
+        let resp_ptr = resp as *mut fsctl_res_t as usize;
+        syscall3(SYS_NFSSERVCTL, cmd, arg_ptr, resp_ptr).map(|_ret| ())
+    }
+}
 
 /// Open and possibly create a file.
 pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
@@ -1525,6 +1661,18 @@ pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
         let flags = flags as usize;
         let mode = mode as usize;
         syscall3(SYS_OPEN, filename_ptr, flags, mode).map(|ret| ret as i32)
+    }
+}
+
+/// Open and possibly create a file within a directory.
+pub fn openat(dirfd: i32, filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
+    unsafe {
+        let dirfd = dirfd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let flags = flags as usize;
+        let mode = mode as usize;
+        syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
     }
 }
 
@@ -1542,16 +1690,9 @@ pub fn open_by_handle_at(
     }
 }
 
-/// Open and possibly create a file within a directory.
-pub fn openat(dirfd: i32, filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
-    unsafe {
-        let dirfd = dirfd as usize;
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let flags = flags as usize;
-        let mode = mode as usize;
-        syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
-    }
+pub fn open_tree() {
+    core::unimplemented!();
+    // syscall0(SYS_OPEN_TREE);
 }
 
 // Pause the calling process to sleep until a signal is delivered.
@@ -1561,14 +1702,21 @@ pub fn pause() -> Result<(), Errno> {
 
 pub fn perf_event_open() {
     core::unimplemented!();
+    // syscall0(SYS_PERF_EVENT_OPEN);
 }
 
 pub fn personality() {
     core::unimplemented!();
+    // syscall0(SYS_PERSONALITY);
+}
+
+pub fn pidfd_send_signal() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_SEND_SIGNAL);
 }
 
 /// Create a pipe
-pub fn pipe2(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
+pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     unsafe {
         let pipefd_ptr = pipefd.as_mut_ptr() as usize;
         syscall1(SYS_PIPE, pipefd_ptr).map(|_ret| ())
@@ -1576,16 +1724,16 @@ pub fn pipe2(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
 }
 
 /// Create a pipe.
-pub fn pipe(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
+pub fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     unsafe {
         let pipefd_ptr = pipefd.as_mut_ptr() as usize;
         let flags = flags as usize;
-        syscall2(SYS_PIPE, pipefd_ptr, flags).map(|_ret| ())
+        syscall2(SYS_PIPE2, pipefd_ptr, flags).map(|_ret| ())
     }
 }
 
 /// Change the root filesystem.
-pub fn pivotroot(new_root: &str, put_old: &str) -> Result<(), Errno> {
+pub fn pivot_root(new_root: &str, put_old: &str) -> Result<(), Errno> {
     unsafe {
         let new_root_ptr = new_root.as_ptr() as usize;
         let put_old_ptr = put_old.as_ptr() as usize;
@@ -1627,6 +1775,7 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
 
 pub fn ppoll() {
     core::unimplemented!();
+    // syscall0(SYS_PPOLL);
 }
 
 /// Operations on a process.
@@ -1692,26 +1841,36 @@ pub fn preadv2(
 
 pub fn prlimit64() {
     core::unimplemented!();
+    // syscall0(SYS_PRLIMIT64);
 }
 
 pub fn process_vm_readv() {
     core::unimplemented!();
+    // syscall0(SYS_PROCESS_VM_READV);
 }
 
 pub fn process_vm_writev() {
     core::unimplemented!();
+    // syscall0(SYS_PROCESS_VM_WRITEV);
 }
 
 pub fn pselect6() {
     core::unimplemented!();
+    // syscall0(SYS_PSELECT6);
 }
 
 pub fn ptrace() {
     core::unimplemented!();
+    // syscall0(SYS_PTRACE);
+}
+
+pub fn putpmsg() {
+    core::unimplemented!();
+    // syscall0(SYS_PUTPMSG);
 }
 
 /// Write to a file descriptor without changing file offset.
-pub fn pwrite(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
+pub fn pwrite64(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
         let buf_ptr = buf.as_ptr() as usize;
@@ -1755,10 +1914,12 @@ pub fn pwritev2(
 
 pub fn query_module() {
     core::unimplemented!();
+    // syscall0(SYS_QUERY_MODULE);
 }
 
 pub fn quotactl() {
     core::unimplemented!();
+    // syscall0(SYS_QUOTACTL);
 }
 
 /// Read from a file descriptor.
@@ -1881,6 +2042,7 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
 
 pub fn remap_file_pages() {
     core::unimplemented!();
+    // syscall0(SYS_REMAP_FILE_PAGES);
 }
 
 /// Remove an extended attribute.
@@ -1957,8 +2119,14 @@ pub fn renameat2(
     }
 }
 
+pub fn request_key() {
+    core::unimplemented!();
+    // syscall0(SYS_REQUEST_KEY);
+}
+
 pub fn restart_syscall() {
     core::unimplemented!();
+    // syscall0(SYS_RESTART_SYSCALL);
 }
 
 /// Delete a directory.
@@ -1972,38 +2140,62 @@ pub fn rmdir(filename: &str) -> Result<(), Errno> {
 
 pub fn rseq() {
     core::unimplemented!();
+    // syscall0(SYS_RSEQ);
 }
 
 pub fn rt_sigaction() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGACTION);
 }
 
 pub fn rt_sigpending() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGPENDING);
 }
 
 pub fn rt_sigprocmask() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGPROCMASK);
 }
 
 pub fn rt_sigqueueinfo() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGQUEUEINFO);
 }
 
 pub fn rt_sigreturn() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGRETURN);
 }
 
 pub fn rt_sigsuspend() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGSUSPEND);
 }
 
 pub fn rt_sigtimedwait() {
     core::unimplemented!();
+    // syscall0(SYS_RT_SIGTIMEDWAIT);
 }
 
 pub fn rt_tgsigqueueinfo() {
     core::unimplemented!();
+    // syscall0(SYS_RT_TGSIGQUEUEINFO);
+}
+
+/// Get a thread's CPU affinity mask.
+pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let len = len as usize;
+        let user_mask_ptr = user_mask as *mut usize as usize;
+        syscall3(SYS_SCHED_GETAFFINITY, pid, len, user_mask_ptr).map(|_ret| ())
+    }
+}
+
+pub fn sched_getattr() {
+    core::unimplemented!();
+    // syscall0(SYS_SCHED_GETATTR);
 }
 
 /// Get scheduling paramters.
@@ -2012,6 +2204,14 @@ pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno
         let pid = pid as usize;
         let param_ptr = param as *mut sched_param_t as usize;
         syscall2(SYS_SCHED_GETPARAM, pid, param_ptr).map(|_ret| ())
+    }
+}
+
+/// Get scheduling parameter.
+pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
+    unsafe {
+        let pid = pid as usize;
+        syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
     }
 }
 
@@ -2028,28 +2228,6 @@ pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
     unsafe {
         let policy = policy as usize;
         syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy).map(|ret| ret as i32)
-    }
-}
-
-/// Get a thread's CPU affinity mask.
-pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
-    unsafe {
-        let pid = pid as usize;
-        let len = len as usize;
-        let user_mask_ptr = user_mask as *mut usize as usize;
-        syscall3(SYS_SCHED_GETAFFINITY, pid, len, user_mask_ptr).map(|_ret| ())
-    }
-}
-
-pub fn sched_getattr() {
-    core::unimplemented!();
-}
-
-/// Get scheduling parameter.
-pub fn sched_getschedular(pid: pid_t) -> Result<i32, Errno> {
-    unsafe {
-        let pid = pid as usize;
-        syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
     }
 }
 
@@ -2074,6 +2252,7 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
 
 pub fn sched_setattr() {
     core::unimplemented!();
+    // syscall0(SYS_SCHED_SETATTR);
 }
 
 /// Set scheduling paramters.
@@ -2086,7 +2265,7 @@ pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
 }
 
 /// Set scheduling parameter.
-pub fn sched_setschedular(pid: pid_t, policy: i32, param: &sched_param_t) -> Result<(), Errno> {
+pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;
         let policy = policy as usize;
@@ -2102,15 +2281,22 @@ pub fn sched_yield() -> Result<(), Errno> {
 
 pub fn seccomp() {
     core::unimplemented!();
+    // syscall0(SYS_SECCOMP);
 }
 
-/// Waiting one or more file descriptors become ready.
+pub fn security() {
+    core::unimplemented!();
+    // syscall0(SYS_SECURITY);
+}
+
 pub fn select() {
     core::unimplemented!();
+    // syscall0(SYS_SELECT);
 }
 
 pub fn semctl() {
     core::unimplemented!();
+    // syscall0(SYS_SEMCTL);
 }
 
 /// Get a System V semphore set identifier.
@@ -2133,6 +2319,11 @@ pub fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
     }
 }
 
+pub fn semtimedop() {
+    core::unimplemented!();
+    // syscall0(SYS_SEMTIMEDOP);
+}
+
 /// Transfer data between two file descriptors.
 pub fn sendfile(
     out_fd: i32,
@@ -2149,16 +2340,6 @@ pub fn sendfile(
     }
 }
 
-/// Send a message on a socket. Allow sending ancillary data.
-pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
-    unsafe {
-        let sockfd = sockfd as usize;
-        let msg_ptr = msg as *const msghdr_t as usize;
-        let flags = flags as usize;
-        syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t)
-    }
-}
-
 /// Send multiple messages on a socket
 pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32, Errno> {
     unsafe {
@@ -2167,6 +2348,16 @@ pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32
         let vlen = msgvec.len() as usize;
         let flags = flags as usize;
         syscall4(SYS_SENDMMSG, sockfd, msgvec_ptr, vlen, flags).map(|ret| ret as i32)
+    }
+}
+
+/// Send a message on a socket. Allow sending ancillary data.
+pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let msg_ptr = msg as *const msghdr_t as usize;
+        let flags = flags as usize;
+        syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t)
     }
 }
 
@@ -2196,18 +2387,6 @@ pub fn sendto(
         )
         .map(|ret| ret as ssize_t)
     }
-}
-
-pub fn set_robust_list() {
-    core::unimplemented!();
-}
-
-pub fn set_thread_area() {
-    core::unimplemented!();
-}
-
-pub fn set_tid_address() {
-    core::unimplemented!();
 }
 
 /// Set NIS domain name.
@@ -2312,22 +2491,13 @@ pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     }
 }
 
-/// Set real and effective user IDs of the calling process.
-pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
-    unsafe {
-        let ruid = ruid as usize;
-        let euid = euid as usize;
-        syscall2(SYS_SETREUID, ruid, euid).map(|_ret| ())
-    }
-}
-
 /// Set real, effective and saved group Ids of the calling process.
 pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
     unsafe {
         let rgid = rgid as usize;
         let egid = egid as usize;
         let sgid = sgid as usize;
-        syscall3(SYS_SETREUID, rgid, egid, sgid).map(|_ret| ())
+        syscall3(SYS_SETRESGID, rgid, egid, sgid).map(|_ret| ())
     }
 }
 
@@ -2337,7 +2507,16 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
         let ruid = ruid as usize;
         let euid = euid as usize;
         let suid = suid as usize;
-        syscall3(SYS_SETREUID, ruid, euid, suid).map(|_ret| ())
+        syscall3(SYS_SETRESUID, ruid, euid, suid).map(|_ret| ())
+    }
+}
+
+/// Set real and effective user IDs of the calling process.
+pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
+    unsafe {
+        let ruid = ruid as usize;
+        let euid = euid as usize;
+        syscall2(SYS_SETREUID, ruid, euid).map(|_ret| ())
     }
 }
 
@@ -2400,6 +2579,26 @@ pub fn setxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resul
     }
 }
 
+pub fn set_mempolicy() {
+    core::unimplemented!();
+    // syscall0(SYS_SET_MEMPOLICY);
+}
+
+pub fn set_robust_list() {
+    core::unimplemented!();
+    // syscall0(SYS_SET_ROBUST_LIST);
+}
+
+pub fn set_thread_area() {
+    core::unimplemented!();
+    // syscall0(SYS_SET_THREAD_AREA);
+}
+
+pub fn set_tid_address() {
+    core::unimplemented!();
+    // syscall0(SYS_SET_TID_ADDRESS);
+}
+
 /// Attach the System V shared memory segment.
 pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
     unsafe {
@@ -2407,11 +2606,6 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
         let shmflg = shmflg as usize;
         syscall3(SYS_SHMAT, shmid, shmaddr, shmflg)
     }
-}
-
-/// Detach the System V shared memory segment.
-pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
-    unsafe { syscall1(SYS_SHMDT, shmaddr).map(|_ret| ()) }
 }
 
 /// System V shared memory control.
@@ -2422,6 +2616,11 @@ pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds) -> Result<i32, Errno> {
         let buf_ptr = buf as *mut shmid_ds as usize;
         syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr).map(|ret| ret as i32)
     }
+}
+
+/// Detach the System V shared memory segment.
+pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
+    unsafe { syscall1(SYS_SHMDT, shmaddr).map(|_ret| ()) }
 }
 
 /// Allocates a System V shared memory segment.
@@ -2533,6 +2732,16 @@ pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     }
 }
 
+/// Get filesystem statistics.
+pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let buf_ptr = buf as *mut statfs_t as usize;
+        syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(|_ret| ())
+    }
+}
+
 /// Get file status about a file (extended).
 pub fn statx(
     dirfd: i32,
@@ -2549,16 +2758,6 @@ pub fn statx(
         let mask = mask as usize;
         let buf_ptr = buf as *mut statx_t as usize;
         syscall5(SYS_STATX, dirfd, filename_ptr, flags, mask, buf_ptr).map(|_ret| ())
-    }
-}
-
-/// Get filesystem statistics.
-pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
-    unsafe {
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let buf_ptr = buf as *mut statfs_t as usize;
-        syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(|_ret| ())
     }
 }
 
@@ -2626,14 +2825,6 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
     }
 }
 
-/// Read/write system parameters.
-pub fn sysctl(args: &mut sysctl_args_t) -> Result<(), Errno> {
-    unsafe {
-        let args_ptr = args as *mut sysctl_args_t as usize;
-        syscall1(SYS__SYSCTL, args_ptr).map(|_ret| ())
-    }
-}
-
 /// Get filesystem type information.
 pub fn sysfs(option: i32, arg1: usize, arg2: usize) -> Result<i32, Errno> {
     unsafe {
@@ -2673,9 +2864,53 @@ pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, 
     }
 }
 
+/// Send a signal to a thread.
+pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
+    unsafe {
+        let tgid = tgid as usize;
+        let tid = tid as usize;
+        let sig = sig as usize;
+        syscall3(SYS_TGKILL, tgid, tid, sig).map(|_ret| ())
+    }
+}
+
 /// Get time in seconds.
 pub fn time() -> Result<time_t, Errno> {
     unsafe { syscall0(SYS_TIME).map(|ret| ret as time_t) }
+}
+
+/// Create a timer that notifies via a file descriptor.
+pub fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let clockid = clockid as usize;
+        let flags = flags as usize;
+        syscall2(SYS_TIMERFD_CREATE, clockid, flags).map(|ret| ret as i32)
+    }
+}
+
+/// Get current timer via a file descriptor.
+pub fn timerfd_gettime(ufd: i32, otmr: &mut itimerval_t) -> Result<(), Errno> {
+    unsafe {
+        let ufd = ufd as usize;
+        let otmr_ptr = otmr as *mut itimerval_t as usize;
+        syscall2(SYS_TIMERFD_GETTIME, ufd, otmr_ptr).map(|_ret| ())
+    }
+}
+
+/// Set current timer via a file descriptor.
+pub fn timerfd_settime(
+    ufd: i32,
+    flags: i32,
+    utmr: &itimerval_t,
+    otmr: &mut itimerval_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let ufd = ufd as usize;
+        let flags = flags as usize;
+        let utmr_ptr = utmr as *const itimerval_t as usize;
+        let otmr_ptr = otmr as *mut itimerval_t as usize;
+        syscall4(SYS_TIMERFD_SETTIME, ufd, flags, utmr_ptr, otmr_ptr).map(|_ret| ())
+    }
 }
 
 /// Create a per-process timer
@@ -2740,45 +2975,20 @@ pub fn timer_settime(
     }
 }
 
-/// Create a timer that notifies via a file descriptor.
-pub fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
-    unsafe {
-        let clockid = clockid as usize;
-        let flags = flags as usize;
-        syscall2(SYS_TIMERFD_CREATE, clockid, flags).map(|ret| ret as i32)
-    }
-}
-
-/// Get current timer via a file descriptor.
-pub fn timerfd_gettime(ufd: i32, otmr: &mut itimerval_t) -> Result<(), Errno> {
-    unsafe {
-        let ufd = ufd as usize;
-        let otmr_ptr = otmr as *mut itimerval_t as usize;
-        syscall2(SYS_TIMERFD_GETTIME, ufd, otmr_ptr).map(|_ret| ())
-    }
-}
-
-/// Set current timer via a file descriptor.
-pub fn timerfd_settime(
-    ufd: i32,
-    flags: i32,
-    utmr: &itimerval_t,
-    otmr: &mut itimerval_t,
-) -> Result<(), Errno> {
-    unsafe {
-        let ufd = ufd as usize;
-        let flags = flags as usize;
-        let utmr_ptr = utmr as *const itimerval_t as usize;
-        let otmr_ptr = otmr as *mut itimerval_t as usize;
-        syscall4(SYS_TIMERFD_SETTIME, ufd, flags, utmr_ptr, otmr_ptr).map(|_ret| ())
-    }
-}
-
 /// Get process times.
 pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
     unsafe {
         let buf_ptr = buf as *mut tms_t as usize;
         syscall1(SYS_TIMES, buf_ptr).map(|ret| ret as clock_t)
+    }
+}
+
+/// Send a signal to a thread (obsolete).
+pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
+    unsafe {
+        let tid = tid as usize;
+        let sig = sig as usize;
+        syscall2(SYS_TKILL, tid, sig).map(|_ret| ())
     }
 }
 
@@ -2792,87 +3002,9 @@ pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
     }
 }
 
-/// Send a signal to a thread.
-pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
-    unsafe {
-        let tgid = tgid as usize;
-        let tid = tid as usize;
-        let sig = sig as usize;
-        syscall3(SYS_TGKILL, tgid, tid, sig).map(|_ret| ())
-    }
-}
-
-/// Send a signal to a thread (obsolete).
-pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
-    unsafe {
-        let tid = tid as usize;
-        let sig = sig as usize;
-        syscall2(SYS_TKILL, tid, sig).map(|_ret| ())
-    }
-}
-
-/// Create a child process and wait until it is terminated.
-pub fn vfork() -> Result<pid_t, Errno> {
-    unsafe { syscall0(SYS_VFORK).map(|ret| ret as pid_t) }
-}
-
-/// Virtually hang up the current terminal.
-pub fn vhangup() -> Result<(), Errno> {
-    unsafe { syscall0(SYS_VHANGUP).map(|_ret| ()) }
-}
-
-/// Wait for process to change state.
-pub fn wait4(
-    pid: pid_t,
-    wstatus: &mut i32,
-    options: i32,
-    rusage: &mut rusage_t,
-) -> Result<(), Errno> {
-    unsafe {
-        let pid = pid as usize;
-        let wstatus_ptr = wstatus as *mut i32 as usize;
-        let options = options as usize;
-        let rusage_ptr = rusage as *mut rusage_t as usize;
-        syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|_ret| ())
-    }
-}
-
-/// Wait for process to change state
-pub fn waitid(
-    which: i32,
-    pid: pid_t,
-    info: &mut siginfo_t,
-    options: i32,
-    ru: &mut rusage_t,
-) -> Result<(), Errno> {
-    unsafe {
-        let which = which as usize;
-        let pid = pid as usize;
-        let info_ptr = info as *mut siginfo_t as usize;
-        let options = options as usize;
-        let ru_ptr = ru as *mut rusage_t as usize;
-        syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(|_ret| ())
-    }
-}
-
-/// Write to a file descriptor.
-pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let buf_ptr = buf.as_ptr() as usize;
-        let len = buf.len() as usize;
-        syscall3(SYS_WRITE, fd, buf_ptr, len).map(|ret| ret as ssize_t)
-    }
-}
-
-/// Write to a file descriptor from multiple buffers.
-pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let iov_ptr = iov.as_ptr() as usize;
-        let len = iov.len() as usize;
-        syscall3(SYS_WRITE, fd, iov_ptr, len).map(|ret| ret as ssize_t)
-    }
+pub fn tuxcall() {
+    core::unimplemented!();
+    // syscall0(SYS_TUXCALL);
 }
 
 /// Set file mode creation mask.
@@ -2963,16 +3095,6 @@ pub fn utime(filename: &str, times: &utimbuf_t) -> Result<(), Errno> {
     }
 }
 
-/// Change file last access and modification time.
-pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
-    unsafe {
-        let filename = CString::new(filename);
-        let filename_ptr = filename.as_ptr() as usize;
-        let times_ptr = times.as_ptr() as usize;
-        syscall2(SYS_UTIMES, filename_ptr, times_ptr).map(|_ret| ())
-    }
-}
-
 /// Change time timestamps with nanosecond precision.
 pub fn utimensat(
     dirfd: i32,
@@ -2990,6 +3112,26 @@ pub fn utimensat(
     }
 }
 
+/// Change file last access and modification time.
+pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let times_ptr = times.as_ptr() as usize;
+        syscall2(SYS_UTIMES, filename_ptr, times_ptr).map(|_ret| ())
+    }
+}
+
+/// Create a child process and wait until it is terminated.
+pub fn vfork() -> Result<pid_t, Errno> {
+    unsafe { syscall0(SYS_VFORK).map(|ret| ret as pid_t) }
+}
+
+/// Virtually hang up the current terminal.
+pub fn vhangup() -> Result<(), Errno> {
+    unsafe { syscall0(SYS_VHANGUP).map(|_ret| ()) }
+}
+
 /// Splice user page into a pipe.
 pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ssize_t, Errno> {
     unsafe {
@@ -2997,5 +3139,72 @@ pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ss
         let iov_ptr = iov as *const iovec_t as usize;
         let flags = flags as usize;
         syscall4(SYS_VMSPLICE, fd, iov_ptr, nr_segs, flags).map(|ret| ret as ssize_t)
+    }
+}
+
+pub fn vserver() {
+    core::unimplemented!();
+    // syscall0(SYS_VSERVER);
+}
+
+/// Wait for process to change state.
+pub fn wait4(
+    pid: pid_t,
+    wstatus: &mut i32,
+    options: i32,
+    rusage: &mut rusage_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let wstatus_ptr = wstatus as *mut i32 as usize;
+        let options = options as usize;
+        let rusage_ptr = rusage as *mut rusage_t as usize;
+        syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|_ret| ())
+    }
+}
+
+/// Wait for process to change state
+pub fn waitid(
+    which: i32,
+    pid: pid_t,
+    info: &mut siginfo_t,
+    options: i32,
+    ru: &mut rusage_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let which = which as usize;
+        let pid = pid as usize;
+        let info_ptr = info as *mut siginfo_t as usize;
+        let options = options as usize;
+        let ru_ptr = ru as *mut rusage_t as usize;
+        syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(|_ret| ())
+    }
+}
+
+/// Write to a file descriptor.
+pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_ptr = buf.as_ptr() as usize;
+        let len = buf.len() as usize;
+        syscall3(SYS_WRITE, fd, buf_ptr, len).map(|ret| ret as ssize_t)
+    }
+}
+
+/// Write to a file descriptor from multiple buffers.
+pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let iov_ptr = iov.as_ptr() as usize;
+        let len = iov.len() as usize;
+        syscall3(SYS_WRITEV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
+    }
+}
+
+/// Read/write system parameters.
+pub fn _sysctl(args: &mut sysctl_args_t) -> Result<(), Errno> {
+    unsafe {
+        let args_ptr = args as *mut sysctl_args_t as usize;
+        syscall1(SYS__SYSCTL, args_ptr).map(|_ret| ())
     }
 }

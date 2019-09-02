@@ -105,6 +105,7 @@ def read_errno(os_name, arch_name):
         sys.exit(1)
     return parse_errno(out.decode())
 
+
 def parse_errno(content):
     lines = [
         "",
@@ -122,6 +123,7 @@ def parse_errno(content):
             lines.append(line)
     return lines
 
+
 def read_sysno(os_name, arch_name):
     compiler = get_compiler(os_name, arch_name)
     header_file = get_sysno_header(os_name, arch_name)
@@ -137,6 +139,7 @@ def read_sysno(os_name, arch_name):
         print(err)
         sys.exit(1)
     return parse_sysno(out.decode())
+
 
 def parse_sysno(content):
     def f(name, num):
@@ -202,26 +205,34 @@ def parse_sysno(content):
 
     return lines
 
+
 def get_compiler(os_name, arch_name):
     return DEFINES[os_name][arch_name]["compiler"]
+
 
 def get_include_dir(os_name, arch_name):
     return DEFINES[os_name][arch_name]["include"]
 
+
 def get_errno_header(os_name, arch_name):
     return DEFINES[os_name][arch_name]["errno"]
+
 
 def get_sysno_header(os_name, arch_name):
     return DEFINES[os_name][arch_name]["sysno"]
 
+
 def get_defines(os_name, arch_name):
     return DEFINES[os_name][arch_name].get("defines", "")
+
 
 def get_arch_names(os_name):
     return DEFINES[os_name].keys()
 
+
 def rust_fmt(filename):
     subprocess.run(["rustfmt", filename])
+
 
 def gen_errno_and_sysno(os_name, arch_name):
     folder_name = "{0}-{1}".format(os_name, arch_name)
@@ -241,6 +252,7 @@ def gen_errno_and_sysno(os_name, arch_name):
     with open(sysno_file, "w") as fh:
         fh.write(sysno_content)
     rust_fmt(sysno_file)
+
 
 def main():
     if len(sys.argv) != 3:

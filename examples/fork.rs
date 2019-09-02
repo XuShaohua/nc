@@ -1,10 +1,7 @@
-
 extern crate nc;
 
-use nc::platform::c;
-
 fn main() {
-    let pid = c::fork();
+    let pid = nc::fork();
     match pid {
         Ok(pid) => {
             if pid == 0 {
@@ -16,14 +13,13 @@ fn main() {
                 let args = [""];
                 let env = [""];
                 match nc::execve("/bin/ls", &args, &env) {
-                    Ok(_) => {
-                    },
+                    Ok(_) => {}
                     Err(errno) => {
                         eprintln!("`ls` got err: {}", errno);
                     }
                 }
             }
-        },
+        }
         Err(errno) => {
             eprintln!("errno: {}", errno);
         }

@@ -24,9 +24,8 @@ pub fn check_errno(ret: usize) -> Result<usize, Errno> {
 #[inline(always)]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n)
          : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
          : "volatile");
@@ -36,9 +35,8 @@ pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
 #[inline(always)]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n),
            "{r4}"(a1)
          : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
@@ -49,9 +47,8 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
 #[inline(always)]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n),
            "{r4}"(a1),
            "{r5}"(a2)
@@ -63,9 +60,8 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
 #[inline(always)]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n),
            "{r4}"(a1),
            "{r5}"(a2),
@@ -84,9 +80,8 @@ pub unsafe fn syscall4(
     a4: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n),
            "{r4}"(a1),
            "{r5}"(a2),
@@ -107,9 +102,8 @@ pub unsafe fn syscall5(
     a5: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n),
            "{r4}"(a1),
            "{r5}"(a2),
@@ -132,9 +126,8 @@ pub unsafe fn syscall6(
     a6: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    let neg: usize;
     asm!("syscall"
-         : "=&{r2}"(ret), "={r7}"(neg)
+         : "=&{r2}"(ret)
          : "ir"(n),
            "{r4}"(a1),
            "{r5}"(a2),

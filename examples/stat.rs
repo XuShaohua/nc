@@ -12,7 +12,7 @@ fn main() {
             eprintln!("Failed to get file status, got errno: {}", errno);
         }
     }
-    #[cfg(target_arch = "arm")]
+    #[cfg(any(target_arch = "arm", target_arch = "mips"))]
     match nc::stat("/etc/passwd", &mut statbuf) {
         Ok(_) => {
             println!("s: {:?}", statbuf);
@@ -22,7 +22,7 @@ fn main() {
         }
     }
 
-    #[cfg(not(any(target_arch = "x86_64", target_arch = "arm")))]
+    #[cfg(not(any(target_arch = "x86_64", target_arch = "arm", target_arch = "mips")))]
     match nc::fstatat(nc::AT_FDCWD, "/etc/passwd", &mut statbuf) {
         Ok(_) => {
             println!("s: {:?}", statbuf);

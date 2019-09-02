@@ -12,8 +12,17 @@ fn main() {
             eprintln!("Failed to get file status, got errno: {}", errno);
         }
     }
+    #[cfg(target_arch = "arm")]
+    match nc::stat("/etc/passwd", &mut statbuf) {
+        Ok(_) => {
+            println!("s: {:?}", statbuf);
+        }
+        Err(errno) => {
+            eprintln!("Failed to get file status, got errno: {}", errno);
+        }
+    }
 
-    #[cfg(not(target_arch = "x86_64"))]
+    #[cfg(not(any(target_arch = "x86_64", target_arch = "arm")))]
     match nc::fstatat(nc::AT_FDCWD, "/etc/passwd", &mut statbuf) {
         Ok(_) => {
             println!("s: {:?}", statbuf);

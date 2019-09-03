@@ -2780,9 +2780,24 @@ pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ss
     }
 }
 
-pub fn add_key() {
-    core::unimplemented!();
-    // syscall0(SYS_ADD_KEY);
+/// Add a key to the kernel's key management facility.
+pub fn add_key(
+    type_: &str,
+    description: &str,
+    payload: usize,
+    plen: size_t,
+    destringid: key_serial_t,
+) -> Result<key_serial_t, Errno> {
+    unsafe {
+        let type_ = CString::new(type_);
+        let type_ptr = type_.as_ptr() as usize;
+        let description = CString::new(description);
+        let description_ptr = description.as_ptr() as usize;
+        let plen = plen as usize;
+        let destringid = destringid as usize;
+        syscall4(SYS_ADD_KEY, type_ptr, description_ptr, plen, destringid)
+            .map(|ret| ret as key_serial_t)
+    }
 }
 
 pub fn arch_specific_syscall() {
@@ -3145,7 +3160,7 @@ pub fn bdflush() {
     // syscall0(SYS_BDFLUSH);
 }
 
-pub fn break() {
+pub fn r#break() {
     core::unimplemented!();
     // syscall0(SYS_BREAK);
 }

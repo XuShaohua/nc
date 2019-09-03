@@ -26,7 +26,7 @@ def parse_template():
         func_name = ""
         stack = []
         syscall_pattern = re.compile("[^S]*(SYS_\w+)")
-        func_name_pattern = re.compile("pub fn (\w+)")
+        func_name_pattern = re.compile("pub fn ([a-z0-9_#]+)")
         for line in fh:
             if line.startswith("pub fn"):
                 headers_end = True
@@ -47,9 +47,9 @@ def parse_template():
                     if line.startswith("pub fn"):
                         m = func_name_pattern.match(line)
                         func_name = m.group(1)
-                        if func_name in ("break", ):
-                            line = line.replace(func_name, "r#%s" % func_name)
-                            stack[i] = line
+                        # Remove raw identifier
+                        if func_name.startswith("r#"):
+                            func_name = func_name[2:]
 
                     elif "SYS_" in line:
                         m = syscall_pattern.match(line)

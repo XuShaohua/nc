@@ -58,8 +58,15 @@ pub fn add_key(
         let description_ptr = description.as_ptr() as usize;
         let plen = plen as usize;
         let dest_keyring = dest_keyring as usize;
-        syscall4(SYS_ADD_KEY, type_ptr, description_ptr, plen, dest_keyring)
-            .map(|ret| ret as key_serial_t)
+        syscall5(
+            SYS_ADD_KEY,
+            type_ptr,
+            description_ptr,
+            payload,
+            plen,
+            dest_keyring,
+        )
+        .map(|ret| ret as key_serial_t)
     }
 }
 
@@ -1198,12 +1205,12 @@ pub fn ioprio_set() {
 pub fn io_cancel(
     ctx_id: aio_context_t,
     iocb: &mut iocb_t,
-    result: &mut ioevent_t,
+    result: &mut io_event_t,
 ) -> Result<(), Errno> {
     unsafe {
         let ctx_id = ctx_id as usize;
         let iocb_ptr = iocb as *mut iocb_t as usize;
-        let result_ptr = ioevent_t as *mut ioevent_t as usize;
+        let result_ptr = result as *mut io_event_t as usize;
         syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(|_ret| ())
     }
 }

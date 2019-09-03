@@ -1166,7 +1166,7 @@ pub const POLL_HUP: i32 = 6; // device disconnected
 pub const NSIGPOLL: i32 = 6;
 
 /// SIGSYS si_codes
-pub const SYS_SECCOMP: i32 = 1; // seccomp triggered
+pub const SIGSYS_SECCOMP: i32 = 1; // seccomp triggered
 pub const NSIGSYS: i32 = 1;
 
 /// SIGEMT si_codes

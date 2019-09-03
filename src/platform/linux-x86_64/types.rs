@@ -10,6 +10,7 @@
 /// * unsigned short int -> u16, 2 bytes.
 /// * short int -> i16, 2 bytes.
 
+pub type aio_context_t = usize;
 pub type be16_t = u16;
 pub type be32_t = u32;
 pub type blksize_t = isize;
@@ -22,6 +23,7 @@ pub type dev_t = usize;
 pub type gid_t = u32;
 pub type ino_t = usize;
 pub type key_t = i32;
+pub type key_serial_t = i32;
 pub type loff_t = i64;
 pub type mode_t = u32;
 pub type mqd_t = i32;
@@ -552,3 +554,55 @@ pub struct file_handle_t {
 // TODO(Shaohua):
 pub struct fsctl_res_t {}
 pub struct nfsctl_arg_t {}
+
+// aio_abi.h
+pub struct io_event_t {
+    pub data: u64, // the data field from the iocb
+    pub obj: u64,  // what iocb this event came from
+    pub res: i64,  // result code for this event
+    pub res2: i64, // secondary result
+}
+
+#[cfg(target_endian = "little")]
+pub struct iocb_t {
+    /* these are internal to the kernel/libc. */
+    pub aio_data: u64, // data to be returned in event's data
+
+    pub aio_key: u32,        // the kernel sets aio_key to the req
+    pub aio_rw_flags: rwf_t, // RWF_* flags
+
+    pub aio_lio_opcode: u16, // see IOCB_CMD_ above
+    pub aio_reqprio: i16,
+    pub aio_fildes: u32,
+
+    pub aio_buf: u64,
+    pub aio_nbytes: u64,
+    pub aio_offset: i64,
+
+    pub aio_reserved2: u64,
+    pub aio_flags: u32,
+
+    pub aio_resfd: u32,
+}
+
+#[cfg(target_endian = "big")]
+pub struct iocb_t {
+    /* these are internal to the kernel/libc. */
+    pub aio_data: u64, // data to be returned in event's data
+
+    pub aio_rw_flags: rwf_t, // RWF_* flags
+    pub aio_key: u32,        // the kernel sets aio_key to the req
+
+    pub aio_lio_opcode: u16, // see IOCB_CMD_ above
+    pub aio_reqprio: i16,
+    pub aio_fildes: u32,
+
+    pub aio_buf: u64,
+    pub aio_nbytes: u64,
+    pub aio_offset: i64,
+
+    pub aio_reserved2: u64,
+    pub aio_flags: u32,
+
+    pub aio_resfd: u32,
+}

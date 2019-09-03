@@ -11,6 +11,10 @@ extern crate alloc;
 
 pub mod c_str;
 
+#[cfg(target_os = "linux")]
+#[path = "platform/linux-common/mod.rs"]
+mod linux_common;
+
 #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
 #[path = "platform/linux-aarch64/mod.rs"]
 mod platform;

@@ -113,11 +113,6 @@ pub type file_t = io_file_t;
 //TYPEDEF struct __locale_struct * locale_t;
 
 #[repr(C)]
-pub struct sigset_t {
-    bits: [usize; 128 / BITS_PER_LONG],
-}
-
-#[repr(C)]
 pub struct iovec_t {
     pub iov_base: usize,
     pub iov_len: size_t,

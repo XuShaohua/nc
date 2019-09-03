@@ -1,7 +1,7 @@
 use types::BITS_PER_LONG;
 
-#[allow(const_err)]
-pub const _NSIG: i32 = 64;
+// TODO(Shaohua): Update from 64 to 128
+pub const _NSIG: i32 = 128;
 pub const _NSIG_BPW: i32 = BITS_PER_LONG;
 pub const _NSIG_WORDS: i32 = (_NSIG / _NSIG_BPW);
 

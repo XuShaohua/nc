@@ -1,5 +1,3 @@
-use types::*;
-
 pub const O_ACCMODE: i32 = 0o0000003;
 pub const O_RDONLY: i32 = 0o0000000;
 pub const O_WRONLY: i32 = 0o0000001;

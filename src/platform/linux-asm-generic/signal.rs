@@ -1,5 +1,6 @@
-use types::*;
+use types::BITS_PER_LONG;
 
+#[allow(const_err)]
 pub const _NSIG: i32 = 64;
 pub const _NSIG_BPW: i32 = BITS_PER_LONG;
 pub const _NSIG_WORDS: i32 = (_NSIG / _NSIG_BPW);
@@ -72,7 +73,7 @@ pub const SIGSTKSZ: i32 = 8192;
 
 #[repr(C)]
 pub struct sigset_t {
-    pub sig: [usize; _NSIG_WORDS],
+    pub sig: [usize; _NSIG_WORDS as usize],
 }
 
 /// not actually used, but required for linux/syscalls.h

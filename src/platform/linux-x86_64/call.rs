@@ -1,10 +1,9 @@
 extern crate alloc;
 
-use super::consts;
 use super::errno::*;
 use super::sysno::*;
-use super::types::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
+use crate::asm_generic::*;
 use crate::c_str::CString;
 use alloc::vec::Vec;
 

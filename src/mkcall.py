@@ -94,12 +94,8 @@ pub fn {0}() {{
         call_name = sysno[4:].lower()
         print(template.format(call_name, sysno), end="")
 
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: %s arch-name" % sys.argv[0])
-        sys.exit(1)
-
-    root = "platform/linux-%s" % sys.argv[1]
+def print_call(arch_name):
+    root = "platform/linux-%s" % arch_name
     sysno_file = os.path.join(root, "sysno.rs")
     call_file = os.path.join(root, "call.rs")
 
@@ -123,6 +119,20 @@ def main():
         for sysno in sorted(matched_sysno):
             fh.writelines(syscalls[sysno])
     rust_fmt(call_file)
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: %s arch-name" % sys.argv[0])
+        sys.exit(1)
+
+    arch_name = sys.argv[1]
+    if arch_name == "all":
+        for arch_name in [
+                "aarch64", "arm", "mips", "mipsle", "mips64", "mips64le",
+                "ppc64", "ppc64le", "s390x", "x86", "x86_64"]:
+            print_call(arch_name)
+    else:
+        print_call(arch_name)
 
 if __name__ == "__main__":
     main()

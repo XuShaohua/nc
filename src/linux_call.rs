@@ -2786,7 +2786,7 @@ pub fn add_key(
     description: &str,
     payload: usize,
     plen: size_t,
-    destringid: key_serial_t,
+    dest_keyring: key_serial_t,
 ) -> Result<key_serial_t, Errno> {
     unsafe {
         let type_ = CString::new(type_);
@@ -2794,8 +2794,8 @@ pub fn add_key(
         let description = CString::new(description);
         let description_ptr = description.as_ptr() as usize;
         let plen = plen as usize;
-        let destringid = destringid as usize;
-        syscall4(SYS_ADD_KEY, type_ptr, description_ptr, plen, destringid)
+        let dest_keyring = dest_keyring as usize;
+        syscall4(SYS_ADD_KEY, type_ptr, description_ptr, plen, dest_keyring)
             .map(|ret| ret as key_serial_t)
     }
 }
@@ -2825,19 +2825,38 @@ pub fn finit_module() {
     // syscall0(SYS_FINIT_MODULE);
 }
 
-pub fn fsconfig() {
-    core::unimplemented!();
-    // syscall0(SYS_FSCONFIG);
+/// Set parameters and trigger actions on a context.
+pub fn fsconfig(fd: i32, cmd: u32, key: &str, value: &str, aux: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let cmd = cmd as usize;
+        let key = CString::new(key);
+        let key_ptr = key.as_ptr() as usize;
+        let value = CString::new(value);
+        let value_ptr = value.as_ptr() as usize;
+        let aux = aux as usize;
+        syscall5(SYS_FSCONFIG, fd, cmd, key_ptr, value_ptr, aux).map(|_ret| ())
+    }
 }
 
-pub fn fsmount() {
-    core::unimplemented!();
-    // syscall0(SYS_FSMOUNT);
+/// Create a kernel mount representation for a new, prepared superblock.
+pub fn fsmount(fs_fd: i32, flags: u32, attr_flags: u32) -> Result<i32, Errno> {
+    unsafe {
+        let fs_fd = fs_fd as usize;
+        let flags = flags as usize;
+        let attr_flags = attr_flags as usize;
+        syscall3(SYS_FSMOUNT, fs_fd, flags, attr_flags).map(|ret| ret as i32)
+    }
 }
 
-pub fn fsopen() {
-    core::unimplemented!();
-    // syscall0(SYS_FSOPEN);
+/// Open a filesystem by name so that it can be configured for mounting.
+pub fn fsopen(fs_name: &str, flags: u32) -> Result<(), Errno> {
+    unsafe {
+        let fs_name = CString::new(fs_name);
+        let fs_name_ptr = fs_name.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall2(SYS_FSOPEN, fs_name_ptr, flags).map(|_ret| ())
+    }
 }
 
 pub fn fspick() {
@@ -2885,9 +2904,18 @@ pub fn ioprio_set() {
     // syscall0(SYS_IOPRIO_SET);
 }
 
-pub fn io_cancel() {
-    core::unimplemented!();
-    // syscall0(SYS_IO_CANCEL);
+/// Attempts to cancel an iocb previously passed to io_submit.
+pub fn io_cancel(
+    ctx_id: aio_context_t,
+    iocb: &mut iocb_t,
+    result: &mut ioevent_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let ctx_id = ctx_id as usize;
+        let iocb_ptr = iocb as *mut iocb_t as usize;
+        let result_ptr = ioevent_t as *mut ioevent_t as usize;
+        syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(|_ret| ())
+    }
 }
 
 pub fn io_destroy() {
@@ -2945,9 +2973,18 @@ pub fn kexec_load() {
     // syscall0(SYS_KEXEC_LOAD);
 }
 
-pub fn keyctl() {
-    core::unimplemented!();
-    // syscall0(SYS_KEYCTL);
+/// Manipulate the kernel's key management facility.
+pub fn keyctl(
+    operation: i32,
+    arg2: usize,
+    arg3: usize,
+    arg4: usize,
+    arg5: usize,
+) -> Result<usize, Errno> {
+    unsafe {
+        let operation = operation as usize;
+        syscall5(SYS_KEYCTL, operation, arg2, arg3, arg4, arg5)
+    }
 }
 
 pub fn lookup_dcookie() {
@@ -3050,9 +3087,30 @@ pub fn remap_file_pages() {
     // syscall0(SYS_REMAP_FILE_PAGES);
 }
 
-pub fn request_key() {
-    core::unimplemented!();
-    // syscall0(SYS_REQUEST_KEY);
+/// Request a key from kernel's key management facility.
+pub fn request_key(
+    type_: &str,
+    description: &str,
+    callout_info: &str,
+    dest_keyring: key_serial_t,
+) -> Result<key_serial_t, Errno> {
+    unsafe {
+        let type_ = CString::new(type_);
+        let type_ptr = type_.as_ptr() as usize;
+        let description = CString::new(description);
+        let description_ptr = description.as_ptr() as usize;
+        let callout_info = CString::new(callout_info);
+        let callout_info_ptr = callout_info.as_ptr() as usize;
+        let dest_keyring = dest_keyring as usize;
+        syscall4(
+            SYS_REQUEST_KEY,
+            type_ptr,
+            description_ptr,
+            callout_info_ptr,
+            dest_keyring,
+        )
+        .map(|ret| ret as key_serial_t)
+    }
 }
 
 pub fn restart_syscall() {

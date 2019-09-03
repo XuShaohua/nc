@@ -35,3 +35,5 @@ mirrors do not support non-x86 architectures
 - [x] test ppc64
 - [x] test ppc64le
 - [ ] test s390x
+- [ ] add linux uapi types
+- [x] remove little endians

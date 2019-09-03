@@ -127,9 +127,8 @@ def main():
 
     arch_name = sys.argv[1]
     if arch_name == "all":
-        for arch_name in [
-                "aarch64", "arm", "mips", "mipsle", "mips64", "mips64le",
-                "ppc64", "ppc64le", "s390x", "x86", "x86_64"]:
+        for arch_name in ["aarch64", "arm", "mips", "mips64","ppc64",
+                          "s390x", "x86", "x86_64"]:
             print_call(arch_name)
     else:
         print_call(arch_name)

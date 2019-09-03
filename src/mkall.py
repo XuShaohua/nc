@@ -34,13 +34,6 @@ DEFINES = {
             "sysno": "/usr/mips-linux-gnu/include/asm/unistd.h",
             "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
         },
-        "mipsle": {
-            "compiler": "mipsel-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-mipsel-cross", "gcc-8-mipsel-linux-gnu"],
-            "include": "/usr/mipsel-linux-gnu/include",
-            "errno": "/usr/mipsel-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/mipsel-linux-gnu/include/asm/unistd.h",
-        },
         "mips64": {
             "compiler": "mips64-linux-gnuabi64-gcc-8",
             "deb": ["linux-libc-dev-mips64-cross", "gcc-8-mips64-linux-gnuabi64"],
@@ -48,26 +41,12 @@ DEFINES = {
             "errno": "/usr/mips64-linux-gnuabi64/include/asm/errno.h",
             "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
         },
-        "mips64le": {
-            "compiler": "mips64el-linux-gnuabi64-gcc-8",
-            "deb": ["linux-libc-dev-mips64el-cross", "gcc-8-mips64el-linux-gnuabi64"],
-            "include": "/usr/mips64el-linux-gnuabi64/include",
-            "errno": "/usr/mips64el-linux-gnuabi64/include/asm/errno.h",
-            "sysno": "/usr/mips64el-linux-gnuabi64/include/asm/unistd.h",
-        },
         "ppc64": {
             "compiler": "powerpc64-linux-gnu-gcc-8",
             "deb": ["linux-libc-dev-ppc64-cross", "gcc-8-powerpc64-linux-gnu"],
             "include": "/usr/powerpc64-linux-gnu/include",
             "errno": "/usr/powerpc64-linux-gnu/include/asm/errno.h",
             "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
-        },
-        "ppc64le": {
-            "compiler": "powerpc64-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-ppc64el-cross", "gcc-8-powerpc64le-linux-gnu"],
-            "include": "/usr/powerpc64le-linux-gnu/include",
-            "errno": "/usr/powerpc64le-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/powerpc64le-linux-gnu/include/asm/unistd.h",
         },
         "s390x": {
             "compiler": "s390x-linux-gnu-gcc-8",

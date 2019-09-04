@@ -1,3 +1,4 @@
+use super::ipc::*;
 use super::types::*;
 
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be

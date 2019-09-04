@@ -1,6 +1,7 @@
 pub mod aio_abi;
 pub mod fcntl;
 pub mod fs;
+pub mod ipc;
 pub mod ipcbuf;
 pub mod key;
 pub mod limits;
@@ -28,6 +29,7 @@ pub mod utime;
 pub use aio_abi::*;
 pub use fcntl::*;
 pub use fs::*;
+pub use ipc::*;
 pub use ipcbuf::*;
 pub use key::*;
 pub use limits::*;

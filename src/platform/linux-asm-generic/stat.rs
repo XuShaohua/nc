@@ -1,3 +1,5 @@
+use super::types::*;
+
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]

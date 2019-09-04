@@ -1,20 +1,22 @@
 // BEGIN of bitsperlong.h
-#[cfg(target_pointer_size = 64)]
+#[cfg(target_pointer_size = "64")]
 pub const BITS_PER_LONG: i32 = 64;
 
-#[cfg(target_pointer_size = 32)]
+#[cfg(target_pointer_size = "32")]
 pub const BITS_PER_LONG: i32 = 32;
 
 pub const BITS_PER_LONG_LONG: i32 = 64;
 // END of bitsperlong.h
 
 // BEGIN of posix_types.h
+// TODO(Shaohua): Check ino_t is usize or u64
 pub type ino_t = usize;
 pub type mode_t = u32;
 pub type pid_t = i32;
 pub type ipc_pid_t = i32;
 pub type uid_t = u32;
 pub type gid_t = u32;
+// TODO(Shaohua): Check sueconds_t is isize or usize
 pub type suseconds_t = usize;
 pub type daddr_t = i32;
 pub type uid32_t = u32;
@@ -51,7 +53,6 @@ pub type regoff_t = usize;
 pub type register_t = usize;
 
 pub type nlink_t = usize;
-pub type ino_t = u64;
 pub type dev_t = u64;
 pub type blksize_t = usize;
 pub type blkcnt_t = i64;
@@ -60,18 +61,6 @@ pub type fsfilcnt_t = u64;
 
 pub type wint_t = i32;
 pub type wctype_t = usize;
-
-#[repr(C)]
-pub struct timeval_t {
-    pub tv_sec: time_t,
-    pub tv_usec: time_t,
-}
-
-#[repr(C)]
-pub struct timespec_t {
-    pub tv_sec: time_t,
-    pub tv_nsec: usize,
-}
 
 pub type key_t = i32;
 pub type useconds_t = u32;

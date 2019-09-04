@@ -38,6 +38,7 @@ pub struct io_event_t {
 /// with userland.  its up to libraries to do the
 /// proper padding and aio_error abstraction
 #[repr(C)]
+// TODO(Shaohua): Check int types to pre-defined types
 pub struct iocb_t {
     /// these are internal to the kernel/libc.
     /// data to be returned in event's data */

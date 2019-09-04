@@ -4,6 +4,9 @@ pub mod poll;
 pub mod signal;
 pub mod signal_defs;
 pub mod stat;
+pub mod sysctl;
+pub mod time;
+pub mod time_types;
 pub mod types;
 
 pub use aio_abi::*;
@@ -12,4 +15,7 @@ pub use poll::*;
 pub use signal::*;
 pub use signal_defs::*;
 pub use stat::*;
+pub use sysctl::*;
+pub use time::*;
+pub use time_types::*;
 pub use types::*;

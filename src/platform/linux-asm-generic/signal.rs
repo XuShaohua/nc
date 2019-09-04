@@ -1,4 +1,4 @@
-use types::BITS_PER_LONG;
+use super::types::*;
 
 // TODO(Shaohua): Update from 64 to 128
 pub const _NSIG: i32 = 128;

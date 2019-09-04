@@ -1,5 +1,4 @@
 use super::time::*;
-use super::types::*;
 
 /// Resource control/accounting header file for linux
 

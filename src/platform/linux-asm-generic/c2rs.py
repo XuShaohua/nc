@@ -22,7 +22,9 @@ def main():
                 m2 = comments3_pattern.match(m.group(3))
                 if m2:
                     print("/// {}".format(m2.groups()[-1].strip()))
-                print("pub const {}: i32 = {};".format(m.group(1), m.group(2)))
+                    print("pub const {}: i32 = {};".format(m.group(1), m.group(2)))
+                else:
+                    print("pub const {}: i32 = {};{}".format(m.group(1), m.group(2), m.group(3)))
                 continue
 
             m = consts_pattern.match(line)
@@ -30,7 +32,9 @@ def main():
                 m2 = comments3_pattern.match(m.group(3))
                 if m2:
                     print("/// {}".format(m2.groups()[-1].strip()))
-                print("pub const {}: i32 = {};".format(m.group(1), m.group(2)))
+                    print("pub const {}: i32 = {};".format(m.group(1), m.group(2)))
+                else:
+                    print("pub const {}: i32 = {};{}".format(m.group(1), m.group(2), m.group(3)))
                 continue
 
             m = comments2_pattern.match(line)

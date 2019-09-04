@@ -1,5 +1,6 @@
 pub mod aio_abi;
 pub mod fcntl;
+pub mod fs;
 pub mod key;
 pub mod limits;
 pub mod mount;
@@ -19,6 +20,7 @@ pub mod utime;
 
 pub use aio_abi::*;
 pub use fcntl::*;
+pub use fs::*;
 pub use key::*;
 pub use limits::*;
 pub use mount::*;

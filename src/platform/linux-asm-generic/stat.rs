@@ -1,3 +1,4 @@
+use super::linux_types::*;
 use super::types::*;
 
 pub const STAT_HAVE_NSEC: i32 = 1;

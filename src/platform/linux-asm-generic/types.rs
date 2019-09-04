@@ -50,14 +50,12 @@ pub type regoff_t = usize;
 pub type register_t = usize;
 
 pub type blksize_t = usize;
-pub type blkcnt_t = i64;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 
 pub type wint_t = i32;
 pub type wctype_t = usize;
 
-pub type key_t = i32;
 pub type useconds_t = u32;
 
 //TYPEDEF struct __pthread * pthread_t;

@@ -3,9 +3,6 @@
 /// ioctl's.  Please do not make any changes in this file before
 /// sending patches for review to linux-fsdevel@vger.kernel.org and
 /// linux-api@vger.kernel.org.
-use super::limits::*;
-use super::mount::*;
-use super::types::*;
 
 /// Use of MS_* flags within the kernel is restricted to core mount(2) code.
 
@@ -251,7 +248,7 @@ pub struct fscrypt_policy_t {
     pub contents_encryption_mode: u8,
     pub filenames_encryption_mode: u8,
     pub flags: u8,
-    pub master_key_descriptor: [u8; FS_KEY_DESCRIPTOR_SIZE],
+    pub master_key_descriptor: [u8; FS_KEY_DESCRIPTOR_SIZE as usize],
 }
 
 // TODO(Shaohua):
@@ -269,7 +266,7 @@ pub const FS_MAX_KEY_SIZE: i32 = 64;
 #[repr(C)]
 pub struct fscrypt_key_t {
     pub mode: u32,
-    pub raw: [u8; FS_MAX_KEY_SIZE],
+    pub raw: [u8; FS_MAX_KEY_SIZE as usize],
     pub size: u32,
 }
 

@@ -9,15 +9,13 @@ pub const BITS_PER_LONG_LONG: i32 = 64;
 // END of bitsperlong.h
 
 // BEGIN of posix_types.h
-// TODO(Shaohua): Check ino_t is usize or u64
 pub type ino_t = usize;
 pub type mode_t = u32;
 pub type pid_t = i32;
 pub type ipc_pid_t = i32;
 pub type uid_t = u32;
 pub type gid_t = u32;
-// TODO(Shaohua): Check sueconds_t is isize or usize
-pub type suseconds_t = usize;
+pub type suseconds_t = isize;
 pub type daddr_t = i32;
 pub type uid32_t = u32;
 pub type gid32_t = u32;
@@ -41,7 +39,6 @@ pub type time64_t = i64;
 pub type clock_t = isize;
 pub type timer_t = i32;
 pub type clockid_t = i32;
-//typedef char *		__kernel_caddr_t;  // TODO(Shaohua):
 pub type uid16_t = u16;
 pub type gid16_t = u16;
 // END of posix_types.h
@@ -52,8 +49,6 @@ pub type intptr_t = usize;
 pub type regoff_t = usize;
 pub type register_t = usize;
 
-pub type nlink_t = usize;
-pub type dev_t = u64;
 pub type blksize_t = usize;
 pub type blkcnt_t = i64;
 pub type fsblkcnt_t = u64;

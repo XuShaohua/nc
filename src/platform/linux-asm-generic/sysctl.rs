@@ -1,3 +1,5 @@
+use super::types::*;
+
 /// how many path components do we allow in a call to sysctl
 /// In other words, what is the largest acceptable value for the nlen member
 /// of a struct __sysctl_args to have?

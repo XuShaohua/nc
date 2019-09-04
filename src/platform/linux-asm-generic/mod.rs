@@ -16,6 +16,7 @@ pub mod sysctl;
 pub mod time;
 pub mod time_types;
 pub mod types;
+pub mod uapi_socket;
 pub mod uio;
 pub mod utime;
 
@@ -37,5 +38,6 @@ pub use sysctl::*;
 pub use time::*;
 pub use time_types::*;
 pub use types::*;
+pub use uapi_socket::*;
 pub use uio::*;
 pub use utime::*;

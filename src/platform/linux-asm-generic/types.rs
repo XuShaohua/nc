@@ -101,12 +101,6 @@ pub type file_t = io_file_t;
 
 //TYPEDEF struct __locale_struct * locale_t;
 
-#[repr(C)]
-pub struct iovec_t {
-    pub iov_base: usize,
-    pub iov_len: size_t,
-}
-
 pub type socklen_t = u32;
 pub type sa_family_t = u16;
 

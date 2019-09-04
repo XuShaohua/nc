@@ -21,7 +21,7 @@ pub const SHMSEG: i32 = SHMMNI;
 
 /// Obsolete, used only for backwards compatibility and libc5 compiles
 #[repr(C)]
-struct shmid_ds_t {
+pub struct shmid_ds_t {
     /// operation perms
     pub shm_perm: ipc_perm_t,
     /// size of segment (bytes)

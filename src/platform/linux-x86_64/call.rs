@@ -2600,10 +2600,10 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set resource limit
-pub fn setrlimit(resource: u32, rlimit: rlimit_t) -> Result<(), Errno> {
+pub fn setrlimit(resource: u32, rlimit: &rlimit_t) -> Result<(), Errno> {
     unsafe {
         let resource = resource as usize;
-        let rlimit_ptr = rlimit as usize;
+        let rlimit_ptr = rlimit as *const rlimit_t as usize;
         syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(|_ret| ())
     }
 }
@@ -2688,11 +2688,11 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
 }
 
 /// System V shared memory control.
-pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds) -> Result<i32, Errno> {
+pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
     unsafe {
         let shmid = shmid as usize;
         let cmd = cmd as usize;
-        let buf_ptr = buf as *mut shmid_ds as usize;
+        let buf_ptr = buf as *mut shmid_ds_t as usize;
         syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr).map(|ret| ret as i32)
     }
 }

@@ -1,94 +1,108 @@
+use super::types::*;
+use super::uapi_socket::*;
 
+pub type sa_family_t = kernel_sa_family_t;
 
-typedef __kernel_sa_family_t	sa_family_t;
+/// 1003.1g requires sa_family_t and that sa_data is char.
+#[repr(C)]
+pub struct sockaddr_t {
+    /// address family, AF_xxx
+    pub sa_family: sa_family_t,
+    /// 14 bytes of protocol address
+    pub sa_data: [u8; 14],
+}
 
-/*
- *	1003.1g requires sa_family_t and that sa_data is char.
- */
+#[repr(C)]
+pub struct linger_t {
+    /// Linger active
+    pub l_onoff: i32,
+    /// How long to linger for
+    pub l_linger: i32,
+}
 
-struct sockaddr {
-	sa_family_t	sa_family;	/* address family, AF_xxx	*/
-	char		sa_data[14];	/* 14 bytes of protocol address	*/
-};
+pub type sockaddr_storage = kernel_sockaddr_storage_t;
 
-struct linger {
-	int		l_onoff;	/* Linger active		*/
-	int		l_linger;	/* How long to linger for	*/
-};
+/// As we do 4.4BSD message passing we use a 4.4BSD message passing
+/// system, not 4.3. Thus msg_accrights(len) are now missing. They
+/// belong in an obscure libc emulation or the bin.
 
-pub const sockaddr_storage: i32 = __kernel_sockaddr_storage;
+#[repr(C)]
+pub struct msghdr_t {
+    /// ptr to socket address structure
+    pub msg_name: usize,
+    /// size of socket address structure
+    pub msg_namelen: i32,
+    /// data
+    pub msg_iter: iov_iter_t,
+    /// ancillary data
+    pub msg_control: usize,
+    /// ancillary data buffer length
+    pub msg_controllen: size_t,
+    /// flags on received message
+    pub msg_flags: u32,
+    /// ptr to iocb for async requests
+    pub msg_iocb: *mut kiocb_t,
+}
 
-/*
- *	As we do 4.4BSD message passing we use a 4.4BSD message passing
- *	system, not 4.3. Thus msg_accrights(len) are now missing. They
- *	belong in an obscure libc emulation or the bin.
- */
-
-struct msghdr {
-	void		*msg_name;	/* ptr to socket address structure */
-	int		msg_namelen;	/* size of socket address structure */
-	struct iov_iter	msg_iter;	/* data */
-	void		*msg_control;	/* ancillary data */
-	__kernel_size_t	msg_controllen;	/* ancillary data buffer length */
-	unsigned int	msg_flags;	/* flags on received message */
-	struct kiocb	*msg_iocb;	/* ptr to iocb for async requests */
-};
-
-struct user_msghdr {
-	void		__user *msg_name;	/* ptr to socket address structure */
-	int		msg_namelen;		/* size of socket address structure */
-	struct iovec	__user *msg_iov;	/* scatter/gather array */
-	__kernel_size_t	msg_iovlen;		/* # elements in msg_iov */
-	void		__user *msg_control;	/* ancillary data */
-	__kernel_size_t	msg_controllen;		/* ancillary data buffer length */
-	unsigned int	msg_flags;		/* flags on received message */
-};
+#[repr(C)]
+pub struct user_msghdr_t {
+    /// ptr to socket address structure
+    pub msg_name: usize,
+    /// size of socket address structure
+    pub msg_namelen: i32,
+    /// scatter/gather array
+    pub msg_iov: *mut iovec_t,
+    /// # elements in msg_iov
+    pub msg_iovlen: size_t,
+    /// ancillary data
+    pub msg_control: usize,
+    /// ancillary data buffer length
+    pub msg_controllen: size_t,
+    /// flags on received message
+    pub msg_flags: u32,
+}
 
 /// For recvmmsg/sendmmsg
-struct mmsghdr {
-	struct user_msghdr  msg_hdr;
-	unsigned int        msg_len;
-};
+#[repr(C)]
+pub struct mmsghdr_t {
+    pub msg_hdr: user_msghdr_t,
+    pub msg_len: u32,
+}
 
-/*
- *	POSIX 1003.1g - ancillary data object information
- *	Ancillary data consits of a sequence of pairs of
- *	(cmsghdr, cmsg_data[])
- */
+/// POSIX 1003.1g - ancillary data object information
+/// Ancillary data consits of a sequence of pairs of
+/// (cmsghdr, cmsg_data[])
+#[repr(C)]
+pub struct cmsghdr_t {
+    /// data byte count, including hdr
+    pub cmsg_len: size_t,
+    /// originating protocol
+    pub cmsg_level: i32,
+    /// protocol-specific type
+    pub cmsg_type: i32,
+}
 
-struct cmsghdr {
-	__kernel_size_t	cmsg_len;	/* data byte count, including hdr */
-        int		cmsg_level;	/* originating protocol */
-        int		cmsg_type;	/* protocol-specific type */
-};
+/// Ancillary data object information MACROS
+/// Table 5-14 of POSIX 1003.1g
 
-/*
- *	Ancillary data object information MACROS
- *	Table 5-14 of POSIX 1003.1g
- */
-
-#define __CMSG_NXTHDR(ctl, len, cmsg) __cmsg_nxthdr((ctl),(len),(cmsg))
-#define CMSG_NXTHDR(mhdr, cmsg) cmsg_nxthdr((mhdr), (cmsg))
-
-#define CMSG_ALIGN(len) ( ((len)+sizeof(long)-1) & ~(sizeof(long)-1) )
-
-#define CMSG_DATA(cmsg)	((void *)((char *)(cmsg) + sizeof(struct cmsghdr)))
-#define CMSG_SPACE(len) (sizeof(struct cmsghdr) + CMSG_ALIGN(len))
-#define CMSG_LEN(len) (sizeof(struct cmsghdr) + (len))
-
-#define __CMSG_FIRSTHDR(ctl,len) ((len) >= sizeof(struct cmsghdr) ? \
-				  (struct cmsghdr *)(ctl) : \
-				  (struct cmsghdr *)NULL)
-#define CMSG_FIRSTHDR(msg)	__CMSG_FIRSTHDR((msg)->msg_control, (msg)->msg_controllen)
-#define CMSG_OK(mhdr, cmsg) ((cmsg)->cmsg_len >= sizeof(struct cmsghdr) && \
-			     (cmsg)->cmsg_len <= (unsigned long) \
-			     ((mhdr)->msg_controllen - \
-			      ((char *)(cmsg) - (char *)(mhdr)->msg_control)))
-#define for_each_cmsghdr(cmsg, msg) \
-	for (cmsg = CMSG_FIRSTHDR(msg); \
-	     cmsg; \
-	     cmsg = CMSG_NXTHDR(msg, cmsg))
-
+//#define __CMSG_NXTHDR(ctl, len, cmsg) __cmsg_nxthdr((ctl),(len),(cmsg))
+//#define CMSG_NXTHDR(mhdr, cmsg) cmsg_nxthdr((mhdr), (cmsg))
+//#define CMSG_ALIGN(len) ( ((len)+sizeof(long)-1) & ~(sizeof(long)-1) )
+//#define CMSG_DATA(cmsg)	((void *)((char *)(cmsg) + sizeof(struct cmsghdr)))
+//#define CMSG_SPACE(len) (sizeof(struct cmsghdr) + CMSG_ALIGN(len))
+//#define CMSG_LEN(len) (sizeof(struct cmsghdr) + (len))
+//#define __CMSG_FIRSTHDR(ctl,len) ((len) >= sizeof(struct cmsghdr) ? \
+//				  (struct cmsghdr *)(ctl) : \
+//				  (struct cmsghdr *)NULL)
+//#define CMSG_FIRSTHDR(msg)	__CMSG_FIRSTHDR((msg)->msg_control, (msg)->msg_controllen)
+//#define CMSG_OK(mhdr, cmsg) ((cmsg)->cmsg_len >= sizeof(struct cmsghdr) && \
+//			     (cmsg)->cmsg_len <= (unsigned long) \
+//			     ((mhdr)->msg_controllen - \
+//			      ((char *)(cmsg) - (char *)(mhdr)->msg_control)))
+//#define for_each_cmsghdr(cmsg, msg) \
+//	for (cmsg = CMSG_FIRSTHDR(msg); \
+//	     cmsg; \
+//	     cmsg = CMSG_NXTHDR(msg, cmsg))
 
 /// "Socket"-level control message types:
 
@@ -99,11 +113,12 @@ pub const SCM_CREDENTIALS: i32 = 0x02;
 /// rw: security label
 pub const SCM_SECURITY: i32 = 0x03;
 
-struct ucred {
-	__u32	pid;
-	__u32	uid;
-	__u32	gid;
-};
+#[repr(C)]
+pub struct ucred_t {
+    pub pid: u32,
+    pub uid: u32,
+    pub gid: u32,
+}
 
 /// Supported address families.
 pub const AF_UNSPEC: i32 = 0;
@@ -194,10 +209,9 @@ pub const AF_VSOCK: i32 = 40;
 pub const AF_KCM: i32 = 41;
 /// Qualcomm IPC Router
 pub const AF_QIPCRTR: i32 = 42;
+/// smc sockets: reserve number for PF_SMC protocol family that reuses
+/// AF_INET address family
 pub const AF_SMC: i32 = 43;
-				 * PF_SMC protocol family that
-				 * reuses AF_INET address family
-				 */
 /// XDP sockets
 pub const AF_XDP: i32 = 44;
 
@@ -257,9 +271,8 @@ pub const PF_MAX: i32 = AF_MAX;
 /// Maximum queue length specifiable by listen.
 pub const SOMAXCONN: i32 = 128;
 
-/* Flags we can use with send/ and recv.
-   Added those for 1003.1g not all are supported yet
- */
+/// Flags we can use with send/ and recv.
+/// Added those for 1003.1g not all are supported yet
 
 pub const MSG_OOB: i32 = 1;
 pub const MSG_PEEK: i32 = 2;
@@ -298,22 +311,22 @@ pub const MSG_BATCH: i32 = 0x40000;
 pub const MSG_EOF: i32 = MSG_FIN;
 /// sendpage() internal : page frags are not shared
 pub const MSG_NO_SHARED_FRAGS: i32 = 0x80000;
+/// sendpage() internal : page may carry plain text and require encryption
+pub const MSG_SENDPAGE_DECRYPTED: i32 = 0x100000;
 
 /// Use user data in kernel path
 pub const MSG_ZEROCOPY: i32 = 0x4000000;
 /// Send data in TCP SYN
 pub const MSG_FASTOPEN: i32 = 0x20000000;
+/// Set close_on_exec for file descriptor received through SCM_RIGHTS
 pub const MSG_CMSG_CLOEXEC: i32 = 0x40000000;
-					   descriptor received through
-					   SCM_RIGHTS */
-#if defined(CONFIG_COMPAT)
-/// This message needs 32 bit fixups
-pub const MSG_CMSG_COMPAT: i32 = 0x80000000;
-#else
+
+// TODO(Shaohua): Support compat
+//#if defined(CONFIG_COMPAT)
+// This message needs 32 bit fixups
+//pub const MSG_CMSG_COMPAT: i32 = 0x80000000;
 /// We never have 32 bit fixups
 pub const MSG_CMSG_COMPAT: i32 = 0;
-#endif
-
 
 /// Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx
 pub const SOL_IP: i32 = 0;
@@ -360,11 +373,7 @@ pub const SOL_XDP: i32 = 283;
 /// IPX options
 pub const IPX_TYPE: i32 = 1;
 
-struct timespec64;
-struct __kernel_timespec;
-struct old_timespec32;
-
-struct scm_timestamping_internal {
-	struct timespec64 ts[3];
-};
-
+#[repr(C)]
+pub struct scm_timestamping_internal_t {
+    pub ts: [timespec64_t; 3],
+}

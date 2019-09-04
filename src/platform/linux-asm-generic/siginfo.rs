@@ -20,26 +20,34 @@ pub type arch_si_clock_t = clock_t;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct si_kill_t {
-    pub pid: pid_t, /* sender's pid */
-    pub uid: uid_t, /* sender's uid */
+    /// sender's pid
+    pub pid: pid_t,
+    /// sender's uid
+    pub uid: uid_t,
 }
 
 /// POSIX.1b timers
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct si_timer_t {
-    pub tid: timer_t,     /* timer id */
-    pub overrun: i32,     /* overrun count */
-    pub sigval: sigval_t, /* same as below */
-    sys_private: i32,     /* not to be passed to user */
+    /// timer id
+    pub tid: timer_t,
+    /// overrun count
+    pub overrun: i32,
+    /// same as below
+    pub sigval: sigval_t,
+    /// not to be passed to user
+    sys_private: i32,
 }
 
 /// POSIX.1b signals
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct si_rt_t {
-    pub pid: pid_t, /* sender's pid */
-    pub uid: uid_t, /* sender's uid */
+    /// sender's pid
+    pub pid: pid_t,
+    /// sender's uid
+    pub uid: uid_t,
     pub sigval: sigval_t,
 }
 
@@ -47,27 +55,34 @@ pub struct si_rt_t {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct si_sigchld_t {
-    pub pid: pid_t,  /* which child */
-    pub uid: uid_t,  /* sender's uid */
-    pub status: i32, /* exit code */
-    pub utime: __arch_si_clock_t,
-    pub stime: __arch_si_clock_t,
+    /// which child
+    pub pid: pid_t,
+    /// sender's uid
+    pub uid: uid_t,
+    /// exit code
+    pub status: i32,
+    pub utime: arch_si_clock_t,
+    pub stime: arch_si_clock_t,
 }
 
 /// SIGPOLL
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct si_sigpoll_t {
-    pub band: arch_si_band_t, /* POLL_IN, POLL_OUT, POLL_MSG */
+    /// POLL_IN, POLL_OUT, POLL_MSG
+    pub band: arch_si_band_t,
     pub fd: i32,
 }
 /// SIGSYS
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct si_sigsys_t {
-    pub call_addr: usize, /* calling user insn */
-    pub syscall: i32,     /* triggering system call number */
-    pub arch: u32,        /* AUDIT_ARCH_* of syscall */
+    /// calling user insn
+    pub call_addr: usize,
+    /// triggering system call number
+    pub syscall: i32,
+    /// AUDIT_ARCH_* of syscall
+    pub arch: u32,
 }
 
 #[repr(C)]
@@ -82,7 +97,6 @@ pub union sifields_t {
     pub sigchld: si_sigchld_t,
     pub sigpoll: si_sigpoll_t,
 
-    /* SIGSYS */
     pub sigsys: si_sigsys_t,
 }
 
@@ -264,10 +278,8 @@ pub const TRAP_HWBKPT: i32 = 4;
 pub const TRAP_UNK: i32 = 5;
 pub const NSIGTRAP: i32 = 5;
 
-/*
- * There is an additional set of SIGTRAP si_codes used by ptrace
- * that are of the form: ((PTRACE_EVENT_XXX << 8) | SIGTRAP)
- */
+/// There is an additional set of SIGTRAP si_codes used by ptrace
+/// that are of the form: ((PTRACE_EVENT_XXX << 8) | SIGTRAP)
 
 /// SIGCHLD si_codes
 /// child has exited
@@ -334,6 +346,7 @@ pub const SIGEV_MAX_SIZE: usize = 64;
 pub const SIGEV_PAD_SIZE: usize = ((SIGEV_MAX_SIZE - ARCH_SIGEV_PREAMBLE_SIZE) / size_of::<i32>());
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct sigev_thread_t {
     pub function: usize,
     /// really pthread_attr_t
@@ -341,6 +354,7 @@ pub struct sigev_thread_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigev_un_t {
     pad: [i32; SIGEV_PAD_SIZE],
     pub tid: i32,

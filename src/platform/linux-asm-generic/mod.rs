@@ -1,6 +1,7 @@
 pub mod aio_abi;
 pub mod fcntl;
 pub mod limits;
+pub mod mount;
 pub mod poll;
 pub mod signal;
 pub mod signal_defs;
@@ -13,6 +14,7 @@ pub mod types;
 pub use aio_abi::*;
 pub use fcntl::*;
 pub use limits::*;
+pub use mount::*;
 pub use poll::*;
 pub use signal::*;
 pub use signal_defs::*;

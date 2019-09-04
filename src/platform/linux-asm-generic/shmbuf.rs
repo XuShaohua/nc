@@ -1,3 +1,6 @@
+use super::ipcbuf::*;
+use super::types::*;
+
 /// The shmid64_ds structure for x86 architecture.
 /// Note extra padding because this structure is passed back and forth
 /// between kernel and user space.
@@ -12,7 +15,7 @@
 ///
 /// Pad space is left for:
 /// - 2 miscellaneous 32-bit values
-#[cfg(target_pointer_size = "64")]
+#[cfg(target_pointer_width = "64")]
 #[repr(C)]
 pub struct shmid64_ds_t {
     /// operation perms
@@ -35,7 +38,7 @@ pub struct shmid64_ds_t {
     unused5: usize,
 }
 
-#[cfg(target_pointer_size = "32")]
+#[cfg(target_pointer_width = "32")]
 #[repr(C)]
 pub struct shmid64_ds_t {
     /// operation perms

@@ -1,8 +1,8 @@
 // BEGIN of bitsperlong.h
-#[cfg(target_pointer_size = "64")]
+#[cfg(target_pointer_width = "64")]
 pub const BITS_PER_LONG: i32 = 64;
 
-#[cfg(target_pointer_size = "32")]
+#[cfg(target_pointer_width = "32")]
 pub const BITS_PER_LONG: i32 = 32;
 
 pub const BITS_PER_LONG_LONG: i32 = 64;

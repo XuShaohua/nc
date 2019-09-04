@@ -15,6 +15,7 @@ pub mod sysctl;
 pub mod time;
 pub mod time_types;
 pub mod types;
+pub mod utime;
 
 pub use aio_abi::*;
 pub use fcntl::*;
@@ -33,3 +34,4 @@ pub use sysctl::*;
 pub use time::*;
 pub use time_types::*;
 pub use types::*;
+pub use utime::*;

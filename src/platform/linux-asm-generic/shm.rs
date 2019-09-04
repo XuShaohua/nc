@@ -1,3 +1,5 @@
+use super::types::*;
+
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be
 /// modified by sysctl. The SHMMAX and SHMALL values have been chosen to
 /// be as large possible without facilitating scenarios where userspace

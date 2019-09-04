@@ -100,6 +100,6 @@ pub struct sigaction_t {
 pub struct sigaltstack_t {
     // TODO(Shaohua):
     //void *ss_sp;
-    pub ss_flags: int_t,
+    pub ss_flags: i32,
     pub ss_size: size_t,
 }

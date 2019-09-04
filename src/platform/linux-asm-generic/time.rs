@@ -1,3 +1,5 @@
+use super::types::*;
+
 #[repr(C)]
 pub struct timespec_t {
     /// seconds

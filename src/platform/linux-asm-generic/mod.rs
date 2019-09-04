@@ -1,5 +1,6 @@
 pub mod aio_abi;
 pub mod fcntl;
+pub mod key;
 pub mod limits;
 pub mod mount;
 pub mod poll;
@@ -15,6 +16,7 @@ pub mod types;
 
 pub use aio_abi::*;
 pub use fcntl::*;
+pub use key::*;
 pub use limits::*;
 pub use mount::*;
 pub use poll::*;

@@ -1,4 +1,3 @@
-
 extern crate nc;
 
 fn ptsname(pty_fd: i32) -> Result<String, nc::Errno> {
@@ -25,7 +24,7 @@ fn open_pty() -> Result<(i32, i32), nc::Errno> {
     println!("sname: {}", sname);
     unlockpt(pty_fd)?;
 
-    let tty_fd = nc::open(&sname, nc::O_RDWR | nc::O_NOCTTY, 0)?;
+    let tty_fd = nc::openat(nc::AT_FDCWD, &sname, nc::O_RDWR | nc::O_NOCTTY, 0)?;
     println!("tty_fd: {}", tty_fd);
 
     return Ok((pty_fd, tty_fd));

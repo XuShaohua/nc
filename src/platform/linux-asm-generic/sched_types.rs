@@ -1,5 +1,3 @@
-use super::types::*;
-
 #[repr(C)]
 pub struct sched_param_t {
     pub sched_priority: i32,

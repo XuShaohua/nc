@@ -1,14 +1,16 @@
-pub const S_IFMT: i32 = 0o0170000;
-pub const S_IFSOCK: i32 = 0o140000;
-pub const S_IFLNK: i32 = 0o120000;
-pub const S_IFREG: i32 = 0o100000;
-pub const S_IFBLK: i32 = 0o060000;
-pub const S_IFDIR: i32 = 0o040000;
-pub const S_IFCHR: i32 = 0o020000;
-pub const S_IFIFO: i32 = 0o010000;
-pub const S_ISUID: i32 = 0o004000;
-pub const S_ISGID: i32 = 0o002000;
-pub const S_ISVTX: i32 = 0o001000;
+use super::types::*;
+
+pub const S_IFMT: mode_t = 0o0170000;
+pub const S_IFSOCK: mode_t = 0o140000;
+pub const S_IFLNK: mode_t = 0o120000;
+pub const S_IFREG: mode_t = 0o100000;
+pub const S_IFBLK: mode_t = 0o060000;
+pub const S_IFDIR: mode_t = 0o040000;
+pub const S_IFCHR: mode_t = 0o020000;
+pub const S_IFIFO: mode_t = 0o010000;
+pub const S_ISUID: mode_t = 0o004000;
+pub const S_ISGID: mode_t = 0o002000;
+pub const S_ISVTX: mode_t = 0o001000;
 
 // TODO(Shaohua):
 //#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
@@ -19,20 +21,20 @@ pub const S_ISVTX: i32 = 0o001000;
 //#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
 //#define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
 
-pub const S_IRWXU: i32 = 0o0700;
-pub const S_IRUSR: i32 = 0o0400;
-pub const S_IWUSR: i32 = 0o0200;
-pub const S_IXUSR: i32 = 0o0100;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IXUSR: mode_t = 0o0100;
 
-pub const S_IRWXG: i32 = 0o0070;
-pub const S_IRGRP: i32 = 0o0040;
-pub const S_IWGRP: i32 = 0o0020;
-pub const S_IXGRP: i32 = 0o0010;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IXGRP: mode_t = 0o0010;
 
-pub const S_IRWXO: i32 = 0o0007;
-pub const S_IROTH: i32 = 0o0004;
-pub const S_IWOTH: i32 = 0o0002;
-pub const S_IXOTH: i32 = 0o0001;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IROTH: mode_t = 0o0004;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IXOTH: mode_t = 0o0001;
 
 /// Timestamp structure for the timestamps in struct statx.
 ///
@@ -146,36 +148,35 @@ pub struct statx_t {
 /// These bits should be set in the mask argument of statx() to request
 /// particular items when calling statx().
 /// Want/got stx_mode & S_IFMT
-pub const STATX_TYPE: i32 = 0x00000001;
+pub const STATX_TYPE: u32 = 0x00000001;
 /// Want/got stx_mode & ~S_IFMT
-pub const STATX_MODE: i32 = 0x00000002;
+pub const STATX_MODE: u32 = 0x00000002;
 /// Want/got stx_nlink
-pub const STATX_NLINK: i32 = 0x00000004;
+pub const STATX_NLINK: u32 = 0x00000004;
 /// Want/got stx_uid
-pub const STATX_UID: i32 = 0x00000008;
+pub const STATX_UID: u32 = 0x00000008;
 /// Want/got stx_gid
-pub const STATX_GID: i32 = 0x00000010;
+pub const STATX_GID: u32 = 0x00000010;
 /// Want/got stx_atime
-pub const STATX_ATIME: i32 = 0x00000020;
+pub const STATX_ATIME: u32 = 0x00000020;
 /// Want/got stx_mtime
-pub const STATX_MTIME: i32 = 0x00000040;
+pub const STATX_MTIME: u32 = 0x00000040;
 /// Want/got stx_ctime
-pub const STATX_CTIME: i32 = 0x00000080;
+pub const STATX_CTIME: u32 = 0x00000080;
 /// Want/got stx_ino
-pub const STATX_INO: i32 = 0x00000100;
+pub const STATX_INO: u32 = 0x00000100;
 /// Want/got stx_size
-pub const STATX_SIZE: i32 = 0x00000200;
+pub const STATX_SIZE: u32 = 0x00000200;
 /// Want/got stx_blocks
-pub const STATX_BLOCKS: i32 = 0x00000400;
+pub const STATX_BLOCKS: u32 = 0x00000400;
 /// The stuff in the normal stat struct
-pub const STATX_BASIC_STATS: i32 = 0x000007ff;
+pub const STATX_BASIC_STATS: u32 = 0x000007ff;
 /// Want/got stx_btime
-pub const STATX_BTIME: i32 = 0x00000800;
+pub const STATX_BTIME: u32 = 0x00000800;
 /// All currently supported flags
-pub const STATX_ALL: i32 = 0x00000fff;
+pub const STATX_ALL: u32 = 0x00000fff;
 /// Reserved for future struct statx expansion
-#[allow(overflowing_literals)]
-pub const STATX__RESERVED: i32 = 0x80000000;
+pub const STATX__RESERVED: u32 = 0x80000000;
 
 /// Attributes to be found in stx_attributes and masked in stx_attributes_mask.
 ///

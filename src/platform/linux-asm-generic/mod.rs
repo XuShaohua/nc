@@ -30,6 +30,7 @@ pub mod time_types;
 pub mod times;
 pub mod types;
 pub mod uapi_socket;
+pub mod uapi_stat;
 pub mod uio;
 pub mod utime;
 
@@ -65,5 +66,6 @@ pub use time_types::*;
 pub use times::*;
 pub use types::*;
 pub use uapi_socket::*;
+pub use uapi_stat::*;
 pub use uio::*;
 pub use utime::*;

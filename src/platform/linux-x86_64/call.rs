@@ -1701,14 +1701,9 @@ pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> 
     }
 }
 
-/// Access kernel NFS daemon
-pub fn nfsservctl(cmd: i32, arg: &mut nfsctl_arg_t, resp: &mut fsctl_res_t) -> Result<(), Errno> {
-    unsafe {
-        let cmd = cmd as usize;
-        let arg_ptr = arg as *mut nfsctl_arg_t as usize;
-        let resp_ptr = resp as *mut fsctl_res_t as usize;
-        syscall3(SYS_NFSSERVCTL, cmd, arg_ptr, resp_ptr).map(|_ret| ())
-    }
+pub fn nfsservctl() {
+    core::unimplemented!();
+    // syscall0(SYS_NFSSERVCTL);
 }
 
 /// Open and possibly create a file.

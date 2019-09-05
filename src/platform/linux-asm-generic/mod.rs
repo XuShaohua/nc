@@ -42,6 +42,7 @@ pub mod uapi_socket;
 pub mod uapi_stat;
 pub mod uio;
 pub mod utime;
+pub mod utsname;
 
 pub use aio_abi::*;
 pub use capability::*;
@@ -87,3 +88,4 @@ pub use uapi_socket::*;
 pub use uapi_stat::*;
 pub use uio::*;
 pub use utime::*;
+pub use utsname::*;

@@ -3,6 +3,7 @@ use super::types::*;
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]
+#[derive(Clone, Copy, Default, Debug)]
 pub struct stat_t {
     // TODO(Shaohua): Add another pad
     pub st_dev: dev_t,     // Device.

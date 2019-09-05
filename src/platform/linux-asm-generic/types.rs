@@ -66,7 +66,7 @@ pub struct fd_set_t {
 
 // Type of a signal handler.
 // TODO(Shaohua):
-//typedef void (*__kernel_sighandler_t)(int);
+pub type sighandler_t = isize;
 
 /// Type of a SYSV IPC key.
 pub type key_t = i32;

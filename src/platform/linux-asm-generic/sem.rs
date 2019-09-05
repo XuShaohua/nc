@@ -1,4 +1,5 @@
 use super::ipc::*;
+use super::types::*;
 
 /// semop flags
 /// undo the operation on exit

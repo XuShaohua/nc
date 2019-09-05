@@ -20,7 +20,7 @@ pub struct linger_t {
     pub l_linger: i32,
 }
 
-pub type sockaddr_storage = kernel_sockaddr_storage_t;
+pub type sockaddr_storage_t = kernel_sockaddr_storage_t;
 
 /// As we do 4.4BSD message passing we use a 4.4BSD message passing
 /// system, not 4.3. Thus msg_accrights(len) are now missing. They

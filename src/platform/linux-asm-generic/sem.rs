@@ -32,19 +32,29 @@ pub const SEM_STAT_ANY: i32 = 20;
 pub struct semid_ds_t {
     /// permissions .. see ipc.h
     pub sem_perm: ipc_perm_t,
+
     /// last semop time
     pub sem_otime: time_t,
+
     /// create/last semctl() time
     pub sem_ctime: time_t,
+
     /// ptr to first semaphore in array
-    pub sem_base: *mut sem_t,
+    //pub sem_base: *mut sem_t,
+    pub sem_base: usize,
+
     /// pending operations to be processed
-    pub sem_pending: *mut sem_queue_t,
-    //struct sem_queue **sem_pending_last;
+    //pub sem_pending: *mut sem_queue_t,
+    pub sem_pending: usize,
+
     /// last pending operation
-    pub sem_pending_last: *mut sem_queue_t,
+    //struct sem_queue **sem_pending_last;
+    pub sem_pending_last: usize,
+
     /// undo requests on this array
-    pub undo: *mut sem_undo,
+    //pub undo: *mut sem_undo,
+    pub undo: usize,
+
     /// no. of semaphores in array
     pub sem_nsems: u16,
 }

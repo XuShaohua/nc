@@ -1,4 +1,5 @@
 pub mod aio_abi;
+pub mod capability;
 pub mod eventpoll;
 pub mod fcntl;
 pub mod fs;
@@ -41,6 +42,7 @@ pub mod uio;
 pub mod utime;
 
 pub use aio_abi::*;
+pub use capability::*;
 pub use eventpoll::*;
 pub use fcntl::*;
 pub use fs::*;
@@ -55,7 +57,7 @@ pub use mman::*;
 pub use mman_common::*;
 pub use mount::*;
 pub use mqueue::*;
-pub use msq::*;
+pub use msg::*;
 pub use poll::*;
 pub use resource::*;
 pub use sched_types::*;

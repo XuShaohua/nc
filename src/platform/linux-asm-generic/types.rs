@@ -71,6 +71,10 @@ pub type key_t = i32;
 pub type mqd_t = i32;
 // END of uapi/posix_types.h
 
+// BEGIN of uapi/linux/types.h
+pub type poll_t = u32;
+// END of uapi/linux/types.h
+
 // BEGIN of linux/types.h
 pub type dev_t = u32;
 pub type nlink_t = u32;

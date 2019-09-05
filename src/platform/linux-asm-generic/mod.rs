@@ -1,4 +1,5 @@
 pub mod aio_abi;
+pub mod eventpoll;
 pub mod fcntl;
 pub mod fs;
 pub mod ipc;
@@ -35,6 +36,7 @@ pub mod uio;
 pub mod utime;
 
 pub use aio_abi::*;
+pub use eventpoll::*;
 pub use fcntl::*;
 pub use fs::*;
 pub use ipc::*;

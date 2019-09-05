@@ -62,6 +62,7 @@ pub const SA_SIGINFO: i32 = 0x00000004;
 pub const SA_ONSTACK: i32 = 0x08000000;
 pub const SA_RESTART: i32 = 0x10000000;
 pub const SA_NODEFER: i32 = 0x40000000;
+#[allow(overflowing_literals)]
 pub const SA_RESETHAND: i32 = 0x80000000;
 
 pub const SA_NOMASK: i32 = SA_NODEFER;

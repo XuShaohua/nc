@@ -45,6 +45,7 @@ pub const KEY_OTH_LINK: i32 = 0x00000010;
 pub const KEY_OTH_SETATTR: i32 = 0x00000020;
 pub const KEY_OTH_ALL: i32 = 0x0000003f;
 
+#[allow(overflowing_literals)]
 pub const KEY_PERM_UNDEF: i32 = 0xffffffff;
 
 //struct keyring_index_key {

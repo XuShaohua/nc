@@ -536,7 +536,7 @@ pub union bpf_attr_t {
     pub query: bpf_attr_query_t,
     pub raw_tracepoint: bpf_attr_raw_tracepoint_t,
     pub btf_load: bpf_attr_btf_load_t,
-    pub task_fd_query: bpf_attr_task_fd_qeury_t,
+    pub task_fd_query: bpf_attr_task_fd_query_t,
 }
 
 /* The description below is an attempt at providing documentation to eBPF
@@ -3335,7 +3335,7 @@ pub struct bpf_fib_lookup_t {
 
     /// output
     pub h_vlan_proto: be16_t,
-    pub h_vlan_TCI: be16_t,
+    pub h_vlan_tci: be16_t,
     /// ETH_ALEN
     pub smac: [u8; 6],
     /// ETH_ALEN

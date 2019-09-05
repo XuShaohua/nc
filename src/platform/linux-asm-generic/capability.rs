@@ -33,6 +33,7 @@ pub struct cap_user_data_t {
     pub inheritable: u32,
 }
 
+#[allow(overflowing_literals)]
 pub const VFS_CAP_REVISION_MASK: i32 = 0xFF000000;
 pub const VFS_CAP_REVISION_SHIFT: i32 = 24;
 // TODO(Shaohua):

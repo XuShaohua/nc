@@ -174,6 +174,7 @@ pub const STATX_BTIME: i32 = 0x00000800;
 /// All currently supported flags
 pub const STATX_ALL: i32 = 0x00000fff;
 /// Reserved for future struct statx expansion
+#[allow(overflowing_literals)]
 pub const STATX__RESERVED: i32 = 0x80000000;
 
 /// Attributes to be found in stx_attributes and masked in stx_attributes_mask.

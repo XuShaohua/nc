@@ -663,7 +663,7 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 
 pub fn getcwd() -> Result<Vec<u8>, Errno> {
     unsafe {
-        let buf_len = (consts::PATH_MAX + 1) as usize;
+        let buf_len = (PATH_MAX + 1) as usize;
         let buf = CString::with_capacity(buf_len);
         let buf_ptr = buf.as_ptr() as usize;
         syscall2(SYS_GETCWD, buf_ptr, buf_len).map(|_ret| buf.strim_into_bytes())
@@ -747,8 +747,8 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
         let who = who as usize;
         syscall2(SYS_GETPRIORITY, which, who).map(|ret| {
             let ret = ret as i32;
-            if ret > consts::PRIO_MAX {
-                return consts::PRIO_MAX - ret;
+            if ret > PRIO_MAX {
+                return PRIO_MAX - ret;
             }
             ret
         })

@@ -1,3 +1,4 @@
+use super::ipc::*;
 use super::types::*;
 
 /// generic msqid64_ds structure.

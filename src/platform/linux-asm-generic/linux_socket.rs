@@ -153,7 +153,7 @@ pub const AF_INET6: i32 = 10;
 /// Amateur Radio X.25 PLP
 pub const AF_ROSE: i32 = 11;
 /// Reserved for DECnet project
-pub const AF_DECnet: i32 = 12;
+pub const AF_DECNET: i32 = 12;
 /// Reserved for 802.2LLC project
 pub const AF_NETBEUI: i32 = 13;
 /// Security callback pseudo AF
@@ -238,7 +238,7 @@ pub const PF_ATMPVC: i32 = AF_ATMPVC;
 pub const PF_X25: i32 = AF_X25;
 pub const PF_INET6: i32 = AF_INET6;
 pub const PF_ROSE: i32 = AF_ROSE;
-pub const PF_DECnet: i32 = AF_DECnet;
+pub const PF_DECNET: i32 = AF_DECNET;
 pub const PF_NETBEUI: i32 = AF_NETBEUI;
 pub const PF_SECURITY: i32 = AF_SECURITY;
 pub const PF_KEY: i32 = AF_KEY;

@@ -64,5 +64,7 @@ pub const MS_RMT_MASK: i32 =
     (MS_RDONLY | MS_SYNCHRONOUS | MS_MANDLOCK | MS_I_VERSION | MS_LAZYTIME);
 
 /// Old magic mount flag and mask
+#[allow(overflowing_literals)]
 pub const MS_MGC_VAL: i32 = 0xC0ED0000;
+#[allow(overflowing_literals)]
 pub const MS_MGC_MSK: i32 = 0xffff0000;

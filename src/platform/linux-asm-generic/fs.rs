@@ -134,23 +134,41 @@ pub struct fsxattr_t {
 }
 
 /// Flags for the fsx_xflags field
-pub const FS_XFLAG_REALTIME: i32 = 0x00000001; /* data in realtime volume */
-pub const FS_XFLAG_PREALLOC: i32 = 0x00000002; /* preallocated file extents */
-pub const FS_XFLAG_IMMUTABLE: i32 = 0x00000008; /* file cannot be modified */
-pub const FS_XFLAG_APPEND: i32 = 0x00000010; /* all writes append */
-pub const FS_XFLAG_SYNC: i32 = 0x00000020; /* all writes synchronous */
-pub const FS_XFLAG_NOATIME: i32 = 0x00000040; /* do not update access time */
-pub const FS_XFLAG_NODUMP: i32 = 0x00000080; /* do not include in backups */
-pub const FS_XFLAG_RTINHERIT: i32 = 0x00000100; /* create with rt bit set */
-pub const FS_XFLAG_PROJINHERIT: i32 = 0x00000200; /* create with parents projid */
-pub const FS_XFLAG_NOSYMLINKS: i32 = 0x00000400; /* disallow symlink creation */
-pub const FS_XFLAG_EXTSIZE: i32 = 0x00000800; /* extent size allocator hint */
-pub const FS_XFLAG_EXTSZINHERIT: i32 = 0x00001000; /* inherit inode extent size */
-pub const FS_XFLAG_NODEFRAG: i32 = 0x00002000; /* do not defragment */
-pub const FS_XFLAG_FILESTREAM: i32 = 0x00004000; /* use filestream allocator */
-pub const FS_XFLAG_DAX: i32 = 0x00008000; /* use DAX for IO */
-pub const FS_XFLAG_COWEXTSIZE: i32 = 0x00010000; /* CoW extent size allocator hint */
-pub const FS_XFLAG_HASATTR: i32 = 0x80000000; /* no DIFLAG for this	*/
+/// data in realtime volume
+pub const FS_XFLAG_REALTIME: i32 = 0x00000001;
+/// preallocated file extents
+pub const FS_XFLAG_PREALLOC: i32 = 0x00000002;
+/// file cannot be modified
+pub const FS_XFLAG_IMMUTABLE: i32 = 0x00000008;
+/// all writes append
+pub const FS_XFLAG_APPEND: i32 = 0x00000010;
+/// all writes synchronous
+pub const FS_XFLAG_SYNC: i32 = 0x00000020;
+/// do not update access time
+pub const FS_XFLAG_NOATIME: i32 = 0x00000040;
+/// do not include in backups
+pub const FS_XFLAG_NODUMP: i32 = 0x00000080;
+/// create with rt bit set
+pub const FS_XFLAG_RTINHERIT: i32 = 0x00000100;
+/// create with parents projid
+pub const FS_XFLAG_PROJINHERIT: i32 = 0x00000200;
+/// disallow symlink creation
+pub const FS_XFLAG_NOSYMLINKS: i32 = 0x00000400;
+/// extent size allocator hint
+pub const FS_XFLAG_EXTSIZE: i32 = 0x00000800;
+/// inherit inode extent size
+pub const FS_XFLAG_EXTSZINHERIT: i32 = 0x00001000;
+/// do not defragment
+pub const FS_XFLAG_NODEFRAG: i32 = 0x00002000;
+/// use filestream allocator
+pub const FS_XFLAG_FILESTREAM: i32 = 0x00004000;
+/// use DAX for IO
+pub const FS_XFLAG_DAX: i32 = 0x00008000;
+/// CoW extent size allocator hint
+pub const FS_XFLAG_COWEXTSIZE: i32 = 0x00010000;
+/// no DIFLAG for this
+#[allow(overflowing_literals)]
+pub const FS_XFLAG_HASATTR: i32 = 0x80000000;
 
 /// the read-only stuff doesn't really belong here, but any other place is
 /// probably as bad and I don't want to create yet another include file.
@@ -342,6 +360,7 @@ pub const FS_INLINE_DATA_FL: i32 = 0x10000000;
 /// Create with parents projid
 pub const FS_PROJINHERIT_FL: i32 = 0x20000000;
 /// reserved for ext2 lib
+#[allow(overflowing_literals)]
 pub const FS_RESERVED_FL: i32 = 0x80000000;
 
 /// User visible flags

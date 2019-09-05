@@ -1,6 +1,7 @@
 use super::types::*;
 
 #[repr(C)]
+#[derive(Clone, Copy, Default)]
 pub struct timespec_t {
     /// seconds
     pub tv_sec: time_t,

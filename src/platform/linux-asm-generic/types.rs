@@ -1,3 +1,5 @@
+use core::mem::size_of;
+
 // BEGIN of bitsperlong.h
 #[cfg(target_pointer_width = "64")]
 pub const BITS_PER_LONG: i32 = 64;

@@ -1,3 +1,5 @@
+use super::types::*;
+
 /// These are specified by iBCS2
 pub const POLLIN: i32 = 0x0001;
 pub const POLLPRI: i32 = 0x0002;

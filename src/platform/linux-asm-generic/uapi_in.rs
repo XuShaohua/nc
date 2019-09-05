@@ -1,3 +1,6 @@
+use super::types::*;
+use core::mem::size_of;
+
 /// INET		An implementation of the TCP/IP protocol suite for the LINUX
 /// operating system.  INET is implemented using the  BSD Socket
 /// interface as the means of communication with the user level.
@@ -231,7 +234,7 @@ pub struct in_pktinfo_t {
 
 /// Structure describing an Internet (IP) socket address.
 /// sizeof(struct sockaddr)
-pub const SOCK_SIZE: i32 = 16;
+pub const SOCK_SIZE: usize = 16;
 
 #[repr(C)]
 pub struct sockaddr_in_t {

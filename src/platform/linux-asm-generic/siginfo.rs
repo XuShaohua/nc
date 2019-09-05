@@ -1,4 +1,5 @@
 use super::types::*;
+use core::mem::size_of;
 
 #[repr(C)]
 #[derive(Clone, Copy)]

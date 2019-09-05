@@ -2,8 +2,9 @@ pub mod call;
 pub mod errno;
 pub mod sysno;
 
-use errno::Errno;
-use sysno::Sysno;
+pub use call::*;
+pub use errno::*;
+pub use sysno::*;
 
 const MAX_ERRNO: i32 = 4095;
 

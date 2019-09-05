@@ -234,7 +234,7 @@ pub struct in_pktinfo_t {
 pub const SOCK_SIZE: i32 = 16;
 
 #[repr(C)]
-struct sockaddr_in_t {
+pub struct sockaddr_in_t {
     /// Address family
     pub sin_family: sa_family_t,
     /// Port number

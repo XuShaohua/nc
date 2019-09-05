@@ -1,10 +1,9 @@
 extern crate alloc;
 
-use super::consts;
 use super::errno::*;
 use super::sysno::*;
-use super::types::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
+use crate::asm_generic::*;
 use crate::c_str::CString;
 use alloc::vec::Vec;
 
@@ -772,7 +771,7 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 
 pub fn getcwd() -> Result<Vec<u8>, Errno> {
     unsafe {
-        let buf_len = (consts::PATH_MAX + 1) as usize;
+        let buf_len = (PATH_MAX + 1) as usize;
         let buf = CString::with_capacity(buf_len);
         let buf_ptr = buf.as_ptr() as usize;
         syscall2(SYS_GETCWD, buf_ptr, buf_len).map(|_ret| buf.strim_into_bytes())
@@ -871,8 +870,8 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
         let who = who as usize;
         syscall2(SYS_GETPRIORITY, which, who).map(|ret| {
             let ret = ret as i32;
-            if ret > consts::PRIO_MAX {
-                return consts::PRIO_MAX - ret;
+            if ret > PRIO_MAX {
+                return PRIO_MAX - ret;
             }
             ret
         })
@@ -1612,11 +1611,11 @@ pub fn mremap(
     }
 }
 
-pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds) -> Result<i32, Errno> {
+pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     unsafe {
         let msqid = msqid as usize;
         let cmd = cmd as usize;
-        let buf_ptr = buf as *mut msqid_ds as usize;
+        let buf_ptr = buf as *mut msqid_ds_t as usize;
         syscall3(SYS_MSGCTL, msqid, cmd, buf_ptr).map(|ret| ret as i32)
     }
 }
@@ -1732,14 +1731,9 @@ pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> 
     }
 }
 
-/// Access kernel NFS daemon
-pub fn nfsservctl(cmd: i32, arg: &mut nfsctl_arg_t, resp: &mut fsctl_res_t) -> Result<(), Errno> {
-    unsafe {
-        let cmd = cmd as usize;
-        let arg_ptr = arg as *mut nfsctl_arg_t as usize;
-        let resp_ptr = resp as *mut fsctl_res_t as usize;
-        syscall3(SYS_NFSSERVCTL, cmd, arg_ptr, resp_ptr).map(|_ret| ())
-    }
+pub fn nfsservctl() {
+    core::unimplemented!();
+    // syscall0(SYS_NFSSERVCTL);
 }
 
 pub fn nice() {
@@ -2691,10 +2685,10 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set resource limit
-pub fn setrlimit(resource: u32, rlimit: rlimit_t) -> Result<(), Errno> {
+pub fn setrlimit(resource: u32, rlimit: &rlimit_t) -> Result<(), Errno> {
     unsafe {
         let resource = resource as usize;
-        let rlimit_ptr = rlimit as usize;
+        let rlimit_ptr = rlimit as *const rlimit_t as usize;
         syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(|_ret| ())
     }
 }
@@ -2779,11 +2773,11 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
 }
 
 /// System V shared memory control.
-pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds) -> Result<i32, Errno> {
+pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
     unsafe {
         let shmid = shmid as usize;
         let cmd = cmd as usize;
-        let buf_ptr = buf as *mut shmid_ds as usize;
+        let buf_ptr = buf as *mut shmid_ds_t as usize;
         syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr).map(|ret| ret as i32)
     }
 }

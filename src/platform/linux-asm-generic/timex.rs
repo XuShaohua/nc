@@ -1,3 +1,6 @@
+use super::time::*;
+use super::types::*;
+
 /// NTP API version
 pub const NTP_API: i32 = 4;
 
@@ -83,7 +86,7 @@ pub struct kernel_timex_t {
     pub tolerance: i64,
 
     /// (read only, except for ADJ_SETOFFSET)
-    pub time: timex_timeval_t,
+    pub time: kernel_timex_timeval_t,
     /// (modified) usecs between clock ticks
     pub tick: i64,
 

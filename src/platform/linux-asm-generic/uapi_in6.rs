@@ -41,8 +41,6 @@ pub struct ipv6_mreq_t {
     pub ipv6mr_ifindex: i32,
 }
 
-pub type ipv6mr_acaddr = ipv6mr_multiaddr;
-
 #[repr(C)]
 pub struct in6_flowlabel_req_t {
     pub flr_dst: in6_addr_t,

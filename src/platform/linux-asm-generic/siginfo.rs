@@ -13,7 +13,7 @@ pub const SI_MAX_SIZE: usize = 128;
 /// The default "si_band" type is "long", as specified by POSIX.
 /// However, some architectures want to override this to "int"
 /// for historical compatibility reasons, so we allow that.
-pub type arch_si_band_t = long;
+pub type arch_si_band_t = isize;
 
 pub type arch_si_clock_t = clock_t;
 

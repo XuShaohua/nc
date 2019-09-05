@@ -1,5 +1,5 @@
 #[repr(C)]
-pub struct file_handle_ {
+pub struct file_handle_t {
     pub handle_bytes: u32,
     pub handle_type: i32,
     /// file identifier

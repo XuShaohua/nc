@@ -68,7 +68,7 @@ pub struct fd_set_t {
 
 /// Type of a SYSV IPC key.
 pub type key_t = i32;
-pub type ernelmqd_t = i32;
+pub type mqd_t = i32;
 // END of uapi/posix_types.h
 
 // BEGIN of linux/types.h

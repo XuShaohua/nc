@@ -1,4 +1,5 @@
 pub mod aio_abi;
+pub mod bpf;
 pub mod capability;
 pub mod eventpoll;
 pub mod fcntl;
@@ -46,6 +47,7 @@ pub mod utime;
 pub mod utsname;
 
 pub use aio_abi::*;
+pub use bpf::*;
 pub use capability::*;
 pub use eventpoll::*;
 pub use fcntl::*;

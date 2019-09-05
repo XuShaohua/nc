@@ -1,3 +1,5 @@
+use super::uapi_types::*;
+
 /// Extended instruction set based on top of classic BPF
 
 /// instruction classes

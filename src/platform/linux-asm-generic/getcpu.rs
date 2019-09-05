@@ -1,3 +1,5 @@
+use core::mem::size_of;
+
 pub const LINUX_GETCPU_H: i32 = 1;
 
 /// Cache for getcpu() to speed it up. Results might be a short time

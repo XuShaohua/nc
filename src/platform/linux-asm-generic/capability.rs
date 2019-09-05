@@ -1,3 +1,4 @@
+use super::uapi_types::*;
 use core::mem::size_of;
 
 /// User-level do most of the mapping between kernel and user
@@ -9,15 +10,15 @@ use core::mem::size_of;
 /// following structure to such a composite is better handled in a user
 /// library since the draft standard requires the use of malloc/free etc..
 
-pub const _LINUX_CAPABILITY_VERSION_1: i32 = 0x19980330;
-pub const _LINUX_CAPABILITY_U32S_1: i32 = 1;
+pub const LINUX_CAPABILITY_VERSION_1: i32 = 0x19980330;
+pub const LINUX_CAPABILITY_U32S_1: i32 = 1;
 
 /// deprecated - use v3
-pub const _LINUX_CAPABILITY_VERSION_2: i32 = 0x20071026;
-pub const _LINUX_CAPABILITY_U32S_2: i32 = 2;
+pub const LINUX_CAPABILITY_VERSION_2: i32 = 0x20071026;
+pub const LINUX_CAPABILITY_U32S_2: i32 = 2;
 
-pub const _LINUX_CAPABILITY_VERSION_3: i32 = 0x20080522;
-pub const _LINUX_CAPABILITY_U32S_3: i32 = 2;
+pub const LINUX_CAPABILITY_VERSION_3: i32 = 0x20080522;
+pub const LINUX_CAPABILITY_U32S_3: i32 = 2;
 
 #[repr(C)]
 pub struct cap_user_header_t {

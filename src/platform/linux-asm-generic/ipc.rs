@@ -1,3 +1,4 @@
+use super::msg::*;
 use super::types::*;
 
 pub const IPC_PRIVATE: key_t = 0;

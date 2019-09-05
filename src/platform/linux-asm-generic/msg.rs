@@ -16,33 +16,33 @@ pub const MSG_COPY: i32 = 0o40000;
 
 /// Obsolete, used only for backwards compatibility and libc5 compiles
 #[repr(C)]
-pub struct msqid_ds_t {
-    pub msg_perm: ipc_perm_t,
-    /// first message on queue,unused  
-    pub msg_first: *mut msg_t,
-    /// last message in queue,unused
-    pub msg_last: *mut msg_t,
-    /// last msgsnd time
-    pub msg_stime: time_t,
-    /// last msgrcv time
-    pub msg_rtime: time_t,
-    /// last change time
-    pub msg_ctime: time_t,
-    /// Reuse junk fields for 32 bit
-    pub msg_lcbytes: usize,
-    /// ditto
-    pub msg_lqbytes: usize,
-    /// current number of bytes on queue
-    pub msg_cbytes: u16,
-    /// number of messages in queue
-    pub msg_qnum: u16,
-    /// max number of bytes on queue
-    pub msg_qbytes: u16,
-    /// pid of last msgsnd
-    pub msg_lspid: ipc_pid_t,
-    /// last receive pid
-    pub msg_lrpid: ipc_pid_t,
-}
+//pub struct msqid_ds_t {
+//    pub msg_perm: ipc_perm_t,
+//    /// first message on queue,unused
+//    pub msg_first: *mut msg_t,
+//    /// last message in queue,unused
+//    pub msg_last: *mut msg_t,
+//    /// last msgsnd time
+//    pub msg_stime: time_t,
+//    /// last msgrcv time
+//    pub msg_rtime: time_t,
+//    /// last change time
+//    pub msg_ctime: time_t,
+//    /// Reuse junk fields for 32 bit
+//    pub msg_lcbytes: usize,
+//    /// ditto
+//    pub msg_lqbytes: usize,
+//    /// current number of bytes on queue
+//    pub msg_cbytes: u16,
+//    /// number of messages in queue
+//    pub msg_qnum: u16,
+//    /// max number of bytes on queue
+//    pub msg_qbytes: u16,
+//    /// pid of last msgsnd
+//    pub msg_lspid: ipc_pid_t,
+//    /// last receive pid
+//    pub msg_lrpid: ipc_pid_t,
+//}
 
 /// message buffer for msgsnd and msgrcv calls
 #[repr(C)]

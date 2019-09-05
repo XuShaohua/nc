@@ -28,26 +28,28 @@ pub type sockaddr_storage_t = kernel_sockaddr_storage_t;
 /// system, not 4.3. Thus msg_accrights(len) are now missing. They
 /// belong in an obscure libc emulation or the bin.
 
-#[repr(C)]
-pub struct msghdr_t {
-    /// ptr to socket address structure
-    pub msg_name: usize,
-    /// size of socket address structure
-    pub msg_namelen: i32,
-    /// data
-    pub msg_iter: iov_iter_t,
-    /// ancillary data
-    pub msg_control: usize,
-    /// ancillary data buffer length
-    pub msg_controllen: size_t,
-    /// flags on received message
-    pub msg_flags: u32,
-    /// ptr to iocb for async requests
-    pub msg_iocb: *mut kiocb_t,
-}
+// Comment kernel msg header
+//#[repr(C)]
+//struct msghdr_t {
+//    /// ptr to socket address structure
+//    pub msg_name: usize,
+//    /// size of socket address structure
+//    pub msg_namelen: i32,
+//    /// data
+//    //pub msg_iter: iov_iter_t,
+//    pub msg_iter: usize,
+//    /// ancillary data
+//    pub msg_control: usize,
+//    /// ancillary data buffer length
+//    pub msg_controllen: size_t,
+//    /// flags on received message
+//    pub msg_flags: u32,
+//    /// ptr to iocb for async requests
+//    pub msg_iocb: *mut kiocb_t,
+//}
 
 #[repr(C)]
-pub struct user_msghdr_t {
+pub struct msghdr_t {
     /// ptr to socket address structure
     pub msg_name: usize,
     /// size of socket address structure
@@ -64,10 +66,12 @@ pub struct user_msghdr_t {
     pub msg_flags: u32,
 }
 
+pub type user_msghdr_t = msghdr_t;
+
 /// For recvmmsg/sendmmsg
 #[repr(C)]
 pub struct mmsghdr_t {
-    pub msg_hdr: user_msghdr_t,
+    pub msg_hdr: msghdr_t,
     pub msg_len: u32,
 }
 

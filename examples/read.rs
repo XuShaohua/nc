@@ -1,7 +1,11 @@
 extern crate nc;
 
 fn main() {
+    #[cfg(target_os = "linux")]
     let fd = nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("failed to open file");
+
+    #[cfg(target_os = "freebsd")]
+    let fd = nc::open("/etc/passwd", nc::O_RDONLY, 0).expect("failed to open file");
 
     let mut buf: [u8; 256] = [0; 256];
     loop {

@@ -2,6 +2,17 @@ extern crate nc;
 
 fn main() {
     let path = "/tmp/hello.rs";
+
+    #[cfg(target_os = "freebsd")]
+    let fd = nc::open(
+        path,
+        nc::O_CREAT | nc::O_RDWR,
+        nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH,
+    )
+    .map_err(|err| eprintln!("err: {}", err))
+    .expect("Failed to open file!");
+
+    #[cfg(target_os = "linux")]
     let fd = nc::openat(
         nc::AT_FDCWD,
         path,
@@ -10,6 +21,7 @@ fn main() {
     )
     .map_err(|err| eprintln!("err: {}", err))
     .expect("Failed to open file!");
+
     println!("fd: {:?}", fd);
 
     let msg = "fn main() { println!(\"Hello, world\");}";

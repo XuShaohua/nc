@@ -17,14 +17,23 @@ fn unlockpt(pty_fd: i32) -> Result<(), nc::Errno> {
 }
 
 fn open_pty() -> Result<(i32, i32), nc::Errno> {
+    #[cfg(target_os = "linux")]
+    let pty_fd = nc::openat(nc::AT_FDCWD, "/dev/ptmx", nc::O_RDWR, 0)?;
+    #[cfg(target_os = "freebsd")]
     let pty_fd = nc::open("/dev/ptmx", nc::O_RDWR, 0)?;
+
     println!("pty_fd: {}", pty_fd);
 
     let sname = ptsname(pty_fd)?;
     println!("sname: {}", sname);
     unlockpt(pty_fd)?;
 
+    #[cfg(target_os = "linux")]
     let tty_fd = nc::openat(nc::AT_FDCWD, &sname, nc::O_RDWR | nc::O_NOCTTY, 0)?;
+
+    #[cfg(target_os = "freebsd")]
+    let tty_fd = nc::open(&sname, nc::O_RDWR | nc::O_NOCTTY, 0)?;
+
     println!("tty_fd: {}", tty_fd);
 
     return Ok((pty_fd, tty_fd));

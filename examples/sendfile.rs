@@ -3,9 +3,25 @@ extern crate nc;
 fn main() {
     println!("S_IRUSR: {}", nc::S_IRUSR);
     println!("S_IRGRP: {}", nc::S_IRGRP);
+
+    #[cfg(target_os = "linux")]
     let in_fd =
         nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!");
 
+    #[cfg(target_os = "freebsd")]
+    let in_fd =
+        nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!");
+
+    #[cfg(target_os = "linux")]
+    let out_fd = nc::openat(
+        nc::AT_FDCWD,
+        "/tmp/passwd.copy",
+        nc::O_WRONLY | nc::O_CREAT,
+        nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH,
+    )
+    .expect("Failed to open passwd copy file");
+
+    #[cfg(target_os = "freebsd")]
     let out_fd = nc::openat(
         nc::AT_FDCWD,
         "/tmp/passwd.copy",

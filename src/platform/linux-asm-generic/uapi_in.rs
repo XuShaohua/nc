@@ -1,3 +1,4 @@
+#![allow(overflowing_literals)]
 use super::linux_socket::*;
 use super::types::*;
 use core::mem::size_of;
@@ -250,64 +251,95 @@ pub struct sockaddr_in_t {
     pub pad: [u8; SOCK_SIZE - size_of::<i16>() - size_of::<u16>() - size_of::<in_addr_t>()],
 }
 
-//#define sin_zero	__pad		/* for BSD UNIX comp. -FvK	*/
 /// Definitions of the bits in an Internet address integer.
 /// On subnets, host and network parts are found according
 /// to the subnet mask, not these masks.
-//#define	IN_CLASSA(a)		((((long int) (a)) & 0x80000000) == 0)
-pub const IN_CLASSA_NET: u64 = 0xff000000;
+pub const fn IN_CLASSA(a: i32) -> bool {
+    ((a as u32) & 0x80000000) == 0
+}
+pub const IN_CLASSA_NET: i32 = 0xff000000;
 pub const IN_CLASSA_NSHIFT: i32 = 24;
-//#define	IN_CLASSA_HOST		(0xffffffff & ~IN_CLASSA_NET)
-pub const IN_CLASSA_MAX: u64 = 128;
+pub const IN_CLASSA_HOST: i32 = (0xffffffff & !IN_CLASSA_NET);
+pub const IN_CLASSA_MAX: i32 = 128;
 
-//#define	IN_CLASSB(a)		((((long int) (a)) & 0xc0000000) == 0x80000000)
-pub const IN_CLASSB_NET: u64 = 0xffff0000;
+#[inline]
+pub const fn IN_CLASSB(a: i32) -> bool {
+    ((a as u32) & 0xc0000000) == 0x80000000
+}
+
+pub const IN_CLASSB_NET: i32 = 0xffff0000;
 pub const IN_CLASSB_NSHIFT: i32 = 16;
-//#define	IN_CLASSB_HOST		(0xffffffff & ~IN_CLASSB_NET)
-pub const IN_CLASSB_MAX: u64 = 65536;
+pub const IN_CLASSB_HOST: i32 = (0xffffffff & !IN_CLASSB_NET);
+pub const IN_CLASSB_MAX: i32 = 65536;
 
-//#define	IN_CLASSC(a)		((((long int) (a)) & 0xe0000000) == 0xc0000000)
-pub const IN_CLASSC_NET: u64 = 0xffffff00;
+#[inline]
+pub const fn IN_CLASSC(a: i32) -> bool {
+    ((a as u32) & 0xe0000000) == 0xc0000000
+}
+
+pub const IN_CLASSC_NET: i32 = 0xffffff00;
 pub const IN_CLASSC_NSHIFT: i32 = 8;
-//#define	IN_CLASSC_HOST		(0xffffffff & ~IN_CLASSC_NET)
+pub const IN_CLASSC_HOST: i32 = (0xffffffff & (!IN_CLASSC_NET));
 
-//#define	IN_CLASSD(a)		((((long int) (a)) & 0xf0000000) == 0xe0000000)
-//#define	IN_MULTICAST(a)		IN_CLASSD(a)
-pub const IN_MULTICAST_NET: u64 = 0xe0000000;
+#[inline]
+pub const fn IN_CLASSD(a: i32) -> bool {
+    ((a as u32) & 0xf0000000) == 0xe0000000
+}
 
-//#define	IN_BADCLASS(a)		(((long int) (a) ) == (long int)0xffffffff)
-//#define	IN_EXPERIMENTAL(a)	IN_BADCLASS((a))
+#[inline]
+pub const fn IN_MULTICAST(a: i32) -> bool {
+    IN_CLASSD(a)
+}
 
-//#define	IN_CLASSE(a)		((((long int) (a)) & 0xf0000000) == 0xf0000000)
-pub const IN_CLASSE_NET: u64 = 0xffffffff;
-pub const IN_CLASSE_NSHIFT: u64 = 0;
+pub const IN_MULTICAST_NET: i32 = 0xe0000000;
+
+#[inline]
+pub const fn IN_BADCLASS(a: i32) -> bool {
+    (a as u32) == 0xffffffff
+}
+
+#[inline]
+pub const fn IN_EXPERIMENTAL(a: i32) -> bool {
+    IN_BADCLASS(a)
+}
+
+#[inline]
+pub const fn IN_CLASSE(a: i32) -> bool {
+    ((a as u32) & 0xf0000000) == 0xf0000000
+}
+
+pub const IN_CLASSE_NET: i32 = 0xffffffff;
+pub const IN_CLASSE_NSHIFT: i32 = 0;
 
 /// Address to accept any incoming messages.
-pub const INADDR_ANY: u64 = 0x00000000;
+pub const INADDR_ANY: i32 = 0x00000000;
 
 /// Address to send to all hosts.
-pub const INADDR_BROADCAST: u64 = 0xffffffff;
+pub const INADDR_BROADCAST: i32 = 0xffffffff;
 
 /// Address indicating an error return.
-pub const INADDR_NONE: u64 = 0xffffffff;
+pub const INADDR_NONE: i32 = 0xffffffff;
 
 /// Network number for local host loopback.
-pub const IN_LOOPBACKNET: u32 = 127;
+pub const IN_LOOPBACKNET: i32 = 127;
 
 /// Address to loopback in software to local host.
 /// 127.0.0.1
-pub const INADDR_LOOPBACK: u64 = 0x7f000001;
-//TODO(Shaohua):
-//#define	IN_LOOPBACK(a)		((((long int) (a)) & 0xff000000) == 0x7f000000)
+pub const INADDR_LOOPBACK: i32 = 0x7f000001;
+
+#[inline]
+pub const fn IN_LOOPBACK(a: i32) -> bool {
+    (a & 0xff000000) == 0x7f000000
+}
 
 /// Defines for Multicast INADDR
 /// 224.0.0.0
-pub const INADDR_UNSPEC_GROUP: u64 = 0xe0000000;
+pub const INADDR_UNSPEC_GROUP: i32 = 0xe0000000;
 /// 224.0.0.1
-pub const INADDR_ALLHOSTS_GROUP: u64 = 0xe0000001;
+pub const INADDR_ALLHOSTS_GROUP: i32 = 0xe0000001;
 /// 224.0.0.2
-pub const INADDR_ALLRTRS_GROUP: u64 = 0xe0000002;
+pub const INADDR_ALLRTRS_GROUP: i32 = 0xe0000002;
 /// 224.0.0.106
-pub const INADDR_ALLSNOOPERS_GROUP: u64 = 0xe000006a;
+pub const INADDR_ALLSNOOPERS_GROUP: i32 = 0xe000006a;
 /// 224.0.0.255
-pub const INADDR_MAX_LOCAL_GROUP: u64 = 0xe00000ff;
+pub const INADDR_MAX_LOCAL_GROUP: i32 = 0xe00000ff;

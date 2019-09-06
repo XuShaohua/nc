@@ -70,10 +70,10 @@ DEFINES = {
     },
 }
 
-def read_errno(os_name, arch_name):
-    compiler = get_compiler(os_name, arch_name)
-    header_file = get_errno_header(os_name, arch_name)
-    include_dir = get_include_dir(os_name, arch_name)
+def read_errno(arch_name):
+    compiler = get_compiler(arch_name)
+    header_file = get_errno_header(arch_name)
+    include_dir = get_include_dir(arch_name)
     cmd = [compiler, "-I", include_dir, "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
@@ -101,11 +101,11 @@ def parse_errno(content):
     return lines
 
 
-def read_sysno(os_name, arch_name):
-    compiler = get_compiler(os_name, arch_name)
-    header_file = get_sysno_header(os_name, arch_name)
-    include_dir = get_include_dir(os_name, arch_name)
-    defines = get_defines(os_name, arch_name)
+def read_sysno(arch_name):
+    compiler = get_compiler(arch_name)
+    header_file = get_sysno_header(arch_name)
+    include_dir = get_include_dir(arch_name)
+    defines = get_defines(arch_name)
     if defines:
         cmd = [compiler, "-I", include_dir, "-E", "-dD", defines, header_file]
     else:
@@ -183,28 +183,28 @@ def parse_sysno(content):
     return lines
 
 
-def get_compiler(os_name, arch_name):
-    return DEFINES[os_name][arch_name]["compiler"]
+def get_compiler(arch_name):
+    return DEFINES[arch_name]["compiler"]
 
 
-def get_include_dir(os_name, arch_name):
-    return DEFINES[os_name][arch_name]["include"]
+def get_include_dir(arch_name):
+    return DEFINES[arch_name]["include"]
 
 
-def get_errno_header(os_name, arch_name):
-    return DEFINES[os_name][arch_name]["errno"]
+def get_errno_header(arch_name):
+    return DEFINES[arch_name]["errno"]
 
 
-def get_sysno_header(os_name, arch_name):
-    return DEFINES[os_name][arch_name]["sysno"]
+def get_sysno_header(arch_name):
+    return DEFINES[arch_name]["sysno"]
 
 
-def get_defines(os_name, arch_name):
-    return DEFINES[os_name][arch_name].get("defines", "")
+def get_defines(arch_name):
+    return DEFINES[arch_name].get("defines", "")
 
 
-def get_arch_names(os_name):
-    return DEFINES[os_name].keys()
+def get_arch_names():
+    return DEFINES.keys()
 
 
 def rust_fmt(filename):
@@ -216,14 +216,14 @@ def gen_errno_and_sysno(os_name, arch_name):
     platform_folder = os.path.join("platform", folder_name)
     #os.makedirs(platform_folder, exist_ok=True)
 
-    errno_lines = read_errno(os_name, arch_name)
+    errno_lines = read_errno(arch_name)
     errno_content = "\n".join(errno_lines)
     errno_file = os.path.join(platform_folder, "errno.rs")
     with open(errno_file, "w") as fh:
         fh.write(errno_content)
     rust_fmt(errno_file)
 
-    sysno_lines = read_sysno(os_name, arch_name)
+    sysno_lines = read_sysno(arch_name)
     sysno_content = "\n".join(sysno_lines)
     sysno_file = os.path.join(platform_folder, "sysno.rs")
     with open(sysno_file, "w") as fh:
@@ -232,7 +232,7 @@ def gen_errno_and_sysno(os_name, arch_name):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) > 3 or len(sys.argv) < 2:
         print("Usage: %s os arch" % sys.argv[0])
         sys.exit(1)
     if sys.argv[1] == "-e":
@@ -246,10 +246,10 @@ def main():
             print("\n".join(parse_sysno(content)))
         return
 
-    os_name = sys.argv[1]
-    arch_name = sys.argv[2]
+    arch_name = sys.argv[1]
+    os_name = "linux"
     if arch_name == "all":
-        for arch_name in get_arch_names(os_name):
+        for arch_name in get_arch_names():
             gen_errno_and_sysno(os_name, arch_name)
     else:
         gen_errno_and_sysno(os_name, arch_name)

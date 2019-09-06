@@ -3,6 +3,7 @@
 # Use of this source is governed by Apache License that can be found
 # in the LICENSE file.
 
+import os
 import re
 import subprocess
 import sys
@@ -12,6 +13,7 @@ import urllib.request
 def download_syscall_file(url):
     with urllib.request.urlopen(url) as f:
         return f.read()
+
 
 def parse_sysno(content):
     sysnum_pattern = re.compile("^([0-9]+)\s*\S*\s*STD\s*({\s*\S*\s*(\w+).*)$")
@@ -61,16 +63,23 @@ def rust_fmt(filename):
 
 
 def main():
+    if len(sys.argv) != 2:
+        print("Usage: %s os arch" % sys.argv[0])
+        sys.exit(1)
+
+    arch_name = sys.argv[1]
+    platform_folder = os.path.join("platform", "freebsd-%s" % arch_name)
+
     url = "https://svn.freebsd.org/base/stable/12/sys/kern/syscalls.master"
     content = download_syscall_file(url)
 
     lines, names = parse_sysno(content.decode())
-    sysnum_file = "sysno_freebsd.rs"
+    sysnum_file = os.path.join(platform_folder, "sysno.rs")
     with open(sysnum_file, "w") as fh:
         fh.write("\n".join(lines))
     rust_fmt(sysnum_file)
 
-    call_file = "freebsd_call.rs"
+    call_file = os.path.join(platform_folder, "call.rs")
     with open(call_file, "w") as fh:
         fh.writelines(print_sysnums(names))
     rust_fmt(call_file)

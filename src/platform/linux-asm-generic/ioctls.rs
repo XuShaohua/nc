@@ -1,5 +1,6 @@
 use super::ioctl::*;
 use super::termbits::*;
+use super::uapi_serial::*;
 
 /// These are the most common definitions for tty ioctl numbers.
 /// Most of them do not use the recommended _IOC(), but there is

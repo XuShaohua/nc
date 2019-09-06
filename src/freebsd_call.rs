@@ -6,8 +6,8 @@ use alloc::vec::Vec;
 
 pub fn exit(rval: i32) {
     unsafe {
-        let status = status as usize;
-        let _ret = syscall1(SYS_EXIT, status);
+        let rval = rval as usize;
+        let _ret = syscall1(SYS_EXIT, rval);
     }
 }
 

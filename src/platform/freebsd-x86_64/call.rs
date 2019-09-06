@@ -3,9 +3,9 @@ pub fn nosys() {
     // syscall0(SYS_NOSYS);
 }
 
-pub fn sys_exit() {
+pub fn exit() {
     core::unimplemented!();
-    // syscall0(SYS_SYS_EXIT);
+    // syscall0(SYS_EXIT);
 }
 
 pub fn fork() {

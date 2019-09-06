@@ -35,6 +35,8 @@ def parse_sysno(content):
             num = m.group(1)
             proto = m.group(2)
             name = m.group(3)
+            if name == "sys_exit":
+                name = "exit"
             line = "pub const SYS_{0}: Sysno = {1};".format(name.upper(), num)
             names.append(name)
             lines.append(line)

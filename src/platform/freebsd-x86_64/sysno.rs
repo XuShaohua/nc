@@ -3,7 +3,7 @@
 pub type Sysno = usize;
 
 pub const SYS_NOSYS: Sysno = 0;
-pub const SYS_SYS_EXIT: Sysno = 1;
+pub const SYS_EXIT: Sysno = 1;
 pub const SYS_FORK: Sysno = 2;
 pub const SYS_READ: Sysno = 3;
 pub const SYS_WRITE: Sysno = 4;

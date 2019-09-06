@@ -74,6 +74,13 @@ pub type mqd_t = i32;
 // END of uapi/posix_types.h
 
 // BEGIN of uapi/linux/types.h
+pub type be16_t = u16;
+pub type le16_t = u16;
+pub type be32_t = u32;
+pub type le32_t = u32;
+pub type be64_t = u64;
+pub type le64_t = u64;
+
 pub type poll_t = u32;
 // END of uapi/linux/types.h
 
@@ -160,5 +167,4 @@ pub type file_t = io_file_t;
 //TYPEDEF struct __locale_struct * locale_t;
 
 pub type socklen_t = u32;
-pub type sa_family_t = u16;
 // END of common types

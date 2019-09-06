@@ -25,15 +25,17 @@ Here:
 mirrors do not support non-x86 architectures
 
 ## TODO
-- [ ] support freebsd
+- [x] support freebsd
 - [ ] support windows
-- [ ] sighandler types
-- [ ] implement more syscalls
+- [x] sighandler types
+- [x] implement more syscalls
 - [x] test arm
 - [x] test mips
 - [x] test mipsel
 - [x] test ppc64
 - [x] test ppc64le
 - [ ] test s390x
-- [ ] add linux uapi types
+- [x] add linux uapi types
 - [x] remove little endians
+- [ ] linux socket example
+- [ ] big endian/litten endian bitwise integers

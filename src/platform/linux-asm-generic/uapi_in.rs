@@ -1,5 +1,5 @@
 use super::linux_socket::*;
-use super::uapi_types::*;
+use super::types::*;
 use core::mem::size_of;
 
 /// INET		An implementation of the TCP/IP protocol suite for the LINUX

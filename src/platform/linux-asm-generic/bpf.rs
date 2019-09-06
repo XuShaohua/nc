@@ -1,4 +1,4 @@
-use super::uapi_types::*;
+use super::types::*;
 
 /// Extended instruction set based on top of classic BPF
 

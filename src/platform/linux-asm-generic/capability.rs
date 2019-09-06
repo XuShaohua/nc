@@ -1,4 +1,4 @@
-use super::uapi_types::*;
+use super::types::*;
 use core::mem::size_of;
 
 /// User-level do most of the mapping between kernel and user

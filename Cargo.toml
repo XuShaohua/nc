@@ -1,6 +1,6 @@
 [package]
 name = "nc"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["Xu Shaohua <xushaohua2016@outlook.com>"]
 homepage = "https://github.com/xushaohua/nc"
 repository = "https://github.com/xushaohua/nc"

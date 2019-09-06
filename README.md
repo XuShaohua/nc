@@ -6,7 +6,7 @@ Execute system call directly. `nc` do not depend on `std`.
 Add this to `Cargo.toml`:
 ```toml
 [dependencies]
-nc = "0.1.1"
+nc = "0.3.2"
 ```
 
 And add this to crate code:

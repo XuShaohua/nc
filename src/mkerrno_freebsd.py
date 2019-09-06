@@ -31,7 +31,7 @@ def parse_errno(content):
     for line in content.split("\n"):
         m = macro_pattern.match(line)
         if m:
-            line = "pub const E{0}: Errno = {1};".format(m.group(1).upper(), m.group(2))
+            line = "pub const {0}: Errno = {1};".format(m.group(1).upper(), m.group(2))
             lines.append(line)
     return lines
 
@@ -39,20 +39,29 @@ def parse_errno(content):
 def rust_fmt(filename):
     subprocess.run(["rustfmt", filename])
 
-
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: %s arch-name" % sys.argv[0])
-        sys.exit(1)
-    arch_name = sys.argv[1]
-
-    lines = read_errno()
-
+def write_errno(arch_name, lines):
     errno_file = os.path.join("platform", "freebsd-%s" % arch_name, "errno.rs")
     with open(errno_file, "w") as fh:
         fh.write("\n".join(lines))
 
     rust_fmt(errno_file)
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: %s arch-name" % sys.argv[0])
+        sys.exit(1)
+    arch_name = sys.argv[1]
+    if arch_name == "-e":
+        error_header_file = sys.argv[2]
+        with open(error_header_file) as fh:
+            content = fh.read()
+            lines = parse_errno(content)
+            print("\n".join(lines))
+        return
+
+    lines = read_errno()
+    write_errno(arch_name, lines)
 
 
 if __name__ == "__main__":

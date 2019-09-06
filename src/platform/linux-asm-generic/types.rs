@@ -79,6 +79,7 @@ pub type poll_t = u32;
 
 // BEGIN of linux/types.h
 pub type dev_t = u32;
+pub type umode_t = u16;
 pub type nlink_t = u32;
 pub type umode_t = u16;
 

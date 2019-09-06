@@ -13,6 +13,10 @@ pub mod c_str;
 #[path = "platform/freebsd-asm-generic/mod.rs"]
 mod asm_generic;
 
+#[cfg(target_os = "netbsd")]
+#[path = "platform/netbsd-asm-generic/mod.rs"]
+mod asm_generic;
+
 #[cfg(target_os = "linux")]
 #[path = "platform/linux-asm-generic/mod.rs"]
 mod asm_generic;
@@ -55,6 +59,14 @@ mod platform;
 
 #[cfg(all(target_os = "freebsd", target_arch = "x86_64"))]
 #[path = "platform/freebsd-x86_64/mod.rs"]
+mod platform;
+
+#[cfg(all(target_os = "netbsd", target_arch = "x86"))]
+#[path = "platform/netbsd-x86/mod.rs"]
+mod platform;
+
+#[cfg(all(target_os = "netbsd", target_arch = "x86_64"))]
+#[path = "platform/netbsd-x86_64/mod.rs"]
 mod platform;
 
 // Re-export functions

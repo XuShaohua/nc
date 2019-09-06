@@ -12,6 +12,10 @@ extern crate alloc;
 
 pub mod c_str;
 
+#[cfg(target_os = "freebsd")]
+#[path = "platform/freebsd-asm-generic/mod.rs"]
+mod asm_generic;
+
 #[cfg(target_os = "linux")]
 #[path = "platform/linux-asm-generic/mod.rs"]
 mod asm_generic;

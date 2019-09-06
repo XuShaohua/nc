@@ -81,7 +81,6 @@ pub type poll_t = u32;
 pub type dev_t = u32;
 pub type umode_t = u16;
 pub type nlink_t = u32;
-pub type umode_t = u16;
 
 /// The type used for indexing onto a disc or disc partition.
 ///

@@ -54,28 +54,36 @@ pub const TIOCSBRK: i32 = 0x5427;
 pub const TIOCCBRK: i32 = 0x5428;
 /// Return the session ID of FD
 pub const TIOCGSID: i32 = 0x5429;
-//#define TCGETS2		_IOR('T', 0x2A, struct termios2)
-//#define TCSETS2		_IOW('T', 0x2B, struct termios2)
-//#define TCSETSW2	_IOW('T', 0x2C, struct termios2)
-//#define TCSETSF2	_IOW('T', 0x2D, struct termios2)
+pub const TCGETS2: i32 = IOR('T', 0x2A, termios2_t);
+pub const TCSETS2: i32 = IOW('T', 0x2B, termios2_t);
+pub const TCSETSW2: i32 = IOW('T', 0x2C, termios2_t);
+pub const TCSETSF2: i32 = IOW('T', 0x2D, termios2_t);
 pub const TIOCGRS485: i32 = 0x542E;
 pub const TIOCSRS485: i32 = 0x542F;
-//#define TIOCGPTN	_IOR('T', 0x30, unsigned int) /* Get Pty Number (of pty-mux device) */
-//#define TIOCSPTLCK	_IOW('T', 0x31, int)  /* Lock/unlock Pty */
-//#define TIOCGDEV	_IOR('T', 0x32, unsigned int) /* Get primary device node of /dev/console */
+/// Get Pty Number (of pty-mux device)
+pub const TIOCGPTN: i32 = IOR('T', 0x30, u32);
+/// Lock/unlock Pty
+pub const TIOCSPTLCK: i32 = IOW('T', 0x31, i32);
+/// Get primary device node of /dev/console
+pub const TIOCGDEV: i32 = IOR('T', 0x32, u32);
 /// SYS5 TCGETX compatibility
 pub const TCGETX: i32 = 0x5432;
 pub const TCSETX: i32 = 0x5433;
 pub const TCSETXF: i32 = 0x5434;
 pub const TCSETXW: i32 = 0x5435;
-//#define TIOCSIG		_IOW('T', 0x36, int)  /* pty: generate signal */
+/// pty: generate signal
+pub const TIOCSIG: i32 = IOW('T', 0x36, i32);
 pub const TIOCVHANGUP: i32 = 0x5437;
-//#define TIOCGPKT	_IOR('T', 0x38, int) /* Get packet mode state */
-//#define TIOCGPTLCK	_IOR('T', 0x39, int) /* Get Pty lock state */
-//#define TIOCGEXCL	_IOR('T', 0x40, int) /* Get exclusive mode state */
-//#define TIOCGPTPEER	_IO('T', 0x41) /* Safely open the slave */
-//#define TIOCGISO7816	_IOR('T', 0x42, struct serial_iso7816)
-//#define TIOCSISO7816	_IOWR('T', 0x43, struct serial_iso7816)
+/// Get packet mode state
+pub const TIOCGPKT: i32 = IOR('T', 0x38, i32);
+/// Get Pty lock state
+pub const TIOCGPTLCK: i32 = IOR('T', 0x39, i32);
+/// Get exclusive mode state
+pub const TIOCGEXCL: i32 = IOR('T', 0x40, i32);
+/// Safely open the slave
+pub const TIOCGPTPEER: i32 = IO('T', 0x41);
+pub const TIOCGISO7816: i32 = IOR('T', 0x42, serial_iso7816_t);
+pub const TIOCSISO7816: i32 = IOWR('T', 0x43, serial_iso7816_t);
 
 pub const FIONCLEX: i32 = 0x5450;
 pub const FIOCLEX: i32 = 0x5451;

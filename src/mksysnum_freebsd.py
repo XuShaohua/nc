@@ -17,6 +17,8 @@ def download_syscall_file(url):
 
 def parse_sysno(content):
     sysnum_pattern = re.compile("^([0-9]+)\s*\S*\s*STD\s*({\s*\S*\s*(\w+).*)$")
+    proto_pattern = re.compile("\s{2,}")
+
     # Merge multiple lines into one
     content = content.replace("\\\n", "")
 
@@ -35,9 +37,14 @@ def parse_sysno(content):
             num = m.group(1)
             proto = m.group(2)
             name = m.group(3)
+
             if name == "sys_exit":
                 name = "exit"
-            line = "pub const SYS_{0}: Sysno = {1};".format(name.upper(), num)
+
+            # Replace multiple space chars with only one
+            proto = proto_pattern.sub(" ", proto)
+
+            line = "pub const SYS_{0}: Sysno = {1}; // {2}".format(name.upper(), num, proto)
             names.append(name)
             lines.append(line)
     return (lines, names)

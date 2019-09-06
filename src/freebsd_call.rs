@@ -59,12 +59,3 @@ pub fn wait4(pid: i32, status: &mut i32, options: i32) -> Result<i32, Errno> {
         syscall3(SYS_WAIT4, pid, status, options).map(|ret| ret as i32)
     }
 }
-
-pub fn create(path: &str, mode: i32) -> Result<i32, Errno> {
-    unsafe {
-        let path = CString::new(path);
-        let path_ptr = path.as_ptr() as usize;
-        let mode = mode as usize;
-        syscall2(SYS_CREATE, path_ptr, mode).map(|ret| ret as i32)
-    }
-}

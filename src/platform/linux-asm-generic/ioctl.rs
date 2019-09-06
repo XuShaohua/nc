@@ -41,20 +41,21 @@ pub const IOC_DIRSHIFT: i32 = (IOC_SIZESHIFT + IOC_SIZEBITS);
 /// NOTE: _IOC_WRITE means userland is writing and kernel is
 /// reading. _IOC_READ means userland is reading and kernel is writing.
 
-pub const IOC_NONE: u32 = 0;
+pub const IOC_NONE: i32 = 0;
 
-pub const IOC_WRITE: u32 = 1;
+pub const IOC_WRITE: i32 = 1;
 
-pub const IOC_READ: u32 = 2;
+pub const IOC_READ: i32 = 2;
 
 #[inline]
-pub fn IOC(dir: i32, type_: i32, nr: i32, size: i32) -> i32 {
+pub fn IOC(dir: i32, type_: char, nr: i32, size: i32) -> i32 {
+    let type_ = type_ as i32;
     (dir << IOC_DIRSHIFT) | (type_ << IOC_TYPESHIFT) | (nr << IOC_NRSHIFT) | (size << IOC_SIZESHIFT)
 }
 
 #[inline]
-pub fn IOC_TYPECHECK<T>() -> usize {
-    size_of::<T>()
+pub fn IOC_TYPECHECK<T>() -> i32 {
+    size_of::<T>() as i32
 }
 
 /// Used to create numbers.
@@ -62,38 +63,38 @@ pub fn IOC_TYPECHECK<T>() -> usize {
 /// NOTE: _IOW means userland is writing and kernel is reading. _IOR
 /// means userland is reading and kernel is writing.
 #[inline]
-pub fn IO(type_: i32, nr: i32) -> i32 {
+pub fn IO(type_: char, nr: i32) -> i32 {
     IOC(IOC_NONE, type_, nr, 0)
 }
 
 #[inline]
-pub fn IOR(type_: i32, nr: i32, size: i32) -> i32 {
-    IOC(IOC_READ, type_, nr, IOC_TYPECHECK(size) as i32)
+pub fn IOR<T>(type_: char, nr: i32) -> i32 {
+    IOC(IOC_READ, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOW(type_: i32, nr: i32, size: i32) -> i32 {
-    IOC(IOC_WRITE, type_, nr, IOC_TYPECHECK(size) as i32)
+pub fn IOW<T>(type_: char, nr: i32) -> i32 {
+    IOC(IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOWR(type_: i32, nr: i32, size: i32) -> i32 {
-    IOC(IOC_READ | IOC_WRITE, type_, nr, size_of(size) as i32)
+pub fn IOWR<T>(type_: char, nr: i32) -> i32 {
+    IOC(IOC_READ | IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOR_BAD(type_: i32, nr: i32, size: i32) -> i32 {
-    IOC(IOC_READ, type_, nr, size_of(size) as i32)
+pub fn IOR_BAD<T>(type_: char, nr: i32) -> i32 {
+    IOC(IOC_READ, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOW_BAD(type_: i32, nr: i32, size: i32) -> i32 {
-    IOC(IOC_WRITE, type_, nr, size_of(size))
+pub fn IOW_BAD<T>(type_: char, nr: i32) -> i32 {
+    IOC(IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOWR_BAD(type_: i32, nr: i32, size: i32) -> i32 {
-    IOC(IOC_READ | IOC_WRITE, type_, nr, size_of(size))
+pub fn IOWR_BAD<T>(type_: char, nr: i32) -> i32 {
+    IOC(IOC_READ | IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 /// used to decode ioctl numbers..

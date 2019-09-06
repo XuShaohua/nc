@@ -2,7 +2,7 @@ pub type cc_t = u8;
 pub type speed_t = u32;
 pub type tcflag_t = u32;
 
-pub const NCCS: i32 = 19;
+pub const NCCS: usize = 19;
 
 #[repr(C)]
 pub struct termios_t {

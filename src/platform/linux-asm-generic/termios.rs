@@ -12,7 +12,7 @@ pub struct winsize_t {
     pub ws_ypixel: u16,
 }
 
-pub const NCC: i32 = 8;
+pub const NCC: usize = 8;
 
 #[repr(C)]
 pub struct termio_t {

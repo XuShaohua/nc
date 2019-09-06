@@ -48,13 +48,13 @@ pub const IOC_WRITE: i32 = 1;
 pub const IOC_READ: i32 = 2;
 
 #[inline]
-pub fn IOC(dir: i32, type_: char, nr: i32, size: i32) -> i32 {
+pub const fn IOC(dir: i32, type_: char, nr: i32, size: i32) -> i32 {
     let type_ = type_ as i32;
     (dir << IOC_DIRSHIFT) | (type_ << IOC_TYPESHIFT) | (nr << IOC_NRSHIFT) | (size << IOC_SIZESHIFT)
 }
 
 #[inline]
-pub fn IOC_TYPECHECK<T>() -> i32 {
+pub const fn IOC_TYPECHECK<T>() -> i32 {
     size_of::<T>() as i32
 }
 
@@ -63,58 +63,58 @@ pub fn IOC_TYPECHECK<T>() -> i32 {
 /// NOTE: _IOW means userland is writing and kernel is reading. _IOR
 /// means userland is reading and kernel is writing.
 #[inline]
-pub fn IO(type_: char, nr: i32) -> i32 {
+pub const fn IO(type_: char, nr: i32) -> i32 {
     IOC(IOC_NONE, type_, nr, 0)
 }
 
 #[inline]
-pub fn IOR<T>(type_: char, nr: i32) -> i32 {
+pub const fn IOR<T>(type_: char, nr: i32) -> i32 {
     IOC(IOC_READ, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOW<T>(type_: char, nr: i32) -> i32 {
+pub const fn IOW<T>(type_: char, nr: i32) -> i32 {
     IOC(IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOWR<T>(type_: char, nr: i32) -> i32 {
+pub const fn IOWR<T>(type_: char, nr: i32) -> i32 {
     IOC(IOC_READ | IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOR_BAD<T>(type_: char, nr: i32) -> i32 {
+pub const fn IOR_BAD<T>(type_: char, nr: i32) -> i32 {
     IOC(IOC_READ, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOW_BAD<T>(type_: char, nr: i32) -> i32 {
+pub const fn IOW_BAD<T>(type_: char, nr: i32) -> i32 {
     IOC(IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 #[inline]
-pub fn IOWR_BAD<T>(type_: char, nr: i32) -> i32 {
+pub const fn IOWR_BAD<T>(type_: char, nr: i32) -> i32 {
     IOC(IOC_READ | IOC_WRITE, type_, nr, IOC_TYPECHECK::<T>())
 }
 
 /// used to decode ioctl numbers..
 #[inline]
-pub fn IOC_DIR(nr: i32) -> i32 {
+pub const fn IOC_DIR(nr: i32) -> i32 {
     (nr >> IOC_DIRSHIFT) & IOC_DIRMASK
 }
 
 #[inline]
-pub fn IOC_TYPE(nr: i32) -> i32 {
+pub const fn IOC_TYPE(nr: i32) -> i32 {
     nr >> IOC_TYPESHIFT & IOC_TYPEMASK
 }
 
 #[inline]
-pub fn IOC_NR(nr: i32) -> i32 {
+pub const fn IOC_NR(nr: i32) -> i32 {
     (nr >> IOC_NRSHIFT) & IOC_NRMASK
 }
 
 #[inline]
-pub fn IOC_SIZE(nr: i32) -> i32 {
+pub const fn IOC_SIZE(nr: i32) -> i32 {
     nr >> IOC_SIZESHIFT & IOC_SIZEMASK
 }
 

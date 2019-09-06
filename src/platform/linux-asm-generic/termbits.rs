@@ -200,8 +200,10 @@ pub const B4000000: i32 = 0010017;
 /// input baud rate
 pub const CIBAUD: i32 = 002003600000;
 /// mark or space (stick) parity
+#[allow(overflowing_literals)]
 pub const CMSPAR: i32 = 010000000000;
 /// flow control
+#[allow(overflowing_literals)]
 pub const CRTSCTS: i32 = 020000000000;
 
 /// Shift from CBAUD to CIBAUD

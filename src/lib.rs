@@ -1,6 +1,3 @@
-#![crate_name = "nc"]
-#![crate_type = "lib"]
-#![allow(non_camel_case_types)]
 #![allow(dead_code)]
 #![feature(asm)]
 #![feature(const_raw_ptr_deref)]

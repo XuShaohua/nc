@@ -10,65 +10,63 @@ import sys
 
 
 DEFINES = {
-    "linux": {
-        "aarch64": {
-            "compiler": "aarch64-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-arm64-cross", "gcc-8-aarch64-linux-gnu"],
-            "include": "/usr/aarch64-linux-gnu/include",
-            "errno": "/usr/aarch64-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",
-        },
-        "arm": {
-            "compiler": "arm-linux-gnueabihf-gcc-8",
-            "deb": ["linux-libc-dev-armhf-cross", "gcc-8-arm-linux-gnueabihf"],
-            "include": "/usr/arm-linux-gnueabihf/include",
-            "errno": "/usr/arm-linux-gnueabihf/include/asm/errno.h",
-            "sysno": "/usr/arm-linux-gnueabihf/include/asm/unistd.h",
-        },
-        # debian sid does not contain gcc mips version in multiarch
-        "mips": {
-            "compiler": "gcc",
-            "deb": ["linux-libc-dev-mips-cross", "gcc"],
-            "include": "/usr/mips-linux-gnu/include",
-            "errno": "/usr/mips-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/mips-linux-gnu/include/asm/unistd.h",
-            "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
-        },
-        "mips64": {
-            "compiler": "mips64-linux-gnuabi64-gcc-8",
-            "deb": ["linux-libc-dev-mips64-cross", "gcc-8-mips64-linux-gnuabi64"],
-            "include": "/usr/mips64-linux-gnuabi64/include",
-            "errno": "/usr/mips64-linux-gnuabi64/include/asm/errno.h",
-            "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
-        },
-        "ppc64": {
-            "compiler": "powerpc64-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-ppc64-cross", "gcc-8-powerpc64-linux-gnu"],
-            "include": "/usr/powerpc64-linux-gnu/include",
-            "errno": "/usr/powerpc64-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
-        },
-        "s390x": {
-            "compiler": "s390x-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-s390x-cross", "gcc-8-s390x-linux-gnu"],
-            "include": "/usr/s390x-linux-gnu/include",
-            "errno": "/usr/s390x-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
-        },
-        "x86": {
-            "compiler": "i686-linux-gnu-gcc-8",
-            "deb": ["linux-libc-dev-i386-cross", "gcc-8-i686-linux-gnu"],
-            "include": "/usr/i686-linux-gnu/include",
-            "errno": "/usr/i686-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/i686-linux-gnu/include/asm/unistd.h",
-        },
-        "x86_64": {
-            "compiler": "gcc",
-            "deb": ["linux-libc-dev-amd64-cross", "gcc"],
-            "include": "/usr/x86_64-linux-gnu/include",
-            "errno": "/usr/x86_64-linux-gnu/include/asm/errno.h",
-            "sysno": "/usr/x86_64-linux-gnu/include/asm/unistd.h",
-        },
+    "aarch64": {
+        "compiler": "aarch64-linux-gnu-gcc-8",
+        "deb": ["linux-libc-dev-arm64-cross", "gcc-8-aarch64-linux-gnu"],
+        "include": "/usr/aarch64-linux-gnu/include",
+        "errno": "/usr/aarch64-linux-gnu/include/asm/errno.h",
+        "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",
+    },
+    "arm": {
+        "compiler": "arm-linux-gnueabihf-gcc-8",
+        "deb": ["linux-libc-dev-armhf-cross", "gcc-8-arm-linux-gnueabihf"],
+        "include": "/usr/arm-linux-gnueabihf/include",
+        "errno": "/usr/arm-linux-gnueabihf/include/asm/errno.h",
+        "sysno": "/usr/arm-linux-gnueabihf/include/asm/unistd.h",
+    },
+    # debian sid does not contain gcc mips version in multiarch
+    "mips": {
+        "compiler": "gcc",
+        "deb": ["linux-libc-dev-mips-cross", "gcc"],
+        "include": "/usr/mips-linux-gnu/include",
+        "errno": "/usr/mips-linux-gnu/include/asm/errno.h",
+        "sysno": "/usr/mips-linux-gnu/include/asm/unistd.h",
+        "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
+    },
+    "mips64": {
+        "compiler": "mips64-linux-gnuabi64-gcc-8",
+        "deb": ["linux-libc-dev-mips64-cross", "gcc-8-mips64-linux-gnuabi64"],
+        "include": "/usr/mips64-linux-gnuabi64/include",
+        "errno": "/usr/mips64-linux-gnuabi64/include/asm/errno.h",
+        "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
+    },
+    "ppc64": {
+        "compiler": "powerpc64-linux-gnu-gcc-8",
+        "deb": ["linux-libc-dev-ppc64-cross", "gcc-8-powerpc64-linux-gnu"],
+        "include": "/usr/powerpc64-linux-gnu/include",
+        "errno": "/usr/powerpc64-linux-gnu/include/asm/errno.h",
+        "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
+    },
+    "s390x": {
+        "compiler": "s390x-linux-gnu-gcc-8",
+        "deb": ["linux-libc-dev-s390x-cross", "gcc-8-s390x-linux-gnu"],
+        "include": "/usr/s390x-linux-gnu/include",
+        "errno": "/usr/s390x-linux-gnu/include/asm/errno.h",
+        "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
+    },
+    "x86": {
+        "compiler": "i686-linux-gnu-gcc-8",
+        "deb": ["linux-libc-dev-i386-cross", "gcc-8-i686-linux-gnu"],
+        "include": "/usr/i686-linux-gnu/include",
+        "errno": "/usr/i686-linux-gnu/include/asm/errno.h",
+        "sysno": "/usr/i686-linux-gnu/include/asm/unistd.h",
+    },
+    "x86_64": {
+        "compiler": "gcc",
+        "deb": ["linux-libc-dev-amd64-cross", "gcc"],
+        "include": "/usr/x86_64-linux-gnu/include",
+        "errno": "/usr/x86_64-linux-gnu/include/asm/errno.h",
+        "sysno": "/usr/x86_64-linux-gnu/include/asm/unistd.h",
     },
 }
 
@@ -88,7 +86,7 @@ def read_errno(os_name, arch_name):
 def parse_errno(content):
     lines = [
         "",
-        "// Code generated by mkerrno_linux.py; DO NOT EDIT.",
+        "// Code generated by mksysnum_linux.py; DO NOT EDIT.",
         "",
         "pub type Errno = i32;"
         "",
@@ -135,7 +133,7 @@ def parse_sysno(content):
 
     lines = [
         "",
-        "// Code generated by mksysno_linux.py; DO NOT EDIT.",
+        "// Code generated by mksysnum_linux.py; DO NOT EDIT.",
         "",
         "pub type Sysno = usize;",
         "",

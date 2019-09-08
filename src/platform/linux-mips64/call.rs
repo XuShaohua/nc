@@ -758,9 +758,15 @@ pub fn getdents64(fd: i32) -> Result<Vec<linux_dirent64_extern_t>, Errno> {
         let mut bpos = 0;
         while bpos < nread {
             let d = (buf_box_ptr + bpos) as *mut linux_dirent64_t;
-            //let name_vec: Vec<u8> = vec![(*d).d_name[0]];
-            //let name = String::from_utf8(name_vec).unwrap();
-            let name = get_linux_dirent64_name(buf_box_ptr + bpos);
+            let mut name_vec: Vec<u8> = vec![];
+            for i in 0..PATH_MAX {
+                let c = (*d).d_name[i as usize];
+                if c == 0 {
+                    break;
+                }
+                name_vec.push(c);
+            }
+            let name = String::from_utf8(name_vec).unwrap();
             result.push(linux_dirent64_extern_t {
                 d_ino: (*d).d_ino,
                 d_off: (*d).d_off,

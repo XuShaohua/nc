@@ -1,9 +1,11 @@
 [package]
 name = "nc"
-version = "0.3.2"
+version = "0.3.3"
 authors = ["Xu Shaohua <xushaohua2016@outlook.com>"]
+readme = "README.md"
 homepage = "https://github.com/xushaohua/nc"
 repository = "https://github.com/xushaohua/nc"
+documentation = "https://docs.rs/nc"
 description = "Execute system call directly"
 edition = "2018"
 license = "Apache-2.0"

@@ -5,7 +5,7 @@ pub const IPC_PRIVATE: key_t = 0;
 
 /// Obsolete, used only for backwards compatibility and libc5 compiles
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Default)]
 pub struct ipc_perm_t {
     pub key: key_t,
     pub uid: uid_t,

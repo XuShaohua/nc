@@ -74,6 +74,7 @@ pub struct si_sigpoll_t {
     pub band: arch_si_band_t,
     pub fd: i32,
 }
+
 /// SIGSYS
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -118,7 +119,6 @@ pub struct siginfo_intern_t {
 //}
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union siginfo_t {
     pub siginfo: siginfo_intern_t,
     si_pad: [u8; SI_MAX_SIZE / size_of::<i32>()],
@@ -355,7 +355,6 @@ pub struct sigev_thread_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union sigev_un_t {
     pad: [i32; SIGEV_PAD_SIZE],
     pub tid: i32,

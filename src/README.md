@@ -41,3 +41,4 @@ mirrors do not support non-x86 architectures
 - [ ] big endian/litten endian bitwise integers
 - [ ] cstring issue
 - [ ] support stable version
+- [ ] derive Clone, Default traits

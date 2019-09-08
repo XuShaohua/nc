@@ -1,7 +1,7 @@
 use super::types::*;
 
 #[repr(C)]
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Default)]
 pub struct timespec_t {
     /// seconds
     pub tv_sec: time_t,
@@ -10,6 +10,7 @@ pub struct timespec_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Default)]
 pub struct timeval_t {
     /// seconds
     pub tv_sec: time_t,
@@ -18,6 +19,7 @@ pub struct timeval_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Default)]
 pub struct timezone_t {
     /// minutes west of Greenwich
     pub tz_minuteswest: i32,
@@ -31,6 +33,7 @@ pub const ITIMER_VIRTUAL: i32 = 1;
 pub const ITIMER_PROF: i32 = 2;
 
 #[repr(C)]
+#[derive(Clone, Default)]
 pub struct itimerspec_t {
     /// timer period
     pub it_interval: timespec_t,
@@ -39,6 +42,7 @@ pub struct itimerspec_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Default)]
 pub struct itimerval_t {
     /// timer interval
     pub it_interval: timeval_t,

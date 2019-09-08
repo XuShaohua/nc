@@ -523,7 +523,6 @@ pub struct bpf_attr_task_fd_query_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union bpf_attr_t {
     pub map_create: bpf_attr_map_create_t,
     pub map_element: bpf_attr_element_t,
@@ -2805,7 +2804,6 @@ pub struct bpf_sock_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub struct bpf_tcp_sock_t {
     /// Sending congestion window
     pub snd_cwnd: u32,
@@ -2894,7 +2892,6 @@ pub const XDP_REDIRECT: i32 = 4;
 /// user accessible metadata for XDP packet hook
 /// new fields must be added to the end of this structure
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub struct xdp_md_t {
     pub data: u32,
     pub data_end: u32,
@@ -2910,14 +2907,12 @@ pub const SK_DROP: i32 = 0;
 pub const SK_PASS: i32 = 1;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union bpf_md_ptr_t {
     pub data: usize,
     _u64: u64,
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union bpf_md_end_ptr_t {
     pub data_end: usize,
     _u64: u64,
@@ -2926,7 +2921,6 @@ pub union bpf_md_end_ptr_t {
 /// user accessible metadata for SK_MSG packet hook, new fields must
 /// be added to the end of this structure
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub struct sk_msg_md_t {
     pub data: bpf_md_ptr_t,
     pub data_end: bpf_md_end_ptr_t,
@@ -3285,7 +3279,6 @@ pub const BPF_FIB_LKUP_RET_FRAG_NEEDED: i32 = 8;
 
 /// inputs to lookup
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union bpf_fib_lookup_inputs_t {
     /// AF_INET  
     pub tos: u8,
@@ -3298,7 +3291,6 @@ pub union bpf_fib_lookup_inputs_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union bpf_fib_lookup_addr_t {
     pub ipv4: be32_t,
 
@@ -3373,7 +3365,6 @@ pub struct bpf_flow_keys_ipv6_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union bpf_flow_keys_addr_t {
     pub ipv4: bpf_flow_keys_ipv4_t,
     pub ipv6: bpf_flow_keys_ipv6_t,

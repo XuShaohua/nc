@@ -2,7 +2,7 @@
 const UTSNAME_LENGTH: usize = 65;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct new_utsname_t {
     pub sysname: [u8; UTSNAME_LENGTH],
     pub nodename: [u8; UTSNAME_LENGTH],

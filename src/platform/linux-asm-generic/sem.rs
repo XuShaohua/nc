@@ -28,7 +28,7 @@ pub const SEM_STAT_ANY: i32 = 20;
 
 /// Obsolete, used only for backwards compatibility and libc5 compiles
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Default)]
 pub struct semid_ds_t {
     /// permissions .. see ipc.h
     pub sem_perm: ipc_perm_t,
@@ -61,7 +61,6 @@ pub struct semid_ds_t {
 
 /// semop system calls takes an array of these.
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub struct sembuf_t {
     /// semaphore index in array
     pub sem_num: u16,
@@ -73,7 +72,6 @@ pub struct sembuf_t {
 
 /// arg for semctl system calls.
 #[repr(C)]
-#[derive(Clone, Copy)]
 pub union semun_t {
     /// value for SETVAL
     pub val: i32,

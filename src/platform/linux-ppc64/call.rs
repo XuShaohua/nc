@@ -5,6 +5,7 @@ use super::sysno::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 use crate::asm_generic::*;
 use crate::c_str::CString;
+use alloc::string::String;
 use alloc::vec::Vec;
 
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
@@ -778,14 +779,47 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
     }
 }
 
-pub fn getdents() {
-    core::unimplemented!();
-    // syscall0(SYS_GETDENTS);
+/// Get directory entries.
+pub fn getdents(fd: i32, dirp: &mut linux_dirent_t, count: u32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let dirp = dirp as *mut linux_dirent_t as usize;
+        let count = count as usize;
+        syscall3(SYS_GETDENTS, fd, dirp, count).map(|ret| ret as ssize_t)
+    }
 }
 
-pub fn getdents64() {
-    core::unimplemented!();
-    // syscall0(SYS_GETDENTS64);
+/// Get directory entries.
+pub fn getdents64(fd: i32) -> Result<Vec<linux_dirent64_extern_t>, Errno> {
+    const BUF_SIZE: usize = 4096;
+    unsafe {
+        let buf: Vec<u8> = vec![0; BUF_SIZE];
+        let buf_box = buf.into_boxed_slice();
+        let buf_box_ptr = alloc::boxed::Box::into_raw(buf_box) as *mut u8 as usize;
+        let fd = fd as usize;
+        let nread = syscall3(SYS_GETDENTS64, fd, buf_box_ptr, BUF_SIZE)?;
+        let mut result: Vec<linux_dirent64_extern_t> = Vec::new();
+
+        if nread == 0 {
+            return Ok(result);
+        }
+
+        let mut bpos = 0;
+        while bpos < nread {
+            let d = (buf_box_ptr + bpos) as *mut linux_dirent64_t;
+            //let name_vec: Vec<u8> = vec![(*d).d_name[0]];
+            //let name = String::from_utf8(name_vec).unwrap();
+            let name = get_linux_dirent64_name(buf_box_ptr + bpos);
+            result.push(linux_dirent64_extern_t {
+                d_ino: (*d).d_ino,
+                d_off: (*d).d_off,
+                d_type: (*d).d_type,
+                d_name: name,
+            });
+            bpos = bpos + (*d).d_reclen as usize;
+        }
+        return Ok(result);
+    }
 }
 
 /// Get the effective group ID of the calling process.

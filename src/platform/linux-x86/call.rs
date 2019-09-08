@@ -840,14 +840,10 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
     }
 }
 
-/// Get directory entries.
-pub fn getdents(fd: i32, dirp: &mut linux_dirent_t, count: u32) -> Result<ssize_t, Errno> {
-    unsafe {
-        let fd = fd as usize;
-        let dirp = dirp as *mut linux_dirent_t as usize;
-        let count = count as usize;
-        syscall3(SYS_GETDENTS, fd, dirp, count).map(|ret| ret as ssize_t)
-    }
+/// Deprecated
+pub fn getdents() {
+    core::unimplemented!();
+    // syscall0(SYS_GETDENTS);
 }
 
 /// Get directory entries.
@@ -894,6 +890,7 @@ pub fn getegid() -> gid_t {
     unsafe { syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t }
 }
 
+/// Deprecated
 pub fn getegid32() {
     core::unimplemented!();
     // syscall0(SYS_GETEGID32);
@@ -904,6 +901,7 @@ pub fn geteuid() -> uid_t {
     unsafe { syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t }
 }
 
+/// Deprecated
 pub fn geteuid32() {
     core::unimplemented!();
     // syscall0(SYS_GETEUID32);
@@ -914,6 +912,7 @@ pub fn getgid() -> gid_t {
     unsafe { syscall0(SYS_GETGID).expect("getgid() failed") as gid_t }
 }
 
+/// Deprecated
 pub fn getgid32() {
     core::unimplemented!();
     // syscall0(SYS_GETGID32);
@@ -928,6 +927,7 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
     }
 }
 
+/// Deprecated
 pub fn getgroups32() {
     core::unimplemented!();
     // syscall0(SYS_GETGROUPS32);

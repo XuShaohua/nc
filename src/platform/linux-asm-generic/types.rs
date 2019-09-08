@@ -167,4 +167,5 @@ pub type file_t = io_file_t;
 //TYPEDEF struct __locale_struct * locale_t;
 
 pub type socklen_t = u32;
+pub type ino64_t = u64;
 // END of common types

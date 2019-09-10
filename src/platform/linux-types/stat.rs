@@ -30,19 +30,18 @@ pub struct stat_t {
 /// This matches struct stat64 in glibc2.1. Only used for 32 bit.
 #[repr(C)]
 pub struct stat64_t {
-    pub st_dev: dev_t,     // Device.
-    pub st_ino: ino_t,     // File serial number.
-    pub st_mode: mode_t,   // File mode.
-    pub st_nlink: nlink_t, // Link count.
-    pub st_uid: uid_t,     // User ID of the file's owner.
-    pub st_gid: gid_t,     // Group ID of the file's group.
-    pub st_rdev: dev_t,    // Device number, if device.
+    pub st_dev: u64,     // Device.
+    pub st_ino: u64,     // File serial number.
+    pub st_mode: u32,   // File mode.
+    pub st_nlink: u32, // Link count.
+    pub st_uid: u32,     // User ID of the file's owner.
+    pub st_gid: u32,     // Group ID of the file's group.
+    pub st_rdev: u64,    // Device number, if device.
     pad1: u64,
-    pub st_size: off_t,        // Size of file, in bytes.
-    pub st_blksize: blksize_t, // Optimal block size for I/O.
+    pub st_size: i64,        // Size of file, in bytes.
+    pub st_blksize: i32, // Optimal block size for I/O.
     pad2: i32,
-    pub st_blocks: blkcnt_t, // Number 512-byte blocks allocated.
-    // TODO(Shaohua): Convert to timespec_t
+    pub st_blocks: i64, // Number 512-byte blocks allocated.
     pub st_atime: i32, // Time of last access.
     pub st_atime_nsec: u32,
     pub st_mtime: i32, // Time of last modification.

@@ -7,6 +7,11 @@
 mod arch;
 pub use arch::*;
 
+#[cfg(target_arch = "arm")]
+#[path = "arm/mod.rs"]
+mod arch;
+pub use arch::*;
+
 #[cfg(target_arch = "x86")]
 #[path = "x86/mod.rs"]
 mod arch;

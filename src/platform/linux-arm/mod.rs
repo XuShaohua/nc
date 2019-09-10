@@ -1,6 +1,6 @@
-pub mod call;
-pub mod errno;
-pub mod sysno;
+mod call;
+mod errno;
+mod sysno;
 
 pub use call::*;
 pub use errno::*;

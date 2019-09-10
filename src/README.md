@@ -42,3 +42,4 @@ mirrors do not support non-x86 architectures
 - [ ] cstring issue
 - [ ] support stable version
 - [x] derive Clone, Default traits
+- [x] fix stat_t type error

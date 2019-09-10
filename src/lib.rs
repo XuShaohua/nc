@@ -19,7 +19,7 @@ mod asm_generic;
 
 #[cfg(target_os = "linux")]
 #[path = "platform/linux-types/mod.rs"]
-mod types;
+pub mod types;
 
 #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
 #[path = "platform/linux-aarch64/mod.rs"]
@@ -71,3 +71,4 @@ mod platform;
 
 // Re-export functions
 pub use platform::*;
+pub use types::*;

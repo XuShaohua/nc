@@ -1,9 +1,6 @@
-// Re-export asm-generic types.
-pub use crate::types::*;
-
-mod call;
-mod errno;
-mod sysno;
+pub mod call;
+pub mod errno;
+pub mod sysno;
 
 pub use call::*;
 pub use errno::*;

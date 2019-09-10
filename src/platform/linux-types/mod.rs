@@ -2,6 +2,11 @@
 #![allow(non_camel_case_types)]
 
 // First import architecture specific types.
+#[cfg(target_arch = "aarch64")]
+#[path = "aarch64/mod.rs"]
+mod arch;
+pub use arch::*;
+
 #[cfg(target_arch = "x86")]
 #[path = "x86/mod.rs"]
 mod arch;
@@ -11,7 +16,6 @@ pub use arch::*;
 #[path = "x86_64/mod.rs"]
 mod arch;
 pub use arch::*;
-
 
 mod aio_abi;
 mod bpf;

@@ -2,9 +2,10 @@ extern crate nc;
 
 fn main() {
     let mut statbuf = nc::stat_t::default();
+    let filepath = "/etc/passwd";
 
     #[cfg(target_arch = "x86_64")]
-    match nc::newfstatat(nc::AT_FDCWD, "/etc/passwd", &mut statbuf, 0) {
+    match nc::newfstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0) {
         Ok(_) => {
             println!("s: {:?}", statbuf);
         }
@@ -13,7 +14,7 @@ fn main() {
         }
     }
     #[cfg(any(target_arch = "arm", target_arch = "mips", target_arch = "powerpc64"))]
-    match nc::stat("/etc/passwd", &mut statbuf) {
+    match nc::stat(filepath, &mut statbuf) {
         Ok(_) => {
             println!("s: {:?}", statbuf);
         }
@@ -28,7 +29,7 @@ fn main() {
         target_arch = "mips",
         target_arch = "powerpc64"
     )))]
-    match nc::fstatat(nc::AT_FDCWD, "/etc/passwd", &mut statbuf) {
+    match nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf) {
         Ok(_) => {
             println!("s: {:?}", statbuf);
         }

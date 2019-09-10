@@ -5,20 +5,18 @@ pub const STAT_HAVE_NSEC: i32 = 1;
 #[repr(C)]
 #[derive(Clone, Default, Debug)]
 pub struct stat_t {
-    // TODO(Shaohua): Add another pad
-    pub st_dev: dev_t,     // Device.
-    pub st_ino: ino_t,     // File serial number.
-    pub st_mode: mode_t,   // File mode.
-    pub st_nlink: nlink_t, // Link count.
-    pub st_uid: uid_t,     // User ID of the file's owner.
-    pub st_gid: gid_t,     // Group ID of the file's group.
-    pub st_rdev: dev_t,    // Device number, if device.
+    pub st_dev: usize,     // Device.
+    pub st_ino: usize,     // File serial number.
+    pub st_mode: u32,   // File mode.
+    pub st_nlink: i32, // Link count.
+    pub st_uid: u32,     // User ID of the file's owner.
+    pub st_gid: u32,     // Group ID of the file's group.
+    pub st_rdev: usize,    // Device number, if device.
     pad1: usize,
-    pub st_size: off_t,        // Size of file, in bytes.
-    pub st_blksize: blksize_t, // Optimal block size for I/O.
+    pub st_size: isize,        // Size of file, in bytes.
+    pub st_blksize: i32, // Optimal block size for I/O.
     pad2: i32,
-    pub st_blocks: blkcnt_t, // Number 512-byte blocks allocated.
-    // TODO(Shaohua): Merge into timespec_t struct.
+    pub st_blocks: isize, // Number 512-byte blocks allocated.
     pub st_atime: isize, // Time of last access.
     pub st_atime_nsec: usize,
     pub st_mtime: isize, // Time of last modification.

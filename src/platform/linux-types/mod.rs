@@ -12,6 +12,11 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
+#[cfg(target_arch = "s390x")]
+#[path = "s390x/mod.rs"]
+mod arch;
+pub use arch::*;
+
 #[cfg(target_arch = "x86")]
 #[path = "x86/mod.rs"]
 mod arch;

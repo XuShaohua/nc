@@ -11,11 +11,11 @@ pub mod c_str;
 
 #[cfg(target_os = "freebsd")]
 #[path = "platform/freebsd-types/mod.rs"]
-mod types;
+pub mod types;
 
 #[cfg(target_os = "netbsd")]
-#[path = "platform/netbsd-asm-generic/mod.rs"]
-mod asm_generic;
+#[path = "platform/netbsd-types/mod.rs"]
+pub mod types;
 
 #[cfg(target_os = "linux")]
 #[path = "platform/linux-types/mod.rs"]

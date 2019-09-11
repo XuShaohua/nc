@@ -12,6 +12,11 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
+#[cfg(target_arch = "mips")]
+#[path = "mips/mod.rs"]
+mod arch;
+pub use arch::*;
+
 #[cfg(target_arch = "ppc64")]
 #[path = "ppc64/mod.rs"]
 mod arch;

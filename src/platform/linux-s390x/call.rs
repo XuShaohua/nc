@@ -704,9 +704,13 @@ pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     }
 }
 
-pub fn fstatfs64() {
-    core::unimplemented!();
-    // syscall0(SYS_FSTATFS64);
+/// Get filesystem statistics.
+pub fn fstatfs64(fd: i32, buf: &mut statfs64_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let buf_ptr = buf as *mut statfs64_t as usize;
+        syscall2(SYS_FSTATFS64, fd, buf_ptr).map(|_ret| ())
+    }
 }
 
 /// Flush all modified in-core data refered by `fd` to disk.
@@ -2865,6 +2869,8 @@ pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
         syscall2(SYS_STAT, filename_ptr, statbuf_ptr).map(|_| ())
     }
 }
+
+/// Get filesystem statistics.
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);
@@ -2874,9 +2880,13 @@ pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     }
 }
 
-pub fn statfs64() {
-    core::unimplemented!();
-    // syscall0(SYS_STATFS64);
+pub fn statfs64(filename: &str, buf: &mut statfs64_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let buf_ptr = buf as *mut statfs64_t as usize;
+        syscall2(SYS_STATFS64, filename_ptr, buf_ptr).map(|_ret| ())
+    }
 }
 
 /// Get file status about a file (extended).

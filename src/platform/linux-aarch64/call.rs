@@ -2501,6 +2501,8 @@ pub fn splice(
         .map(|ret| ret as ssize_t)
     }
 }
+
+/// Get filesystem statistics.
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);

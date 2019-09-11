@@ -74,6 +74,7 @@ pub type mqd_t = i32;
 // END of uapi/posix_types.h
 
 // BEGIN of uapi/linux/types.h
+// TODO(Shaohua): Fix endian issue
 pub type be16_t = u16;
 pub type le16_t = u16;
 pub type be32_t = u32;
@@ -95,9 +96,8 @@ pub type nlink_t = u32;
 /// of the devices real block size.
 ///
 /// blkcnt_t is the type of the inode's block count.
-//TODO(Shaohua): #ifdef CONFIG_LBDAF
-pub type sector_t = usize;
-pub type blkcnt_t = usize;
+pub type sector_t = u64;
+pub type blkcnt_t = u64;
 
 /// The type of an index into the pagecache.
 pub type pgoff_t = usize;
@@ -121,7 +121,7 @@ pub type intptr_t = usize;
 pub type regoff_t = usize;
 pub type register_t = usize;
 
-pub type blksize_t = usize;
+pub type blksize_t = isize;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 

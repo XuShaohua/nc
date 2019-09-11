@@ -596,9 +596,16 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     }
 }
 
-pub fn fstatat() {
-    core::unimplemented!();
-    // syscall0(SYS_FSTATAT);
+/// Get file status
+pub fn fstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> Result<(), Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let statbuf_ptr = statbuf as *mut stat_t as usize;
+        let flag = flag as usize;
+        syscall4(SYS_FSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(|_ret| ())
+    }
 }
 
 /// Get filesystem statistics.
@@ -2494,8 +2501,6 @@ pub fn splice(
         .map(|ret| ret as ssize_t)
     }
 }
-
-/// Get filesystem statistics.
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);

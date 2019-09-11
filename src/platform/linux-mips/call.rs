@@ -748,14 +748,25 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     }
 }
 
-pub fn fstat64() {
-    core::unimplemented!();
-    // syscall0(SYS_FSTAT64);
+/// Get file status.
+pub fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let statbuf_ptr = statbuf as *mut stat64_t as usize;
+        syscall2(SYS_FSTAT64, fd, statbuf_ptr).map(|_ret| ())
+    }
 }
 
-pub fn fstatat64() {
-    core::unimplemented!();
-    // syscall0(SYS_FSTATAT64);
+/// Get file status.
+pub fn fstatat64(dfd: i32, filename: &str, statbuf: &mut stat64_t, flag: i32) -> Result<(), Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let statbuf_ptr = statbuf as *mut stat64_t as usize;
+        let flag = flag as usize;
+        syscall4(SYS_FSTATAT64, dfd, filename_ptr, statbuf_ptr, flag).map(|_ret| ())
+    }
 }
 
 /// Get filesystem statistics.
@@ -1423,9 +1434,14 @@ pub fn lstat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     }
 }
 
-pub fn lstat64() {
-    core::unimplemented!();
-    // syscall0(SYS_LSTAT64);
+/// Get file status about a file, without following symbolic.
+pub fn lstat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let statbuf_ptr = statbuf as *mut stat64_t as usize;
+        syscall2(SYS_LSTAT64, filename_ptr, statbuf_ptr).map(|_ret| ())
+    }
 }
 
 /// Give advice about use of memory.
@@ -3030,12 +3046,15 @@ pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     }
 }
 
-pub fn stat64() {
-    core::unimplemented!();
-    // syscall0(SYS_STAT64);
+/// Get file status about a file.
+pub fn stat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let statbuf_ptr = statbuf as *mut stat64_t as usize;
+        syscall2(SYS_STAT64, filename_ptr, statbuf_ptr).map(|_| ())
+    }
 }
-
-/// Get filesystem statistics.
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);

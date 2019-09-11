@@ -2739,8 +2739,6 @@ pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
         syscall2(SYS_STAT, filename_ptr, statbuf_ptr).map(|_| ())
     }
 }
-
-/// Get filesystem statistics.
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);

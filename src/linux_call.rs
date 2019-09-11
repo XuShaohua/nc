@@ -3452,9 +3452,14 @@ pub fn lock() {
     // syscall0(SYS_LOCK);
 }
 
-pub fn lstat64() {
-    core::unimplemented!();
-    // syscall0(SYS_LSTAT64);
+/// Get file status about a file, without following symbolic.
+pub fn lstat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let statbuf_ptr = statbuf as *mut stat64_t as usize;
+        syscall2(SYS_LSTAT64, filename_ptr, statbuf_ptr).map(|_ret| ())
+    }
 }
 
 pub fn mmap2() {
@@ -3487,11 +3492,13 @@ pub fn nice() {
     // syscall0(SYS_NICE);
 }
 
+/// Deprecated
 pub fn oldfstat() {
     core::unimplemented!();
     // syscall0(SYS_OLDFSTAT);
 }
 
+/// Deprecated
 pub fn oldlstat() {
     core::unimplemented!();
     // syscall0(SYS_OLDLSTAT);
@@ -3685,6 +3692,14 @@ pub fn stat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
 pub fn statfs64() {
     core::unimplemented!();
     // syscall0(SYS_STATFS64);
+}
+pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
+    unsafe {
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let buf_ptr = buf as *mut statfs_t as usize;
+        syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(|_ret| ())
+    }
 }
 
 pub fn stime() {

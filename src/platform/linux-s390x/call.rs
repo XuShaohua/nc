@@ -3,11 +3,10 @@ extern crate alloc;
 use super::errno::*;
 use super::sysno::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
-use crate::types::*;
 use crate::c_str::CString;
+use crate::types::*;
 use alloc::string::String;
 use alloc::vec::Vec;
-
 
 /// Accept a connection on a socket.
 pub fn accept4(
@@ -1989,9 +1988,14 @@ pub fn query_module() {
     // syscall0(SYS_QUERY_MODULE);
 }
 
-pub fn quotactl() {
-    core::unimplemented!();
-    // syscall0(SYS_QUOTACTL);
+pub fn quotactl(cmd: i32, special: &str, id: qid_t, addr: usize) -> Result<(), Errno> {
+    unsafe {
+        let cmd = cmd as usize;
+        let special = CString::new(special);
+        let special_ptr = special.as_ptr() as usize;
+        let id = id as usize;
+        syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(|_ret| ())
+    }
 }
 
 /// Read from a file descriptor.

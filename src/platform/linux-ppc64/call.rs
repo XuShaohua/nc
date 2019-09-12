@@ -1494,15 +1494,21 @@ pub fn mlockall(flags: i32) -> Result<(), Errno> {
 }
 
 /// Map files or devices into memory.
-pub fn mmap(len: size_t, prot: i32, flags: i32, fd: i32, offset: off_t) -> Result<usize, Errno> {
+pub fn mmap(
+    start: usize,
+    len: size_t,
+    prot: i32,
+    flags: i32,
+    fd: i32,
+    offset: off_t,
+) -> Result<usize, Errno> {
     unsafe {
-        let addr = 0 as usize;
         let len = len as usize;
         let prot = prot as usize;
         let flags = flags as usize;
         let fd = fd as usize;
         let offset = offset as usize;
-        syscall6(SYS_MMAP, addr, len, prot, flags, fd, offset)
+        syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
     }
 }
 

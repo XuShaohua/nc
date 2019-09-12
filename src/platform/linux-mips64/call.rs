@@ -1401,9 +1401,21 @@ pub fn mount(
     }
 }
 
-pub fn move_pages() {
-    core::unimplemented!();
-    // syscall0(SYS_MOVE_PAGES);
+/// Move individual pages of a process to another node
+pub fn move_pages(
+    pid: pid_t,
+    nr_pages: usize,
+    pages: usize,
+    nodes: usize,
+    status: &mut i32,
+    flags: i32,
+) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let status = status as *mut i32 as usize;
+        let flags = flags as usize;
+        syscall6(SYS_MOVE_PAGES, pid, nr_pages, pages, nodes, status, flags).map(|_ret| ())
+    }
 }
 
 /// Set protection on a region of memory.

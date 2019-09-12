@@ -1545,34 +1545,29 @@ pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno>
 }
 
 /// Read from a file descriptor without changing file offset.
-pub fn preadv(
-    fd: i32,
-    vec: &iovec_t,
-    vlen: usize,
-    pos_l: usize,
-    pos_h: usize,
-) -> Result<ssize_t, Errno> {
+pub fn preadv(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
-        let vec_ptr = vec as *const iovec_t as usize;
-        syscall5(SYS_PREADV, fd, vec_ptr, vlen, pos_l, pos_h).map(|ret| ret as ssize_t)
+        let vec_ptr = vec.as_ptr() as usize;
+        let vec_len = vec.len();
+        syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
     }
 }
 
 /// Read from a file descriptor without changing file offset.
 pub fn preadv2(
     fd: i32,
-    vec: &iovec_t,
-    vlen: usize,
+    vec: &[iovec_t],
     pos_l: usize,
     pos_h: usize,
     flags: rwf_t,
 ) -> Result<ssize_t, Errno> {
     unsafe {
         let fd = fd as usize;
-        let vec_ptr = vec as *const iovec_t as usize;
+        let vec_ptr = vec.as_ptr() as usize;
+        let vec_len = vec.len();
         let flags = flags as usize;
-        syscall6(SYS_PREADV2, fd, vec_ptr, vlen, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
+        syscall6(SYS_PREADV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
     }
 }
 
@@ -3151,11 +3146,34 @@ pub fn prlimit64() {
     // syscall0(SYS_PRLIMIT64);
 }
 
-pub fn process_vm_readv() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_VM_READV);
+/// Transfer data between process address spaces
+pub fn process_vm_readv(
+    pid: pid_t,
+    lvec: &[iovec_t],
+    rvec: &[iovec_t],
+    flags: i32,
+) -> Result<ssize_t, Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let lvec_ptr = lvec.as_ptr() as usize;
+        let lvec_len = lvec.len();
+        let rvec_ptr = rvec.as_ptr() as usize;
+        let rvec_len = rvec.len();
+        let flags = flags as usize;
+        syscall6(
+            SYS_PROCESS_VM_READV,
+            pid,
+            lvec_ptr,
+            lvec_len,
+            rvec_ptr,
+            rvec_len,
+            flags,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }
 
+/// Transfer data between process address spaces
 pub fn process_vm_writev() {
     core::unimplemented!();
     // syscall0(SYS_PROCESS_VM_WRITEV);

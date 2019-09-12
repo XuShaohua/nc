@@ -475,7 +475,7 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Predeclare an access pattern for file data.
-pub fn fadvise64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<(), Errno> {
+pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let offset = offset as usize;

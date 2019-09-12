@@ -501,7 +501,7 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Predeclare an access pattern for file data.
-pub fn fadvise64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<(), Errno> {
+pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
         let offset = offset as usize;
@@ -511,9 +511,15 @@ pub fn fadvise64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<()
     }
 }
 
-pub fn fadvise64_64() {
-    core::unimplemented!();
-    // syscall0(SYS_FADVISE64_64);
+/// Predeclare an access pattern for file data.
+pub fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let offset = offset as usize;
+        let len = len as usize;
+        let advice = advice as usize;
+        syscall4(SYS_FADVISE64_64, fd, offset, len, advice).map(|_ret| ())
+    }
 }
 
 /// Manipulate file space.

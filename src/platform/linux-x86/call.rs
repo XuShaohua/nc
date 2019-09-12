@@ -1527,9 +1527,32 @@ pub fn migrate_pages() {
     // syscall0(SYS_MIGRATE_PAGES);
 }
 
-pub fn mincore() {
-    core::unimplemented!();
-    // syscall0(SYS_MINCORE);
+/// mincore() returns the memory residency status of the pages in the
+/// current process's address space specified by [addr, addr + len).
+/// The status is returned in a vector of bytes.  The least significant
+/// bit of each byte is 1 if the referenced page is in memory, otherwise
+/// it is zero.
+///
+/// Because the status of a page can change after mincore() checks it
+/// but before it returns to the application, the returned vector may
+/// contain stale information.  Only locked pages are guaranteed to
+/// remain in memory.
+///
+/// return values:
+///  zero    - success
+///  -EFAULT - vec points to an illegal address
+///  -EINVAL - addr is not a multiple of PAGE_SIZE
+///  -ENOMEM - Addresses in the range [addr, addr + len] are
+///  	invalid for the address space of this process, or
+///  	specify one or more pages which are not currently
+///  	mapped
+///  -EAGAIN - A kernel resource was temporarily unavailable.
+pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
+    unsafe {
+        let len = len as usize;
+        let vec_ptr = vec as usize;
+        syscall3(SYS_MINCORE, start, len, vec_ptr).map(|_ret| ())
+    }
 }
 
 /// Create a directory.
@@ -1658,15 +1681,25 @@ pub fn move_pages(
     pid: pid_t,
     nr_pages: usize,
     pages: usize,
-    nodes: usize,
+    nodes: *const i32,
     status: &mut i32,
     flags: i32,
 ) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;
+        let nodes_ptr = nodes as usize;
         let status = status as *mut i32 as usize;
         let flags = flags as usize;
-        syscall6(SYS_MOVE_PAGES, pid, nr_pages, pages, nodes, status, flags).map(|_ret| ())
+        syscall6(
+            SYS_MOVE_PAGES,
+            pid,
+            nr_pages,
+            pages,
+            nodes_ptr,
+            status,
+            flags,
+        )
+        .map(|_ret| ())
     }
 }
 

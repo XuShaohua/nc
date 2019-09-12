@@ -2172,9 +2172,22 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
     }
 }
 
-pub fn remap_file_pages() {
-    core::unimplemented!();
-    // syscall0(SYS_REMAP_FILE_PAGES);
+/// Create a nonlinear file mapping.
+/// Deprecated.
+pub fn remap_file_pages(
+    start: usize,
+    size: size_t,
+    prot: i32,
+    pgoff: off_t,
+    flags: i32,
+) -> Result<(), Errno> {
+    unsafe {
+        let size = size as usize;
+        let prot = prot as usize;
+        let pgoff = pgoff as usize;
+        let flags = flags as usize;
+        syscall5(SYS_REMAP_FILE_PAGES, start, size, prot, pgoff, flags).map(|_ret| ())
+    }
 }
 
 /// Remove an extended attribute.

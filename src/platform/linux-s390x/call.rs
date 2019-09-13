@@ -1599,6 +1599,7 @@ pub fn mq_notify(mqdes: mqd_t, notification: &sigevent_t) -> Result<(), Errno> {
     }
 }
 
+/// Open a message queue.
 pub fn mq_open(
     name: &str,
     oflag: i32,
@@ -2560,9 +2561,14 @@ pub fn select() {
     // syscall0(SYS_SELECT);
 }
 
-pub fn semctl() {
-    core::unimplemented!();
-    // syscall0(SYS_SEMCTL);
+/// System V semaphore control operations
+pub fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+    unsafe {
+        let semid = semid as usize;
+        let semnum = semnum as usize;
+        let cmd = cmd as usize;
+        syscall4(SYS_SEMCTL, semid, semnum, cmd, arg).map(|ret| ret as i32)
+    }
 }
 
 /// Get a System V semphore set identifier.

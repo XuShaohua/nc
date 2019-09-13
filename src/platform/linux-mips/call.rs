@@ -1210,19 +1210,23 @@ pub fn iopl() {
     // syscall0(SYS_IOPL);
 }
 
+/// Get I/O scheduling class and priority
+pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
+    unsafe {
+        let which = which as usize;
+        let who = who as usize;
+        syscall2(SYS_IOPRIO_GET, which, who).map(|ret| ret as i32)
+    }
+}
+
 /// Set I/O scheduling class and priority
-pub fn ioprio_get(which: i32, who: i32, ioprio: i32) -> Result<i32, Errno> {
+pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
     unsafe {
         let which = which as usize;
         let who = who as usize;
         let ioprio = ioprio as usize;
-        syscall3(SYS_IOPRIO_GET, which, who, ioprio).map(|ret| ret as i32)
+        syscall3(SYS_IOPRIO_SET, which, who, ioprio).map(|_ret| ())
     }
-}
-
-pub fn ioprio_set() {
-    core::unimplemented!();
-    // syscall0(SYS_IOPRIO_SET);
 }
 
 /// Attempts to cancel an iocb previously passed to io_submit.

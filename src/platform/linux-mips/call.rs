@@ -1288,9 +1288,23 @@ pub fn io_uring_setup() {
     // syscall0(SYS_IO_URING_SETUP);
 }
 
-pub fn ipc() {
-    core::unimplemented!();
-    // syscall0(SYS_IPC);
+/// System V IPC system calls.
+pub fn ipc(
+    call: u32,
+    first: i32,
+    second: i32,
+    third: i32,
+    ptr: usize,
+    fifth: isize,
+) -> Result<(), Errno> {
+    unsafe {
+        let call = call as usize;
+        let first = first as usize;
+        let second = second as usize;
+        let third = third as usize;
+        let fifth = fifth as usize;
+        syscall6(SYS_IPC, call, first, second, third, ptr, fifth).map(|_ret| ())
+    }
 }
 
 pub fn kcmp() {
@@ -1854,6 +1868,7 @@ pub fn mremap(
     }
 }
 
+/// System V message control operations.
 pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     unsafe {
         let msqid = msqid as usize;
@@ -1872,6 +1887,7 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
     }
 }
 
+/// Receive messages from a System V message queue.
 pub fn msgrcv(msqid: i32, msgq: usize, msgsz: size_t, msgtyp: isize) -> Result<ssize_t, Errno> {
     unsafe {
         let msqid = msqid as usize;

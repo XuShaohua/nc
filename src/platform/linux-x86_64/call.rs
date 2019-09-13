@@ -1715,6 +1715,7 @@ pub fn mremap(
     }
 }
 
+/// System V message control operations.
 pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     unsafe {
         let msqid = msqid as usize;
@@ -1733,6 +1734,7 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
     }
 }
 
+/// Receive messages from a System V message queue.
 pub fn msgrcv(msqid: i32, msgq: usize, msgsz: size_t, msgtyp: isize) -> Result<ssize_t, Errno> {
     unsafe {
         let msqid = msqid as usize;

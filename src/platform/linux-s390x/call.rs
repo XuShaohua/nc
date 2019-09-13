@@ -1031,9 +1031,19 @@ pub fn get_kernel_syms() {
     // syscall0(SYS_GET_KERNEL_SYMS);
 }
 
-pub fn get_mempolicy() {
-    core::unimplemented!();
-    // syscall0(SYS_GET_MEMPOLICY);
+/// Retrieve NUMA memory policy for a thread
+pub fn get_mempolicy(
+    mode: &mut i32,
+    nmask: &mut usize,
+    maxnode: usize,
+    addr: usize,
+    flags: usize,
+) -> Result<(), Errno> {
+    unsafe {
+        let mode_ptr = mode as *mut i32 as usize;
+        let nmask_ptr = nmask as *mut usize as usize;
+        syscall5(SYS_GET_MEMPOLICY, mode_ptr, nmask_ptr, maxnode, addr, flags).map(|_ret| ())
+    }
 }
 
 pub fn get_robust_list() {

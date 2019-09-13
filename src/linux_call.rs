@@ -2948,9 +2948,14 @@ pub fn init_module() {
     // syscall0(SYS_INIT_MODULE);
 }
 
-pub fn ioprio_get() {
-    core::unimplemented!();
-    // syscall0(SYS_IOPRIO_GET);
+/// Set I/O scheduling class and priority
+pub fn ioprio_get(which: i32, who: i32, ioprio: i32) -> Result<i32, Errno> {
+    unsafe {
+        let which = which as usize;
+        let who = who as usize;
+        let ioprio = ioprio as usize;
+        syscall3(SYS_IOPRIO_GET, which, who, ioprio).map(|ret| ret as i32)
+    }
 }
 
 pub fn ioprio_set() {

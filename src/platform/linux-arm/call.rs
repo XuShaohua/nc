@@ -1452,9 +1452,19 @@ pub fn memfd_create() {
     // syscall0(SYS_MEMFD_CREATE);
 }
 
-pub fn migrate_pages() {
-    core::unimplemented!();
-    // syscall0(SYS_MIGRATE_PAGES);
+/// Move all pages in a process to another set of nodes
+pub fn migrate_pages(
+    pid: pid_t,
+    maxnode: usize,
+    old_nodes: *const usize,
+    new_nodes: *const usize,
+) -> Result<isize, Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let old_nodes = old_nodes as usize;
+        let new_nodes = new_nodes as usize;
+        syscall4(SYS_MIGRATE_PAGES, pid, maxnode, old_nodes, new_nodes).map(|ret| ret as isize)
+    }
 }
 
 /// mincore() returns the memory residency status of the pages in the

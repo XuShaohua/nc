@@ -3720,9 +3720,12 @@ pub fn mq_timedsend_time64() {
     // syscall0(SYS_MQ_TIMEDSEND_TIME64);
 }
 
-pub fn nice() {
-    core::unimplemented!();
-    // syscall0(SYS_NICE);
+/// Change the priority of current process.
+pub fn nice(increment: i32) -> Result<i32, Errno> {
+    unsafe {
+        let increment = increment as usize;
+        syscall1(SYS_NICE, increment).map(|ret| ret as i32)
+    }
 }
 
 /// Deprecated

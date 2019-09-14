@@ -2006,9 +2006,12 @@ pub fn nfsservctl() {
     // syscall0(SYS_NFSSERVCTL);
 }
 
-pub fn nice() {
-    core::unimplemented!();
-    // syscall0(SYS_NICE);
+/// Change the priority of current process.
+pub fn nice(increment: i32) -> Result<i32, Errno> {
+    unsafe {
+        let increment = increment as usize;
+        syscall1(SYS_NICE, increment).map(|ret| ret as i32)
+    }
 }
 
 /// Open and possibly create a file.

@@ -1388,9 +1388,37 @@ pub fn mbind(
     }
 }
 
-pub fn membarrier() {
-    core::unimplemented!();
-    // syscall0(SYS_MEMBARRIER);
+/// sys_membarrier - issue memory barriers on a set of threads
+/// @cmd:   Takes command values defined in enum membarrier_cmd.
+/// @flags: Currently needs to be 0. For future extensions.
+///
+/// If this system call is not implemented, -ENOSYS is returned. If the
+/// command specified does not exist, not available on the running
+/// kernel, or if the command argument is invalid, this system call
+/// returns -EINVAL. For a given command, with flags argument set to 0,
+/// this system call is guaranteed to always return the same value until
+/// reboot.
+///
+/// All memory accesses performed in program order from each targeted thread
+/// is guaranteed to be ordered with respect to sys_membarrier(). If we use
+/// the semantic "barrier()" to represent a compiler barrier forcing memory
+/// accesses to be performed in program order across the barrier, and
+/// smp_mb() to represent explicit memory barriers forcing full memory
+/// ordering across the barrier, we have the following ordering table for
+/// each pair of barrier(), sys_membarrier() and smp_mb():
+///
+/// The pair ordering is detailed as (O: ordered, X: not ordered):
+///
+///                        barrier()   smp_mb() sys_membarrier()
+///        barrier()          X           X            O
+///        smp_mb()           X           O            O
+///        sys_membarrier()   O           O            O
+pub fn membarrier(cmd: i32, flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let cmd = cmd as usize;
+        let flags = flags as usize;
+        syscall2(SYS_MEMBARRIER, cmd, flags).map(|ret| ret as i32)
+    }
 }
 
 pub fn memfd_create() {

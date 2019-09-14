@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 #![no_std]
-#![cfg(feature = "nightly")]
-#![feature(asm, const_raw_ptr_deref, const_slice_len)]
+#![cfg_attr(nightly, feature(asm, const_raw_ptr_deref, const_slice_len))]
 
 #[macro_use]
 extern crate alloc;

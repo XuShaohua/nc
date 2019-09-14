@@ -2606,9 +2606,20 @@ pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
     }
 }
 
-pub fn sched_getattr() {
-    core::unimplemented!();
-    // syscall0(SYS_SCHED_GETATTR);
+/// Get scheduling policy and attributes
+pub fn sched_getattr(
+    pid: pid_t,
+    attr: &mut sched_attr_t,
+    size: u32,
+    flags: u32,
+) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let attr_ptr = attr as *mut sched_attr_t as usize;
+        let size = size as usize;
+        let flags = flags as usize;
+        syscall4(SYS_SCHED_GETATTR, pid, attr_ptr, size, flags).map(|_ret| ())
+    }
 }
 
 /// Get scheduling paramters.
@@ -2664,12 +2675,12 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
 }
 
 /// Set the RT priority of a thread.
-pub fn sched_setattr(pid: pid_t, uattr: &mut sched_attr_t, flags: u32) -> Result<(), Errno> {
+pub fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<(), Errno> {
     unsafe {
         let pid = pid as usize;
-        let uattr_ptr = uattr as *mut sched_attr_t as usize;
+        let attr_ptr = attr as *mut sched_attr_t as usize;
         let flags = flags as usize;
-        syscall3(SYS_SCHED_SETATTR, pid, uattr_ptr, flags).map(|_ret| ())
+        syscall3(SYS_SCHED_SETATTR, pid, attr_ptr, flags).map(|_ret| ())
     }
 }
 

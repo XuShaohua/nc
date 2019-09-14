@@ -2046,9 +2046,20 @@ pub fn preadv2(
     }
 }
 
-pub fn prlimit64() {
-    core::unimplemented!();
-    // syscall0(SYS_PRLIMIT64);
+/// Get/set the resource limits of an arbitary process.
+pub fn prlimit64(
+    pid: pid_t,
+    resource: i32,
+    new_limit: &rlimit_t,
+    old_limit: &mut rlimit_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let resource = resource as usize;
+        let new_limit_ptr = new_limit as *const rlimit_t as usize;
+        let old_limit_ptr = old_limit as *mut rlimit_t as usize;
+        syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(|_ret| ())
+    }
 }
 
 /// Transfer data between process address spaces
@@ -2790,6 +2801,7 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     }
 }
 
+/// Set program scheduling priority.
 pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
     unsafe {
         let which = which as usize;

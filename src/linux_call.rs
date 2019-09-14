@@ -2851,9 +2851,15 @@ pub fn fcntl() {
     // syscall0(SYS_FCNTL);
 }
 
-pub fn finit_module() {
-    core::unimplemented!();
-    // syscall0(SYS_FINIT_MODULE);
+/// Load a kernel module.
+pub fn finit_module(fd: i32, param_values: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let param_values = CString::new(param_values);
+        let param_values_ptr = param_values.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall3(SYS_FINIT_MODULE, fd, param_values_ptr, flags).map(|_ret| ())
+    }
 }
 
 /// Set parameters and trigger actions on a context.

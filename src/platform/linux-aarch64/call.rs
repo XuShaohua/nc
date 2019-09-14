@@ -196,13 +196,14 @@ pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errn
 
 /// Create a child process.
 pub fn clone(
-    clone_flags: usize,
+    clone_flags: i32,
     newsp: usize,
     parent_tid: &mut i32,
     child_tid: &mut i32,
     tls: usize,
 ) -> Result<pid_t, Errno> {
     unsafe {
+        let clone_flags = clone_flags as usize;
         let parent_tid_ptr = parent_tid as *mut i32 as usize;
         let child_tid_ptr = child_tid as *mut i32 as usize;
         syscall5(

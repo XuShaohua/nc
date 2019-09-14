@@ -1,3 +1,5 @@
+use super::types::*;
+
 /// kexec system call -  It loads the new kernel to boot into.
 /// kexec does not sync, or unmount filesystems so if you need
 /// that to happen you need to do that yourself.

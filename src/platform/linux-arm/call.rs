@@ -348,9 +348,14 @@ pub fn creat(filename: &str, mode: mode_t) -> Result<i32, Errno> {
     }
 }
 
-pub fn delete_module() {
-    core::unimplemented!();
-    // syscall0(SYS_DELETE_MODULE);
+/// Unlock a kernel module.
+pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall2(SYS_DELETE_MODULE, name_ptr, flags).map(|_ret| ())
+    }
 }
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available

@@ -1278,6 +1278,31 @@ pub fn kcmp(pid1: pid_t, pid2: pid_t, type_: i32, idx1: usize, idx2: usize) -> R
 
 /// Load a new kernel for later execution.
 pub fn kexec_file_load(
+    kernel_fd: i32,
+    initrd_fd: i32,
+    cmdline: &str,
+    flags: usize,
+) -> Result<(), Errno> {
+    unsafe {
+        let kernel_fd = kernel_fd as usize;
+        let initrd_fd = initrd_fd as usize;
+        let cmdline_len = cmdline.len();
+        let cmdline = CString::new(cmdline);
+        let cmdline_ptr = cmdline.as_ptr() as usize;
+        syscall5(
+            SYS_KEXEC_FILE_LOAD,
+            kernel_fd,
+            initrd_fd,
+            cmdline_ptr,
+            cmdline_len,
+            flags,
+        )
+        .map(|_ret| ())
+    }
+}
+
+/// Load a new kernel for later execution.
+pub fn kexec_load(
     entry: usize,
     nr_segments: usize,
     segments: &mut kexec_segment_t,
@@ -1285,13 +1310,8 @@ pub fn kexec_file_load(
 ) -> Result<(), Errno> {
     unsafe {
         let segments_ptr = segments as *mut kexec_segment_t as usize;
-        syscall4(SYS_KEXEC_FILE_LOAD, entry, nr_segments, segments_ptr, flags).map(|_ret| ())
+        syscall4(SYS_KEXEC_LOAD, entry, nr_segments, segments_ptr, flags).map(|_ret| ())
     }
-}
-
-pub fn kexec_load() {
-    core::unimplemented!();
-    // syscall0(SYS_KEXEC_LOAD);
 }
 
 /// Manipulate the kernel's key management facility.

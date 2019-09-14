@@ -8,16 +8,19 @@ fn build_stable() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
     let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
+    let obj_file = format!("{}/syscall.o", out_dir);
+    println!("syscall file: {}", syscall_file);
+    println!("obj file: {}", obj_file);
 
     // TODO(Shaohua): Read compiler name from environment.
     Command::new("gcc")
-        .args(&["src/syscall.c", "-c", "-fPIC", "-o"])
-        .arg(&format!("{}/syscall.o", out_dir))
+        .args(&[&syscall_file, "-c", "-fPIC", "-o"])
+        .arg(&obj_file)
         .status()
         .unwrap();
 
     Command::new("ar")
-        .args(&["crus", "libsyscall.a", "syscall.o"])
+        .args(&["crs", "libsyscall.a", "syscall.o"])
         .current_dir(&Path::new(&out_dir))
         .status()
         .unwrap();

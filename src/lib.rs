@@ -1,11 +1,12 @@
 #![allow(dead_code)]
 #![no_std]
-#![cfg_attr(nightly, feature(asm, const_raw_ptr_deref, const_slice_len))]
+#![cfg_attr(nightly, feature(asm))]
 
 #[macro_use]
 extern crate alloc;
 
 pub mod c_str;
+mod syscalls;
 
 #[cfg(target_os = "freebsd")]
 #[path = "platform/freebsd-types/mod.rs"]
@@ -66,8 +67,6 @@ mod platform;
 #[cfg(all(target_os = "netbsd", target_arch = "x86_64"))]
 #[path = "platform/netbsd-x86_64/mod.rs"]
 mod platform;
-
-mod syscalls;
 
 // Re-export functions
 pub use platform::*;

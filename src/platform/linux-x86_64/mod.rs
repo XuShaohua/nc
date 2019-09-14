@@ -2,6 +2,8 @@ pub mod call;
 pub mod errno;
 pub mod sysno;
 
+#[cfg(not(nightly))]
+use crate::syscalls;
 pub use call::*;
 pub use errno::*;
 pub use sysno::*;
@@ -22,7 +24,7 @@ pub fn check_errno(ret: usize) -> Result<usize, Errno> {
 #[cfg(not(nightly))]
 #[inline(always)]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall0(n))
 }
 
 #[cfg(nightly)]
@@ -42,7 +44,7 @@ pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
 #[cfg(not(nightly))]
 #[inline(always)]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall1(n, a1))
 }
 
 #[cfg(nightly)]
@@ -63,7 +65,7 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
 #[cfg(not(nightly))]
 #[inline(always)]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall2(n, a1, a2))
 }
 
 #[cfg(nightly)]
@@ -85,7 +87,7 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
 #[cfg(not(nightly))]
 #[inline(always)]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall3(n, a1, a2, a3))
 }
 
 #[cfg(nightly)]
@@ -114,7 +116,7 @@ pub unsafe fn syscall4(
     a3: usize,
     a4: usize,
 ) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall4(n, a1, a2, a3, a4))
 }
 
 #[cfg(nightly)]
@@ -151,7 +153,7 @@ pub unsafe fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall5(n, a1, a2, a3, a4, a5))
 }
 
 #[cfg(nightly)]
@@ -191,7 +193,7 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    return Ok(0);
+    check_errno(syscalls::__syscall6(n, a1, a2, a3, a4, a5, a6))
 }
 
 #[cfg(nightly)]

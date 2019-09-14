@@ -36,18 +36,41 @@ impl CString {
         }
     }
 
+    pub fn into_bytes_with_nul(self) -> Vec<u8> {
+        self.into_inner().into_vec()
+    }
+
     #[inline]
-    const fn as_bytes_with_nul(&self) -> &[u8] {
+    pub fn as_bytes(&self) -> &[u8] {
+        &self.inner[..self.inner.len() - 1]
+    }
+
+    #[inline]
+    pub fn as_bytes_with_nul(&self) -> &[u8] {
         &self.inner
     }
 
     #[inline]
-    pub const fn len(&self) -> usize {
+    pub fn as_c_str(&self) -> &CStr {
+        &*self
+    }
+
+    pub fn into_boxed_c_str(self) -> Box<CStr> {
+        unsafe { Box::from_raw(Box::into_raw(self.into_inner()) as *mut CStr) }
+    }
+
+    fn into_inner(self) -> Box<[u8]> {
+        let this = mem::ManuallyDrop::new(self);
+        unsafe { ptr::read(&this.inner) }
+    }
+
+    #[inline]
+    pub fn len(&self) -> usize {
         self.as_bytes_with_nul().len() - 1
     }
 
     #[inline]
-    pub const fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         // TODO(Shaohua): Check null bytes
         self.as_bytes_with_nul().len() == 0
     }
@@ -70,11 +93,6 @@ impl CString {
         let _nul = vec.pop();
         vec
     }
-
-    fn into_inner(self) -> Box<[u8]> {
-        let this = mem::ManuallyDrop::new(self);
-        unsafe { ptr::read(&this.inner) }
-    }
 }
 
 impl CStr {
@@ -82,7 +100,8 @@ impl CStr {
         self.inner.as_ptr()
     }
 
-    pub const unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
+    #[inline]
+    pub unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
         &*(bytes as *const [u8] as *const CStr)
     }
 

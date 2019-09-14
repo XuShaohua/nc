@@ -3666,9 +3666,14 @@ pub fn waitid(
     }
 }
 
-pub fn waitpid() {
-    core::unimplemented!();
-    // syscall0(SYS_WAITPID);
+/// Wait for process to chane state.
+pub fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_t, Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let status_ptr = status as *mut i32 as usize;
+        let options = options as usize;
+        syscall3(SYS_WAITPID, pid, status_ptr, options).map(|ret| ret as pid_t)
+    }
 }
 
 /// Write to a file descriptor.

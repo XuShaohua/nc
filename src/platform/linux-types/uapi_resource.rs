@@ -73,11 +73,16 @@ pub const PRIO_USER: i32 = 2;
 
 /// Limit the stack by to some sane default: root can always
 /// increase this limit if needed..  8MB seems reasonable.
-pub const _STK_LIM: i32 = (8 * 1024 * 1024);
+pub const _STK_LIM: usize = (8 * 1024 * 1024);
 
-/// GPG2 wants 64kB of mlocked memory, to make sure pass phrases
-/// and other sensitive information are never written to disk.
-pub const MLOCK_LIMIT: i32 = 	((PAGE_SIZE > 64*1024) ? PAGE_SIZE : 64*1024);
+// GPG2 wants 64kB of mlocked memory, to make sure pass phrases
+// and other sensitive information are never written to disk.
+// TODO(Shaohua):
+//pub const MLOCK_LIMIT: usize = if PAGE_SIZE > (64 * 1024 as usize) {
+//    PAGE_SIZE
+//} else {
+//    64 * 1024
+//};
 
 // Due to binary compatibility, the actual resource numbers
 // may be different for different linux versions..

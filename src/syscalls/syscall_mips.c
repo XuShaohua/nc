@@ -1,3 +1,5 @@
+#include "syscall.h"
+
 #define __SYSCALL_LL_E(x) \
 ((union { long long ll; long l[2]; }){ .ll = x }).l[0], \
 ((union { long long ll; long l[2]; }){ .ll = x }).l[1]
@@ -5,7 +7,7 @@
 
 #define SYSCALL_RLIM_INFINITY (-1UL/2)
 
-static inline long __syscall0(long n)
+inline long __syscall0(long n)
 {
 	register long r7 __asm__("$7");
 	register long r2 __asm__("$2");
@@ -17,7 +19,7 @@ static inline long __syscall0(long n)
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall1(long n, long a)
+inline long __syscall1(long n, long a)
 {
 	register long r4 __asm__("$4") = a;
 	register long r7 __asm__("$7");
@@ -31,7 +33,7 @@ static inline long __syscall1(long n, long a)
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall2(long n, long a, long b)
+inline long __syscall2(long n, long a, long b)
 {
 	register long r4 __asm__("$4") = a;
 	register long r5 __asm__("$5") = b;
@@ -46,7 +48,7 @@ static inline long __syscall2(long n, long a, long b)
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall3(long n, long a, long b, long c)
+inline long __syscall3(long n, long a, long b, long c)
 {
 	register long r4 __asm__("$4") = a;
 	register long r5 __asm__("$5") = b;
@@ -62,7 +64,7 @@ static inline long __syscall3(long n, long a, long b, long c)
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall4(long n, long a, long b, long c, long d)
+inline long __syscall4(long n, long a, long b, long c, long d)
 {
 	register long r4 __asm__("$4") = a;
 	register long r5 __asm__("$5") = b;
@@ -78,7 +80,7 @@ static inline long __syscall4(long n, long a, long b, long c, long d)
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall5(long n, long a, long b, long c, long d, long e)
+inline long __syscall5(long n, long a, long b, long c, long d, long e)
 {
 	register long r4 __asm__("$4") = a;
 	register long r5 __asm__("$5") = b;
@@ -97,7 +99,7 @@ static inline long __syscall5(long n, long a, long b, long c, long d, long e)
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
+inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
 {
 	register long r4 __asm__("$4") = a;
 	register long r5 __asm__("$5") = b;
@@ -117,7 +119,7 @@ static inline long __syscall6(long n, long a, long b, long c, long d, long e, lo
 	return r7 ? -r2 : r2;
 }
 
-static inline long __syscall7(long n, long a, long b, long c, long d, long e, long f, long g)
+inline long __syscall7(long n, long a, long b, long c, long d, long e, long f, long g)
 {
 	register long r4 __asm__("$4") = a;
 	register long r5 __asm__("$5") = b;

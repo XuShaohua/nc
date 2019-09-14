@@ -1,3 +1,5 @@
+#include "syscall.h"
+
 #define __SYSCALL_LL_E(x) \
 ((union { long long ll; long l[2]; }){ .ll = x }).l[0], \
 ((union { long long ll; long l[2]; }){ .ll = x }).l[1]
@@ -12,28 +14,28 @@
 #define SYSCALL_INSNS_12 "xchg %%ebx,%%edx ; " SYSCALL_INSNS " ; xchg %%ebx,%%edx"
 #define SYSCALL_INSNS_34 "xchg %%ebx,%%edi ; " SYSCALL_INSNS " ; xchg %%ebx,%%edi"
 
-static inline long __syscall0(long n)
+inline long __syscall0(long n)
 {
 	unsigned long __ret;
 	__asm__ __volatile__ (SYSCALL_INSNS : "=a"(__ret) : "a"(n) : "memory");
 	return __ret;
 }
 
-static inline long __syscall1(long n, long a1)
+inline long __syscall1(long n, long a1)
 {
 	unsigned long __ret;
 	__asm__ __volatile__ (SYSCALL_INSNS_12 : "=a"(__ret) : "a"(n), "d"(a1) : "memory");
 	return __ret;
 }
 
-static inline long __syscall2(long n, long a1, long a2)
+inline long __syscall2(long n, long a1, long a2)
 {
 	unsigned long __ret;
 	__asm__ __volatile__ (SYSCALL_INSNS_12 : "=a"(__ret) : "a"(n), "d"(a1), "c"(a2) : "memory");
 	return __ret;
 }
 
-static inline long __syscall3(long n, long a1, long a2, long a3)
+inline long __syscall3(long n, long a1, long a2, long a3)
 {
 	unsigned long __ret;
 #if !defined(__PIC__) || !defined(BROKEN_EBX_ASM)
@@ -44,7 +46,7 @@ static inline long __syscall3(long n, long a1, long a2, long a3)
 	return __ret;
 }
 
-static inline long __syscall4(long n, long a1, long a2, long a3, long a4)
+inline long __syscall4(long n, long a1, long a2, long a3, long a4)
 {
 	unsigned long __ret;
 #if !defined(__PIC__) || !defined(BROKEN_EBX_ASM)
@@ -55,7 +57,7 @@ static inline long __syscall4(long n, long a1, long a2, long a3, long a4)
 	return __ret;
 }
 
-static inline long __syscall5(long n, long a1, long a2, long a3, long a4, long a5)
+inline long __syscall5(long n, long a1, long a2, long a3, long a4, long a5)
 {
 	unsigned long __ret;
 #if !defined(__PIC__) || !defined(BROKEN_EBX_ASM)
@@ -68,7 +70,7 @@ static inline long __syscall5(long n, long a1, long a2, long a3, long a4, long a
 	return __ret;
 }
 
-static inline long __syscall6(long n, long a1, long a2, long a3, long a4, long a5, long a6)
+inline long __syscall6(long n, long a1, long a2, long a3, long a4, long a5, long a6)
 {
 	unsigned long __ret;
 #if !defined(__PIC__) || !defined(BROKEN_EBX_ASM)

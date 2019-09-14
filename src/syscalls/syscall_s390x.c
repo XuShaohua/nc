@@ -1,3 +1,5 @@
+#include "syscall.h"
+
 #define __SYSCALL_LL_E(x) (x)
 #define __SYSCALL_LL_O(x) (x)
 
@@ -7,21 +9,21 @@
 	return r2; \
 	} while (0)
 
-static inline long __syscall0(long n)
+inline long __syscall0(long n)
 {
 	register long r1 __asm__("r1") = n;
 	register long r2 __asm__("r2");
 	__asm_syscall("=r"(r2), "r"(r1));
 }
 
-static inline long __syscall1(long n, long a)
+inline long __syscall1(long n, long a)
 {
 	register long r1 __asm__("r1") = n;
 	register long r2 __asm__("r2") = a;
 	__asm_syscall("+r"(r2), "r"(r1));
 }
 
-static inline long __syscall2(long n, long a, long b)
+inline long __syscall2(long n, long a, long b)
 {
 	register long r1 __asm__("r1") = n;
 	register long r2 __asm__("r2") = a;
@@ -29,7 +31,7 @@ static inline long __syscall2(long n, long a, long b)
 	__asm_syscall("+r"(r2), "r"(r1), "r"(r3));
 }
 
-static inline long __syscall3(long n, long a, long b, long c)
+inline long __syscall3(long n, long a, long b, long c)
 {
 	register long r1 __asm__("r1") = n;
 	register long r2 __asm__("r2") = a;
@@ -38,7 +40,7 @@ static inline long __syscall3(long n, long a, long b, long c)
 	__asm_syscall("+r"(r2), "r"(r1), "r"(r3), "r"(r4));
 }
 
-static inline long __syscall4(long n, long a, long b, long c, long d)
+inline long __syscall4(long n, long a, long b, long c, long d)
 {
 	register long r1 __asm__("r1") = n;
 	register long r2 __asm__("r2") = a;
@@ -48,7 +50,7 @@ static inline long __syscall4(long n, long a, long b, long c, long d)
 	__asm_syscall("+r"(r2), "r"(r1), "r"(r3), "r"(r4), "r"(r5));
 }
 
-static inline long __syscall5(long n, long a, long b, long c, long d, long e)
+inline long __syscall5(long n, long a, long b, long c, long d, long e)
 {
 	register long r1 __asm__("r1") = n;
 	register long r2 __asm__("r2") = a;
@@ -59,7 +61,7 @@ static inline long __syscall5(long n, long a, long b, long c, long d, long e)
 	__asm_syscall("+r"(r2), "r"(r1), "r"(r3), "r"(r4), "r"(r5), "r"(r6));
 }
 
-static inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
+inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
 {
 	if (n == SYS_mmap) return __syscall1(n, (long)(long[]){a,b,c,d,e,f});
 

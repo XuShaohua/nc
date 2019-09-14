@@ -1,7 +1,9 @@
+#include "syscall.h"
+
 #define __SYSCALL_LL_E(x) (x)
 #define __SYSCALL_LL_O(x) (x)
 
-static inline long __syscall0(long n)
+inline long __syscall0(long n)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3");
@@ -11,7 +13,7 @@ static inline long __syscall0(long n)
 	return r3;
 }
 
-static inline long __syscall1(long n, long a)
+inline long __syscall1(long n, long a)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3") = a;
@@ -21,7 +23,7 @@ static inline long __syscall1(long n, long a)
 	return r3;
 }
 
-static inline long __syscall2(long n, long a, long b)
+inline long __syscall2(long n, long a, long b)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3") = a;
@@ -32,7 +34,7 @@ static inline long __syscall2(long n, long a, long b)
 	return r3;
 }
 
-static inline long __syscall3(long n, long a, long b, long c)
+inline long __syscall3(long n, long a, long b, long c)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3") = a;
@@ -44,7 +46,7 @@ static inline long __syscall3(long n, long a, long b, long c)
 	return r3;
 }
 
-static inline long __syscall4(long n, long a, long b, long c, long d)
+inline long __syscall4(long n, long a, long b, long c, long d)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3") = a;
@@ -57,7 +59,7 @@ static inline long __syscall4(long n, long a, long b, long c, long d)
 	return r3;
 }
 
-static inline long __syscall5(long n, long a, long b, long c, long d, long e)
+inline long __syscall5(long n, long a, long b, long c, long d, long e)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3") = a;
@@ -71,7 +73,7 @@ static inline long __syscall5(long n, long a, long b, long c, long d, long e)
 	return r3;
 }
 
-static inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
+inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
 {
 	register long r0 __asm__("r0") = n;
 	register long r3 __asm__("r3") = a;

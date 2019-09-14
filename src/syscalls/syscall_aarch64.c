@@ -1,3 +1,5 @@
+#include "syscall.h"
+
 #define __SYSCALL_LL_E(x) (x)
 #define __SYSCALL_LL_O(x) (x)
 
@@ -7,21 +9,21 @@
 	return x0; \
 	} while (0)
 
-static inline long __syscall0(long n)
+inline long __syscall0(long n)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0");
 	__asm_syscall("r"(x8));
 }
 
-static inline long __syscall1(long n, long a)
+inline long __syscall1(long n, long a)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0") = a;
 	__asm_syscall("r"(x8), "0"(x0));
 }
 
-static inline long __syscall2(long n, long a, long b)
+inline long __syscall2(long n, long a, long b)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0") = a;
@@ -29,7 +31,7 @@ static inline long __syscall2(long n, long a, long b)
 	__asm_syscall("r"(x8), "0"(x0), "r"(x1));
 }
 
-static inline long __syscall3(long n, long a, long b, long c)
+inline long __syscall3(long n, long a, long b, long c)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0") = a;
@@ -38,7 +40,7 @@ static inline long __syscall3(long n, long a, long b, long c)
 	__asm_syscall("r"(x8), "0"(x0), "r"(x1), "r"(x2));
 }
 
-static inline long __syscall4(long n, long a, long b, long c, long d)
+inline long __syscall4(long n, long a, long b, long c, long d)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0") = a;
@@ -48,7 +50,7 @@ static inline long __syscall4(long n, long a, long b, long c, long d)
 	__asm_syscall("r"(x8), "0"(x0), "r"(x1), "r"(x2), "r"(x3));
 }
 
-static inline long __syscall5(long n, long a, long b, long c, long d, long e)
+inline long __syscall5(long n, long a, long b, long c, long d, long e)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0") = a;
@@ -59,7 +61,7 @@ static inline long __syscall5(long n, long a, long b, long c, long d, long e)
 	__asm_syscall("r"(x8), "0"(x0), "r"(x1), "r"(x2), "r"(x3), "r"(x4));
 }
 
-static inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
+inline long __syscall6(long n, long a, long b, long c, long d, long e, long f)
 {
 	register long x8 __asm__("x8") = n;
 	register long x0 __asm__("x0") = a;

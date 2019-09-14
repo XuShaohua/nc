@@ -1,4 +1,5 @@
 #[cfg(not(nightly))]
+#[link(name = "syscall", kind = "static")]
 extern "C" {
     #[inline]
     pub fn __syscall0(n: usize) -> usize;

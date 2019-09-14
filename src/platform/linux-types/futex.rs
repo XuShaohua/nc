@@ -73,6 +73,7 @@ pub struct robust_list_head_t {
 }
 
 /// Are there any waiters for this robust futex:
+#[allow(overflowing_literals)]
 pub const FUTEX_WAITERS: i32 = 0x80000000;
 
 /// The kernel signals via this bit that a thread holding a futex
@@ -90,6 +91,7 @@ pub const ROBUST_LIST_LIMIT: i32 = 2048;
 
 /// bitset with all bits set for the FUTEX_xxx_BITSET OPs to request a
 /// match of any bit.
+#[allow(overflowing_literals)]
 pub const FUTEX_BITSET_MATCH_ANY: i32 = 0xffffffff;
 
 /// *(int *)UADDR2 = OPARG;

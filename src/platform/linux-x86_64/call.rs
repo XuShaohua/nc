@@ -2936,9 +2936,13 @@ pub fn set_mempolicy(mode: i32, nmask: *const usize, maxnode: usize) -> Result<(
     }
 }
 
-pub fn set_robust_list() {
-    core::unimplemented!();
-    // syscall0(SYS_SET_ROBUST_LIST);
+/// Set the robust-futex list head of a task.
+pub fn set_robust_list(heads: &mut [robust_list_head_t]) -> Result<(), Errno> {
+    unsafe {
+        let heads_ptr = heads.as_mut_ptr() as usize;
+        let len = heads.len();
+        syscall2(SYS_SET_ROBUST_LIST, heads_ptr, len).map(|_ret| ())
+    }
 }
 
 pub fn set_thread_area() {

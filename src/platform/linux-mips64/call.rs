@@ -243,9 +243,27 @@ pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errn
     }
 }
 
-pub fn clone() {
-    core::unimplemented!();
-    // syscall0(SYS_CLONE);
+/// Create a child process.
+pub fn clone(
+    clone_flags: usize,
+    newsp: usize,
+    parent_tid: &mut i32,
+    child_tid: &mut i32,
+    tls: usize,
+) -> Result<pid_t, Errno> {
+    unsafe {
+        let parent_tid_ptr = parent_tid as *mut i32 as usize;
+        let child_tid_ptr = child_tid as *mut i32 as usize;
+        syscall5(
+            SYS_CLONE,
+            clone_flags,
+            newsp,
+            parent_tid_ptr,
+            child_tid_ptr,
+            tls,
+        )
+        .map(|ret| ret as pid_t)
+    }
 }
 
 /// Close a file descriptor.
@@ -2825,9 +2843,12 @@ pub fn set_thread_area() {
     // syscall0(SYS_SET_THREAD_AREA);
 }
 
-pub fn set_tid_address() {
-    core::unimplemented!();
-    // syscall0(SYS_SET_TID_ADDRESS);
+/// Set pointer to thread ID.
+pub fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
+    unsafe {
+        let tid_ptr = tid as *mut i32 as usize;
+        syscall1(SYS_SET_TID_ADDRESS, tid_ptr).map(|ret| ret as isize)
+    }
 }
 
 /// Attach the System V shared memory segment.

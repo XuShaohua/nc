@@ -1116,9 +1116,17 @@ pub fn kcmp(pid1: pid_t, pid2: pid_t, type_: i32, idx1: usize, idx2: usize) -> R
     }
 }
 
-pub fn kexec_file_load() {
-    core::unimplemented!();
-    // syscall0(SYS_KEXEC_FILE_LOAD);
+/// Load a new kernel for later execution.
+pub fn kexec_file_load(
+    entry: usize,
+    nr_segments: usize,
+    segments: &mut kexec_segment_t,
+    flags: usize,
+) -> Result<(), Errno> {
+    unsafe {
+        let segments_ptr = segments as *mut kexec_segment_t as usize;
+        syscall4(SYS_KEXEC_FILE_LOAD, entry, nr_segments, segments_ptr, flags).map(|_ret| ())
+    }
 }
 
 pub fn kexec_load() {

@@ -39,7 +39,7 @@ mirrors do not support non-x86 architectures
 - [x] remove little endians
 - [ ] linux socket example
 - [ ] big endian/litten endian bitwise integers
-- [ ] cstring issue
-- [ ] support stable version
+- [x] cstring issue
+- [x] support stable version
 - [x] derive Clone, Default traits
 - [x] fix stat_t type error

@@ -1138,9 +1138,13 @@ pub fn idle() {
     // syscall0(SYS_IDLE);
 }
 
-pub fn init_module() {
-    core::unimplemented!();
-    // syscall0(SYS_INIT_MODULE);
+/// Load a kernel module.
+pub fn init_module(module_image: usize, len: usize, param_values: &str) -> Result<(), Errno> {
+    unsafe {
+        let param_values = CString::new(param_values);
+        let param_values_ptr = param_values.as_ptr() as usize;
+        syscall3(SYS_INIT_MODULE, module_image, len, param_values_ptr).map(|_ret| ())
+    }
 }
 
 /// Add a watch to an initialized inotify instance.

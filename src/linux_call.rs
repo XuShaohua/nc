@@ -4026,9 +4026,12 @@ pub fn statfs64(filename: &str, buf: &mut statfs64_t) -> Result<(), Errno> {
     }
 }
 
-pub fn stime() {
-    core::unimplemented!();
-    // syscall0(SYS_STIME);
+/// Set time.
+pub fn stime(t: &time_t) -> Result<(), Errno> {
+    unsafe {
+        let t_ptr = t as *const time_t as usize;
+        syscall1(SYS_STIME, t_ptr).map(|_ret| ())
+    }
 }
 
 pub fn stty() {

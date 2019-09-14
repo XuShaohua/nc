@@ -653,9 +653,33 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     }
 }
 
-pub fn futex() {
-    core::unimplemented!();
-    // syscall0(SYS_FUTEX);
+/// Fast user-space locking.
+pub fn futex(
+    uaddr: &mut i32,
+    futex_op: i32,
+    val: u32,
+    timeout: &mut timespec_t,
+    uaddr2: &mut i32,
+    val3: i32,
+) -> Result<i32, Errno> {
+    unsafe {
+        let uaddr_ptr = uaddr as *mut i32 as usize;
+        let futex_op = futex_op as usize;
+        let val = val as usize;
+        let timeout_ptr = timeout as *mut timespec_t as usize;
+        let uaddr2_ptr = uaddr2 as *mut i32 as usize;
+        let val3 = val3 as usize;
+        syscall6(
+            SYS_FUTEX,
+            uaddr_ptr,
+            futex_op,
+            val,
+            timeout_ptr,
+            uaddr2_ptr,
+            val3,
+        )
+        .map(|ret| ret as i32)
+    }
 }
 
 /// Determine CPU and NUMA node on which the calling thread is running.
@@ -938,9 +962,19 @@ pub fn get_mempolicy(
     }
 }
 
-pub fn get_robust_list() {
-    core::unimplemented!();
-    // syscall0(SYS_GET_ROBUST_LIST);
+/// Get list of robust futexes.
+// TODO(Shaohua): Fix argument type.
+pub fn get_robust_list(
+    pid: pid_t,
+    head_ptr: &mut usize,
+    len_ptr: &mut size_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let head_ptr = head_ptr as *mut usize as usize;
+        let len_ptr = len_ptr as *mut size_t as usize;
+        syscall3(SYS_GET_ROBUST_LIST, pid, head_ptr, len_ptr).map(|_ret| ())
+    }
 }
 
 pub fn init_module() {

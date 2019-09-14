@@ -2654,9 +2654,14 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
     }
 }
 
-pub fn sched_setattr() {
-    core::unimplemented!();
-    // syscall0(SYS_SCHED_SETATTR);
+/// Set the RT priority of a thread.
+pub fn sched_setattr(pid: pid_t, uattr: &mut sched_attr_t, flags: u32) -> Result<(), Errno> {
+    unsafe {
+        let pid = pid as usize;
+        let uattr_ptr = uattr as *mut sched_attr_t as usize;
+        let flags = flags as usize;
+        syscall3(SYS_SCHED_SETATTR, pid, uattr_ptr, flags).map(|_ret| ())
+    }
 }
 
 /// Set scheduling paramters.

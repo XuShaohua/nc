@@ -1293,9 +1293,24 @@ pub fn io_setup(nr_events: u32, ctx: &mut aio_context_t) -> Result<(), Errno> {
     }
 }
 
-pub fn io_submit() {
-    core::unimplemented!();
-    // syscall0(SYS_IO_SUBMIT);
+/// Queue the nr iocbs pointed to by iocbpp for processing.  Returns
+/// the number of iocbs queued.  May return -EINVAL if the aio_context
+/// specified by ctx_id is invalid, if nr is < 0, if the iocb at
+/// *iocbpp[0] is not properly initialized, if the operation specified
+/// is invalid for the file descriptor in the iocb.  May fail with
+/// -EFAULT if any of the data structures point to invalid data.  May
+/// fail with -EBADF if the file descriptor specified in the first
+/// iocb is invalid.  May fail with -EAGAIN if insufficient resources
+/// are available to queue any iocbs.  Will return 0 if nr is 0.  Will
+/// fail with -ENOSYS if not implemented.
+// TODO(Shaohua): type of iocbpp is struct iocb**
+pub fn io_submit(ctx: &aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
+    unsafe {
+        let ctx_ptr = ctx as *const aio_context_t as usize;
+        let nr = nr as usize;
+        let iocb_ptr = iocb as *mut iocb_t as usize;
+        syscall3(SYS_IO_SUBMIT, ctx_ptr, nr, iocb_ptr).map(|ret| ret as i32)
+    }
 }
 
 pub fn io_uring_enter() {

@@ -4154,9 +4154,20 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     }
 }
 
-pub fn _llseek() {
-    core::unimplemented!();
-    // syscall0(SYS__LLSEEK);
+/// Reposition read/write file offset.
+pub fn _llseek(
+    fd: i32,
+    offset_high: usize,
+    offset_low: usize,
+    result: &mut loff_t,
+    whence: i32,
+) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let result_ptr = result as *mut loff_t as usize;
+        let whence = whence as usize;
+        syscall5(SYS__LLSEEK(fd, offset_high, offset_low, result_ptr, whence).map(|_ret| ()))
+    }
 }
 
 pub fn _newselect() {

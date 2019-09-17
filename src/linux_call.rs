@@ -4079,9 +4079,12 @@ pub fn signal() {
     // syscall0(SYS_SIGNAL);
 }
 
-pub fn sigpending() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGPENDING);
+/// Examine pending signals.
+pub fn sigpending(set: &mut sigset_t) -> Result<(), Errno> {
+    unsafe {
+        let set_ptr = set as *mut sigset_t as usize;
+        syscall1(SYS_SIGPENDING, set_ptr).map(|_ret| ())
+    }
 }
 
 pub fn sigprocmask() {

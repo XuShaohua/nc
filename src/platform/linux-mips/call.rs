@@ -3350,9 +3350,12 @@ pub fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
     }
 }
 
-pub fn sigpending() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGPENDING);
+/// Examine pending signals.
+pub fn sigpending(set: &mut sigset_t) -> Result<(), Errno> {
+    unsafe {
+        let set_ptr = set as *mut sigset_t as usize;
+        syscall1(SYS_SIGPENDING, set_ptr).map(|_ret| ())
+    }
 }
 
 pub fn sigprocmask() {

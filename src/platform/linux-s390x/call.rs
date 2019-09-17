@@ -2561,9 +2561,20 @@ pub fn rseq() {
     // syscall0(SYS_RSEQ);
 }
 
-pub fn rt_sigaction() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_SIGACTION);
+/// Examine and change a signal action.
+pub fn rt_sigaction(
+    sig: i32,
+    act: &sigaction_t,
+    old_act: &mut sigaction_t,
+    sigsetsize: size_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let sig = sig as usize;
+        let act_ptr = act as *const sigaction_t as usize;
+        let old_act_ptr = old_act as *mut sigaction_t as usize;
+        let sigsetsize = sigsetsize as usize;
+        syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigsetsize).map(|_ret| ())
+    }
 }
 
 /// Examine pending signals.

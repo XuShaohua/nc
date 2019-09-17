@@ -3157,9 +3157,14 @@ pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn sigaction() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGACTION);
+/// Examine and change a signal action.
+pub fn sigaction(sig: i32, act: &sigaction_t, old_act: &mut sigaction_t) -> Result<(), Errno> {
+    unsafe {
+        let sig = sig as usize;
+        let act_ptr = act as *const sigaction_t as usize;
+        let old_act_ptr = old_act as *mut sigaction_t as usize;
+        syscall3(SYS_SIGACTION, sig, act_ptr, old_act_ptr).map(|_ret| ())
+    }
 }
 
 /// Get/set signal stack context.

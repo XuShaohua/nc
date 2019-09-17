@@ -42,6 +42,7 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
+mod aio;
 mod aio_abi;
 mod bpf;
 mod capability;
@@ -115,6 +116,7 @@ mod uio;
 mod utime;
 mod utsname;
 
+pub use aio::*;
 pub use aio_abi::*;
 pub use bpf::*;
 pub use capability::*;

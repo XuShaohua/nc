@@ -2733,9 +2733,14 @@ pub fn rt_sigreturn() {
     // syscall0(SYS_RT_SIGRETURN);
 }
 
-pub fn rt_sigsuspend() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_SIGSUSPEND);
+/// Wait for a signal.
+/// Always returns Errno, normally EINTR.
+pub fn rt_sigsuspend(set: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
+    unsafe {
+        let set_ptr = set as *mut sigset_t as usize;
+        let sigsetsize = sigsetsize as usize;
+        syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigsetsize).map(|_ret| ())
+    }
 }
 
 /// Synchronously wait for queued signals.

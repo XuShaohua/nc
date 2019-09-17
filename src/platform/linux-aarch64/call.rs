@@ -707,6 +707,8 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
     }
 }
 
+/// Get current working directory.
+// TODO(Shaohua): Convert path to string.
 pub fn getcwd() -> Result<Vec<u8>, Errno> {
     unsafe {
         let buf_len = (PATH_MAX + 1) as usize;
@@ -1085,9 +1087,23 @@ pub fn io_pgetevents() {
     // syscall0(SYS_IO_PGETEVENTS);
 }
 
-pub fn io_setup() {
-    core::unimplemented!();
-    // syscall0(SYS_IO_SETUP);
+/// Create an asynchronous I/O context.
+/// Create an aio_context capable of receiving at least nr_events.
+/// ctxp must not point to an aio_context that already exists, and
+/// must be initialized to 0 prior to the call.  On successful
+/// creation of the aio_context, *ctxp is filled in with the resulting
+/// handle.  May fail with -EINVAL if *ctxp is not initialized,
+/// if the specified nr_events exceeds internal limits.  May fail
+/// with -EAGAIN if the specified nr_events exceeds the user's limit
+/// of available events.  May fail with -ENOMEM if insufficient kernel
+/// resources are available.  May fail with -EFAULT if an invalid
+/// pointer is passed for ctxp.  Will fail with -ENOSYS if not implemented.
+pub fn io_setup(nr_events: u32, ctx: &mut aio_context_t) -> Result<(), Errno> {
+    unsafe {
+        let nr_events = nr_events as usize;
+        let ctx_ptr = ctx as *mut aio_context_t as usize;
+        syscall2(SYS_IO_SETUP, nr_events, ctx_ptr).map(|_ret| ())
+    }
 }
 
 pub fn io_submit() {

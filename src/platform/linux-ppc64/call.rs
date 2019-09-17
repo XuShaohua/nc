@@ -3972,7 +3972,7 @@ pub fn _llseek(
         let fd = fd as usize;
         let result_ptr = result as *mut loff_t as usize;
         let whence = whence as usize;
-        syscall5(SYS__LLSEEK(fd, offset_high, offset_low, result_ptr, whence).map(|_ret| ()))
+        syscall5(SYS__LLSEEK, fd, offset_high, offset_low, result_ptr, whence).map(|_ret| ())
     }
 }
 

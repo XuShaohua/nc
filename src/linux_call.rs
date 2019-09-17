@@ -4025,9 +4025,20 @@ pub fn semtimedop_time64() {
     // syscall0(SYS_SEMTIMEDOP_TIME64);
 }
 
-pub fn sendfile64() {
-    core::unimplemented!();
-    // syscall0(SYS_SENDFILE64);
+/// Transfer data between file descriptors.
+pub fn sendfile64(
+    out_fd: i32,
+    in_fd: i32,
+    offset: loff_t,
+    count: size_t,
+) -> Result<ssize_t, Result> {
+    unsafe {
+        let out_fd = out_fd as usize;
+        let in_fd = in_fd as usize;
+        let offset = offset as usize;
+        let count = count as usize;
+        syscall4(SYS_SENDFILE64, out_fd, in_fd, offset, count).map(|ret| ret as ssize_t)
+    }
 }
 
 pub fn setfsgid32() {
@@ -4259,7 +4270,7 @@ pub fn _llseek(
         let fd = fd as usize;
         let result_ptr = result as *mut loff_t as usize;
         let whence = whence as usize;
-        syscall5(SYS__LLSEEK(fd, offset_high, offset_low, result_ptr, whence).map(|_ret| ()))
+        syscall5(SYS__LLSEEK, fd, offset_high, offset_low, result_ptr, whence).map(|_ret| ())
     }
 }
 

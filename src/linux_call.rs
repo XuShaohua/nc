@@ -2846,9 +2846,13 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn fcntl() {
-    core::unimplemented!();
-    // syscall0(SYS_FCNTL);
+/// manipulate file descriptor.
+pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let cmd = cmd as usize;
+        syscall3(SYS_FCNTL, fd, cmd, arg).map(|ret| ret as i32)
+    }
 }
 
 /// Load a kernel module.
@@ -3156,7 +3160,7 @@ pub fn keyctl(
 }
 
 /// Return a directory entry's path.
-/// TODO(Shaohua): Returns a string.
+// TODO(Shaohua): Returns a string.
 pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
     unsafe {
         let cookie = cookie as usize;
@@ -3413,6 +3417,7 @@ pub fn ptrace() {
     // syscall0(SYS_PTRACE);
 }
 
+/// Manipulate disk quotes.
 pub fn quotactl(cmd: i32, special: &str, id: qid_t, addr: usize) -> Result<(), Errno> {
     unsafe {
         let cmd = cmd as usize;
@@ -3774,7 +3779,8 @@ pub fn futex_time64() {
     // syscall0(SYS_FUTEX_TIME64);
 }
 
-/// Deprecated
+/// Get directory entries.
+/// Deprecated. Use `getdents64()` instead.
 pub fn getdents() {
     core::unimplemented!();
     // syscall0(SYS_GETDENTS);
@@ -4286,11 +4292,13 @@ pub fn _newselect() {
     // syscall0(SYS__NEWSELECT);
 }
 
+/// Deprecated.
 pub fn epoll_ctl_old() {
     core::unimplemented!();
     // syscall0(SYS_EPOLL_CTL_OLD);
 }
 
+/// Deperecated.
 pub fn epoll_wait_old() {
     core::unimplemented!();
     // syscall0(SYS_EPOLL_WAIT_OLD);

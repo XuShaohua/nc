@@ -392,6 +392,7 @@ pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Resu
     }
 }
 
+/// Deprecated.
 pub fn epoll_ctl_old() {
     core::unimplemented!();
     // syscall0(SYS_EPOLL_CTL_OLD);
@@ -424,6 +425,7 @@ pub fn epoll_wait(
     }
 }
 
+/// Deperecated.
 pub fn epoll_wait_old() {
     core::unimplemented!();
     // syscall0(SYS_EPOLL_WAIT_OLD);
@@ -618,9 +620,13 @@ pub fn fchownat(
     }
 }
 
-pub fn fcntl() {
-    core::unimplemented!();
-    // syscall0(SYS_FCNTL);
+/// manipulate file descriptor.
+pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let cmd = cmd as usize;
+        syscall3(SYS_FCNTL, fd, cmd, arg).map(|ret| ret as i32)
+    }
 }
 
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
@@ -828,7 +834,8 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
     }
 }
 
-/// Deprecated
+/// Get directory entries.
+/// Deprecated. Use `getdents64()` instead.
 pub fn getdents() {
     core::unimplemented!();
     // syscall0(SYS_GETDENTS);
@@ -1416,7 +1423,7 @@ pub fn llistxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
 }
 
 /// Return a directory entry's path.
-/// TODO(Shaohua): Returns a string.
+// TODO(Shaohua): Returns a string.
 pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
     unsafe {
         let cookie = cookie as usize;
@@ -2298,6 +2305,7 @@ pub fn query_module() {
     // syscall0(SYS_QUERY_MODULE);
 }
 
+/// Manipulate disk quotes.
 pub fn quotactl(cmd: i32, special: &str, id: qid_t, addr: usize) -> Result<(), Errno> {
     unsafe {
         let cmd = cmd as usize;

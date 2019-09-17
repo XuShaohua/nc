@@ -96,6 +96,13 @@ pub fn arch_prctl() {
     // syscall0(SYS_ARCH_PRCTL);
 }
 
+/// Start, flush or tune buffer-dirty-flush daemon.
+/// There are no bdflush tunables left.  But distributions are
+/// still running obsolete flush daemons, so we terminate them here.
+///
+/// Use of bdflush() is deprecated and will be removed in a future kernel.
+/// The `flush-X' kernel threads fully replace bdflush daemons and this call.
+/// Deprecated.
 pub fn bdflush() {
     core::unimplemented!();
     // syscall0(SYS_BDFLUSH);
@@ -3044,9 +3051,30 @@ pub fn seccomp() {
     // syscall0(SYS_SECCOMP);
 }
 
-pub fn select() {
-    core::unimplemented!();
-    // syscall0(SYS_SELECT);
+/// Sychronous I/O multiplexing.
+pub fn select(
+    nfds: i32,
+    readfds: &mut fd_set_t,
+    writefds: &mut fd_set_t,
+    exceptfds: &mut fd_set_t,
+    timeout: &mut timeval_t,
+) -> Result<i32, Errno> {
+    unsafe {
+        let nfds = nfds as usize;
+        let readfds_ptr = readfds as *mut fd_set_t as usize;
+        let writefds_ptr = writefds as *mut fd_set_t as usize;
+        let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
+        let timeout_ptr = timeout as *mut timeval_t as usize;
+        syscall5(
+            SYS_SELECT,
+            nfds,
+            readfds_ptr,
+            writefds_ptr,
+            exceptfds_ptr,
+            timeout_ptr,
+        )
+        .map(|ret| ret as i32)
+    }
 }
 
 /// System V semaphore control operations

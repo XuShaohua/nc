@@ -1,6 +1,6 @@
 [package]
 name = "nc"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Xu Shaohua <xushaohua2016@outlook.com>"]
 readme = "README.md"
 homepage = "https://github.com/xushaohua/nc"

@@ -2483,9 +2483,27 @@ pub fn rt_sigsuspend() {
     // syscall0(SYS_RT_SIGSUSPEND);
 }
 
-pub fn rt_sigtimedwait() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_SIGTIMEDWAIT);
+/// Synchronously wait for queued signals.
+pub fn rt_sigtimedwait(
+    uthese: &sigset_t,
+    uinfo: &mut siginfo_t,
+    uts: &timespec_t,
+    sigsetsize: size_t,
+) -> Result<i32, Errno> {
+    unsafe {
+        let uthese_ptr = uthese as *const sigset_t as usize;
+        let uinfo_ptr = uinfo as *mut siginfo_t as usize;
+        let uts_ptr = uts as *const timespec_t as usize;
+        let sigsetsize = sigsetsize as usize;
+        syscall4(
+            SYS_RT_SIGTIMEDWAIT,
+            uthese_ptr,
+            uinfo_ptr,
+            uts_ptr,
+            sigsetsize,
+        )
+        .map(|ret| ret as i32)
+    }
 }
 
 pub fn rt_tgsigqueueinfo() {

@@ -1868,7 +1868,7 @@ pub fn pkey_mprotect(start: usize, len: size_t, prot: usize, pkey: i32) -> Resul
 /// Wait for some event on a file descriptor.
 pub fn ppoll(
     fds: &mut pollfd_t,
-    nfds: nfds_t,
+    nfds: i32,
     timeout: &timespec_t,
     sigmask: &sigset_t,
     sigsetsize: size_t,
@@ -1881,7 +1881,7 @@ pub fn ppoll(
         let sigsetsize = sigsetsize as usize;
         syscall5(
             SYS_PPOLL,
-            ndfs_ptr,
+            fds_ptr,
             nfds,
             timeout_ptr,
             sigmask_ptr,

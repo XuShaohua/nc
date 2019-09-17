@@ -3356,7 +3356,7 @@ pub fn pidfd_send_signal() {
 /// Wait for some event on a file descriptor.
 pub fn ppoll(
     fds: &mut pollfd_t,
-    nfds: nfds_t,
+    nfds: i32,
     timeout: &timespec_t,
     sigmask: &sigset_t,
     sigsetsize: size_t,
@@ -3369,7 +3369,7 @@ pub fn ppoll(
         let sigsetsize = sigsetsize as usize;
         syscall5(
             SYS_PPOLL,
-            ndfs_ptr,
+            fds_ptr,
             nfds,
             timeout_ptr,
             sigmask_ptr,

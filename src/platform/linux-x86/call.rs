@@ -3513,9 +3513,12 @@ pub fn sigreturn() {
     // syscall0(SYS_SIGRETURN);
 }
 
-pub fn sigsuspend() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGSUSPEND);
+/// Wait for a signal.
+pub fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
+    unsafe {
+        let mask_ptr = mask as *const old_sigset_t as usize;
+        syscall1(SYS_SIGSUSPEND, mask_ptr).map(|_ret| ())
+    }
 }
 
 /// Create an endpoint for communication.

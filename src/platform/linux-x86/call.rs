@@ -1560,9 +1560,15 @@ pub fn lock() {
     // syscall0(SYS_LOCK);
 }
 
-pub fn lookup_dcookie() {
-    core::unimplemented!();
-    // syscall0(SYS_LOOKUP_DCOOKIE);
+/// Return a directory entry's path.
+/// TODO(Shaohua): Returns a string.
+pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
+    unsafe {
+        let cookie = cookie as usize;
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let buf_len = buf.len();
+        syscall3(SYS_LOOKUP_DCOOKIE, cookie, buf_ptr, buf_len).map(|ret| ret as i32)
+    }
 }
 
 /// Remove an extended attribute.
@@ -3624,6 +3630,7 @@ pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     }
 }
 
+/// Get filesystem statistics.
 pub fn statfs64(filename: &str, buf: &mut statfs64_t) -> Result<(), Errno> {
     unsafe {
         let filename = CString::new(filename);
@@ -3748,7 +3755,7 @@ pub fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
 }
 
 /// Read and/or clear kernel message ring buffer; set console_loglevel
-pub fn syslog(action: i32, buf: &mut str) -> Result<i32, Errno> {
+pub fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
     unsafe {
         let action = action as usize;
         let buf_ptr = buf.as_mut_ptr() as usize;

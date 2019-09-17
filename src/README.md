@@ -45,3 +45,4 @@ mirrors do not support non-x86 architectures
 - [x] fix stat_t type error
 - [ ] simplify syscalls
 - [ ] fix siginfo_t
+- [ ] u64 to usize error

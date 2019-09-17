@@ -1217,9 +1217,14 @@ pub fn io_cancel(
     }
 }
 
-pub fn io_destroy() {
-    core::unimplemented!();
-    // syscall0(SYS_IO_DESTROY);
+/// Destroy the aio_context specified.  May cancel any outstanding
+/// AIOs and block on completion.  Will fail with -ENOSYS if not
+/// implemented.  May fail with -EINVAL if the context pointed to is invalid.
+pub fn io_destroy(ctx: &aio_context_t) -> Result<(), Errno> {
+    unsafe {
+        let ctx_ptr = ctx as *const aio_context_t as usize;
+        syscall1(SYS_IO_DESTROY, ctx_ptr).map(|_ret| ())
+    }
 }
 
 pub fn io_getevents() {

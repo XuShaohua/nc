@@ -2511,9 +2511,20 @@ pub fn rt_sigtimedwait(
     }
 }
 
-pub fn rt_tgsigqueueinfo() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_TGSIGQUEUEINFO);
+/// Queue a signal and data.
+pub fn rt_tgsigqueueinfo(
+    tgid: pid_t,
+    tid: pid_t,
+    sig: i32,
+    uinfo: &mut siginfo_t,
+) -> Result<(), Errno> {
+    unsafe {
+        let tgid = tgid as usize;
+        let tid = tid as usize;
+        let sig = sig as usize;
+        let uinfo_ptr = uinfo as *mut siginfo_t as usize;
+        syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, uinfo_ptr).map(|_ret| ())
+    }
 }
 
 /// Get a thread's CPU affinity mask.

@@ -1367,6 +1367,14 @@ pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
 }
 
 /// Attempts to cancel an iocb previously passed to io_submit.
+/// Attempts to cancel an iocb previously passed to io_submit.  If
+/// the operation is successfully cancelled, the resulting event is
+/// copied into the memory pointed to by result without being placed
+/// into the completion queue and 0 is returned.  May fail with
+/// -EFAULT if any of the data structures pointed to are invalid.
+/// May fail with -EINVAL if aio_context specified by ctx_id is
+/// invalid.  May fail with -EAGAIN if the iocb specified was not
+/// cancelled.  Will fail with -ENOSYS if not implemented.
 pub fn io_cancel(
     ctx_id: aio_context_t,
     iocb: &mut iocb_t,
@@ -1383,10 +1391,10 @@ pub fn io_cancel(
 /// Destroy the aio_context specified.  May cancel any outstanding
 /// AIOs and block on completion.  Will fail with -ENOSYS if not
 /// implemented.  May fail with -EINVAL if the context pointed to is invalid.
-pub fn io_destroy(ctx: &aio_context_t) -> Result<(), Errno> {
+pub fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
     unsafe {
-        let ctx_ptr = ctx as *const aio_context_t as usize;
-        syscall1(SYS_IO_DESTROY, ctx_ptr).map(|_ret| ())
+        let ctx_id = ctx_id as usize;
+        syscall1(SYS_IO_DESTROY, ctx_id).map(|_ret| ())
     }
 }
 
@@ -1416,11 +1424,11 @@ pub fn io_pgetevents_time64() {
 /// of available events.  May fail with -ENOMEM if insufficient kernel
 /// resources are available.  May fail with -EFAULT if an invalid
 /// pointer is passed for ctxp.  Will fail with -ENOSYS if not implemented.
-pub fn io_setup(nr_events: u32, ctx: &mut aio_context_t) -> Result<(), Errno> {
+pub fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
     unsafe {
         let nr_events = nr_events as usize;
-        let ctx_ptr = ctx as *mut aio_context_t as usize;
-        syscall2(SYS_IO_SETUP, nr_events, ctx_ptr).map(|_ret| ())
+        let ctx_id_ptr = ctx_id as *mut aio_context_t as usize;
+        syscall2(SYS_IO_SETUP, nr_events, ctx_id_ptr).map(|_ret| ())
     }
 }
 
@@ -1435,12 +1443,12 @@ pub fn io_setup(nr_events: u32, ctx: &mut aio_context_t) -> Result<(), Errno> {
 /// are available to queue any iocbs.  Will return 0 if nr is 0.  Will
 /// fail with -ENOSYS if not implemented.
 // TODO(Shaohua): type of iocbpp is struct iocb**
-pub fn io_submit(ctx: &aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
+pub fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
     unsafe {
-        let ctx_ptr = ctx as *const aio_context_t as usize;
+        let ctx_id = ctx_id as usize;
         let nr = nr as usize;
         let iocb_ptr = iocb as *mut iocb_t as usize;
-        syscall3(SYS_IO_SUBMIT, ctx_ptr, nr, iocb_ptr).map(|ret| ret as i32)
+        syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
     }
 }
 

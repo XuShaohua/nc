@@ -2542,9 +2542,9 @@ pub fn request_key(
     }
 }
 
-pub fn restart_syscall() {
-    core::unimplemented!();
-    // syscall0(SYS_RESTART_SYSCALL);
+/// Restart a system call after interruption by a stop signal.
+pub fn restart_syscall() -> Result<i32, Errno> {
+    unsafe { syscall0(SYS_RESTART_SYSCALL).map(|ret| ret as i32) }
 }
 
 /// Delete a directory.

@@ -3729,9 +3729,13 @@ pub fn fchown32() {
     // syscall0(SYS_FCHOWN32);
 }
 
-pub fn fcntl64() {
-    core::unimplemented!();
-    // syscall0(SYS_FCNTL64);
+/// Manipulate file descriptor.
+pub fn fcntl64(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let cmd = cmd as usize;
+        syscall3(SYS_FCNTL64, fd, cmd, arg).map(|ret| ret as i32)
+    }
 }
 
 /// Get file status.

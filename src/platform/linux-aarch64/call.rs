@@ -2257,9 +2257,12 @@ pub fn rt_sigaction() {
     // syscall0(SYS_RT_SIGACTION);
 }
 
-pub fn rt_sigpending() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_SIGPENDING);
+/// Examine pending signals.
+pub fn rt_sigpending(set: &mut [sigset_t]) -> Result<(), Errno> {
+    unsafe {
+        let set_ptr = set.as_mut_ptr() as usize;
+        syscall1(SYS_RT_SIGPENDING, set_ptr).map(|_ret| ())
+    }
 }
 
 /// Change the list of currently blocked signals.
@@ -2267,7 +2270,7 @@ pub fn rt_sigprocmask(how: i32, set: &sigset_t, oldset: &mut sigset_t) -> Result
     unsafe {
         let how = how as usize;
         let set_ptr = set as *const sigset_t as usize;
-        let oldset_ptr = old_set as *mut sigset_t as usize;
+        let oldset_ptr = oldset as *mut sigset_t as usize;
         syscall3(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr).map(|_ret| ())
     }
 }

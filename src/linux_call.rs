@@ -3471,9 +3471,14 @@ pub fn move_pages(
     }
 }
 
-pub fn open_tree() {
-    core::unimplemented!();
-    // syscall0(SYS_OPEN_TREE);
+pub fn open_tree(dfd: i32, filename: &str, flags: u32) -> Result<i32, Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let filename = CString::new(filename);
+        let filename_ptr = filename.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall3(SYS_OPEN_TREE, dfd, filename_ptr, flags).map(|ret| ret as i32)
+    }
 }
 
 /// Set up performance monitoring.

@@ -4736,9 +4736,11 @@ pub fn recv(sockfd: i32, buf: &mut [u8], flags: i32) -> Result<ssize_t, Errno> {
     }
 }
 
-pub fn rtas() {
-    core::unimplemented!();
-    // syscall0(SYS_RTAS);
+pub fn rtas(args: &mut rtas_args_t) -> Result<(), Errno> {
+    unsafe {
+        let args_ptr = args as *mut rtas_args_t as usize;
+        syscall1(SYS_RTAS, args_ptr).map(|_ret| ())
+    }
 }
 
 /// Send a message on a socket.

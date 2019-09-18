@@ -10,7 +10,7 @@ def main():
         print("Usage: %s input-file" % sys.argv[0])
         sys.exit(1)
 
-    macro_pattern = re.compile("#define\s+(\w+)\s+([a-zA-Z0-9\-]+)\s*(.*)")
+    macro_pattern = re.compile("#define\s+(\w+)\s+([a-zA-Z0-9_\-]+)\s*(.*)")
     consts_pattern = re.compile("\s*([A-Z_0-9]+)\s*=\s*(-?\d+)(.*)")
     comments_pattern = re.compile("(:?,)\s*/\*(.*)\*/")
     comments2_pattern = re.compile("^/\*(.*)\*/$")

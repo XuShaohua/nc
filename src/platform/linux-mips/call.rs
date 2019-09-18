@@ -3156,9 +3156,15 @@ pub fn semtimedop_time64() {
     // syscall0(SYS_SEMTIMEDOP_TIME64);
 }
 
-pub fn send() {
-    core::unimplemented!();
-    // syscall0(SYS_SEND);
+/// Send a message on a socket.
+pub fn send(sockfd: i32, buf: &[u8], len: size_t, flags: i32) -> Result<ssize_t, Errno> {
+    unsafe {
+        let sockfd = sockfd as usize;
+        let buf_ptr = buf.as_ptr() as usize;
+        let len = len as usize;
+        let flags = flags as usize;
+        syscall4(SYS_SEND, sockfd, buf_ptr, len, flags).map(|ret| ret as ssize_t)
+    }
 }
 
 /// Transfer data between two file descriptors.
@@ -3218,6 +3224,7 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
 pub fn sendto(
     sockfd: i32,
     buf: &[u8],
+    len: size_t,
     flags: i32,
     dest_addr: &sockaddr_in_t,
     addrlen: socklen_t,
@@ -3225,7 +3232,7 @@ pub fn sendto(
     unsafe {
         let sockfd = sockfd as usize;
         let buf_ptr = buf.as_ptr() as usize;
-        let buflen = buf.len() as usize;
+        let len = len as usize;
         let flags = flags as usize;
         let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
         let addrlen = addrlen as usize;
@@ -3233,7 +3240,7 @@ pub fn sendto(
             SYS_SENDTO,
             sockfd,
             buf_ptr,
-            buflen,
+            len,
             flags,
             dest_addr_ptr,
             addrlen,

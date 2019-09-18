@@ -2708,6 +2708,7 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
 pub fn sendto(
     sockfd: i32,
     buf: &[u8],
+    len: size_t,
     flags: i32,
     dest_addr: &sockaddr_in_t,
     addrlen: socklen_t,
@@ -2715,7 +2716,7 @@ pub fn sendto(
     unsafe {
         let sockfd = sockfd as usize;
         let buf_ptr = buf.as_ptr() as usize;
-        let buflen = buf.len() as usize;
+        let len = len as usize;
         let flags = flags as usize;
         let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
         let addrlen = addrlen as usize;
@@ -2723,7 +2724,7 @@ pub fn sendto(
             SYS_SENDTO,
             sockfd,
             buf_ptr,
-            buflen,
+            len,
             flags,
             dest_addr_ptr,
             addrlen,

@@ -2217,9 +2217,13 @@ pub fn pause() -> Result<(), Errno> {
     unsafe { syscall0(SYS_PAUSE).map(|_ret| ()) }
 }
 
-pub fn pciconfig_iobase() {
-    core::unimplemented!();
-    // syscall0(SYS_PCICONFIG_IOBASE);
+/// PCI device information handling.
+// TODO(Shaohua): Check return type.
+pub fn pciconfig_iobase(which: isize, bus: usize, dfn: usize) -> Result<usize, Errno> {
+    unsafe {
+        let which = which as usize;
+        syscall3(SYS_PCICONFIG_IOBASE, which, bus, dfn)
+    }
 }
 
 /// PCI device information handling.

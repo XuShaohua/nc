@@ -2618,9 +2618,15 @@ pub fn rmdir(filename: &str) -> Result<(), Errno> {
     }
 }
 
-pub fn rseq() {
-    core::unimplemented!();
-    // syscall0(SYS_RSEQ);
+/// Setup restartable sequences for caller thread.
+pub fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
+    unsafe {
+        let rseq_ptr = rseq.as_mut_ptr() as usize;
+        let rseq_len = rseq.len();
+        let flags = flags as usize;
+        let sig = sig as usize;
+        syscall4(SYS_RSEQ, rseq_ptr, rseq_len, flags, sig).map(|ret| ret as i32)
+    }
 }
 
 /// Examine and change a signal action.

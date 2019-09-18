@@ -3641,9 +3641,14 @@ pub fn spu_create(name: &str, flags: i32, mode: umode_t, neighbor_fd: i32) -> Re
     }
 }
 
-pub fn spu_run() {
-    core::unimplemented!();
-    // syscall0(SYS_SPU_RUN);
+/// Execute an SPU context.
+pub fn spu_run(fd: i32, npc: &mut u32, status: &mut u32) -> Result<usize, Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let npc_ptr = npc as *mut u32 as usize;
+        let status_ptr = status as *mut u32 as usize;
+        syscall3(SYS_SPU_RUN, fd, npc_ptr, status_ptr)
+    }
 }
 
 /// Manipulation of signal mask.

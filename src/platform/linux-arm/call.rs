@@ -2222,9 +2222,15 @@ pub fn pciconfig_iobase() {
     // syscall0(SYS_PCICONFIG_IOBASE);
 }
 
-pub fn pciconfig_read() {
-    core::unimplemented!();
-    // syscall0(SYS_PCICONFIG_READ);
+/// PCI device information handling.
+pub fn pciconfig_read(
+    bus: usize,
+    dfn: usize,
+    off: usize,
+    len: usize,
+    buf: usize,
+) -> Result<(), Errno> {
+    unsafe { syscall5(SYS_PCICONFIG_READ, bus, dfn, off, len, buf).map(|_ret| ()) }
 }
 
 pub fn pciconfig_write() {

@@ -4118,9 +4118,14 @@ pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
     }
 }
 
-pub fn truncate64() {
-    core::unimplemented!();
-    // syscall0(SYS_TRUNCATE64);
+/// Truncate a file to a specific length.
+pub fn truncate64(path: &str, len: loff_t) -> Result<(), Errno> {
+    unsafe {
+        let path = CString::new(path);
+        let path_ptr = path.as_ptr() as usize;
+        let len = len as usize;
+        syscall2(SYS_TRUNCATE64, path_ptr, len).map(|_ret| ())
+    }
 }
 
 pub fn ugetrlimit() {

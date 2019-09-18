@@ -45,6 +45,7 @@ mirrors do not support non-x86 architectures
 - [x] fix stat_t type error
 - [ ] simplify syscalls
 - [ ] fix siginfo_t
-- [ ] u64 to usize error
+- [ ] u64 to usize error (32bits arch)
 - [ ] `struct *timespec_t timeout` is NULL or not
 - [ ] fix alignment issue in perf_events.rs
+- [ ] arch specific types

@@ -2233,9 +2233,15 @@ pub fn pciconfig_read(
     unsafe { syscall5(SYS_PCICONFIG_READ, bus, dfn, off, len, buf).map(|_ret| ()) }
 }
 
-pub fn pciconfig_write() {
-    core::unimplemented!();
-    // syscall0(SYS_PCICONFIG_WRITE);
+/// PCI device information handling.
+pub fn pciconfig_write(
+    bus: usize,
+    dfn: usize,
+    off: usize,
+    len: usize,
+    buf: usize,
+) -> Result<(), Errno> {
+    unsafe { syscall5(SYS_PCICONFIG_WRITE, bus, dfn, off, len, buf).map(|_ret| ()) }
 }
 
 /// Set up performance monitoring.

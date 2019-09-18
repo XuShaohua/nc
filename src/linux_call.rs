@@ -4415,9 +4415,13 @@ pub fn setuid32() {
     // syscall0(SYS_SETUID32);
 }
 
-pub fn set_thread_area() {
-    core::unimplemented!();
-    // syscall0(SYS_SET_THREAD_AREA);
+/// Set thread-local storage information.
+// TODO(Shaohua): Support architecture-specific binding.
+pub fn set_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
+    unsafe {
+        let user_desc_ptr = user_desc as *mut user_desc_t as usize;
+        syscall1(SYS_SET_THREAD_AREA, user_desc_ptr).map(|_ret| ())
+    }
 }
 
 /// Manipulation of signal mask.

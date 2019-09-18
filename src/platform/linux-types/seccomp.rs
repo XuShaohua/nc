@@ -1,3 +1,5 @@
+use super::ioctl::*;
+
 /// Valid values for seccomp.mode and prctl(PR_SET_SECCOMP, <mode>)
 /// seccomp is not in use.
 pub const SECCOMP_MODE_DISABLED: i32 = 0;
@@ -86,18 +88,32 @@ pub struct seccomp_notif_resp_t {
     pub flags: u32,
 }
 
-//pub const SECCOMP_IOC_MAGIC: u8 = '!';
+pub const SECCOMP_IOC_MAGIC: char = '!';
+
+#[inline]
+pub const fn SECCOMP_IO(nr: i32) -> i32 {
+    IO(SECCOMP_IOC_MAGIC, nr)
+}
+
+// TODO(Shaohua):
 //#[inline]
-//pub const fn SECCOMP_IO(nr: i32)	-> i32 {
-//   _IO(SECCOMP_IOC_MAGIC, nr)
+//pub const fn SECCOMP_IOR(nr: i32, type_: char) -> i32 {
+//    IOR(SECCOMP_IOC_MAGIC, nr, type_)
 //}
-
-//#define SECCOMP_IOR(nr, type)		_IOR(SECCOMP_IOC_MAGIC, nr, type)
-//#define SECCOMP_IOW(nr, type)		_IOW(SECCOMP_IOC_MAGIC, nr, type)
-//#define SECCOMP_IOWR(nr, type)		_IOWR(SECCOMP_IOC_MAGIC, nr, type)
-
-// Flags for seccomp notification fd ioctl.
-//pub const SECCOMP_IOCTL_NOTIF_RECV: i32 = SECCOMP_IOWR;(0, struct seccomp_notif)
-//pub const SECCOMP_IOCTL_NOTIF_SEND: i32 = SECCOMP_IOWR;(1,	\
-//						struct seccomp_notif_resp)
-//pub const SECCOMP_IOCTL_NOTIF_ID_VALID: i32 = SECCOMP_IOR;(2, __u64)
+//
+//#[inline]
+//pub const fn SECCOMP_IOW(nr: i32, type_: char) -> i32 {
+//    IOW(SECCOMP_IOC_MAGIC, nr, type_)
+//}
+//
+//#[inline]
+//pub const fn SECCOMP_IOWR(nr: i32, type_: char) -> i32 {
+//    IOWR(SECCOMP_IOC_MAGIC, nr, type_)
+//}
+//
+///// Flags for seccomp notification fd ioctl.
+//pub const SECCOMP_IOCTL_NOTIF_RECV: i32 = SECCOMP_IOWR(0, seccomp_notif_t);
+//
+//pub const SECCOMP_IOCTL_NOTIF_SEND: i32 = SECCOMP_IOWR(1, seccomp_notif_resp_t);
+//
+//pub const SECCOMP_IOCTL_NOTIF_ID_VALID: i32 = SECCOMP_IOR(2, u64);

@@ -3934,9 +3934,12 @@ pub fn afs_syscall() {
     // syscall0(SYS_AFS_SYSCALL);
 }
 
-pub fn arch_prctl() {
-    core::unimplemented!();
-    // syscall0(SYS_ARCH_PRCTL);
+/// Set architecture-specific thread state.
+pub fn arch_prctl(code: i32, arg2: usize) -> Result<(), Errno> {
+    unsafe {
+        let code = code as usize;
+        syscall2(SYS_ARCH_PRCTL, code, arg2).map(|_ret| ())
+    }
 }
 
 /// Start, flush or tune buffer-dirty-flush daemon.

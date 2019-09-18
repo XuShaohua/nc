@@ -3813,9 +3813,14 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
     }
 }
 
-pub fn signal() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGNAL);
+/// Signal handling.
+/// Deprecated. Use sigaction() instead.
+pub fn signal(sig: i32, handler: sighandler_t) -> Result<sighandler_t, Errno> {
+    unsafe {
+        let sig = sig as usize;
+        let handler = handler as usize;
+        syscall2(SYS_SIGNAL, sig, handler).map(|ret| ret as sighandler_t)
+    }
 }
 
 /// Create a file descriptor to accept signals.
@@ -3857,9 +3862,12 @@ pub fn sigprocmask(how: i32, newset: &mut sigset_t, oldset: &mut sigset_t) -> Re
     }
 }
 
+/// Return from signal handler and cleanup stack frame.
+/// Never returns.
 pub fn sigreturn() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGRETURN);
+    unsafe {
+        let _ = syscall0(SYS_SIGRETURN);
+    }
 }
 
 /// Wait for a signal.
@@ -4289,6 +4297,7 @@ pub fn ugetrlimit() {
     // syscall0(SYS_UGETRLIMIT);
 }
 
+/// Deprecated.
 pub fn ulimit() {
     core::unimplemented!();
     // syscall0(SYS_ULIMIT);

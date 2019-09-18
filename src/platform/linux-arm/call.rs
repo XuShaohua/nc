@@ -3707,9 +3707,12 @@ pub fn sigprocmask(how: i32, newset: &mut sigset_t, oldset: &mut sigset_t) -> Re
     }
 }
 
+/// Return from signal handler and cleanup stack frame.
+/// Never returns.
 pub fn sigreturn() {
-    core::unimplemented!();
-    // syscall0(SYS_SIGRETURN);
+    unsafe {
+        let _ = syscall0(SYS_SIGRETURN);
+    }
 }
 
 /// Wait for a signal.

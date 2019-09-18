@@ -130,9 +130,13 @@ pub fn cachectl() {
     // syscall0(SYS_CACHECTL);
 }
 
-pub fn cacheflush() {
-    core::unimplemented!();
-    // syscall0(SYS_CACHEFLUSH);
+/// Flush contents of instruction and/or data cache.
+pub fn cacheflush(addr: usize, nbytes: i32, cache: i32) -> Result<(), Errno> {
+    unsafe {
+        let nbytes = nbytes as usize;
+        let cache = cache as usize;
+        syscall3(SYS_CACHEFLUSH, addr, nbytes, cache).map(|_ret| ())
+    }
 }
 
 /// Get capabilities of thread.

@@ -1163,9 +1163,10 @@ pub fn gtty() {
     // syscall0(SYS_GTTY);
 }
 
-pub fn idle() {
-    core::unimplemented!();
-    // syscall0(SYS_IDLE);
+/// Make process 0 idle.
+/// Never returns for process 0, and already returns EPERM for a user process.
+pub fn idle() -> Result<(), Errno> {
+    unsafe { syscall0(SYS_IDLE).map(|_ret| ()) }
 }
 
 /// Load a kernel module.
@@ -1227,9 +1228,12 @@ pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
     }
 }
 
-pub fn iopl() {
-    core::unimplemented!();
-    // syscall0(SYS_IOPL);
+/// Change I/O privilege level.
+pub fn iopl(level: i32) -> Result<(), Errno> {
+    unsafe {
+        let level = level as usize;
+        syscall1(SYS_IOPL, level).map(|_ret| ())
+    }
 }
 
 /// Get I/O scheduling class and priority
@@ -1858,6 +1862,7 @@ pub fn mmap(
     }
 }
 
+// FIXME(Shaohua):
 pub fn modify_ldt() {
     core::unimplemented!();
     // syscall0(SYS_MODIFY_LDT);
@@ -3851,9 +3856,19 @@ pub fn subpage_prot() {
     // syscall0(SYS_SUBPAGE_PROT);
 }
 
-pub fn swapcontext() {
-    core::unimplemented!();
-    // syscall0(SYS_SWAPCONTEXT);
+/// Handle {get,set,swap}_context operations
+// TODO(Shaohua): Support arch-spec.
+pub fn swapcontext(
+    old_ctx: &mut ucontext_t,
+    new_ctx: &mut ucontext_t,
+    ctx_size: isize,
+) -> Result<(), Errno> {
+    unsafe {
+        let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
+        let new_ctx_ptr = new_ctx as *mut ucontext_t as usize;
+        let ctx_size = ctx_size as usize;
+        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(|_ret| ())
+    }
 }
 
 /// Stop swapping to file/device.

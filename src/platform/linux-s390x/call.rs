@@ -1137,9 +1137,10 @@ pub fn get_robust_list(
     }
 }
 
-pub fn idle() {
-    core::unimplemented!();
-    // syscall0(SYS_IDLE);
+/// Make process 0 idle.
+/// Never returns for process 0, and already returns EPERM for a user process.
+pub fn idle() -> Result<(), Errno> {
+    unsafe { syscall0(SYS_IDLE).map(|_ret| ()) }
 }
 
 /// Load a kernel module.

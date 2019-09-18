@@ -3851,9 +3851,12 @@ pub fn stty() {
     // syscall0(SYS_STTY);
 }
 
-pub fn subpage_prot() {
-    core::unimplemented!();
-    // syscall0(SYS_SUBPAGE_PROT);
+/// Define a subpage protection for an address range.
+pub fn subpage_prot(addr: usize, len: usize, map: &mut u32) -> Result<(), Errno> {
+    unsafe {
+        let map_ptr = map as *mut u32 as usize;
+        syscall3(SYS_SUBPAGE_PROT, addr, len, map_ptr).map(|_ret| ())
+    }
 }
 
 /// Handle {get,set,swap}_context operations

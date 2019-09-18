@@ -3790,9 +3790,12 @@ pub fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Result<()
     }
 }
 
+/// Return from signal handler and cleanup stack frame.
+/// Never returns.
 pub fn rt_sigreturn() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_SIGRETURN);
+    unsafe {
+        let _ = syscall0(SYS_RT_SIGRETURN);
+    }
 }
 
 /// Wait for a signal.

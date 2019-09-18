@@ -1671,9 +1671,14 @@ pub fn membarrier(cmd: i32, flags: i32) -> Result<i32, Errno> {
     }
 }
 
-pub fn memfd_create() {
-    core::unimplemented!();
-    // syscall0(SYS_MEMFD_CREATE);
+/// Create an anonymous file.
+pub fn memfd_create(name: &str, flags: u32) -> Result<i32, Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall2(SYS_MEMFD_CREATE, name_ptr, flags).map(|ret| ret as i32)
+    }
 }
 
 /// Move all pages in a process to another set of nodes

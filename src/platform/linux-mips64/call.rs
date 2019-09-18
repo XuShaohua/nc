@@ -131,7 +131,7 @@ pub fn cachectl() {
 }
 
 /// Flush contents of instruction and/or data cache.
-pub fn cacheflush(addr: usize, nbytes: i32, cache: i32) -> Result<(), Errno> {
+pub fn cacheflush(addr: usize, nbytes: size_t, cache: i32) -> Result<(), Errno> {
     unsafe {
         let nbytes = nbytes as usize;
         let cache = cache as usize;

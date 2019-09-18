@@ -4611,9 +4611,16 @@ pub fn send(sockfd: i32, buf: &[u8], len: size_t, flags: i32) -> Result<ssize_t,
     }
 }
 
-pub fn spu_create() {
-    core::unimplemented!();
-    // syscall0(SYS_SPU_CREATE);
+/// Create a new spu context.
+pub fn spu_create(name: &str, flags: i32, mode: umode_t, neighbor_fd: i32) -> Result<i32, Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let flags = flags as usize;
+        let mode = mode as usize;
+        let neighbor_fd = neighbor_fd as usize;
+        syscall4(SYS_SPU_CREATE, name_ptr, flags, mode, neighbor_fd).map(|ret| ret as i32)
+    }
 }
 
 pub fn spu_run() {
@@ -4658,7 +4665,7 @@ pub fn cachectl() {
 }
 
 /// Flush contents of instruction and/or data cache.
-pub fn cacheflush(addr: usize, nbytes: i32, cache: i32) -> Result<(), Errno> {
+pub fn cacheflush(addr: usize, nbytes: size_t, cache: i32) -> Result<(), Errno> {
     unsafe {
         let nbytes = nbytes as usize;
         let cache = cache as usize;

@@ -3629,9 +3629,16 @@ pub fn splice(
     }
 }
 
-pub fn spu_create() {
-    core::unimplemented!();
-    // syscall0(SYS_SPU_CREATE);
+/// Create a new spu context.
+pub fn spu_create(name: &str, flags: i32, mode: umode_t, neighbor_fd: i32) -> Result<i32, Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let flags = flags as usize;
+        let mode = mode as usize;
+        let neighbor_fd = neighbor_fd as usize;
+        syscall4(SYS_SPU_CREATE, name_ptr, flags, mode, neighbor_fd).map(|ret| ret as i32)
+    }
 }
 
 pub fn spu_run() {

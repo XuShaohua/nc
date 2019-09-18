@@ -3047,9 +3047,13 @@ pub fn sched_yield() -> Result<(), Errno> {
     unsafe { syscall0(SYS_SCHED_YIELD).map(|_ret| ()) }
 }
 
-pub fn seccomp() {
-    core::unimplemented!();
-    // syscall0(SYS_SECCOMP);
+/// Operate on Secure Computing state of the process.
+pub fn seccomp(operation: u32, flags: u32, args: usize) -> Result<(), Errno> {
+    unsafe {
+        let operation = operation as usize;
+        let flags = flags as usize;
+        syscall3(SYS_SECCOMP, operation, flags, args).map(|_ret| ())
+    }
 }
 
 pub fn security() {

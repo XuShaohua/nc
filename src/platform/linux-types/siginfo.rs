@@ -315,7 +315,8 @@ pub const NSIGPOLL: i32 = 6;
 /// SIGSYS si_codes
 
 /// seccomp triggered
-pub const SYS_SECCOMP: i32 = 1;
+// Return from SYS_SECCOMP as it is already used by an syscall num.
+pub const SYS_SECCOMP_: i32 = 1;
 pub const NSIGSYS: i32 = 1;
 
 /// SIGEMT si_codes

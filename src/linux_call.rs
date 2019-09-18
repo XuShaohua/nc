@@ -3873,9 +3873,13 @@ pub fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<
     }
 }
 
-pub fn seccomp() {
-    core::unimplemented!();
-    // syscall0(SYS_SECCOMP);
+/// Operate on Secure Computing state of the process.
+pub fn seccomp(operation: u32, flags: u32, args: usize) -> Result<(), Errno> {
+    unsafe {
+        let operation = operation as usize;
+        let flags = flags as usize;
+        syscall3(SYS_SECCOMP, operation, flags, args).map(|_ret| ())
+    }
 }
 
 /// System V semaphore control operations

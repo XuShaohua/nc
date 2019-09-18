@@ -786,9 +786,15 @@ pub fn fsopen(fs_name: &str, flags: u32) -> Result<(), Errno> {
     }
 }
 
-pub fn fspick() {
-    core::unimplemented!();
-    // syscall0(SYS_FSPICK);
+/// Pick a superblock into a context for reconfiguration.
+pub fn fspick(dfd: i32, path: &str, flags: i32) -> Result<i32, Errno> {
+    unsafe {
+        let dfd = dfd as usize;
+        let path = CString::new(path);
+        let path_ptr = path.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall3(SYS_FSPICK, dfd, path_ptr, flags).map(|ret| ret as i32)
+    }
 }
 
 /// Get file status about a file descriptor.
@@ -2263,6 +2269,8 @@ pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     }
 }
 
+/// Syscall interface to kernel nfs daemon.
+/// Deprecated.
 pub fn nfsservctl() {
     core::unimplemented!();
     // syscall0(SYS_NFSSERVCTL);

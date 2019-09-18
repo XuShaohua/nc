@@ -1963,6 +1963,8 @@ pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> 
     }
 }
 
+/// Syscall interface to kernel nfs daemon.
+/// Deprecated.
 pub fn nfsservctl() {
     core::unimplemented!();
     // syscall0(SYS_NFSSERVCTL);

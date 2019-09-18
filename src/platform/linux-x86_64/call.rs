@@ -2218,9 +2218,12 @@ pub fn perf_event_open(
     }
 }
 
-pub fn personality() {
-    core::unimplemented!();
-    // syscall0(SYS_PERSONALITY);
+/// Set the process execution domain.
+pub fn personality(persona: u32) -> Result<u32, Errno> {
+    unsafe {
+        let persona = persona as usize;
+        syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
+    }
 }
 
 pub fn pidfd_send_signal() {

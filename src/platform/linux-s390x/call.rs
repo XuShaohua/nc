@@ -1100,6 +1100,8 @@ pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resul
     }
 }
 
+/// Retrieve exported kernel and module symbols.
+/// Deprecated.
 pub fn get_kernel_syms() {
     core::unimplemented!();
     // syscall0(SYS_GET_KERNEL_SYMS);

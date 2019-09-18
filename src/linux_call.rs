@@ -4049,6 +4049,8 @@ pub fn fstatfs64(fd: i32, buf: &mut statfs64_t) -> Result<(), Errno> {
     }
 }
 
+/// Return date and time.
+/// DEPRECATED.
 pub fn ftime() {
     core::unimplemented!();
     // syscall0(SYS_FTIME);
@@ -4119,14 +4121,19 @@ pub fn getuid32() {
     // syscall0(SYS_GETUID32);
 }
 
+/// Retrieve exported kernel and module symbols.
+/// Deprecated.
 pub fn get_kernel_syms() {
     core::unimplemented!();
     // syscall0(SYS_GET_KERNEL_SYMS);
 }
 
-pub fn get_thread_area() {
-    core::unimplemented!();
-    // syscall0(SYS_GET_THREAD_AREA);
+/// Get thread-local storage information.
+pub fn get_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
+    unsafe {
+        let user_desc_ptr = user_desc as *mut user_desc_t as usize;
+        syscall1(SYS_GET_THREAD_AREA, user_desc_ptr).map(|_ret| ())
+    }
 }
 
 pub fn gtty() {

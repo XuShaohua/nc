@@ -850,6 +850,8 @@ pub fn fsync(fd: i32) -> Result<(), Errno> {
     }
 }
 
+/// Return date and time.
+/// DEPRECATED.
 pub fn ftime() {
     core::unimplemented!();
     // syscall0(SYS_FTIME);
@@ -1202,6 +1204,8 @@ pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resul
     }
 }
 
+/// Retrieve exported kernel and module symbols.
+/// Deprecated.
 pub fn get_kernel_syms() {
     core::unimplemented!();
     // syscall0(SYS_GET_KERNEL_SYMS);

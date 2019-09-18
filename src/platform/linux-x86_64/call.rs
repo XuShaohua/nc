@@ -1108,6 +1108,8 @@ pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resul
     }
 }
 
+/// Retrieve exported kernel and module symbols.
+/// Deprecated.
 pub fn get_kernel_syms() {
     core::unimplemented!();
     // syscall0(SYS_GET_KERNEL_SYMS);
@@ -1143,9 +1145,12 @@ pub fn get_robust_list(
     }
 }
 
-pub fn get_thread_area() {
-    core::unimplemented!();
-    // syscall0(SYS_GET_THREAD_AREA);
+/// Get thread-local storage information.
+pub fn get_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
+    unsafe {
+        let user_desc_ptr = user_desc as *mut user_desc_t as usize;
+        syscall1(SYS_GET_THREAD_AREA, user_desc_ptr).map(|_ret| ())
+    }
 }
 
 /// Load a kernel module.

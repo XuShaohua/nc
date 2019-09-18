@@ -4022,9 +4022,14 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     }
 }
 
-pub fn umount() {
-    core::unimplemented!();
-    // syscall0(SYS_UMOUNT);
+/// Umount filesystem.
+pub fn umount(name: &str, flags: i32) -> Result<(), Errno> {
+    unsafe {
+        let name = CString::new(name);
+        let name_ptr = name.as_ptr() as usize;
+        let flags = flags as usize;
+        syscall2(SYS_UMOUNT, name_ptr, flags).map(|_ret| ())
+    }
 }
 
 /// Umount filesystem.

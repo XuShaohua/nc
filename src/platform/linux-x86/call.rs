@@ -861,9 +861,13 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     }
 }
 
-pub fn ftruncate64() {
-    core::unimplemented!();
-    // syscall0(SYS_FTRUNCATE64);
+/// Truncate a file to a specific length.
+pub fn ftruncate64(fd: i32, len: loff_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let len = len as usize;
+        syscall2(SYS_FTRUNCATE64, fd, len).map(|_ret| ())
+    }
 }
 
 /// Fast user-space locking.

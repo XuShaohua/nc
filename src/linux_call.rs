@@ -906,6 +906,7 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     }
 }
 
+/// Control device.
 pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
@@ -4597,9 +4598,15 @@ pub fn switch_endian() {
     // syscall0(SYS_SWITCH_ENDIAN);
 }
 
-pub fn sync_file_range2() {
-    core::unimplemented!();
-    // syscall0(SYS_SYNC_FILE_RANGE2);
+/// Sync a file segment with disk.
+pub fn sync_file_range2(fd: i32, flags: i32, offset: loff_t, nbytes: loff_t) -> Result<(), Errno> {
+    unsafe {
+        let fd = fd as usize;
+        let flags = flags as usize;
+        let offset = offset as usize;
+        let nbytes = nbytes as usize;
+        syscall4(SYS_SYNC_FILE_RANGE2, fd, flags, offset, nbytes).map(|_ret| ())
+    }
 }
 
 pub fn sys_debug_setcontext() {

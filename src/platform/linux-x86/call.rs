@@ -1330,6 +1330,7 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     }
 }
 
+/// Control device.
 pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;

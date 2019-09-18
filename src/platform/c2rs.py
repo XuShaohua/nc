@@ -11,7 +11,7 @@ def main():
         sys.exit(1)
 
     macro_pattern = re.compile("#define\s+(\w+)\s+([a-zA-Z0-9_\-]+)\s*(.*)")
-    consts_pattern = re.compile("\s*([A-Z_0-9]+)\s*=\s*(-?\d+)(.*)")
+    consts_pattern = re.compile("\s*([A-Z_0-9]+)\s*=\s*([0-9\-\.xXa-fA-F]+)(.*)")
     comments_pattern = re.compile("(:?,)\s*/\*(.*)\*/")
     comments2_pattern = re.compile("^/\*(.*)\*/$")
     comments3_pattern = re.compile("\s*/\*(.*)\*/")

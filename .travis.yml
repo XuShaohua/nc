@@ -1,0 +1,14 @@
+branches:
+
+language: rust
+matrix:
+  include:
+    - rust: nightly
+
+sudo: false
+script:
+  - cargo test
+
+notifications:
+  email:
+    on_success: never

@@ -1709,10 +1709,12 @@ pub fn mbind(
 ///
 /// The pair ordering is detailed as (O: ordered, X: not ordered):
 ///
+/// ```text
 ///                        barrier()   smp_mb() sys_membarrier()
 ///        barrier()          X           X            O
 ///        smp_mb()           X           O            O
 ///        sys_membarrier()   O           O            O
+/// ```
 pub fn membarrier(cmd: i32, flags: i32) -> Result<i32, Errno> {
     unsafe {
         let cmd = cmd as usize;

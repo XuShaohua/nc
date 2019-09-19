@@ -29,5 +29,5 @@ fn main() {
         }
     }
 
-    nc::close(fd);
+    let _ = nc::close(fd);
 }

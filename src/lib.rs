@@ -5,6 +5,10 @@
 #[macro_use]
 extern crate alloc;
 
+#[cfg(test)]
+#[macro_use]
+extern crate std;
+
 pub mod c_str;
 mod syscalls;
 

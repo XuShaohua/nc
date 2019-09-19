@@ -238,6 +238,7 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 /// The format of the data returned by read() on a perf event fd
 /// as specified by attr.read_format:
 ///
+/// ```c
 /// struct read_format {
 ///  { u64		value;
 ///    { u64		time_enabled; } && PERF_FORMAT_TOTAL_TIME_ENABLED
@@ -253,6 +254,7 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 ///    }		cntr[nr];
 ///  } && PERF_FORMAT_GROUP
 /// };
+/// ```
 
 pub const PERF_FORMAT_TOTAL_TIME_ENABLED: i32 = 1 << 0;
 pub const PERF_FORMAT_TOTAL_TIME_RUNNING: i32 = 1 << 1;
@@ -550,6 +552,7 @@ pub struct perf_event_mmap_page_t {
 
     /// Bits needed to read the hw events in user-space.
     ///
+    /// ```c
     ///   u32 seq, time_mult, time_shift, index, width;
     ///   u64 count, enabled, running;
     ///   u64 cyc, time_offset;
@@ -578,6 +581,7 @@ pub struct perf_event_mmap_page_t {
     ///
     ///     barrier();
     ///   } while (pc->lock != seq);
+    ///   ```
     ///
     /// NOTE: for obvious reason this only works on self-monitoring
     ///       processes.
@@ -802,6 +806,7 @@ pub const PERF_RECORD_MMAP: i32 = 1;
 /// };
 pub const PERF_RECORD_LOST: i32 = 2;
 
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///
@@ -809,6 +814,7 @@ pub const PERF_RECORD_LOST: i32 = 2;
 ///  char				comm[];
 /// 	struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_COMM: i32 = 3;
 
 /// struct {
@@ -820,6 +826,7 @@ pub const PERF_RECORD_COMM: i32 = 3;
 /// };
 pub const PERF_RECORD_EXIT: i32 = 4;
 
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  u64				time;
@@ -827,9 +834,11 @@ pub const PERF_RECORD_EXIT: i32 = 4;
 ///  u64				stream_id;
 /// 	struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_THROTTLE: i32 = 5;
 pub const PERF_RECORD_UNTHROTTLE: i32 = 6;
 
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  u32				pid, ppid;
@@ -837,8 +846,10 @@ pub const PERF_RECORD_UNTHROTTLE: i32 = 6;
 ///  u64				time;
 /// 	struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_FORK: i32 = 7;
 
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  u32				pid, tid;
@@ -846,6 +857,7 @@ pub const PERF_RECORD_FORK: i32 = 7;
 ///  struct read_format		values;
 /// 	struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_READ: i32 = 8;
 
 /// struct {
@@ -856,7 +868,7 @@ pub const PERF_RECORD_READ: i32 = 8;
 ///  # The advantage of PERF_SAMPLE_IDENTIFIER is that its position
 ///  # is fixed relative to header.
 ///  #
-///
+///  ```c
 ///  { u64			id;	  } && PERF_SAMPLE_IDENTIFIER
 ///  { u64			ip;	  } && PERF_SAMPLE_IP
 ///  { u32			pid, tid; } && PERF_SAMPLE_TID
@@ -871,6 +883,7 @@ pub const PERF_RECORD_READ: i32 = 8;
 ///
 ///  { u64			nr
 ///    u64			ips[nr];  } && PERF_SAMPLE_CALLCHAIN
+///  ```
 ///
 ///  #
 ///  # The RAW record below is opaque data wrt the ABI
@@ -883,6 +896,7 @@ pub const PERF_RECORD_READ: i32 = 8;
 ///  # In other words, PERF_SAMPLE_RAW contents are not an ABI.
 ///  #
 ///
+///  ```c
 ///  { u32			size;
 ///    char                  data[size];}&& PERF_SAMPLE_RAW
 ///
@@ -891,7 +905,7 @@ pub const PERF_RECORD_READ: i32 = 8;
 ///
 /// 	{ u64			abi; # enum perf_sample_regs_abi
 /// 	  u64			regs[weight(mask)]; } && PERF_SAMPLE_REGS_USER
-///
+//
 /// 	{ u64			size;
 /// 	  char			data[size];
 /// 	  u64			dyn_size; } && PERF_SAMPLE_STACK_USER
@@ -903,6 +917,7 @@ pub const PERF_RECORD_READ: i32 = 8;
 ///    u64			regs[weight(mask)]; } && PERF_SAMPLE_REGS_INTR
 ///  { u64			phys_addr;} && PERF_SAMPLE_PHYS_ADDR
 /// };
+/// ```
 pub const PERF_RECORD_SAMPLE: i32 = 9;
 
 /// The MMAP2 records are an augmented version of MMAP, they add
@@ -927,6 +942,7 @@ pub const PERF_RECORD_MMAP2: i32 = 10;
 
 /// Records that new data landed in the AUX buffer part.
 ///
+/// ```c
 /// struct {
 /// 	struct perf_event_header	header;
 ///
@@ -935,50 +951,60 @@ pub const PERF_RECORD_MMAP2: i32 = 10;
 ///  u64				flags;
 /// 	struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_AUX: i32 = 11;
 
 /// Indicates that instruction trace has started
 ///
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  u32				pid;
 ///  u32				tid;
 ///  struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_ITRACE_START: i32 = 12;
 
 /// Records the dropped/lost sample number.
 ///
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///
 ///  u64				lost;
 ///  struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_LOST_SAMPLES: i32 = 13;
 
 /// Records a context switch in or out (flagged by
 /// PERF_RECORD_MISC_SWITCH_OUT). See also
 /// PERF_RECORD_SWITCH_CPU_WIDE.
 ///
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_SWITCH: i32 = 14;
 
 /// CPU-wide version of PERF_RECORD_SWITCH with next_prev_pid and
 /// next_prev_tid that are the next (switching out) or previous
 /// (switching in) pid/tid.
 ///
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  u32				next_prev_pid;
 ///  u32				next_prev_tid;
 ///  struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_SWITCH_CPU_WIDE: i32 = 15;
 
+/// ```c
 /// struct {
 ///  struct perf_event_header	header;
 ///  u32				pid;
@@ -987,6 +1013,7 @@ pub const PERF_RECORD_SWITCH_CPU_WIDE: i32 = 15;
 ///  { u64				dev, inode; } [nr_namespaces];
 ///  struct sample_id		sample_id;
 /// };
+/// ```
 pub const PERF_RECORD_NAMESPACES: i32 = 16;
 
 /// non-ABI
@@ -1223,22 +1250,20 @@ pub const PERF_MEM_TLB_SHIFT: i32 = 26;
 
 //#define PERF_MEM_S(a, s) (((__u64)PERF_MEM_##a##_##s) << PERF_MEM_##a##_SHIFT)
 
-/*
- * single taken branch record layout:
- *
- *      from: source instruction (may not always be a branch insn)
- *        to: branch target
- *   mispred: branch target was mispredicted
- * predicted: branch target was predicted
- *
- * support for mispred, predicted is optional. In case it
- * is not supported mispred = predicted = 0.
- *
- *     in_tx: running in a hardware transaction
- *     abort: aborting a hardware transaction
- *    cycles: cycles from last branch (or 0 if not supported)
- *      type: branch type
- */
+/// single taken branch record layout:
+///
+/// - from: source instruction (may not always be a branch insn)
+/// - to: branch target
+/// - mispred: branch target was mispredicted
+/// - predicted: branch target was predicted
+///
+/// support for mispred, predicted is optional. In case it
+/// is not supported mispred = predicted = 0.
+///
+/// - in_tx: running in a hardware transaction
+/// - abort: aborting a hardware transaction
+/// - cycles: cycles from last branch (or 0 if not supported)
+/// - type: branch type
 #[repr(C)]
 pub struct perf_branch_entry_t {
     pub from: u64,

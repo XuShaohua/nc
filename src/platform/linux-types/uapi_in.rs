@@ -74,6 +74,7 @@ pub const IPPROTO_MAX: i32 = IPPROTO_RAW + 1;
 
 /// Internet address.
 #[repr(C)]
+#[derive(Default)]
 pub struct in_addr_t {
     pub s_addr: be32_t,
 }
@@ -239,6 +240,7 @@ pub struct in_pktinfo_t {
 pub const SOCK_SIZE: usize = 16;
 
 #[repr(C)]
+#[derive(Default)]
 pub struct sockaddr_in_t {
     /// Address family
     pub sin_family: sa_family_t,

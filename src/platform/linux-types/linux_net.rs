@@ -1,5 +1,4 @@
 use super::fcntl::*;
-use super::uapi_net::*;
 
 /// NET		An implementation of the SOCKET network access protocol.
 /// This is the master header file for the Linux NET layer,

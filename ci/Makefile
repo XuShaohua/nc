@@ -5,7 +5,7 @@ install-host-deps:
 
 # TODO(Shaohua): Add mirror url env
 install-rootfs:
-	for arch in arm64 armhf i386 mips mips64el ppc64el s390x; do \
+	for arch in amd64 arm64 armhf i386 mips mips64el ppc64el s390x; do \
 		sudo debootstrap --arch $${arch} --include=gcc,vim,python3,wget \
 		  buster root-$${arch} http://ftp.cn.debian.org/debian; \
 	done

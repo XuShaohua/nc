@@ -66,6 +66,12 @@ let ret = nc::kill(pid, nc::SIGTERM);
 println!("ret: {:?}", ret);
 ```
 
+## Stable version
+For stable version of rustc, please install `gcc` first.
+As `asm!` feature is unavailable in stable version. So we use a C library
+instead to wrap syscall APIs.
+
+
 ## Related projects
 * [nix][nix]
 * [syscall][syscall]

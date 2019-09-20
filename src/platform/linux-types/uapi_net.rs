@@ -49,16 +49,17 @@ pub const SYS_RECVMMSG_: i32 = 19;
 pub const SYS_SENDMMSG_: i32 = 20;
 
 /// socket-state enum.
+pub type socket_state_t = i32;
 /// not allocated
-pub const SS_FREE: i32 = 0;
+pub const SS_FREE: socket_state_t = 0;
 /// unconnected to any socket
-pub const SS_UNCONNECTED: i32 = 1;
+pub const SS_UNCONNECTED: socket_state_t = 1;
 /// in process of connecting
-pub const SS_CONNECTING: i32 = 2;
+pub const SS_CONNECTING: socket_state_t = 2;
 /// connected to socket
-pub const SS_CONNECTED: i32 = 3;
+pub const SS_CONNECTED: socket_state_t = 3;
 /// in process of disconnecting
-pub const SS_DISCONNECTING: i32 = 4;
+pub const SS_DISCONNECTING: socket_state_t = 4;
 
 /// performed a listen
 pub const __SO_ACCEPTCON: i32 = 1 << 16;

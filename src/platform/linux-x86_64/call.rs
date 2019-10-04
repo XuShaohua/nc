@@ -1145,6 +1145,7 @@ pub fn get_robust_list(
     }
 }
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 /// Get thread-local storage information.
 pub fn get_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
     unsafe {
@@ -3418,12 +3419,18 @@ pub fn set_robust_list(heads: &mut [robust_list_head_t]) -> Result<(), Errno> {
 }
 
 /// Set thread-local storage information.
-// TODO(Shaohua): Support architecture-specific binding.
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn set_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
     unsafe {
         let user_desc_ptr = user_desc as *mut user_desc_t as usize;
         syscall1(SYS_SET_THREAD_AREA, user_desc_ptr).map(|_ret| ())
     }
+}
+
+#[cfg(any(target_arch = "mips", target_arch = "mips64"))]
+/// Set thread-local storage information.
+pub fn set_thread_area(addr: usize) -> Result<(), Errno> {
+    unsafe { syscall1(SYS_SET_THREAD_AREA, addr).map(|_ret| ()) }
 }
 
 /// Set pointer to thread ID.

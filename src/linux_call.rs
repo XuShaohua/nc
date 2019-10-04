@@ -4130,6 +4130,7 @@ pub fn get_kernel_syms() {
     // syscall0(SYS_GET_KERNEL_SYMS);
 }
 
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 /// Get thread-local storage information.
 pub fn get_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
     unsafe {
@@ -4423,12 +4424,18 @@ pub fn setuid32() {
 }
 
 /// Set thread-local storage information.
-// TODO(Shaohua): Support architecture-specific binding.
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn set_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
     unsafe {
         let user_desc_ptr = user_desc as *mut user_desc_t as usize;
         syscall1(SYS_SET_THREAD_AREA, user_desc_ptr).map(|_ret| ())
     }
+}
+
+#[cfg(any(target_arch = "mips", target_arch = "mips64"))]
+/// Set thread-local storage information.
+pub fn set_thread_area(addr: usize) -> Result<(), Errno> {
+    unsafe { syscall1(SYS_SET_THREAD_AREA, addr).map(|_ret| ()) }
 }
 
 /// Manipulation of signal mask.

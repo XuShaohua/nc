@@ -3286,7 +3286,7 @@ pub fn sendfile64(
     in_fd: i32,
     offset: loff_t,
     count: size_t,
-) -> Result<ssize_t, Result> {
+) -> Result<ssize_t, Errno> {
     unsafe {
         let out_fd = out_fd as usize;
         let in_fd = in_fd as usize;

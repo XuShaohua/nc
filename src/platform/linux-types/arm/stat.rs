@@ -31,7 +31,7 @@ pub struct stat64_t {
     pub st_dev: u64,
     pad0: [u8; 4],
 
-    pub st_ino: usize,
+    pub __st_ino: usize,
     pub st_mode: u32,
     pub st_nlink: u32,
 

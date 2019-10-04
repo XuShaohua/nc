@@ -47,19 +47,40 @@ pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usiz
 
 #[cfg(not(nightly))]
 #[inline(always)]
-pub unsafe fn syscall4(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize) -> Result<usize, Errno> {
+pub unsafe fn syscall4(
+    n: Sysno,
+    a1: usize,
+    a2: usize,
+    a3: usize,
+    a4: usize,
+) -> Result<usize, Errno> {
     check_errno(syscalls::__syscall4(n, a1, a2, a3, a4))
 }
 
 #[cfg(not(nightly))]
 #[inline(always)]
-pub unsafe fn syscall5(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize) -> Result<usize, Errno> {
+pub unsafe fn syscall5(
+    n: Sysno,
+    a1: usize,
+    a2: usize,
+    a3: usize,
+    a4: usize,
+    a5: usize,
+) -> Result<usize, Errno> {
     check_errno(syscalls::__syscall5(n, a1, a2, a3, a4, a5))
 }
 
 #[cfg(not(nightly))]
 #[inline(always)]
-pub unsafe fn syscall6(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize: a6: usize) -> Result<usize, Errno> {
+pub unsafe fn syscall6(
+    n: Sysno,
+    a1: usize,
+    a2: usize,
+    a3: usize,
+    a4: usize,
+    a5: usize,
+    a6: usize,
+) -> Result<usize, Errno> {
     check_errno(syscalls::__syscall6(n, a1, a2, a3, a4, a5, a6))
 }
 

@@ -5,7 +5,7 @@ nc
 [![Build Status](https://travis-ci.com/xushaohua/nc.svg?branch=master)](https://travis-ci.com/xushaohua/nc)
 [![Latest version](https://img.shields.io/crates/v/nc.svg)](https://crates.io/crates/nc)
 [![Documentation](https://docs.rs/nc/badge.svg)](https://docs.rs/nc)
-![Minimum rustc version](https://img.shields.io/badge/rustc-1.30+-yellow.svg)
+![Minimum rustc version](https://img.shields.io/badge/rustc-1.36+-yellow.svg)
 ![License](https://img.shields.io/crates/l/nc.svg)
 
 Execute system call directly. `nc` do not depend on `std`.

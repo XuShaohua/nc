@@ -1,12 +1,12 @@
 
 install-host-deps:
 	sudo apt update
-	sudo apt install debootstrap qemu-user-static cargo
+	sudo apt install debootstrap qemu-user-static
 
 # TODO(Shaohua): Add mirror url env
 install-rootfs:
 	for arch in amd64 arm64 armhf i386 mips mips64el ppc64el s390x; do \
-		sudo debootstrap --arch $${arch} --include=gcc,vim,python3,wget \
+		sudo debootstrap --arch $${arch} --include=gcc,vim,python3,wget,cargo \
 		  unstable root-$${arch} http://ftp.cn.debian.org/debian; \
 	done
 

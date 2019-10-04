@@ -63,7 +63,9 @@ def parse_template():
                             print(line)
                             sys.exit(1)
                 new_func_start = False
-                syscalls[sysno] = stack
+                if sysno not in syscalls:
+                    syscalls[sysno] = list()
+                syscalls[sysno].append(stack)
                 stack = []
     return syscalls, headers
 
@@ -117,7 +119,8 @@ def print_call(arch_name):
     with open(call_file, "w") as fh:
         fh.writelines(headers)
         for sysno in sorted(matched_sysno):
-            fh.writelines(syscalls[sysno])
+            for call in syscalls[sysno]:
+                fh.writelines(call)
     rust_fmt(call_file)
 
 def main():

@@ -1,6 +1,7 @@
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]
+#[derive(Clone, Default, Debug)]
 pub struct stat_t {
     pub st_dev: usize,
     pub st_ino: usize,
@@ -27,6 +28,7 @@ pub const STAT64_HAS_BROKEN_ST_INO: i32 = 1;
 /// This matches struct stat64 in glibc2.1, hence the absolutely
 /// insane amounts of padding around dev_t's.
 #[repr(C)]
+#[derive(Clone, Default, Debug)]
 pub struct stat64_t {
     pub st_dev: u64,
     pad0: [u8; 4],

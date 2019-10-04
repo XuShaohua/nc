@@ -49,3 +49,4 @@ mirrors do not support non-x86 architectures
 - [ ] `struct *timespec_t timeout` is NULL or not
 - [ ] fix alignment issue in perf_events.rs
 - [ ] arch specific types
+- [ ] fix `set_thread_area()` error in mips and x86

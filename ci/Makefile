@@ -1,7 +1,7 @@
 
 install-host-deps:
 	sudo apt update
-	sudo apt install debootstrap qemu-user-static
+	sudo apt install debootstrap qemu-user-static cargo
 
 # TODO(Shaohua): Add mirror url env
 install-rootfs:
@@ -15,7 +15,7 @@ mount-fs:
 	sudo mount -t sysfs sysfs ./sys
 	sudo mount --bind /dev ./dev
 	sudo mount -t devpts devps ./dev/pts
-	sudo mount --bind .. ./opt
+	sudo mount --bind ../.. ./opt
 
 umount-fs:
 	sudo umount ./proc ./dev/pts ./sys ./opt

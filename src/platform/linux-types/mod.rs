@@ -22,7 +22,7 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
-#[cfg(target_arch = "ppc64")]
+#[cfg(target_arch = "powerpc64")]
 #[path = "ppc64/mod.rs"]
 mod arch;
 pub use arch::*;

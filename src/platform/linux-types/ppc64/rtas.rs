@@ -45,6 +45,7 @@ pub struct rtas_args_t {
 
 /// RTAS event classes
 /// set bit 0
+#[allow(overflowing_literals)]
 pub const RTAS_INTERNAL_ERROR: i32 = 0x80000000;
 /// set bit 1
 pub const RTAS_EPOW_WARNING: i32 = 0x40000000;
@@ -52,6 +53,7 @@ pub const RTAS_EPOW_WARNING: i32 = 0x40000000;
 pub const RTAS_HOTPLUG_EVENTS: i32 = 0x10000000;
 /// set bit 4
 pub const RTAS_IO_EVENTS: i32 = 0x08000000;
+#[allow(overflowing_literals)]
 pub const RTAS_EVENT_SCAN_ALL_EVENTS: i32 = 0xffffffff;
 
 /// RTAS event severity

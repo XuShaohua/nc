@@ -48,5 +48,5 @@ mirrors do not support non-x86 architectures
 - [ ] u64 to usize error (32bits arch)
 - [ ] `struct *timespec_t timeout` is NULL or not
 - [ ] fix alignment issue in perf_events.rs
-- [ ] arch specific types
+- [x] arch specific types
 - [ ] fix `set_thread_area()` error in mips and x86

@@ -10,5 +10,9 @@ description = "Execute system call directly"
 edition = "2018"
 license = "Apache-2.0"
 publish = true
+build = "build.rs"
+keywords = ["syscall", "linux"]
+categories = ["os", "no-std", "external-ffi-bindings"]
+exclude = ["/.travis.yml", ".gitignore"]
 
 [dependencies]

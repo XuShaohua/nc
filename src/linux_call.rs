@@ -4803,18 +4803,16 @@ pub fn subpage_prot(addr: usize, len: usize, map: &mut u32) -> Result<(), Errno>
 }
 
 /// Handle {get,set,swap}_context operations
-// TODO(Shaohua): Support arch-spec.
-pub fn swapcontext(
-    old_ctx: &mut ucontext_t,
-    new_ctx: &mut ucontext_t,
-    ctx_size: isize,
-) -> Result<(), Errno> {
-    unsafe {
-        let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
-        let new_ctx_ptr = new_ctx as *mut ucontext_t as usize;
-        let ctx_size = ctx_size as usize;
-        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(|_ret| ())
-    }
+pub fn swapcontext() {
+    core::unimplemented!();
+    //pub fn swapcontext(old_ctx: &mut ucontext_t, new_ctx: &mut ucontext_t, ctx_size: isize,) -> Result<(), Errno> {}
+    // syscall0(SYS_SWAPCONTEXT);
+    //    unsafe {
+    //        let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
+    //        let new_ctx_ptr = new_ctx as *mut ucontext_t as usize;
+    //        let ctx_size = ctx_size as usize;
+    //        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(|_ret| ())
+    //    }
 }
 
 pub fn switch_endian() {

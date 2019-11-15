@@ -37,7 +37,7 @@ match nc::stat("/etc/passwd", &mut statbuf) {
 
 Fork process:
 ```rust
-let pid = c::fork();
+let pid = nc::fork();
 match pid {
     Ok(pid) => {
         if pid == 0 {

@@ -47,7 +47,7 @@ pub fn open(path: &str, flags: i32, mode: i32) -> Result<i32, Errno> {
 pub fn close(fd: i32) -> Result<(), Errno> {
     unsafe {
         let fd = fd as usize;
-        syscall1(SYS_CLOSE, fd).map(|_ret| ())
+        syscall1(SYS_CLOSE, fd).map(drop)
     }
 }
 

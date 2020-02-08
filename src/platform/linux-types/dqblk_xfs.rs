@@ -9,7 +9,7 @@ pub const fn XQM_CMD(x: i32) -> i32 {
 /// test if for XFS
 #[inline]
 pub const fn XQM_COMMAND(x: i32) -> bool {
-    ((x & (0xff << 8)) == (('X' as i32) << 8))
+    (x & (0xff << 8)) == (('X' as i32) << 8)
 }
 
 /// system call user quota type

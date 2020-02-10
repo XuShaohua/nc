@@ -48,8 +48,8 @@ DEFINES = {
         "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
     },
     "s390x": {
-        "compiler": "s390x-linux-gnu-gcc-8",
-        "deb": ["linux-libc-dev-s390x-cross", "gcc-8-s390x-linux-gnu"],
+        "compiler": "s390x-linux-gnu-gcc-9",
+        "deb": ["linux-libc-dev-s390x-cross", "gcc-9-s390x-linux-gnu"],
         "include": "/usr/s390x-linux-gnu/include",
         "errno": "/usr/s390x-linux-gnu/include/asm/errno.h",
         "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",

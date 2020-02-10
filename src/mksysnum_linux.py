@@ -55,8 +55,8 @@ DEFINES = {
         "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
     },
     "x86": {
-        "compiler": "i686-linux-gnu-gcc-8",
-        "deb": ["linux-libc-dev-i386-cross", "gcc-8-i686-linux-gnu"],
+        "compiler": "i686-linux-gnu-gcc-9",
+        "deb": ["linux-libc-dev-i386-cross", "gcc-9-i686-linux-gnu"],
         "include": "/usr/i686-linux-gnu/include",
         "errno": "/usr/i686-linux-gnu/include/asm/errno.h",
         "sysno": "/usr/i686-linux-gnu/include/asm/unistd.h",

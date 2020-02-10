@@ -1,9 +1,8 @@
 extern crate alloc;
 
-use super::errno::*;
 use super::sysno::*;
-use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 use crate::c_str::CString;
+use crate::syscalls::*;
 use crate::types::*;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -3763,6 +3762,11 @@ pub fn clock_settime64() {
     // syscall0(SYS_CLOCK_SETTIME64);
 }
 
+pub fn clone3() {
+    core::unimplemented!();
+    // syscall0(SYS_CLONE3);
+}
+
 pub fn create_module() {
     core::unimplemented!();
     // syscall0(SYS_CREATE_MODULE);
@@ -3947,6 +3951,11 @@ pub fn oldstat() {
 pub fn olduname() {
     core::unimplemented!();
     // syscall0(SYS_OLDUNAME);
+}
+
+pub fn pidfd_open() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_OPEN);
 }
 
 pub fn ppoll_time64() {

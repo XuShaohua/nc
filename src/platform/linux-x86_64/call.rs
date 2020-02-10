@@ -1,6 +1,5 @@
 extern crate alloc;
 
-use super::errno::*;
 use super::sysno::*;
 use crate::c_str::CString;
 use crate::syscalls::*;
@@ -219,6 +218,11 @@ pub fn clone(
         tls,
     )
     .map(|ret| ret as pid_t)
+}
+
+pub fn clone3() {
+    core::unimplemented!();
+    // syscall0(SYS_CLONE3);
 }
 
 /// Close a file descriptor.
@@ -1912,6 +1916,11 @@ pub fn perf_event_open(
 pub fn personality(persona: u32) -> Result<u32, Errno> {
     let persona = persona as usize;
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
+}
+
+pub fn pidfd_open() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_OPEN);
 }
 
 /// sys_pidfd_send_signal - Signal a process through a pidfd

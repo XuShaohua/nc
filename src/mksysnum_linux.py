@@ -41,8 +41,8 @@ DEFINES = {
         "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
     },
     "ppc64": {
-        "compiler": "powerpc64-linux-gnu-gcc-8",
-        "deb": ["linux-libc-dev-ppc64-cross", "gcc-8-powerpc64-linux-gnu"],
+        "compiler": "powerpc64-linux-gnu-gcc-9",
+        "deb": ["linux-libc-dev-ppc64-cross", "gcc-9-powerpc64-linux-gnu"],
         "include": "/usr/powerpc64-linux-gnu/include",
         "errno": "/usr/powerpc64-linux-gnu/include/asm/errno.h",
         "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",

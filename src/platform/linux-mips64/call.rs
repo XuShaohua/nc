@@ -1,9 +1,8 @@
 extern crate alloc;
 
-use super::errno::*;
 use super::sysno::*;
-use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 use crate::c_str::CString;
+use crate::syscalls::*;
 use crate::types::*;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -225,6 +224,11 @@ pub fn clone(
         tls,
     )
     .map(|ret| ret as pid_t)
+}
+
+pub fn clone3() {
+    core::unimplemented!();
+    // syscall0(SYS_CLONE3);
 }
 
 /// Close a file descriptor.
@@ -572,12 +576,49 @@ pub fn fremovexattr(fd: i32, name: &str) -> Result<(), Errno> {
     syscall2(SYS_FREMOVEXATTR, fd, name_ptr).map(drop)
 }
 
+/// Set parameters and trigger actions on a context.
+pub fn fsconfig(fd: i32, cmd: u32, key: &str, value: &str, aux: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let cmd = cmd as usize;
+    let key = CString::new(key);
+    let key_ptr = key.as_ptr() as usize;
+    let value = CString::new(value);
+    let value_ptr = value.as_ptr() as usize;
+    let aux = aux as usize;
+    syscall5(SYS_FSCONFIG, fd, cmd, key_ptr, value_ptr, aux).map(drop)
+}
+
 /// Set extended attribute value.
 pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
     syscall4(SYS_FSETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
+}
+
+/// Create a kernel mount representation for a new, prepared superblock.
+pub fn fsmount(fs_fd: i32, flags: u32, attr_flags: u32) -> Result<i32, Errno> {
+    let fs_fd = fs_fd as usize;
+    let flags = flags as usize;
+    let attr_flags = attr_flags as usize;
+    syscall3(SYS_FSMOUNT, fs_fd, flags, attr_flags).map(|ret| ret as i32)
+}
+
+/// Open a filesystem by name so that it can be configured for mounting.
+pub fn fsopen(fs_name: &str, flags: u32) -> Result<(), Errno> {
+    let fs_name = CString::new(fs_name);
+    let fs_name_ptr = fs_name.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall2(SYS_FSOPEN, fs_name_ptr, flags).map(drop)
+}
+
+/// Pick a superblock into a context for reconfiguration.
+pub fn fspick(dfd: i32, path: &str, flags: i32) -> Result<i32, Errno> {
+    let dfd = dfd as usize;
+    let path = CString::new(path);
+    let path_ptr = path.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall3(SYS_FSPICK, dfd, path_ptr, flags).map(|ret| ret as i32)
 }
 
 /// Get file status about a file descriptor.
@@ -1108,6 +1149,45 @@ pub fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<
     syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
 }
 
+pub fn io_uring_enter(
+    fd: i32,
+    to_submit: u32,
+    min_complete: u32,
+    flags: u32,
+    sig: &sigset_t,
+    sigsetsize: size_t,
+) -> Result<i32, Errno> {
+    let fd = fd as usize;
+    let to_submit = to_submit as usize;
+    let min_complete = min_complete as usize;
+    let flags = flags as usize;
+    let sig_ptr = sig as *const sigset_t as usize;
+    let sigsetsize = sigsetsize as usize;
+    syscall6(
+        SYS_IO_URING_ENTER,
+        fd,
+        to_submit,
+        min_complete,
+        flags,
+        sig_ptr,
+        sigsetsize,
+    )
+    .map(|ret| ret as i32)
+}
+
+pub fn io_uring_register(fd: i32, opcode: u32, arg: usize, nr_args: u32) -> Result<i32, Errno> {
+    let fd = fd as usize;
+    let opcode = opcode as usize;
+    let nr_args = nr_args as usize;
+    syscall4(SYS_IO_URING_REGISTER, fd, opcode, arg, nr_args).map(|ret| ret as i32)
+}
+
+pub fn io_uring_setup(entries: u32, params: &mut io_uring_params_t) -> Result<i32, Errno> {
+    let entries = entries as usize;
+    let params_ptr = params as *mut io_uring_params_t as usize;
+    syscall2(SYS_IO_URING_SETUP, entries, params_ptr).map(|ret| ret as i32)
+}
+
 /// Compare two processes to determine if they share a kernel resource.
 pub fn kcmp(pid1: pid_t, pid2: pid_t, type_: i32, idx1: usize, idx2: usize) -> Result<i32, Errno> {
     let pid1 = pid1 as usize;
@@ -1450,6 +1530,37 @@ pub fn mount(
     .map(drop)
 }
 
+/// Move a mount from one place to another. In combination with
+/// fsopen()/fsmount() this is used to install a new mount and in combination
+/// with open_tree(OPEN_TREE_CLONE [| AT_RECURSIVE]) it can be used to copy
+/// a mount subtree.
+///
+/// Note the flags value is a combination of MOVE_MOUNT_* flags.
+pub fn move_mount(
+    from_dfd: i32,
+    from_pathname: &str,
+    to_dfd: i32,
+    to_pathname: &str,
+    flags: u32,
+) -> Result<i32, Errno> {
+    let from_dfd = from_dfd as usize;
+    let from_pathname = CString::new(from_pathname);
+    let from_pathname_ptr = from_pathname.as_ptr() as usize;
+    let to_dfd = to_dfd as usize;
+    let to_pathname = CString::new(to_pathname);
+    let to_pathname_ptr = to_pathname.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall5(
+        SYS_MOVE_MOUNT,
+        from_dfd,
+        from_pathname_ptr,
+        to_dfd,
+        to_pathname_ptr,
+        flags,
+    )
+    .map(|ret| ret as i32)
+}
+
 /// Move individual pages of a process to another node
 pub fn move_pages(
     pid: pid_t,
@@ -1719,6 +1830,14 @@ pub fn open_by_handle_at(
     syscall3(SYS_OPEN_BY_HANDLE_AT, mount_fd, handle_ptr, flags).map(drop)
 }
 
+pub fn open_tree(dfd: i32, filename: &str, flags: u32) -> Result<i32, Errno> {
+    let dfd = dfd as usize;
+    let filename = CString::new(filename);
+    let filename_ptr = filename.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall3(SYS_OPEN_TREE, dfd, filename_ptr, flags).map(|ret| ret as i32)
+}
+
 // Pause the calling process to sleep until a signal is delivered.
 pub fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)
@@ -1743,6 +1862,40 @@ pub fn perf_event_open(
 pub fn personality(persona: u32) -> Result<u32, Errno> {
     let persona = persona as usize;
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
+}
+
+pub fn pidfd_open() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_OPEN);
+}
+
+/// sys_pidfd_send_signal - Signal a process through a pidfd
+/// @pidfd:  file descriptor of the process
+/// @sig:    signal to send
+/// @info:   signal info
+/// @flags:  future flags
+///
+/// The syscall currently only signals via PIDTYPE_PID which covers
+/// kill(<positive-pid>, <signal>. It does not signal threads or process
+/// groups.
+/// In order to extend the syscall to threads and process groups the @flags
+/// argument should be used. In essence, the @flags argument will determine
+/// what is signaled and not the file descriptor itself. Put in other words,
+/// grouping is a property of the flags argument not a property of the file
+/// descriptor.
+///
+/// Return: 0 on success, negative errno on failure
+pub fn pidfd_send_signal(
+    pidfd: i32,
+    sig: i32,
+    info: &mut siginfo_t,
+    flags: u32,
+) -> Result<(), Errno> {
+    let pidfd = pidfd as usize;
+    let sig = sig as usize;
+    let info_ptr = info as *mut siginfo_t as usize;
+    let flags = flags as usize;
+    syscall4(SYS_PIDFD_SEND_SIGNAL, pidfd, sig, info_ptr, flags).map(drop)
 }
 
 /// Create a pipe

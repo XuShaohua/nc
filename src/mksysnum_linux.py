@@ -34,8 +34,8 @@ DEFINES = {
         "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
     },
     "mips64": {
-        "compiler": "mips64-linux-gnuabi64-gcc-8",
-        "deb": ["linux-libc-dev-mips64-cross", "gcc-8-mips64-linux-gnuabi64"],
+        "compiler": "mips64-linux-gnuabi64-gcc-9",
+        "deb": ["linux-libc-dev-mips64-cross", "gcc-9-mips64-linux-gnuabi64"],
         "include": "/usr/mips64-linux-gnuabi64/include",
         "errno": "/usr/mips64-linux-gnuabi64/include/asm/errno.h",
         "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",

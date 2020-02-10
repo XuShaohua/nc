@@ -18,8 +18,8 @@ DEFINES = {
         "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",
     },
     "arm": {
-        "compiler": "arm-linux-gnueabihf-gcc-8",
-        "deb": ["linux-libc-dev-armhf-cross", "gcc-8-arm-linux-gnueabihf"],
+        "compiler": "arm-linux-gnueabihf-gcc-9",
+        "deb": ["linux-libc-dev-armhf-cross", "gcc-9-arm-linux-gnueabihf"],
         "include": "/usr/arm-linux-gnueabihf/include",
         "errno": "/usr/arm-linux-gnueabihf/include/asm/errno.h",
         "sysno": "/usr/arm-linux-gnueabihf/include/asm/unistd.h",

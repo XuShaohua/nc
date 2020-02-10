@@ -10,7 +10,7 @@ extern crate alloc;
 extern crate std;
 
 pub mod c_str;
-mod syscalls;
+pub mod syscalls;
 
 #[cfg(target_os = "freebsd")]
 #[path = "platform/freebsd-types/mod.rs"]

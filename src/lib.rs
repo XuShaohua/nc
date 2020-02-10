@@ -11,6 +11,7 @@ extern crate std;
 
 pub mod c_str;
 pub mod syscalls;
+pub use syscalls::Errno;
 
 #[cfg(target_os = "freebsd")]
 #[path = "platform/freebsd-types/mod.rs"]

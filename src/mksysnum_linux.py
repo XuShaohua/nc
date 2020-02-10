@@ -11,8 +11,8 @@ import sys
 
 DEFINES = {
     "aarch64": {
-        "compiler": "aarch64-linux-gnu-gcc-8",
-        "deb": ["linux-libc-dev-arm64-cross", "gcc-8-aarch64-linux-gnu"],
+        "compiler": "aarch64-linux-gnu-gcc-9",
+        "deb": ["linux-libc-dev-arm64-cross", "gcc-9-aarch64-linux-gnu"],
         "include": "/usr/aarch64-linux-gnu/include",
         "errno": "/usr/aarch64-linux-gnu/include/asm/errno.h",
         "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",

@@ -1,9 +1,8 @@
 extern crate alloc;
 
-use super::errno::*;
 use super::sysno::*;
-use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
 use crate::c_str::CString;
+use crate::syscalls::*;
 use crate::types::*;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -1690,6 +1689,11 @@ pub fn perf_event_open(
 pub fn personality(persona: u32) -> Result<u32, Errno> {
     let persona = persona as usize;
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
+}
+
+pub fn pidfd_open() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_OPEN);
 }
 
 /// sys_pidfd_send_signal - Signal a process through a pidfd

@@ -342,10 +342,10 @@ pub const SIGEV_THREAD_ID: i32 = 4;
 
 /// This works because the alignment is ok on all current architectures
 /// but we leave open this being overridden in the future
-const ARCH_SIGEV_PREAMBLE_SIZE: usize = (size_of::<i32>() * 2 + size_of::<sigval_t>());
+const ARCH_SIGEV_PREAMBLE_SIZE: usize = size_of::<i32>() * 2 + size_of::<sigval_t>();
 
 pub const SIGEV_MAX_SIZE: usize = 64;
-pub const SIGEV_PAD_SIZE: usize = ((SIGEV_MAX_SIZE - ARCH_SIGEV_PREAMBLE_SIZE) / size_of::<i32>());
+pub const SIGEV_PAD_SIZE: usize = (SIGEV_MAX_SIZE - ARCH_SIGEV_PREAMBLE_SIZE) / size_of::<i32>();
 
 #[repr(C)]
 #[derive(Clone, Copy)]

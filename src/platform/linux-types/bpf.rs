@@ -236,14 +236,14 @@ pub const MAX_BPF_ATTACH_TYPE: i32 = BPF_FLOW_DISSECTOR + 1;
 ///
 /// All eligible programs are executed regardless of return code from
 /// earlier programs.
-pub const BPF_F_ALLOW_OVERRIDE: i32 = (1 << 0);
-pub const BPF_F_ALLOW_MULTI: i32 = (1 << 1);
+pub const BPF_F_ALLOW_OVERRIDE: i32 = 1 << 0;
+pub const BPF_F_ALLOW_MULTI: i32 = 1 << 1;
 
 /// If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
 /// verifier will perform strict alignment checking as if the kernel
 /// has been built with CONFIG_EFFICIENT_UNALIGNED_ACCESS not set,
 /// and NET_IP_ALIGN defined to 2.
-pub const BPF_F_STRICT_ALIGNMENT: i32 = (1 << 0);
+pub const BPF_F_STRICT_ALIGNMENT: i32 = 1 << 0;
 
 /// If BPF_F_ANY_ALIGNMENT is used in BPF_PROF_LOAD command, the
 /// verifier will allow any alignment whatsoever.  On platforms
@@ -256,7 +256,7 @@ pub const BPF_F_STRICT_ALIGNMENT: i32 = (1 << 0);
 /// context and memory access aspects of the verifier, but because
 /// of an unaligned access the alignment check would trigger before
 /// the one we are interested in.
-pub const BPF_F_ANY_ALIGNMENT: i32 = (1 << 1);
+pub const BPF_F_ANY_ALIGNMENT: i32 = 1 << 1;
 
 /// when bpf_ldimm64->src_reg == BPF_PSEUDO_MAP_FD, bpf_ldimm64->imm == fd
 pub const BPF_PSEUDO_MAP_FD: i32 = 1;
@@ -276,32 +276,32 @@ pub const BPF_EXIST: i32 = 2;
 pub const BPF_F_LOCK: i32 = 4;
 
 /// flags for BPF_MAP_CREATE command
-pub const BPF_F_NO_PREALLOC: i32 = (1 << 0);
+pub const BPF_F_NO_PREALLOC: i32 = 1 << 0;
 
 /// Instead of having one common LRU list in the
 /// BPF_MAP_TYPE_LRU_[PERCPU_]HASH map, use a percpu LRU list
 /// which can scale and perform better.
 /// Note, the LRU nodes (including free nodes) cannot be moved
 /// across different LRU lists.
-pub const BPF_F_NO_COMMON_LRU: i32 = (1 << 1);
+pub const BPF_F_NO_COMMON_LRU: i32 = 1 << 1;
 
 /// Specify numa node during map creation
-pub const BPF_F_NUMA_NODE: i32 = (1 << 2);
+pub const BPF_F_NUMA_NODE: i32 = 1 << 2;
 
 pub const BPF_OBJ_NAME_LEN: usize = 16;
 
 /// Flags for accessing BPF object
-pub const BPF_F_RDONLY: i32 = (1 << 3);
-pub const BPF_F_WRONLY: i32 = (1 << 4);
+pub const BPF_F_RDONLY: i32 = 1 << 3;
+pub const BPF_F_WRONLY: i32 = 1 << 4;
 
 /// Flag for stack_map, store build_id+offset instead of pointer
-pub const BPF_F_STACK_BUILD_ID: i32 = (1 << 5);
+pub const BPF_F_STACK_BUILD_ID: i32 = 1 << 5;
 
 /// Zero-initialize hash function seed. This should only be used for testing.
-pub const BPF_F_ZERO_SEED: i32 = (1 << 6);
+pub const BPF_F_ZERO_SEED: i32 = 1 << 6;
 
 /// flags for BPF_PROG_QUERY
-pub const BPF_F_QUERY_EFFECTIVE: i32 = (1 << 0);
+pub const BPF_F_QUERY_EFFECTIVE: i32 = 1 << 0;
 
 /// user space need an empty entry to identify end of a trace
 pub const BPF_STACK_BUILD_ID_EMPTY: i32 = 0;
@@ -2630,8 +2630,8 @@ pub union bpf_attr_t {
 /// All flags used by eBPF helper functions, placed here.
 
 /// BPF_FUNC_skb_store_bytes flags.
-pub const BPF_F_RECOMPUTE_CSUM: i32 = (1 << 0);
-pub const BPF_F_INVALIDATE_HASH: i32 = (1 << 1);
+pub const BPF_F_RECOMPUTE_CSUM: i32 = 1 << 0;
+pub const BPF_F_INVALIDATE_HASH: i32 = 1 << 1;
 
 /* BPF_FUNC_l3_csum_replace and BPF_FUNC_l4_csum_replace flags.
  * First 4 bits are for passing the header field size.
@@ -2639,30 +2639,30 @@ pub const BPF_F_INVALIDATE_HASH: i32 = (1 << 1);
 pub const BPF_F_HDR_FIELD_MASK: i32 = 0xf;
 
 /// BPF_FUNC_l4_csum_replace flags.
-pub const BPF_F_PSEUDO_HDR: i32 = (1 << 4);
-pub const BPF_F_MARK_MANGLED_0: i32 = (1 << 5);
-pub const BPF_F_MARK_ENFORCE: i32 = (1 << 6);
+pub const BPF_F_PSEUDO_HDR: i32 = 1 << 4;
+pub const BPF_F_MARK_MANGLED_0: i32 = 1 << 5;
+pub const BPF_F_MARK_ENFORCE: i32 = 1 << 6;
 
 /// BPF_FUNC_clone_redirect and BPF_FUNC_redirect flags.
-pub const BPF_F_INGRESS: i32 = (1 << 0);
+pub const BPF_F_INGRESS: i32 = 1 << 0;
 
 /// BPF_FUNC_skb_set_tunnel_key and BPF_FUNC_skb_get_tunnel_key flags.
-pub const BPF_F_TUNINFO_IPV6: i32 = (1 << 0);
+pub const BPF_F_TUNINFO_IPV6: i32 = 1 << 0;
 
 /// flags for both BPF_FUNC_get_stackid and BPF_FUNC_get_stack.
 pub const BPF_F_SKIP_FIELD_MASK: i32 = 0xff;
-pub const BPF_F_USER_STACK: i32 = (1 << 8);
+pub const BPF_F_USER_STACK: i32 = 1 << 8;
 
 /// flags used by BPF_FUNC_get_stackid only.
-pub const BPF_F_FAST_STACK_CMP: i32 = (1 << 9);
-pub const BPF_F_REUSE_STACKID: i32 = (1 << 10);
+pub const BPF_F_FAST_STACK_CMP: i32 = 1 << 9;
+pub const BPF_F_REUSE_STACKID: i32 = 1 << 10;
 /// flags used by BPF_FUNC_get_stack only.
-pub const BPF_F_USER_BUILD_ID: i32 = (1 << 11);
+pub const BPF_F_USER_BUILD_ID: i32 = 1 << 11;
 
 /// BPF_FUNC_skb_set_tunnel_key flags.
-pub const BPF_F_ZERO_CSUM_TX: i32 = (1 << 1);
-pub const BPF_F_DONT_FRAGMENT: i32 = (1 << 2);
-pub const BPF_F_SEQ_NUMBER: i32 = (1 << 3);
+pub const BPF_F_ZERO_CSUM_TX: i32 = 1 << 1;
+pub const BPF_F_DONT_FRAGMENT: i32 = 1 << 2;
+pub const BPF_F_SEQ_NUMBER: i32 = 1 << 3;
 
 /// BPF_FUNC_perf_event_output, BPF_FUNC_perf_event_read and
 /// BPF_FUNC_perf_event_read_value flags.
@@ -2670,7 +2670,7 @@ pub const BPF_F_INDEX_MASK: u64 = 0xffffffff;
 pub const BPF_F_CURRENT_CPU: u64 = BPF_F_INDEX_MASK;
 
 /// BPF_FUNC_perf_event_output for sk_buff input context.
-pub const BPF_F_CTXLEN_MASK: u64 = (0xfffff << 32);
+pub const BPF_F_CTXLEN_MASK: u64 = 0xfffff << 32;
 
 /// Current network namespace
 pub const BPF_F_CURRENT_NETNS: i32 = -1;
@@ -3147,9 +3147,9 @@ pub struct bpf_sock_ops_t {
 }
 
 /// Definitions for bpf_sock_ops_cb_flags
-pub const BPF_SOCK_OPS_RTO_CB_FLAG: i32 = (1 << 0);
-pub const BPF_SOCK_OPS_RETRANS_CB_FLAG: i32 = (1 << 1);
-pub const BPF_SOCK_OPS_STATE_CB_FLAG: i32 = (1 << 2);
+pub const BPF_SOCK_OPS_RTO_CB_FLAG: i32 = 1 << 0;
+pub const BPF_SOCK_OPS_RETRANS_CB_FLAG: i32 = 1 << 1;
+pub const BPF_SOCK_OPS_STATE_CB_FLAG: i32 = 1 << 2;
 /// Mask of all currently supported cb flags
 pub const BPF_SOCK_OPS_ALL_CB_FLAGS: i32 = 0x7;
 
@@ -3233,12 +3233,12 @@ pub struct bpf_perf_event_value_t {
     pub running: u64,
 }
 
-pub const BPF_DEVCG_ACC_MKNOD: i32 = (1 << 0);
-pub const BPF_DEVCG_ACC_READ: i32 = (1 << 1);
-pub const BPF_DEVCG_ACC_WRITE: i32 = (1 << 2);
+pub const BPF_DEVCG_ACC_MKNOD: i32 = 1 << 0;
+pub const BPF_DEVCG_ACC_READ: i32 = 1 << 1;
+pub const BPF_DEVCG_ACC_WRITE: i32 = 1 << 2;
 
-pub const BPF_DEVCG_DEV_BLOCK: i32 = (1 << 0);
-pub const BPF_DEVCG_DEV_CHAR: i32 = (1 << 1);
+pub const BPF_DEVCG_DEV_BLOCK: i32 = 1 << 0;
+pub const BPF_DEVCG_DEV_CHAR: i32 = 1 << 1;
 
 #[repr(C)]
 pub struct bpf_cgroup_dev_ctx_t {

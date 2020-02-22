@@ -21,7 +21,7 @@ pub const INR_OPEN_CUR: i32 = 1024;
 pub const INR_OPEN_MAX: i32 = 4096;
 
 pub const BLOCK_SIZE_BITS: i32 = 10;
-pub const BLOCK_SIZE: i32 = (1 << BLOCK_SIZE_BITS);
+pub const BLOCK_SIZE: i32 = 1 << BLOCK_SIZE_BITS;
 
 /// seek relative to beginning of file
 pub const SEEK_SET: i32 = 0;
@@ -36,11 +36,11 @@ pub const SEEK_HOLE: i32 = 4;
 pub const SEEK_MAX: i32 = SEEK_HOLE;
 
 /// Don't overwrite target
-pub const RENAME_NOREPLACE: i32 = (1 << 0);
+pub const RENAME_NOREPLACE: i32 = 1 << 0;
 /// Exchange source and dest
-pub const RENAME_EXCHANGE: i32 = (1 << 1);
+pub const RENAME_EXCHANGE: i32 = 1 << 1;
 /// Whiteout source
-pub const RENAME_WHITEOUT: i32 = (1 << 2);
+pub const RENAME_WHITEOUT: i32 = 1 << 2;
 
 #[repr(C)]
 pub struct file_clone_range_t {
@@ -391,4 +391,4 @@ pub const RWF_NOWAIT: rwf_t = 0x00000008;
 pub const RWF_APPEND: rwf_t = 0x00000010;
 
 /// mask of flags supported by the kernel
-pub const RWF_SUPPORTED: rwf_t = (RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT | RWF_APPEND);
+pub const RWF_SUPPORTED: rwf_t = RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT | RWF_APPEND;

@@ -28,7 +28,7 @@ pub const fn S_DT(mode: mode_t) -> mode_t {
     (mode & S_IFMT) >> S_DT_SHIFT
 }
 
-pub const S_DT_MASK: mode_t = (S_IFMT >> S_DT_SHIFT);
+pub const S_DT_MASK: mode_t = S_IFMT >> S_DT_SHIFT;
 
 /// these are defined by POSIX and also present in glibc's dirent.h
 pub const DT_UNKNOWN: mode_t = 0;
@@ -42,7 +42,7 @@ pub const DT_SOCK: mode_t = 12;
 pub const DT_WHT: mode_t = 14;
 
 /// 16
-pub const DT_MAX: mode_t = (S_DT_MASK + 1);
+pub const DT_MAX: mode_t = S_DT_MASK + 1;
 
 /// fs on-disk file types.
 /// Only the low 3 bits are used for the POSIX file types.

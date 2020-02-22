@@ -24,7 +24,7 @@ pub const EPOLLMSG: poll_t = 0x00000400;
 pub const EPOLLRDHUP: poll_t = 0x00002000;
 
 /// Set exclusive wakeup mode for the target file descriptor
-pub const EPOLLEXCLUSIVE: poll_t = (1 << 28);
+pub const EPOLLEXCLUSIVE: poll_t = 1 << 28;
 
 /// Request the handling of system wakeup events so as to prevent system suspends
 /// from happening while those events are being processed.
@@ -34,13 +34,13 @@ pub const EPOLLEXCLUSIVE: poll_t = (1 << 28);
 /// event(s).
 ///
 /// Requires CAP_BLOCK_SUSPEND
-pub const EPOLLWAKEUP: poll_t = (1 << 29);
+pub const EPOLLWAKEUP: poll_t = 1 << 29;
 
 /// Set the One Shot behaviour for the target file descriptor
-pub const EPOLLONESHOT: poll_t = (1 << 30);
+pub const EPOLLONESHOT: poll_t = 1 << 30;
 
 /// Set the Edge Triggered behaviour for the target file descriptor
-pub const EPOLLET: poll_t = (1 << 31);
+pub const EPOLLET: poll_t = 1 << 31;
 
 /*
  * On x86-64 make the 64bit structure have the same alignment as the

@@ -53,7 +53,7 @@ pub const QFMT_VFS_V1: i32 = 4;
 
 /// Size of block in which space limits are passed through the quota interface
 pub const QIF_DQBLKSIZE_BITS: i32 = 10;
-pub const QIF_DQBLKSIZE: i32 = (1 << QIF_DQBLKSIZE_BITS);
+pub const QIF_DQBLKSIZE: i32 = 1 << QIF_DQBLKSIZE_BITS;
 
 /// Quota structure used for communication with userspace via quotactl
 /// Following flags are used to specify which fields are valid
@@ -64,16 +64,16 @@ pub const QIF_INODES_B: i32 = 3;
 pub const QIF_BTIME_B: i32 = 4;
 pub const QIF_ITIME_B: i32 = 5;
 
-pub const QIF_BLIMITS: i32 = (1 << QIF_BLIMITS_B);
-pub const QIF_SPACE: i32 = (1 << QIF_SPACE_B);
-pub const QIF_ILIMITS: i32 = (1 << QIF_ILIMITS_B);
-pub const QIF_INODES: i32 = (1 << QIF_INODES_B);
-pub const QIF_BTIME: i32 = (1 << QIF_BTIME_B);
-pub const QIF_ITIME: i32 = (1 << QIF_ITIME_B);
-pub const QIF_LIMITS: i32 = (QIF_BLIMITS | QIF_ILIMITS);
-pub const QIF_USAGE: i32 = (QIF_SPACE | QIF_INODES);
-pub const QIF_TIMES: i32 = (QIF_BTIME | QIF_ITIME);
-pub const QIF_ALL: i32 = (QIF_LIMITS | QIF_USAGE | QIF_TIMES);
+pub const QIF_BLIMITS: i32 = 1 << QIF_BLIMITS_B;
+pub const QIF_SPACE: i32 = 1 << QIF_SPACE_B;
+pub const QIF_ILIMITS: i32 = 1 << QIF_ILIMITS_B;
+pub const QIF_INODES: i32 = 1 << QIF_INODES_B;
+pub const QIF_BTIME: i32 = 1 << QIF_BTIME_B;
+pub const QIF_ITIME: i32 = 1 << QIF_ITIME_B;
+pub const QIF_LIMITS: i32 = QIF_BLIMITS | QIF_ILIMITS;
+pub const QIF_USAGE: i32 = QIF_SPACE | QIF_INODES;
+pub const QIF_TIMES: i32 = QIF_BTIME | QIF_ITIME;
+pub const QIF_ALL: i32 = QIF_LIMITS | QIF_USAGE | QIF_TIMES;
 
 #[repr(C)]
 pub struct if_dqblk_t {
@@ -107,7 +107,7 @@ pub struct if_nextdqblk_t {
 pub const IIF_BGRACE: i32 = 1;
 pub const IIF_IGRACE: i32 = 2;
 pub const IIF_FLAGS: i32 = 4;
-pub const IIF_ALL: i32 = (IIF_BGRACE | IIF_IGRACE | IIF_FLAGS);
+pub const IIF_ALL: i32 = IIF_BGRACE | IIF_IGRACE | IIF_FLAGS;
 
 pub const DQF_ROOT_SQUASH_B: i32 = 0;
 pub const DQF_SYS_FILE_B: i32 = 16;
@@ -115,9 +115,9 @@ pub const DQF_SYS_FILE_B: i32 = 16;
 pub const DQF_PRIVATE: i32 = 17;
 
 /// Root squash enabled (for v1 quota format)
-pub const DQF_ROOT_SQUASH: i32 = (1 << DQF_ROOT_SQUASH_B);
+pub const DQF_ROOT_SQUASH: i32 = 1 << DQF_ROOT_SQUASH_B;
 /// Quota stored in a system file
-pub const DQF_SYS_FILE: i32 = (1 << DQF_SYS_FILE_B);
+pub const DQF_SYS_FILE: i32 = 1 << DQF_SYS_FILE_B;
 
 #[repr(C)]
 pub struct if_dqinfo_t {
@@ -156,7 +156,7 @@ pub const QUOTA_NL_BSOFTBELOW: i32 = 10;
 pub const QUOTA_NL_C_UNSPEC: i32 = 0;
 pub const QUOTA_NL_C_WARNING: i32 = 1;
 pub const __QUOTA_NL_C_MAX: i32 = 2;
-pub const QUOTA_NL_C_MAX: i32 = (__QUOTA_NL_C_MAX - 1);
+pub const QUOTA_NL_C_MAX: i32 = __QUOTA_NL_C_MAX - 1;
 
 pub const QUOTA_NL_A_UNSPEC: i32 = 0;
 pub const QUOTA_NL_A_QTYPE: i32 = 1;
@@ -167,4 +167,4 @@ pub const QUOTA_NL_A_DEV_MINOR: i32 = 5;
 pub const QUOTA_NL_A_CAUSED_ID: i32 = 6;
 pub const QUOTA_NL_A_PAD: i32 = 7;
 pub const __QUOTA_NL_A_MAX: i32 = 8;
-pub const QUOTA_NL_A_MAX: i32 = (__QUOTA_NL_A_MAX - 1);
+pub const QUOTA_NL_A_MAX: i32 = __QUOTA_NL_A_MAX - 1;

@@ -193,14 +193,14 @@ pub const STA_MODE: i32 = 0x4000;
 pub const STA_CLK: i32 = 0x8000;
 
 /// read-only bits
-pub const STA_RONLY: i32 = (STA_PPSSIGNAL
+pub const STA_RONLY: i32 = STA_PPSSIGNAL
     | STA_PPSJITTER
     | STA_PPSWANDER
     | STA_PPSERROR
     | STA_CLOCKERR
     | STA_NANO
     | STA_MODE
-    | STA_CLK);
+    | STA_CLK;
 
 /// Clock states (time_state)
 /// clock synchronized, no leap second

@@ -261,7 +261,7 @@ pub const fn IN_CLASSA(a: i32) -> bool {
 }
 pub const IN_CLASSA_NET: i32 = 0xff000000;
 pub const IN_CLASSA_NSHIFT: i32 = 24;
-pub const IN_CLASSA_HOST: i32 = (0xffffffff & !IN_CLASSA_NET);
+pub const IN_CLASSA_HOST: i32 = 0xffffffff & !IN_CLASSA_NET;
 pub const IN_CLASSA_MAX: i32 = 128;
 
 #[inline]
@@ -271,7 +271,7 @@ pub const fn IN_CLASSB(a: i32) -> bool {
 
 pub const IN_CLASSB_NET: i32 = 0xffff0000;
 pub const IN_CLASSB_NSHIFT: i32 = 16;
-pub const IN_CLASSB_HOST: i32 = (0xffffffff & !IN_CLASSB_NET);
+pub const IN_CLASSB_HOST: i32 = 0xffffffff & !IN_CLASSB_NET;
 pub const IN_CLASSB_MAX: i32 = 65536;
 
 #[inline]
@@ -281,7 +281,7 @@ pub const fn IN_CLASSC(a: i32) -> bool {
 
 pub const IN_CLASSC_NET: i32 = 0xffffff00;
 pub const IN_CLASSC_NSHIFT: i32 = 8;
-pub const IN_CLASSC_HOST: i32 = (0xffffffff & (!IN_CLASSC_NET));
+pub const IN_CLASSC_HOST: i32 = 0xffffffff & (!IN_CLASSC_NET);
 
 #[inline]
 pub const fn IN_CLASSD(a: i32) -> bool {

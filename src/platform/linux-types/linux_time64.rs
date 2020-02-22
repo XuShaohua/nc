@@ -36,5 +36,5 @@ pub const FSEC_PER_SEC: i64 = 1000000000000000;
 /// is limited so a reasonable uptime can be accomodated. Uptime of 30 years
 /// should be really sufficient, which means the cutoff is 2232. At that
 /// point the cutoff is just a small part of the larger problem.
-pub const TIME_UPTIME_SEC_MAX: i64 = (30 * 365 * 24 * 3600);
+pub const TIME_UPTIME_SEC_MAX: i64 = 30 * 365 * 24 * 3600;
 //pub const TIME_SETTOD_SEC_MAX: i64 = 		(KTIME_SEC_MAX - TIME_UPTIME_SEC_MAX);

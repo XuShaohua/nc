@@ -6,9 +6,9 @@ pub const GRPQUOTA: i32 = 1;
 pub const PRJQUOTA: i32 = 2;
 
 /// Masks for quota types when used as a bitmask
-pub const QTYPE_MASK_USR: i32 = (1 << USRQUOTA);
-pub const QTYPE_MASK_GRP: i32 = (1 << GRPQUOTA);
-pub const QTYPE_MASK_PRJ: i32 = (1 << PRJQUOTA);
+pub const QTYPE_MASK_USR: i32 = 1 << USRQUOTA;
+pub const QTYPE_MASK_GRP: i32 = 1 << GRPQUOTA;
+pub const QTYPE_MASK_PRJ: i32 = 1 << PRJQUOTA;
 
 /// Type in which we store ids in memory
 pub type qid_t = i32;

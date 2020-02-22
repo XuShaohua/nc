@@ -126,17 +126,17 @@ pub struct serial_rs485_t {
 }
 
 /// If enabled
-pub const SER_RS485_ENABLED: i32 = (1 << 0);
+pub const SER_RS485_ENABLED: i32 = 1 << 0;
 
 /// Logical level for RTS pin when sending
-pub const SER_RS485_RTS_ON_SEND: i32 = (1 << 1);
+pub const SER_RS485_RTS_ON_SEND: i32 = 1 << 1;
 
 /// Logical level for RTS pin after sent
-pub const SER_RS485_RTS_AFTER_SEND: i32 = (1 << 2);
+pub const SER_RS485_RTS_AFTER_SEND: i32 = 1 << 2;
 
-pub const SER_RS485_RX_DURING_TX: i32 = (1 << 4);
+pub const SER_RS485_RX_DURING_TX: i32 = 1 << 4;
 /// Enable bus termination (if supported)
-pub const SER_RS485_TERMINATE_BUS: i32 = (1 << 5);
+pub const SER_RS485_TERMINATE_BUS: i32 = 1 << 5;
 
 /// Serial interface for controlling ISO7816 settings on chips with suitable
 /// support. Set with TIOCSISO7816 and get with TIOCGISO7816 if supported by
@@ -152,8 +152,8 @@ pub struct serial_iso7816_t {
     reserved: [u32; 5],
 }
 
-pub const SER_ISO7816_ENABLED: i32 = (1 << 0);
-pub const SER_ISO7816_T_PARAM: i32 = (0x0f << 4);
+pub const SER_ISO7816_ENABLED: i32 = 1 << 0;
+pub const SER_ISO7816_T_PARAM: i32 = 0x0f << 4;
 
 #[inline]
 pub fn SER_ISO7816_T(t: i32) -> i32 {

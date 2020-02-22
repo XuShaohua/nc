@@ -3,7 +3,7 @@ use super::types::*;
 // TODO(Shaohua): Update from 64 to 128
 pub const _NSIG: i32 = 128;
 pub const _NSIG_BPW: i32 = BITS_PER_LONG;
-pub const _NSIG_WORDS: i32 = (_NSIG / _NSIG_BPW);
+pub const _NSIG_WORDS: i32 = _NSIG / _NSIG_BPW;
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;

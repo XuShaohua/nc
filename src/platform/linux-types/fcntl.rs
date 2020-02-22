@@ -41,15 +41,15 @@ pub const O_CLOEXEC: i32 = 0o2000000;
 ///
 /// Note: __O_SYNC must never be used directly.
 pub const __O_SYNC: i32 = 0o4000000;
-pub const O_SYNC: i32 = (__O_SYNC | O_DSYNC);
+pub const O_SYNC: i32 = __O_SYNC | O_DSYNC;
 
 pub const O_PATH: i32 = 0o10000000;
 
 pub const __O_TMPFILE: i32 = 0o20000000;
 
 /// a horrid kludge trying to make sure that this will fail on old kernels
-pub const O_TMPFILE: i32 = (__O_TMPFILE | O_DIRECTORY);
-pub const O_TMPFILE_MASK: i32 = (__O_TMPFILE | O_DIRECTORY | O_CREAT);
+pub const O_TMPFILE: i32 = __O_TMPFILE | O_DIRECTORY;
+pub const O_TMPFILE_MASK: i32 = __O_TMPFILE | O_DIRECTORY | O_CREAT;
 
 pub const O_NDELAY: i32 = O_NONBLOCK;
 

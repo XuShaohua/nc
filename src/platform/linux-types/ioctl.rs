@@ -25,15 +25,15 @@ pub const IOC_SIZEBITS: i32 = 14;
 
 pub const IOC_DIRBITS: i32 = 2;
 
-pub const IOC_NRMASK: i32 = ((1 << IOC_NRBITS) - 1);
-pub const IOC_TYPEMASK: i32 = ((1 << IOC_TYPEBITS) - 1);
-pub const IOC_SIZEMASK: i32 = ((1 << IOC_SIZEBITS) - 1);
-pub const IOC_DIRMASK: i32 = ((1 << IOC_DIRBITS) - 1);
+pub const IOC_NRMASK: i32 = (1 << IOC_NRBITS) - 1;
+pub const IOC_TYPEMASK: i32 = (1 << IOC_TYPEBITS) - 1;
+pub const IOC_SIZEMASK: i32 = (1 << IOC_SIZEBITS) - 1;
+pub const IOC_DIRMASK: i32 = (1 << IOC_DIRBITS) - 1;
 
 pub const IOC_NRSHIFT: i32 = 0;
-pub const IOC_TYPESHIFT: i32 = (IOC_NRSHIFT + IOC_NRBITS);
-pub const IOC_SIZESHIFT: i32 = (IOC_TYPESHIFT + IOC_TYPEBITS);
-pub const IOC_DIRSHIFT: i32 = (IOC_SIZESHIFT + IOC_SIZEBITS);
+pub const IOC_TYPESHIFT: i32 = IOC_NRSHIFT + IOC_NRBITS;
+pub const IOC_SIZESHIFT: i32 = IOC_TYPESHIFT + IOC_TYPEBITS;
+pub const IOC_DIRSHIFT: i32 = IOC_SIZESHIFT + IOC_SIZEBITS;
 
 /// Direction bits, which any architecture can choose to override
 /// before including this file.
@@ -120,8 +120,8 @@ pub const fn IOC_SIZE(nr: i32) -> i32 {
 
 /// ...and for the drivers/sound files...
 
-pub const IOC_IN: i32 = (IOC_WRITE << IOC_DIRSHIFT);
-pub const IOC_OUT: i32 = (IOC_READ << IOC_DIRSHIFT);
-pub const IOC_INOUT: i32 = ((IOC_WRITE | IOC_READ) << IOC_DIRSHIFT);
-pub const IOCSIZE_MASK: i32 = (IOC_SIZEMASK << IOC_SIZESHIFT);
-pub const IOCSIZE_SHIFT: i32 = (IOC_SIZESHIFT);
+pub const IOC_IN: i32 = IOC_WRITE << IOC_DIRSHIFT;
+pub const IOC_OUT: i32 = IOC_READ << IOC_DIRSHIFT;
+pub const IOC_INOUT: i32 = (IOC_WRITE | IOC_READ) << IOC_DIRSHIFT;
+pub const IOCSIZE_MASK: i32 = IOC_SIZEMASK << IOC_SIZESHIFT;
+pub const IOCSIZE_SHIFT: i32 = IOC_SIZESHIFT;

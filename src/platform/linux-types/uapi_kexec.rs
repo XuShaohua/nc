@@ -22,19 +22,19 @@ pub const KEXEC_FILE_NO_INITRAMFS: i32 = 0x00000004;
 
 /// These values match the ELF architecture values.
 /// Unless there is a good reason that should continue to be the case.
-pub const KEXEC_ARCH_DEFAULT: i32 = (0 << 16);
-pub const KEXEC_ARCH_386: i32 = (3 << 16);
-pub const KEXEC_ARCH_68K: i32 = (4 << 16);
-pub const KEXEC_ARCH_X86_64: i32 = (62 << 16);
-pub const KEXEC_ARCH_PPC: i32 = (20 << 16);
-pub const KEXEC_ARCH_PPC64: i32 = (21 << 16);
-pub const KEXEC_ARCH_IA_64: i32 = (50 << 16);
-pub const KEXEC_ARCH_ARM: i32 = (40 << 16);
-pub const KEXEC_ARCH_S390: i32 = (22 << 16);
-pub const KEXEC_ARCH_SH: i32 = (42 << 16);
-pub const KEXEC_ARCH_MIPS_LE: i32 = (10 << 16);
-pub const KEXEC_ARCH_MIPS: i32 = (8 << 16);
-pub const KEXEC_ARCH_AARCH64: i32 = (183 << 16);
+pub const KEXEC_ARCH_DEFAULT: i32 = 0 << 16;
+pub const KEXEC_ARCH_386: i32 = 3 << 16;
+pub const KEXEC_ARCH_68K: i32 = 4 << 16;
+pub const KEXEC_ARCH_X86_64: i32 = 62 << 16;
+pub const KEXEC_ARCH_PPC: i32 = 20 << 16;
+pub const KEXEC_ARCH_PPC64: i32 = 21 << 16;
+pub const KEXEC_ARCH_IA_64: i32 = 50 << 16;
+pub const KEXEC_ARCH_ARM: i32 = 40 << 16;
+pub const KEXEC_ARCH_S390: i32 = 22 << 16;
+pub const KEXEC_ARCH_SH: i32 = 42 << 16;
+pub const KEXEC_ARCH_MIPS_LE: i32 = 10 << 16;
+pub const KEXEC_ARCH_MIPS: i32 = 8 << 16;
+pub const KEXEC_ARCH_AARCH64: i32 = 183 << 16;
 
 /// The artificial cap on the number of segments passed to kexec_load.
 pub const KEXEC_SEGMENT_MAX: i32 = 16;

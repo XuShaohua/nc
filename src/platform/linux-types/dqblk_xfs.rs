@@ -117,23 +117,23 @@ pub struct fs_disk_quota_t {
 }
 
 /// These fields are sent to Q_XSETQLIM to specify fields that need to change.
-pub const FS_DQ_ISOFT: i32 = (1 << 0);
-pub const FS_DQ_IHARD: i32 = (1 << 1);
-pub const FS_DQ_BSOFT: i32 = (1 << 2);
-pub const FS_DQ_BHARD: i32 = (1 << 3);
-pub const FS_DQ_RTBSOFT: i32 = (1 << 4);
-pub const FS_DQ_RTBHARD: i32 = (1 << 5);
+pub const FS_DQ_ISOFT: i32 = 1 << 0;
+pub const FS_DQ_IHARD: i32 = 1 << 1;
+pub const FS_DQ_BSOFT: i32 = 1 << 2;
+pub const FS_DQ_BHARD: i32 = 1 << 3;
+pub const FS_DQ_RTBSOFT: i32 = 1 << 4;
+pub const FS_DQ_RTBHARD: i32 = 1 << 5;
 pub const FS_DQ_LIMIT_MASK: i32 =
-    (FS_DQ_ISOFT | FS_DQ_IHARD | FS_DQ_BSOFT | FS_DQ_BHARD | FS_DQ_RTBSOFT | FS_DQ_RTBHARD);
+    FS_DQ_ISOFT | FS_DQ_IHARD | FS_DQ_BSOFT | FS_DQ_BHARD | FS_DQ_RTBSOFT | FS_DQ_RTBHARD;
 /// These timers can only be set in super user's dquot. For others, timers are
 /// automatically started and stopped. Superusers timer values set the limits
 /// for the rest.  In case these values are zero, the DQ_{F,B}TIMELIMIT values
 /// defined below are used.
 /// These values also apply only to the d_fieldmask field for Q_XSETQLIM.
-pub const FS_DQ_BTIMER: i32 = (1 << 6);
-pub const FS_DQ_ITIMER: i32 = (1 << 7);
-pub const FS_DQ_RTBTIMER: i32 = (1 << 8);
-pub const FS_DQ_TIMER_MASK: i32 = (FS_DQ_BTIMER | FS_DQ_ITIMER | FS_DQ_RTBTIMER);
+pub const FS_DQ_BTIMER: i32 = 1 << 6;
+pub const FS_DQ_ITIMER: i32 = 1 << 7;
+pub const FS_DQ_RTBTIMER: i32 = 1 << 8;
+pub const FS_DQ_TIMER_MASK: i32 = FS_DQ_BTIMER | FS_DQ_ITIMER | FS_DQ_RTBTIMER;
 
 /// Warning counts are set in both super user's dquot and others. For others,
 /// warnings are set/cleared by the administrators (or automatically by going
@@ -141,38 +141,38 @@ pub const FS_DQ_TIMER_MASK: i32 = (FS_DQ_BTIMER | FS_DQ_ITIMER | FS_DQ_RTBTIMER)
 /// for the rest.  In case these values are zero, the DQ_{F,B}WARNLIMIT values
 /// defined below are used.
 /// These values also apply only to the d_fieldmask field for Q_XSETQLIM.
-pub const FS_DQ_BWARNS: i32 = (1 << 9);
-pub const FS_DQ_IWARNS: i32 = (1 << 10);
-pub const FS_DQ_RTBWARNS: i32 = (1 << 11);
-pub const FS_DQ_WARNS_MASK: i32 = (FS_DQ_BWARNS | FS_DQ_IWARNS | FS_DQ_RTBWARNS);
+pub const FS_DQ_BWARNS: i32 = 1 << 9;
+pub const FS_DQ_IWARNS: i32 = 1 << 10;
+pub const FS_DQ_RTBWARNS: i32 = 1 << 11;
+pub const FS_DQ_WARNS_MASK: i32 = FS_DQ_BWARNS | FS_DQ_IWARNS | FS_DQ_RTBWARNS;
 
 /// Accounting values.  These can only be set for filesystem with
 /// non-transactional quotas that require quotacheck(8) in userspace.
-pub const FS_DQ_BCOUNT: i32 = (1 << 12);
-pub const FS_DQ_ICOUNT: i32 = (1 << 13);
-pub const FS_DQ_RTBCOUNT: i32 = (1 << 14);
-pub const FS_DQ_ACCT_MASK: i32 = (FS_DQ_BCOUNT | FS_DQ_ICOUNT | FS_DQ_RTBCOUNT);
+pub const FS_DQ_BCOUNT: i32 = 1 << 12;
+pub const FS_DQ_ICOUNT: i32 = 1 << 13;
+pub const FS_DQ_RTBCOUNT: i32 = 1 << 14;
+pub const FS_DQ_ACCT_MASK: i32 = FS_DQ_BCOUNT | FS_DQ_ICOUNT | FS_DQ_RTBCOUNT;
 
 /// Various flags related to quotactl(2).
 /// user quota accounting
-pub const FS_QUOTA_UDQ_ACCT: i32 = (1 << 0);
+pub const FS_QUOTA_UDQ_ACCT: i32 = 1 << 0;
 /// user quota limits enforcement
-pub const FS_QUOTA_UDQ_ENFD: i32 = (1 << 1);
+pub const FS_QUOTA_UDQ_ENFD: i32 = 1 << 1;
 /// group quota accounting
-pub const FS_QUOTA_GDQ_ACCT: i32 = (1 << 2);
+pub const FS_QUOTA_GDQ_ACCT: i32 = 1 << 2;
 /// group quota limits enforcement
-pub const FS_QUOTA_GDQ_ENFD: i32 = (1 << 3);
+pub const FS_QUOTA_GDQ_ENFD: i32 = 1 << 3;
 /// project quota accounting
-pub const FS_QUOTA_PDQ_ACCT: i32 = (1 << 4);
+pub const FS_QUOTA_PDQ_ACCT: i32 = 1 << 4;
 /// project quota limits enforcement
-pub const FS_QUOTA_PDQ_ENFD: i32 = (1 << 5);
+pub const FS_QUOTA_PDQ_ENFD: i32 = 1 << 5;
 
 /// user quota type
-pub const FS_USER_QUOTA: i32 = (1 << 0);
+pub const FS_USER_QUOTA: i32 = 1 << 0;
 /// project quota type
-pub const FS_PROJ_QUOTA: i32 = (1 << 1);
+pub const FS_PROJ_QUOTA: i32 = 1 << 1;
 /// group quota type
-pub const FS_GROUP_QUOTA: i32 = (1 << 2);
+pub const FS_GROUP_QUOTA: i32 = 1 << 2;
 
 /// fs_quota_stat.qs_version
 pub const FS_QSTAT_VERSION: i32 = 1;

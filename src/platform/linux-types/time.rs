@@ -68,7 +68,7 @@ pub const CLOCK_SGI_CYCLE: i32 = 10;
 pub const CLOCK_TAI: i32 = 11;
 
 pub const MAX_CLOCKS: i32 = 16;
-pub const CLOCKS_MASK: i32 = (CLOCK_REALTIME | CLOCK_MONOTONIC);
+pub const CLOCKS_MASK: i32 = CLOCK_REALTIME | CLOCK_MONOTONIC;
 pub const CLOCKS_MONO: i32 = CLOCK_MONOTONIC;
 
 /// The various flags for setting POSIX.1b interval timers:

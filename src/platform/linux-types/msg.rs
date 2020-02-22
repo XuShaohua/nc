@@ -90,7 +90,7 @@ pub const MSGMAX: i32 = 8192;
 pub const MSGMNB: i32 = 16384;
 
 /// unused
-pub const MSGPOOL: i32 = (MSGMNI * MSGMNB / 1024); /* size in kbytes of message pool */
+pub const MSGPOOL: i32 = MSGMNI * MSGMNB / 1024; /* size in kbytes of message pool */
 /// number of system message headers
 pub const MSGTQL: i32 = MSGMNB;
 /// number of entries in message map
@@ -98,5 +98,5 @@ pub const MSGMAP: i32 = MSGMNB;
 /// message segment size
 pub const MSGSSZ: i32 = 16;
 /// max no. of segments
-pub const MSGSEG: i32 = ((MSGPOOL * 1024) / MSGSSZ);
+pub const MSGSEG: i32 = (MSGPOOL * 1024) / MSGSSZ;
 //pub const MSGSEG: i32 = (MSGSEG <= 0xffff ? MSGSEG : 0xffff)

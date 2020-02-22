@@ -211,24 +211,24 @@ pub const PERF_SAMPLE_REGS_ABI_64: i32 = 2;
 /// Values for the memory transaction event qualifier, mostly for
 /// abort events. Multiple bits can be set.
 /// From elision
-pub const PERF_TXN_ELISION: i32 = (1 << 0);
+pub const PERF_TXN_ELISION: i32 = 1 << 0;
 /// From transaction
-pub const PERF_TXN_TRANSACTION: i32 = (1 << 1);
+pub const PERF_TXN_TRANSACTION: i32 = 1 << 1;
 /// Instruction is related
-pub const PERF_TXN_SYNC: i32 = (1 << 2);
+pub const PERF_TXN_SYNC: i32 = 1 << 2;
 /// Instruction not related
-pub const PERF_TXN_ASYNC: i32 = (1 << 3);
+pub const PERF_TXN_ASYNC: i32 = 1 << 3;
 /// Retry possible
-pub const PERF_TXN_RETRY: i32 = (1 << 4);
+pub const PERF_TXN_RETRY: i32 = 1 << 4;
 /// Conflict abort
-pub const PERF_TXN_CONFLICT: i32 = (1 << 5);
+pub const PERF_TXN_CONFLICT: i32 = 1 << 5;
 /// Capacity write abort
-pub const PERF_TXN_CAPACITY_WRITE: i32 = (1 << 6);
+pub const PERF_TXN_CAPACITY_WRITE: i32 = 1 << 6;
 /// Capacity read abort
-pub const PERF_TXN_CAPACITY_READ: i32 = (1 << 7);
+pub const PERF_TXN_CAPACITY_READ: i32 = 1 << 7;
 
 /// non-ABI
-pub const PERF_TXN_MAX: i32 = (1 << 8);
+pub const PERF_TXN_MAX: i32 = 1 << 8;
 
 /// bits 32..63 are reserved for the abort code
 pub const PERF_TXN_ABORT_MASK: u64 = 0xffffffff << 32;
@@ -693,16 +693,16 @@ pub struct perf_event_mmap_page_t {
     pub aux_size: u64,
 }
 
-pub const PERF_RECORD_MISC_CPUMODE_MASK: i32 = (7 << 0);
-pub const PERF_RECORD_MISC_CPUMODE_UNKNOWN: i32 = (0 << 0);
-pub const PERF_RECORD_MISC_KERNEL: i32 = (1 << 0);
-pub const PERF_RECORD_MISC_USER: i32 = (2 << 0);
-pub const PERF_RECORD_MISC_HYPERVISOR: i32 = (3 << 0);
-pub const PERF_RECORD_MISC_GUEST_KERNEL: i32 = (4 << 0);
-pub const PERF_RECORD_MISC_GUEST_USER: i32 = (5 << 0);
+pub const PERF_RECORD_MISC_CPUMODE_MASK: i32 = 7 << 0;
+pub const PERF_RECORD_MISC_CPUMODE_UNKNOWN: i32 = 0 << 0;
+pub const PERF_RECORD_MISC_KERNEL: i32 = 1 << 0;
+pub const PERF_RECORD_MISC_USER: i32 = 2 << 0;
+pub const PERF_RECORD_MISC_HYPERVISOR: i32 = 3 << 0;
+pub const PERF_RECORD_MISC_GUEST_KERNEL: i32 = 4 << 0;
+pub const PERF_RECORD_MISC_GUEST_USER: i32 = 5 << 0;
 
 /// Indicates that /proc/PID/maps parsing are truncated by time out.
-pub const PERF_RECORD_MISC_PROC_MAP_PARSE_TIMEOUT: i32 = (1 << 12);
+pub const PERF_RECORD_MISC_PROC_MAP_PARSE_TIMEOUT: i32 = 1 << 12;
 
 /// Following PERF_RECORD_MISC_* are used on different
 /// events, so can reuse the same bit position:
@@ -710,9 +710,9 @@ pub const PERF_RECORD_MISC_PROC_MAP_PARSE_TIMEOUT: i32 = (1 << 12);
 ///   PERF_RECORD_MISC_MMAP_DATA  - PERF_RECORD_MMAP* events
 ///   PERF_RECORD_MISC_COMM_EXEC  - PERF_RECORD_COMM event
 ///   PERF_RECORD_MISC_SWITCH_OUT - PERF_RECORD_SWITCH* events
-pub const PERF_RECORD_MISC_MMAP_DATA: i32 = (1 << 13);
-pub const PERF_RECORD_MISC_COMM_EXEC: i32 = (1 << 13);
-pub const PERF_RECORD_MISC_SWITCH_OUT: i32 = (1 << 13);
+pub const PERF_RECORD_MISC_MMAP_DATA: i32 = 1 << 13;
+pub const PERF_RECORD_MISC_COMM_EXEC: i32 = 1 << 13;
+pub const PERF_RECORD_MISC_SWITCH_OUT: i32 = 1 << 13;
 
 /// These PERF_RECORD_MISC_* flags below are safely reused
 /// for the following events:
@@ -728,11 +728,11 @@ pub const PERF_RECORD_MISC_SWITCH_OUT: i32 = (1 << 13);
 ///
 /// PERF_RECORD_MISC_SWITCH_OUT_PREEMPT:
 ///   Indicates that thread was preempted in TASK_RUNNING state.
-pub const PERF_RECORD_MISC_EXACT_IP: i32 = (1 << 14);
-pub const PERF_RECORD_MISC_SWITCH_OUT_PREEMPT: i32 = (1 << 14);
+pub const PERF_RECORD_MISC_EXACT_IP: i32 = 1 << 14;
+pub const PERF_RECORD_MISC_SWITCH_OUT_PREEMPT: i32 = 1 << 14;
 
 /// Reserve the last bit to indicate some extended misc field
-pub const PERF_RECORD_MISC_EXT_RESERVED: i32 = (1 << 15);
+pub const PERF_RECORD_MISC_EXT_RESERVED: i32 = 1 << 15;
 
 #[repr(C)]
 pub struct perf_event_header_t {

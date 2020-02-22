@@ -15,8 +15,8 @@ pub const IOCB_CMD_PWRITEV: i32 = 8;
 /// Valid flags for the "aio_flags" member of the "struct iocb".
 /// IOCB_FLAG_RESFD - Set if the "aio_resfd" member of the "struct iocb" is valid.
 /// IOCB_FLAG_IOPRIO - Set if the "aio_reqprio" member of the "struct iocb" is valid.
-pub const IOCB_FLAG_RESFD: i32 = (1 << 0);
-pub const IOCB_FLAG_IOPRIO: i32 = (1 << 1);
+pub const IOCB_FLAG_RESFD: i32 = 1 << 0;
+pub const IOCB_FLAG_IOPRIO: i32 = 1 << 1;
 
 /// read() from /dev/aio returns these structures.
 #[repr(C)]

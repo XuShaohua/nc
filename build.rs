@@ -2,7 +2,7 @@ extern crate cc;
 
 use std::env;
 
-fn build_stable() {
+fn build_syscall() {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").expect("TARGET_ARCH undefined in env");
     let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
     cc::Build::new().file(syscall_file).compile("syscall");
@@ -14,6 +14,6 @@ fn main() {
         println!("cargo:rustc-cfg=nightly");
     } else {
         println!("cargo:rustc-cfg=stable");
-        build_stable();
     }
+    build_syscall();
 }

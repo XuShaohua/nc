@@ -255,6 +255,11 @@ pub fn clone(
     .map(|ret| ret as pid_t)
 }
 
+pub fn clone3() {
+    core::unimplemented!();
+    // syscall0(SYS_CLONE3);
+}
+
 /// Close a file descriptor.
 pub fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -2023,6 +2028,11 @@ pub fn personality(persona: u32) -> Result<u32, Errno> {
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
 }
 
+pub fn pidfd_open() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_OPEN);
+}
+
 /// sys_pidfd_send_signal - Signal a process through a pidfd
 /// @pidfd:  file descriptor of the process
 /// @sig:    signal to send
@@ -3645,11 +3655,9 @@ pub fn waitid(
 }
 
 /// Write to a file descriptor.
-pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
+pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
-    syscall3(SYS_WRITE, fd, buf_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }
 
 /// Write to a file descriptor from multiple buffers.

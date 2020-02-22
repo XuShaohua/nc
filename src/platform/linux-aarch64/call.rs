@@ -3019,11 +3019,9 @@ pub fn waitid(
 }
 
 /// Write to a file descriptor.
-pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
+pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
-    syscall3(SYS_WRITE, fd, buf_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }
 
 /// Write to a file descriptor from multiple buffers.

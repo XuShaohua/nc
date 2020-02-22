@@ -1,13 +1,12 @@
-
 extern crate nc;
 
 fn main() {
     let msg = "hello, world\n";
-    let nwrite = nc::write(-1, msg.as_bytes());
+    let nwrite = nc::write(-1, msg.as_ptr() as usize, msg.len());
     match nwrite {
         Ok(n) => {
             println!("nwrite: {}", n);
-        },
+        }
         Err(errno) => {
             println!("errno: {}", errno);
             if errno == nc::EBADF {
@@ -16,11 +15,11 @@ fn main() {
         }
     }
 
-    let nwrite = nc::write(1, msg.as_bytes());
+    let nwrite = nc::write(1, msg.as_ptr() as usize, msg.len());
     match nwrite {
         Ok(n) => {
             println!("nwrite: {}", n);
-        },
+        }
         Err(errno) => {
             println!("errno: {}", errno);
         }

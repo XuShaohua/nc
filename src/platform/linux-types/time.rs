@@ -10,7 +10,7 @@ pub struct timespec_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct timeval_t {
     /// seconds
     pub tv_sec: time_t,
@@ -19,7 +19,7 @@ pub struct timeval_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct timezone_t {
     /// minutes west of Greenwich
     pub tz_minuteswest: i32,

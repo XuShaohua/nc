@@ -50,3 +50,4 @@ mirrors do not support non-x86 architectures
 - [ ] fix alignment issue in perf_events.rs
 - [x] arch specific types
 - [ ] fix `set_thread_area()` error in mips and x86
+- [ ] Replace `str` with `OsStr`

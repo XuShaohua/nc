@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 /// Several system calls take a flag to request "hugetlb" huge pages.
 /// Without further specification, these system calls will use the
 /// system's default huge page size.  If a system supports multiple

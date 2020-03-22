@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 pub const MQ_PRIO_MAX: i32 = 32768;
 /// per-uid limit of kernel memory used by mqueue, in bytes
 pub const MQ_BYTES_MAX: i32 = 819200;

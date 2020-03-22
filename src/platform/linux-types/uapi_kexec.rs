@@ -1,5 +1,8 @@
-#![allow(overflowing_literals)]
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
 
+#![allow(overflowing_literals)]
 use super::types::*;
 
 /// kexec system call -  It loads the new kernel to boot into.

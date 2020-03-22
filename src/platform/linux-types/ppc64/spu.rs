@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 pub const LS_SIZE: i32 = 256 * 1024;
 pub const LS_ADDR_MASK: i32 = LS_SIZE - 1;
 

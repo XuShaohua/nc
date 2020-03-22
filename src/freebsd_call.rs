@@ -1,8 +1,12 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 use super::errno::*;
 use super::sysno::*;
 use super::{syscall0, syscall1, syscall2, syscall3, syscall4, syscall5, syscall6};
-use crate::types::*;
 use crate::c_str::CString;
+use crate::types::*;
 use alloc::vec::Vec;
 
 pub fn exit(rval: i32) {

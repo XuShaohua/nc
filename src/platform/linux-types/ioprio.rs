@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 /// Gives us 8 prio classes with 13-bits of data for each class
 pub const IOPRIO_CLASS_SHIFT: u8 = 13;
 pub const IOPRIO_PRIO_MASK: usize = (1 << IOPRIO_CLASS_SHIFT) - 1;

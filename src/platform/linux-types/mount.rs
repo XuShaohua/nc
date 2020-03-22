@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 /// These are the fs-independent mount-flags: up to 32 flags are supported
 ///
 /// Usage of these is restricted within the kernel to core mount(2) code and

@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 /// ipcs ctl commands
 pub const MSG_STAT: i32 = 11;
 pub const MSG_INFO: i32 = 12;

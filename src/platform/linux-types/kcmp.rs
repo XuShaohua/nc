@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 /// Comparison type - enum kcmp_type.
 pub const KCMP_FILE: i32 = 0;
 pub const KCMP_VM: i32 = 1;

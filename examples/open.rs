@@ -30,7 +30,7 @@ fn main() {
 
     let msg = "fn main() { println!(\"Hello, world\");}";
 
-    match nc::write(fd, msg.as_bytes()) {
+    match nc::write(fd, msg.as_ptr() as usize, msg.len()) {
         Ok(n) => {
             println!("Write {} chars", n);
         }

@@ -5,7 +5,7 @@
 mod types;
 pub use types::*;
 
-#[cfg(stable)]
+#[cfg(not(nightly))]
 #[path = "c.rs"]
 mod internal;
 

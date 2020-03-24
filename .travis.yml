@@ -1,9 +1,12 @@
-branches:
-
 language: rust
+sudo: false
+
 rust:
   - stable
   - beta
   - nightly
 
-cache: cargo
+addons:
+  apt:
+    packages:
+      gcc

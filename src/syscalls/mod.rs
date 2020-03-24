@@ -2,96 +2,43 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#[link(name = "syscall", kind = "static")]
-extern "C" {
-    pub fn __syscall0(n: usize) -> usize;
+mod types;
+pub use types::*;
 
-    pub fn __syscall1(n: usize, a1: usize) -> usize;
+#[cfg(stable)]
+#[path = "c.rs"]
+mod internal;
 
-    pub fn __syscall2(n: usize, a1: usize, a2: usize) -> usize;
+#[cfg(all(nightly, target_arch = "aarch64"))]
+#[path = "syscall_aarch64.rs"]
+mod internal;
 
-    pub fn __syscall3(n: usize, a1: usize, a2: usize, a3: usize) -> usize;
+#[cfg(all(nightly, target_arch = "arm"))]
+#[path = "syscall_arm.rs"]
+mod internal;
 
-    pub fn __syscall4(n: usize, a1: usize, a2: usize, a3: usize, a4: usize) -> usize;
+#[cfg(all(nightly, target_arch = "mips"))]
+#[path = "syscall_mips.rs"]
+mod internal;
 
-    pub fn __syscall5(n: usize, a1: usize, a2: usize, a3: usize, a4: usize, a5: usize) -> usize;
+#[cfg(all(nightly, target_arch = "mips64"))]
+#[path = "syscall_mips64.rs"]
+mod internal;
 
-    pub fn __syscall6(
-        n: usize,
-        a1: usize,
-        a2: usize,
-        a3: usize,
-        a4: usize,
-        a5: usize,
-        a6: usize,
-    ) -> usize;
-}
+#[cfg(all(nightly, target_arch = "powerpc64"))]
+#[path = "syscall_powerpc64.rs"]
+mod internal;
 
-/// Error No.
-pub type Errno = i32;
+#[cfg(all(nightly, target_arch = "s390x"))]
+#[path = "syscall_s390x.rs"]
+mod internal;
 
-/// Syscall No.
-pub type Sysno = usize;
+#[cfg(all(nightly, target_arch = "x86"))]
+#[path = "syscall_x86.rs"]
+mod internal;
 
-const MAX_ERRNO: Errno = 4095;
+#[cfg(all(nightly, target_arch = "x86_64"))]
+#[path = "syscall_x86_64.rs"]
+mod internal;
 
-#[inline(always)]
-pub fn check_errno(ret: usize) -> Result<usize, Errno> {
-    let reti = ret as isize;
-    if reti < 0 && reti >= (-MAX_ERRNO) as isize {
-        let reti = (-reti) as Errno;
-        Err(reti)
-    } else {
-        Ok(ret)
-    }
-}
-
-#[inline(always)]
-pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall0(n)) }
-}
-
-#[inline(always)]
-pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall1(n, a1)) }
-}
-
-#[inline(always)]
-pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall2(n, a1, a2)) }
-}
-
-#[inline(always)]
-pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall3(n, a1, a2, a3)) }
-}
-
-#[inline(always)]
-pub fn syscall4(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall4(n, a1, a2, a3, a4)) }
-}
-
-#[inline(always)]
-pub fn syscall5(
-    n: Sysno,
-    a1: usize,
-    a2: usize,
-    a3: usize,
-    a4: usize,
-    a5: usize,
-) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall5(n, a1, a2, a3, a4, a5)) }
-}
-
-#[inline(always)]
-pub fn syscall6(
-    n: Sysno,
-    a1: usize,
-    a2: usize,
-    a3: usize,
-    a4: usize,
-    a5: usize,
-    a6: usize,
-) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall6(n, a1, a2, a3, a4, a5, a6)) }
-}
+pub use internal::*;

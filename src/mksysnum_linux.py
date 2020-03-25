@@ -65,7 +65,8 @@ DEFINES = {
         "compiler": "gcc",
         "deb": ["linux-libc-dev-amd64-cross", "gcc"],
         "include": "/usr/x86_64-linux-gnu/include",
-        "errno": "/usr/x86_64-linux-gnu/include/asm/errno.h",
+        #"errno": "/usr/x86_64-linux-gnu/include/asm/errno.h",
+        "errno": "/usr/include/asm/errno.h",
         "sysno": "/usr/x86_64-linux-gnu/include/asm/unistd.h",
     },
 }
@@ -93,11 +94,27 @@ def parse_errno(content):
     ]
 
     errno_pattern = re.compile("^#define E(\w+)\s+(\d+)")
+    nums = []
     for line in content.split('\n'):
         m = errno_pattern.match(line)
         if m:
             line = "pub const E{0}: Errno = {1};".format(m.group(1).upper(), m.group(2))
             lines.append(line)
+            strerr = os.strerror(int(m.group(2)))
+            nums.append('E{0} => "{1}",'.format(m.group(1), strerr))
+
+    lines.append("""
+        /// Get errno description.
+        pub fn strerror(num: Errno) -> &'static str {
+          match num {
+    """)
+    lines.extend(nums)
+    lines.append("""
+            _ => "Unknown errno!",
+        }
+    }
+    """)
+
     return lines
 
 

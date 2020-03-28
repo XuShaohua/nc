@@ -7,7 +7,7 @@ install-host-deps:
 install-rootfs:
 	for arch in amd64 arm64 armhf i386 mips mips64el ppc64el s390x; do \
 		sudo debootstrap --arch $${arch} --include=gcc,vim,python3,wget,cargo \
-		  unstable root-$${arch} http://ftp.cn.debian.org/debian; \
+		  unstable root-$${arch} http://mirrors.huaweicloud.com/debian \
 	done
 
 mount-fs:

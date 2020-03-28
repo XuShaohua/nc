@@ -31,16 +31,16 @@ pub const SCHED_ATTR_SIZE_VER1: i32 = 56;
 /// A subset of sched_attr attributes specifies the
 /// scheduling policy and relative POSIX attributes:
 ///
-/// @size		size of the structure, for fwd/bwd compat.
+/// @size size of the structure, for fwd/bwd compat.
 ///
-/// @sched_policy	task's scheduling policy
-/// @sched_nice		task's nice value      (SCHED_NORMAL/BATCH)
-/// @sched_priority	task's static priority (SCHED_FIFO/RR)
+/// @sched_policy task's scheduling policy
+/// @sched_nice task's nice value      (SCHED_NORMAL/BATCH)
+/// @sched_priority task's static priority (SCHED_FIFO/RR)
 ///
 /// Certain more advanced scheduling features can be controlled by a
 /// predefined set of flags via the attribute:
 ///
-/// @sched_flags	for customizing the scheduler behaviour
+/// @sched_flags for customizing the scheduler behaviour
 ///
 /// Sporadic Time-Constrained Task Attributes
 /// =========================================
@@ -62,9 +62,9 @@ pub const SCHED_ATTR_SIZE_VER1: i32 = 56;
 ///
 /// This is reflected by the following fields of the sched_attr structure:
 ///
-/// @sched_deadline	representative of the task's deadline
-/// @sched_runtime	representative of the task's runtime
-/// @sched_period	representative of the task's period
+/// @sched_deadline representative of the task's deadline
+/// @sched_runtime representative of the task's runtime
+/// @sched_period representative of the task's period
 ///
 /// Given this task model, there are a multiplicity of scheduling algorithms
 /// and policies, that can be used to ensure all the tasks will make their
@@ -83,8 +83,8 @@ pub const SCHED_ATTR_SIZE_VER1: i32 = 56;
 /// boundaries are valuable hints to support scheduler decisions on both task
 /// placement and frequency selection.
 ///
-/// @sched_util_min	represents the minimum utilization
-/// @sched_util_max	represents the maximum utilization
+/// @sched_util_min represents the minimum utilization
+/// @sched_util_max represents the maximum utilization
 ///
 /// Utilization is a value in the range [0..SCHED_CAPACITY_SCALE]. It
 /// represents the percentage of CPU time used by a task when running at the

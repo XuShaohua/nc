@@ -5,19 +5,19 @@
 /// Flags for bug emulation.
 ///
 /// These occupy the top three bytes.
-pub const UNAME26: i32 = 0x0020000;
+pub const UNAME26: i32 = 0x002_0000;
 /// disable randomization of VA space
-pub const ADDR_NO_RANDOMIZE: i32 = 0x0040000;
+pub const ADDR_NO_RANDOMIZE: i32 = 0x004_0000;
 /// userspace function ptrs point to descriptors (signal handling)
-pub const FDPIC_FUNCPTRS: i32 = 0x0080000;
-pub const MMAP_PAGE_ZERO: i32 = 0x0100000;
-pub const ADDR_COMPAT_LAYOUT: i32 = 0x0200000;
-pub const READ_IMPLIES_EXEC: i32 = 0x0400000;
-pub const ADDR_LIMIT_32BIT: i32 = 0x0800000;
-pub const SHORT_INODE: i32 = 0x1000000;
-pub const WHOLE_SECONDS: i32 = 0x2000000;
-pub const STICKY_TIMEOUTS: i32 = 0x4000000;
-pub const ADDR_LIMIT_3GB: i32 = 0x8000000;
+pub const FDPIC_FUNCPTRS: i32 = 0x008_0000;
+pub const MMAP_PAGE_ZERO: i32 = 0x010_0000;
+pub const ADDR_COMPAT_LAYOUT: i32 = 0x020_0000;
+pub const READ_IMPLIES_EXEC: i32 = 0x040_0000;
+pub const ADDR_LIMIT_32BIT: i32 = 0x080_0000;
+pub const SHORT_INODE: i32 = 0x100_0000;
+pub const WHOLE_SECONDS: i32 = 0x200_0000;
+pub const STICKY_TIMEOUTS: i32 = 0x400_0000;
+pub const ADDR_LIMIT_3GB: i32 = 0x800_0000;
 
 /// Security-relevant compatibility flags that must be
 /// cleared upon setuid or setgid exec:

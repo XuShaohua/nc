@@ -323,7 +323,7 @@ pub const NET_CORE_WMEM_MAX: i32 = 1;
 pub const NET_CORE_RMEM_MAX: i32 = 2;
 pub const NET_CORE_WMEM_DEFAULT: i32 = 3;
 pub const NET_CORE_RMEM_DEFAULT: i32 = 4;
-/// was	NET_CORE_DESTROY_DELAY
+/// was NET_CORE_DESTROY_DELAY
 pub const NET_CORE_MAX_BACKLOG: i32 = 6;
 pub const NET_CORE_FASTROUTE: i32 = 7;
 pub const NET_CORE_MSG_COST: i32 = 8;

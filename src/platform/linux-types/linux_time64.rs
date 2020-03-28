@@ -23,10 +23,10 @@ pub struct itimerspec64_t {
 pub const MSEC_PER_SEC: i64 = 1000;
 pub const USEC_PER_MSEC: i64 = 1000;
 pub const NSEC_PER_USEC: i64 = 1000;
-pub const NSEC_PER_MSEC: i64 = 1000000;
-pub const USEC_PER_SEC: i64 = 1000000;
-pub const NSEC_PER_SEC: i64 = 1000000000;
-pub const FSEC_PER_SEC: i64 = 1000000000000000;
+pub const NSEC_PER_MSEC: i64 = 1_000_000;
+pub const USEC_PER_SEC: i64 = 1_000_000;
+pub const NSEC_PER_SEC: i64 = 1_000_000_000;
+pub const FSEC_PER_SEC: i64 = 1_000_000_000_000_000;
 
 /// Located here for timespec[64]_valid_strict
 //#define TIME64_MAX			((s64)~((u64)1 << 63))

@@ -139,40 +139,40 @@ pub struct fsxattr_t {
 
 /// Flags for the fsx_xflags field
 /// data in realtime volume
-pub const FS_XFLAG_REALTIME: i32 = 0x00000001;
+pub const FS_XFLAG_REALTIME: i32 = 0x0000_0001;
 /// preallocated file extents
-pub const FS_XFLAG_PREALLOC: i32 = 0x00000002;
+pub const FS_XFLAG_PREALLOC: i32 = 0x0000_0002;
 /// file cannot be modified
-pub const FS_XFLAG_IMMUTABLE: i32 = 0x00000008;
+pub const FS_XFLAG_IMMUTABLE: i32 = 0x0000_0008;
 /// all writes append
-pub const FS_XFLAG_APPEND: i32 = 0x00000010;
+pub const FS_XFLAG_APPEND: i32 = 0x0000_0010;
 /// all writes synchronous
-pub const FS_XFLAG_SYNC: i32 = 0x00000020;
+pub const FS_XFLAG_SYNC: i32 = 0x0000_0020;
 /// do not update access time
-pub const FS_XFLAG_NOATIME: i32 = 0x00000040;
+pub const FS_XFLAG_NOATIME: i32 = 0x0000_0040;
 /// do not include in backups
-pub const FS_XFLAG_NODUMP: i32 = 0x00000080;
+pub const FS_XFLAG_NODUMP: i32 = 0x0000_0080;
 /// create with rt bit set
-pub const FS_XFLAG_RTINHERIT: i32 = 0x00000100;
+pub const FS_XFLAG_RTINHERIT: i32 = 0x0000_0100;
 /// create with parents projid
-pub const FS_XFLAG_PROJINHERIT: i32 = 0x00000200;
+pub const FS_XFLAG_PROJINHERIT: i32 = 0x0000_0200;
 /// disallow symlink creation
-pub const FS_XFLAG_NOSYMLINKS: i32 = 0x00000400;
+pub const FS_XFLAG_NOSYMLINKS: i32 = 0x0000_0400;
 /// extent size allocator hint
-pub const FS_XFLAG_EXTSIZE: i32 = 0x00000800;
+pub const FS_XFLAG_EXTSIZE: i32 = 0x0000_0800;
 /// inherit inode extent size
-pub const FS_XFLAG_EXTSZINHERIT: i32 = 0x00001000;
+pub const FS_XFLAG_EXTSZINHERIT: i32 = 0x0000_1000;
 /// do not defragment
-pub const FS_XFLAG_NODEFRAG: i32 = 0x00002000;
+pub const FS_XFLAG_NODEFRAG: i32 = 0x0000_2000;
 /// use filestream allocator
-pub const FS_XFLAG_FILESTREAM: i32 = 0x00004000;
+pub const FS_XFLAG_FILESTREAM: i32 = 0x0000_4000;
 /// use DAX for IO
-pub const FS_XFLAG_DAX: i32 = 0x00008000;
+pub const FS_XFLAG_DAX: i32 = 0x0000_8000;
 /// CoW extent size allocator hint
-pub const FS_XFLAG_COWEXTSIZE: i32 = 0x00010000;
+pub const FS_XFLAG_COWEXTSIZE: i32 = 0x0001_0000;
 /// no DIFLAG for this
 #[allow(overflowing_literals)]
-pub const FS_XFLAG_HASATTR: i32 = 0x80000000;
+pub const FS_XFLAG_HASATTR: i32 = 0x8000_0000;
 
 /// the read-only stuff doesn't really belong here, but any other place is
 /// probably as bad and I don't want to create yet another include file.
@@ -279,7 +279,7 @@ pub struct fscrypt_policy_t {
 //pub const FS_IOC_GET_ENCRYPTION_POLICY: i32 = _IOW;('f', 21, struct fscrypt_policy)
 
 /// Parameters for passing an encryption key into the kernel keyring
-pub const FS_KEY_DESC_PREFIX: &'static str = "fscrypt:";
+pub const FS_KEY_DESC_PREFIX: &str = "fscrypt:";
 pub const FS_KEY_DESC_PREFIX_SIZE: i32 = 8;
 
 /// Structure that userspace passes to the kernel keyring
@@ -311,66 +311,66 @@ pub struct fscrypt_key_t {
 /// Please do not change these flags or interfaces before checking with
 /// linux-fsdevel@vger.kernel.org and linux-api@vger.kernel.org.
 /// Secure deletion
-pub const FS_SECRM_FL: i32 = 0x00000001;
+pub const FS_SECRM_FL: i32 = 0x0000_0001;
 /// Undelete
-pub const FS_UNRM_FL: i32 = 0x00000002;
+pub const FS_UNRM_FL: i32 = 0x0000_0002;
 /// Compress file
-pub const FS_COMPR_FL: i32 = 0x00000004;
+pub const FS_COMPR_FL: i32 = 0x0000_0004;
 /// Synchronous updates
-pub const FS_SYNC_FL: i32 = 0x00000008;
+pub const FS_SYNC_FL: i32 = 0x0000_0008;
 /// Immutable file
-pub const FS_IMMUTABLE_FL: i32 = 0x00000010;
+pub const FS_IMMUTABLE_FL: i32 = 0x0000_0010;
 /// writes to file may only append
-pub const FS_APPEND_FL: i32 = 0x00000020;
+pub const FS_APPEND_FL: i32 = 0x0000_0020;
 /// do not dump file
-pub const FS_NODUMP_FL: i32 = 0x00000040;
+pub const FS_NODUMP_FL: i32 = 0x0000_0040;
 /// do not update atime
-pub const FS_NOATIME_FL: i32 = 0x00000080;
+pub const FS_NOATIME_FL: i32 = 0x0000_0080;
 /// Reserved for compression usage...
-pub const FS_DIRTY_FL: i32 = 0x00000100;
+pub const FS_DIRTY_FL: i32 = 0x0000_0100;
 /// One or more compressed clusters
-pub const FS_COMPRBLK_FL: i32 = 0x00000200;
+pub const FS_COMPRBLK_FL: i32 = 0x0000_0200;
 /// Don't compress
-pub const FS_NOCOMP_FL: i32 = 0x00000400;
+pub const FS_NOCOMP_FL: i32 = 0x0000_0400;
 /// End compression flags --- maybe not all used
 /// Encrypted file
-pub const FS_ENCRYPT_FL: i32 = 0x00000800;
+pub const FS_ENCRYPT_FL: i32 = 0x0000_0800;
 /// btree format dir
-pub const FS_BTREE_FL: i32 = 0x00001000;
+pub const FS_BTREE_FL: i32 = 0x0000_1000;
 /// hash-indexed directory
-pub const FS_INDEX_FL: i32 = 0x00001000;
+pub const FS_INDEX_FL: i32 = 0x0000_1000;
 /// AFS directory
-pub const FS_IMAGIC_FL: i32 = 0x00002000;
+pub const FS_IMAGIC_FL: i32 = 0x0000_2000;
 /// Reserved for ext3
-pub const FS_JOURNAL_DATA_FL: i32 = 0x00004000;
+pub const FS_JOURNAL_DATA_FL: i32 = 0x0000_4000;
 /// file tail should not be merged
-pub const FS_NOTAIL_FL: i32 = 0x00008000;
+pub const FS_NOTAIL_FL: i32 = 0x0000_8000;
 /// dirsync behaviour (directories only)
-pub const FS_DIRSYNC_FL: i32 = 0x00010000;
+pub const FS_DIRSYNC_FL: i32 = 0x0001_0000;
 /// Top of directory hierarchies
-pub const FS_TOPDIR_FL: i32 = 0x00020000;
+pub const FS_TOPDIR_FL: i32 = 0x0002_0000;
 /// Reserved for ext4
-pub const FS_HUGE_FILE_FL: i32 = 0x00040000;
+pub const FS_HUGE_FILE_FL: i32 = 0x0004_0000;
 /// Extents
-pub const FS_EXTENT_FL: i32 = 0x00080000;
+pub const FS_EXTENT_FL: i32 = 0x0008_0000;
 /// Inode used for large EA
-pub const FS_EA_INODE_FL: i32 = 0x00200000;
+pub const FS_EA_INODE_FL: i32 = 0x0020_0000;
 /// Reserved for ext4
-pub const FS_EOFBLOCKS_FL: i32 = 0x00400000;
+pub const FS_EOFBLOCKS_FL: i32 = 0x0040_0000;
 /// Do not cow file
-pub const FS_NOCOW_FL: i32 = 0x00800000;
+pub const FS_NOCOW_FL: i32 = 0x0080_0000;
 /// Reserved for ext4
-pub const FS_INLINE_DATA_FL: i32 = 0x10000000;
+pub const FS_INLINE_DATA_FL: i32 = 0x1000_0000;
 /// Create with parents projid
-pub const FS_PROJINHERIT_FL: i32 = 0x20000000;
+pub const FS_PROJINHERIT_FL: i32 = 0x2000_0000;
 /// reserved for ext2 lib
 #[allow(overflowing_literals)]
-pub const FS_RESERVED_FL: i32 = 0x80000000;
+pub const FS_RESERVED_FL: i32 = 0x8000_0000;
 
 /// User visible flags
-pub const FS_FL_USER_VISIBLE: i32 = 0x0003DFFF;
+pub const FS_FL_USER_VISIBLE: i32 = 0x0003_DFFF;
 /// User modifiable flags
-pub const FS_FL_USER_MODIFIABLE: i32 = 0x000380FF;
+pub const FS_FL_USER_MODIFIABLE: i32 = 0x0003_80FF;
 
 pub const SYNC_FILE_RANGE_WAIT_BEFORE: i32 = 1;
 pub const SYNC_FILE_RANGE_WRITE: i32 = 2;
@@ -380,19 +380,19 @@ pub const SYNC_FILE_RANGE_WAIT_AFTER: i32 = 4;
 pub type rwf_t = i32;
 
 /// high priority request, poll if possible
-pub const RWF_HIPRI: rwf_t = 0x00000001;
+pub const RWF_HIPRI: rwf_t = 0x0000_0001;
 
 /// per-IO O_DSYNC
-pub const RWF_DSYNC: rwf_t = 0x00000002;
+pub const RWF_DSYNC: rwf_t = 0x0000_0002;
 
 /// per-IO O_SYNC
-pub const RWF_SYNC: rwf_t = 0x00000004;
+pub const RWF_SYNC: rwf_t = 0x0000_0004;
 
 /// per-IO, return -EAGAIN if operation would block
-pub const RWF_NOWAIT: rwf_t = 0x00000008;
+pub const RWF_NOWAIT: rwf_t = 0x0000_0008;
 
 /// per-IO O_APPEND
-pub const RWF_APPEND: rwf_t = 0x00000010;
+pub const RWF_APPEND: rwf_t = 0x0000_0010;
 
 /// mask of flags supported by the kernel
 pub const RWF_SUPPORTED: rwf_t = RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT | RWF_APPEND;

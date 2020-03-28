@@ -235,7 +235,7 @@ pub const PERF_TXN_CAPACITY_READ: i32 = 1 << 7;
 pub const PERF_TXN_MAX: i32 = 1 << 8;
 
 /// bits 32..63 are reserved for the abort code
-pub const PERF_TXN_ABORT_MASK: u64 = 0xffffffff << 32;
+pub const PERF_TXN_ABORT_MASK: u64 = 0xfff_fffff << 32;
 
 pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 
@@ -244,19 +244,19 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 ///
 /// ```c
 /// struct read_format {
-///  { u64		value;
-///    { u64		time_enabled; } && PERF_FORMAT_TOTAL_TIME_ENABLED
-///    { u64		time_running; } && PERF_FORMAT_TOTAL_TIME_RUNNING
-///    { u64		id;           } && PERF_FORMAT_ID
-///  } && !PERF_FORMAT_GROUP
+///   { u64 value;
+///     { u64 time_enabled; } && PERF_FORMAT_TOTAL_TIME_ENABLED
+///     { u64 time_running; } && PERF_FORMAT_TOTAL_TIME_RUNNING
+///     { u64 id; } && PERF_FORMAT_ID
+///   } && !PERF_FORMAT_GROUP
 ///
-///  { u64		nr;
-///    { u64		time_enabled; } && PERF_FORMAT_TOTAL_TIME_ENABLED
-///    { u64		time_running; } && PERF_FORMAT_TOTAL_TIME_RUNNING
-///    { u64		value;
-///      { u64	id;           } && PERF_FORMAT_ID
-///    }		cntr[nr];
-///  } && PERF_FORMAT_GROUP
+///   { u64 nr;
+///     { u64 time_enabled; } && PERF_FORMAT_TOTAL_TIME_ENABLED
+///     { u64 time_running; } && PERF_FORMAT_TOTAL_TIME_RUNNING
+///     { u64 value;
+///       { u64 id; } && PERF_FORMAT_ID
+///     } cntr[nr];
+///   } && PERF_FORMAT_GROUP
 /// };
 /// ```
 
@@ -774,12 +774,12 @@ pub const NR_NAMESPACES: i32 = 7;
 /// optional fields being ignored.
 ///
 /// struct sample_id {
-/// 	{ u32			pid, tid; } && PERF_SAMPLE_TID
-/// 	{ u64			time;     } && PERF_SAMPLE_TIME
-/// 	{ u64			id;       } && PERF_SAMPLE_ID
-/// 	{ u64			stream_id;} && PERF_SAMPLE_STREAM_ID
-/// 	{ u32			cpu, res; } && PERF_SAMPLE_CPU
-///  { u64			id;	  } && PERF_SAMPLE_IDENTIFIER
+///   { u32 pid, tid; } && PERF_SAMPLE_TID
+///   { u64 time; } && PERF_SAMPLE_TIME
+///   { u64 id; } && PERF_SAMPLE_ID
+///   { u64 stream_id;} && PERF_SAMPLE_STREAM_ID
+///   { u32 cpu, res; } && PERF_SAMPLE_CPU
+///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
 /// } && perf_event_attr::sample_id_all
 ///
 /// Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.  The
@@ -791,52 +791,52 @@ pub const NR_NAMESPACES: i32 = 7;
 /// correlate userspace IPs to code. They have the following structure:
 ///
 /// struct {
-///  struct perf_event_header	header;
+///   struct perf_event_header header;
 ///
-///  u32				pid, tid;
-///  u64				addr;
-///  u64				len;
-///  u64				pgoff;
-///  char				filename[];
-/// 	struct sample_id		sample_id;
+///   u32 pid, tid;
+///   u64 addr;
+///   u64 len;
+///   u64 pgoff;
+///   char filename[];
+///   struct sample_id sample_id;
 /// };
 pub const PERF_RECORD_MMAP: i32 = 1;
 
 /// struct {
-///  struct perf_event_header	header;
-///  u64				id;
-///  u64				lost;
-/// 	struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u64 id;
+///   u64 lost;
+///   struct sample_id sample_id;
 /// };
 pub const PERF_RECORD_LOST: i32 = 2;
 
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
+///   struct perf_event_header header;
 ///
-///  u32				pid, tid;
-///  char				comm[];
-/// 	struct sample_id		sample_id;
+///   u32 pid, tid;
+///   char comm[];
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_COMM: i32 = 3;
 
 /// struct {
-///  struct perf_event_header	header;
-///  u32				pid, ppid;
-///  u32				tid, ptid;
-///  u64				time;
-/// 	struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u32 pid, ppid;
+///   u32 tid, ptid;
+///   u64 time;
+///   struct sample_id sample_id;
 /// };
 pub const PERF_RECORD_EXIT: i32 = 4;
 
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  u64				time;
-///  u64				id;
-///  u64				stream_id;
-/// 	struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u64 time;
+///   u64 id;
+///   u64 stream_id;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_THROTTLE: i32 = 5;
@@ -844,82 +844,80 @@ pub const PERF_RECORD_UNTHROTTLE: i32 = 6;
 
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  u32				pid, ppid;
-///  u32				tid, ptid;
-///  u64				time;
-/// 	struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u32 pid, ppid;
+///   u32 tid, ptid;
+///   u64 time;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_FORK: i32 = 7;
 
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  u32				pid, tid;
+///   struct perf_event_header header;
+///   u32 pid, tid;
 ///
-///  struct read_format		values;
-/// 	struct sample_id		sample_id;
+///   struct read_format values;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_READ: i32 = 8;
 
+///  ```c
 /// struct {
-///  struct perf_event_header	header;
+///   struct perf_event_header header;
 ///
-///  #
-///  # Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.
-///  # The advantage of PERF_SAMPLE_IDENTIFIER is that its position
-///  # is fixed relative to header.
-///  #
-///  ```c
-///  { u64			id;	  } && PERF_SAMPLE_IDENTIFIER
-///  { u64			ip;	  } && PERF_SAMPLE_IP
-///  { u32			pid, tid; } && PERF_SAMPLE_TID
-///  { u64			time;     } && PERF_SAMPLE_TIME
-///  { u64			addr;     } && PERF_SAMPLE_ADDR
-///  { u64			id;	  } && PERF_SAMPLE_ID
-///  { u64			stream_id;} && PERF_SAMPLE_STREAM_ID
-///  { u32			cpu, res; } && PERF_SAMPLE_CPU
-///  { u64			period;   } && PERF_SAMPLE_PERIOD
+///   #
+///   # Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.
+///   # The advantage of PERF_SAMPLE_IDENTIFIER is that its position
+///   # is fixed relative to header.
+///   #
+///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
+///   { u64 ip; } && PERF_SAMPLE_IP
+///   { u32 pid, tid; } && PERF_SAMPLE_TID
+///   { u64 time; } && PERF_SAMPLE_TIME
+///   { u64 addr; } && PERF_SAMPLE_ADDR
+///   { u64 id; } && PERF_SAMPLE_ID
+///   { u64 stream_id; } && PERF_SAMPLE_STREAM_ID
+///   { u32 cpu, res; } && PERF_SAMPLE_CPU
+///   { u64 period; } && PERF_SAMPLE_PERIOD
 ///
-///  { struct read_format	values;	  } && PERF_SAMPLE_READ
+///   { struct read_format values; } && PERF_SAMPLE_READ
 ///
-///  { u64			nr
-///    u64			ips[nr];  } && PERF_SAMPLE_CALLCHAIN
-///  ```
+///   { u64 nr;
+///     u64 ips[nr]; } && PERF_SAMPLE_CALLCHAIN
 ///
-///  #
-///  # The RAW record below is opaque data wrt the ABI
-///  #
-///  # That is, the ABI doesn't make any promises wrt to
-///  # the stability of its content, it may vary depending
-///  # on event, hardware, kernel version and phase of
-///  # the moon.
-///  #
-///  # In other words, PERF_SAMPLE_RAW contents are not an ABI.
-///  #
+///   #
+///   # The RAW record below is opaque data wrt the ABI
+///   #
+///   # That is, the ABI doesn't make any promises wrt to
+///   # the stability of its content, it may vary depending
+///   # on event, hardware, kernel version and phase of
+///   # the moon.
+///   #
+///   # In other words, PERF_SAMPLE_RAW contents are not an ABI.
+///   #
 ///
-///  ```c
-///  { u32			size;
-///    char                  data[size];}&& PERF_SAMPLE_RAW
+///   { u32 size;
+///     char data[size]; }&& PERF_SAMPLE_RAW
 ///
-///  { u64                   nr;
-///        { u64 from, to, flags } lbr[nr];} && PERF_SAMPLE_BRANCH_STACK
+///   { u64 nr;
+///     { u64 from, to, flags } lbr[nr];} && PERF_SAMPLE_BRANCH_STACK
 ///
-/// 	{ u64			abi; # enum perf_sample_regs_abi
-/// 	  u64			regs[weight(mask)]; } && PERF_SAMPLE_REGS_USER
+///   { u64 abi; # enum perf_sample_regs_abi
+///     u64 regs[weight(mask)]; } && PERF_SAMPLE_REGS_USER
 //
-/// 	{ u64			size;
-/// 	  char			data[size];
-/// 	  u64			dyn_size; } && PERF_SAMPLE_STACK_USER
+///   { u64 size;
+///     char data[size];
+///     u64 dyn_size; } && PERF_SAMPLE_STACK_USER
 ///
-///  { u64			weight;   } && PERF_SAMPLE_WEIGHT
-///  { u64			data_src; } && PERF_SAMPLE_DATA_SRC
-///  { u64			transaction; } && PERF_SAMPLE_TRANSACTION
-///  { u64			abi; # enum perf_sample_regs_abi
-///    u64			regs[weight(mask)]; } && PERF_SAMPLE_REGS_INTR
-///  { u64			phys_addr;} && PERF_SAMPLE_PHYS_ADDR
+///   { u64 weight; } && PERF_SAMPLE_WEIGHT
+///   { u64 data_src; } && PERF_SAMPLE_DATA_SRC
+///   { u64 transaction; } && PERF_SAMPLE_TRANSACTION
+///   { u64 abi; # enum perf_sample_regs_abi
+///     u64 regs[weight(mask)]; } && PERF_SAMPLE_REGS_INTR
+///   { u64 phys_addr;} && PERF_SAMPLE_PHYS_ADDR
 /// };
 /// ```
 pub const PERF_RECORD_SAMPLE: i32 = 9;
@@ -928,19 +926,18 @@ pub const PERF_RECORD_SAMPLE: i32 = 9;
 /// maj, min, ino numbers to be used to uniquely identify each mapping
 ///
 /// struct {
-///  struct perf_event_header	header;
-///
-///  u32				pid, tid;
-///  u64				addr;
-///  u64				len;
-///  u64				pgoff;
-///  u32				maj;
-///  u32				min;
-///  u64				ino;
-///  u64				ino_generation;
-///  u32				prot, flags;
-///  char				filename[];
-/// 	struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u32 pid, tid;
+///   u64 addr;
+///   u64 len;
+///   u64 pgoff;
+///   u32 maj;
+///   u32 min;
+///   u64 ino;
+///   u64 ino_generation;
+///   u32 prot, flags;
+///   char filename[];
+///   struct sample_id sample_id;
 /// };
 pub const PERF_RECORD_MMAP2: i32 = 10;
 
@@ -948,12 +945,12 @@ pub const PERF_RECORD_MMAP2: i32 = 10;
 ///
 /// ```c
 /// struct {
-/// 	struct perf_event_header	header;
+///   struct perf_event_header header;
 ///
-/// 	u64				aux_offset;
-/// 	u64				aux_size;
-///  u64				flags;
-/// 	struct sample_id		sample_id;
+///   u64 aux_offset;
+///   u64 aux_size;
+///   u64 flags;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_AUX: i32 = 11;
@@ -962,10 +959,10 @@ pub const PERF_RECORD_AUX: i32 = 11;
 ///
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  u32				pid;
-///  u32				tid;
-///  struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u32 pid;
+///   u32 tid;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_ITRACE_START: i32 = 12;
@@ -974,10 +971,10 @@ pub const PERF_RECORD_ITRACE_START: i32 = 12;
 ///
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
+///   struct perf_event_header header;
 ///
-///  u64				lost;
-///  struct sample_id		sample_id;
+///   u64 lost;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_LOST_SAMPLES: i32 = 13;
@@ -988,8 +985,8 @@ pub const PERF_RECORD_LOST_SAMPLES: i32 = 13;
 ///
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_SWITCH: i32 = 14;
@@ -1000,22 +997,22 @@ pub const PERF_RECORD_SWITCH: i32 = 14;
 ///
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  u32				next_prev_pid;
-///  u32				next_prev_tid;
-///  struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u32 next_prev_pid;
+///   u32 next_prev_tid;
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_SWITCH_CPU_WIDE: i32 = 15;
 
 /// ```c
 /// struct {
-///  struct perf_event_header	header;
-///  u32				pid;
-///  u32				tid;
-///  u64				nr_namespaces;
-///  { u64				dev, inode; } [nr_namespaces];
-///  struct sample_id		sample_id;
+///   struct perf_event_header header;
+///   u32 pid;
+///   u32 tid;
+///   u64 nr_namespaces;
+///   { u64 dev, inode; } [nr_namespaces];
+///   struct sample_id sample_id;
 /// };
 /// ```
 pub const PERF_RECORD_NAMESPACES: i32 = 16;

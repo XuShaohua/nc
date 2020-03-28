@@ -22,19 +22,19 @@ pub struct ipc_perm_t {
 
 /// resource get request flags
 /// create if key is nonexistent
-pub const IPC_CREAT: i32 = 0o0001000;
+pub const IPC_CREAT: i32 = 0o000_1000;
 /// fail if key exists
-pub const IPC_EXCL: i32 = 0o0002000;
+pub const IPC_EXCL: i32 = 0o000_2000;
 /// return error on wait
-pub const IPC_NOWAIT: i32 = 0o0004000;
+pub const IPC_NOWAIT: i32 = 0o000_4000;
 
 /// these fields are used by the DIPC package so the kernel as standard
 /// should avoid using them if possible
 
 /// make it distributed
-pub const IPC_DIPC: i32 = 0o0010000;
+pub const IPC_DIPC: i32 = 0o001_0000;
 /// this machine is the DIPC owner
-pub const IPC_OWN: i32 = 0o0020000;
+pub const IPC_OWN: i32 = 0o002_0000;
 
 /// Control commands used with semctl, msgctl and shmctl
 /// see also specific commands in sem.h, msg.h and shm.h

@@ -57,9 +57,9 @@ pub const PPM_SCALE_INV_SHIFT: i32 = 19;
 //		       PPM_SCALE + 1)
 
 /// max phase error (ns)
-pub const MAXPHASE: isize = 500000000;
+pub const MAXPHASE: isize = 500_000_000;
 /// max frequency error (ns/s)
-pub const MAXFREQ: i32 = 500000;
+pub const MAXFREQ: i32 = 500_000;
 //#define MAXFREQ_SCALED ((s64)MAXFREQ << NTP_SCALE_SHIFT)
 /// min interval between updates (s)
 pub const MINSEC: i32 = 256;
@@ -80,4 +80,4 @@ pub const NTP_SCALE_SHIFT: i32 = 32;
 //#define NTP_INTERVAL_LENGTH (NSEC_PER_SEC/NTP_INTERVAL_FREQ)
 
 /// The clock frequency of the i8253/i8254 PIT
-pub const PIT_TICK_RATE: usize = 1193182;
+pub const PIT_TICK_RATE: usize = 119_3182;

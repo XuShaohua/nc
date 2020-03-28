@@ -9,48 +9,48 @@ pub type key_serial_t = i32;
 pub type key_perm_t = u32;
 
 /// possessor can view a key's attributes
-pub const KEY_POS_VIEW: i32 = 0x01000000;
+pub const KEY_POS_VIEW: i32 = 0x0100_0000;
 /// possessor can read key payload / view keyring
-pub const KEY_POS_READ: i32 = 0x02000000;
+pub const KEY_POS_READ: i32 = 0x0200_0000;
 /// possessor can update key payload / add link to keyring
-pub const KEY_POS_WRITE: i32 = 0x04000000;
+pub const KEY_POS_WRITE: i32 = 0x0400_0000;
 /// possessor can find a key in search / search a keyring
-pub const KEY_POS_SEARCH: i32 = 0x08000000;
+pub const KEY_POS_SEARCH: i32 = 0x0800_0000;
 /// possessor can create a link to a key/keyring
-pub const KEY_POS_LINK: i32 = 0x10000000;
+pub const KEY_POS_LINK: i32 = 0x1000_0000;
 /// possessor can set key attributes
-pub const KEY_POS_SETATTR: i32 = 0x20000000;
-pub const KEY_POS_ALL: i32 = 0x3f000000;
+pub const KEY_POS_SETATTR: i32 = 0x2000_0000;
+pub const KEY_POS_ALL: i32 = 0x3f00_0000;
 
 /// user permissions...
-pub const KEY_USR_VIEW: i32 = 0x00010000;
-pub const KEY_USR_READ: i32 = 0x00020000;
-pub const KEY_USR_WRITE: i32 = 0x00040000;
-pub const KEY_USR_SEARCH: i32 = 0x00080000;
-pub const KEY_USR_LINK: i32 = 0x00100000;
-pub const KEY_USR_SETATTR: i32 = 0x00200000;
-pub const KEY_USR_ALL: i32 = 0x003f0000;
+pub const KEY_USR_VIEW: i32 = 0x0001_0000;
+pub const KEY_USR_READ: i32 = 0x0002_0000;
+pub const KEY_USR_WRITE: i32 = 0x0004_0000;
+pub const KEY_USR_SEARCH: i32 = 0x0008_0000;
+pub const KEY_USR_LINK: i32 = 0x0010_0000;
+pub const KEY_USR_SETATTR: i32 = 0x0020_0000;
+pub const KEY_USR_ALL: i32 = 0x003f_0000;
 
 /// group permissions...
-pub const KEY_GRP_VIEW: i32 = 0x00000100;
-pub const KEY_GRP_READ: i32 = 0x00000200;
-pub const KEY_GRP_WRITE: i32 = 0x00000400;
-pub const KEY_GRP_SEARCH: i32 = 0x00000800;
-pub const KEY_GRP_LINK: i32 = 0x00001000;
-pub const KEY_GRP_SETATTR: i32 = 0x00002000;
-pub const KEY_GRP_ALL: i32 = 0x00003f00;
+pub const KEY_GRP_VIEW: i32 = 0x0000_0100;
+pub const KEY_GRP_READ: i32 = 0x0000_0200;
+pub const KEY_GRP_WRITE: i32 = 0x0000_0400;
+pub const KEY_GRP_SEARCH: i32 = 0x0000_0800;
+pub const KEY_GRP_LINK: i32 = 0x0000_1000;
+pub const KEY_GRP_SETATTR: i32 = 0x0000_2000;
+pub const KEY_GRP_ALL: i32 = 0x0000_3f00;
 
 /// third party permissions...
-pub const KEY_OTH_VIEW: i32 = 0x00000001;
-pub const KEY_OTH_READ: i32 = 0x00000002;
-pub const KEY_OTH_WRITE: i32 = 0x00000004;
-pub const KEY_OTH_SEARCH: i32 = 0x00000008;
-pub const KEY_OTH_LINK: i32 = 0x00000010;
-pub const KEY_OTH_SETATTR: i32 = 0x00000020;
-pub const KEY_OTH_ALL: i32 = 0x0000003f;
+pub const KEY_OTH_VIEW: i32 = 0x0000_0001;
+pub const KEY_OTH_READ: i32 = 0x0000_0002;
+pub const KEY_OTH_WRITE: i32 = 0x0000_0004;
+pub const KEY_OTH_SEARCH: i32 = 0x0000_0008;
+pub const KEY_OTH_LINK: i32 = 0x0000_0010;
+pub const KEY_OTH_SETATTR: i32 = 0x0000_0020;
+pub const KEY_OTH_ALL: i32 = 0x0000_003f;
 
 #[allow(overflowing_literals)]
-pub const KEY_PERM_UNDEF: i32 = 0xffffffff;
+pub const KEY_PERM_UNDEF: i32 = 0xffff_ffff;
 
 //struct keyring_index_key {
 //	struct key_type		*type;
@@ -94,7 +94,7 @@ pub const KEY_IS_POSITIVE: i32 = 1;
 /// - disk encryption IDs
 /// - Kerberos TGTs and tickets
 
-pub const KEY_DEBUG_MAGIC: u32 = 0x18273645;
+pub const KEY_DEBUG_MAGIC: u32 = 0x1827_3645;
 /// set if key type has been deleted
 pub const KEY_FLAG_DEAD: i32 = 0;
 /// set if key had been revoked

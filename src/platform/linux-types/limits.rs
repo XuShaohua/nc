@@ -7,7 +7,7 @@ pub const NR_OPEN: i32 = 1024;
 /// supplemental group IDs are available
 pub const NGROUPS_MAX: i32 = 65536;
 /// # bytes of args + environ for exec()
-pub const ARG_MAX: i32 = 131072;
+pub const ARG_MAX: i32 = 131_072;
 /// # links a file may have
 pub const LINK_MAX: i32 = 127;
 /// size of the canonical input queue

@@ -4,7 +4,7 @@
 
 use super::fcntl::*;
 
-/// NET		An implementation of the SOCKET network access protocol.
+/// NET: An implementation of the SOCKET network access protocol.
 /// This is the master header file for the Linux NET layer,
 /// or, in plain English: the networking handling part of the kernel.
 
@@ -25,7 +25,7 @@ pub const SOCK_PASSSEC: i32 = 4;
 /// @SOCK_SEQPACKET: sequential packet socket
 /// @SOCK_DCCP: Datagram Congestion Control Protocol socket
 /// @SOCK_PACKET: linux specific way of getting packets at the dev level.
-///  	  For writing rarp and other similar things on the user level.
+/// For writing rarp and other similar things on the user level.
 ///
 /// When adding some new socket type please
 /// grep ARCH_HAS_SOCKET_TYPE include/asm-* /socket.h, at least MIPS

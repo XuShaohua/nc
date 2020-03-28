@@ -98,8 +98,8 @@ pub struct io_uring_cqe_t {
 
 /// Magic offsets for the application to mmap the data it needs
 pub const IORING_OFF_SQ_RING: u64 = 0;
-pub const IORING_OFF_CQ_RING: u64 = 0x8000000;
-pub const IORING_OFF_SQES: u64 = 0x10000000;
+pub const IORING_OFF_CQ_RING: u64 = 0x800_0000;
+pub const IORING_OFF_SQES: u64 = 0x1000_0000;
 
 /// Filled with the offset for mmap(2)
 #[repr(C)]

@@ -60,14 +60,14 @@ pub const SIGRTMAX: i32 = _NSIG;
 ///
 /// SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
 /// Unix names RESETHAND and NODEFER respectively.
-pub const SA_NOCLDSTOP: i32 = 0x00000001;
-pub const SA_NOCLDWAIT: i32 = 0x00000002;
-pub const SA_SIGINFO: i32 = 0x00000004;
-pub const SA_ONSTACK: i32 = 0x08000000;
-pub const SA_RESTART: i32 = 0x10000000;
-pub const SA_NODEFER: i32 = 0x40000000;
+pub const SA_NOCLDSTOP: i32 = 0x0000_0001;
+pub const SA_NOCLDWAIT: i32 = 0x0000_0002;
+pub const SA_SIGINFO: i32 = 0x0000_0004;
+pub const SA_ONSTACK: i32 = 0x0800_0000;
+pub const SA_RESTART: i32 = 0x1000_0000;
+pub const SA_NODEFER: i32 = 0x4000_0000;
 #[allow(overflowing_literals)]
-pub const SA_RESETHAND: i32 = 0x80000000;
+pub const SA_RESETHAND: i32 = 0x8000_0000;
 
 pub const SA_NOMASK: i32 = SA_NODEFER;
 pub const SA_ONESHOT: i32 = SA_RESETHAND;

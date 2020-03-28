@@ -32,27 +32,27 @@ pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: usize = 1 << 3;
 /// The ordering ensures that a min_t() over composed return values always
 /// selects the least permissive choice.
 /// kill the process
-pub const SECCOMP_RET_KILL_PROCESS: u32 = 0x80000000;
+pub const SECCOMP_RET_KILL_PROCESS: u32 = 0x8000_0000;
 /// kill the thread
-pub const SECCOMP_RET_KILL_THREAD: u32 = 0x00000000;
+pub const SECCOMP_RET_KILL_THREAD: u32 = 0x0000_0000;
 pub const SECCOMP_RET_KILL: u32 = SECCOMP_RET_KILL_THREAD;
 /// disallow and force a SIGSYS
-pub const SECCOMP_RET_TRAP: u32 = 0x00030000;
+pub const SECCOMP_RET_TRAP: u32 = 0x0003_0000;
 /// returns an errno
-pub const SECCOMP_RET_ERRNO: u32 = 0x00050000;
+pub const SECCOMP_RET_ERRNO: u32 = 0x0005_0000;
 /// notifies userspace
-pub const SECCOMP_RET_USER_NOTIF: u32 = 0x7fc00000;
+pub const SECCOMP_RET_USER_NOTIF: u32 = 0x7fc0_0000;
 /// pass to a tracer or disallow
-pub const SECCOMP_RET_TRACE: u32 = 0x7ff00000;
+pub const SECCOMP_RET_TRACE: u32 = 0x7ff0_0000;
 /// allow after logging
-pub const SECCOMP_RET_LOG: u32 = 0x7ffc0000;
+pub const SECCOMP_RET_LOG: u32 = 0x7ffc_0000;
 /// allow
-pub const SECCOMP_RET_ALLOW: u32 = 0x7fff0000;
+pub const SECCOMP_RET_ALLOW: u32 = 0x7fff_0000;
 
 /// Masks for the return value sections.
-pub const SECCOMP_RET_ACTION_FULL: u32 = 0xffff0000;
-pub const SECCOMP_RET_ACTION: u32 = 0x7fff0000;
-pub const SECCOMP_RET_DATA: u32 = 0x0000ffff;
+pub const SECCOMP_RET_ACTION_FULL: u32 = 0xffff_0000;
+pub const SECCOMP_RET_ACTION: u32 = 0x7fff_0000;
+pub const SECCOMP_RET_DATA: u32 = 0x0000_ffff;
 
 /// struct seccomp_data - the format the BPF program executes over.
 /// @nr: the system call number

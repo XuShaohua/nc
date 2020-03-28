@@ -14,14 +14,14 @@ use core::mem::size_of;
 /// following structure to such a composite is better handled in a user
 /// library since the draft standard requires the use of malloc/free etc..
 
-pub const LINUX_CAPABILITY_VERSION_1: i32 = 0x19980330;
+pub const LINUX_CAPABILITY_VERSION_1: i32 = 0x1998_0330;
 pub const LINUX_CAPABILITY_U32S_1: i32 = 1;
 
 /// deprecated - use v3
-pub const LINUX_CAPABILITY_VERSION_2: i32 = 0x20071026;
+pub const LINUX_CAPABILITY_VERSION_2: i32 = 0x2007_1026;
 pub const LINUX_CAPABILITY_U32S_2: i32 = 2;
 
-pub const LINUX_CAPABILITY_VERSION_3: i32 = 0x20080522;
+pub const LINUX_CAPABILITY_VERSION_3: i32 = 0x2008_0522;
 pub const LINUX_CAPABILITY_U32S_3: i32 = 2;
 
 #[repr(C)]
@@ -38,21 +38,21 @@ pub struct cap_user_data_t {
 }
 
 #[allow(overflowing_literals)]
-pub const VFS_CAP_REVISION_MASK: i32 = 0xFF000000;
+pub const VFS_CAP_REVISION_MASK: i32 = 0xff00_0000;
 pub const VFS_CAP_REVISION_SHIFT: i32 = 24;
 // TODO(Shaohua):
 //#define VFS_CAP_FLAGS_MASK	~VFS_CAP_REVISION_MASK
-pub const VFS_CAP_FLAGS_EFFECTIVE: i32 = 0x000001;
+pub const VFS_CAP_FLAGS_EFFECTIVE: i32 = 0x000_001;
 
-pub const VFS_CAP_REVISION_1: i32 = 0x01000000;
+pub const VFS_CAP_REVISION_1: i32 = 0x0100_0000;
 pub const VFS_CAP_U32_1: i32 = 1;
 pub const XATTR_CAPS_SZ_1: i32 = (size_of::<le32_t>() as i32) * (1 + 2 * VFS_CAP_U32_1);
 
-pub const VFS_CAP_REVISION_2: i32 = 0x02000000;
+pub const VFS_CAP_REVISION_2: i32 = 0x0200_0000;
 pub const VFS_CAP_U32_2: i32 = 2;
 pub const XATTR_CAPS_SZ_2: i32 = (size_of::<le32_t>() as i32) * (1 + 2 * VFS_CAP_U32_2);
 
-pub const VFS_CAP_REVISION_3: i32 = 0x03000000;
+pub const VFS_CAP_REVISION_3: i32 = 0x0300_0000;
 pub const VFS_CAP_U32_3: i32 = 2;
 pub const XATTR_CAPS_SZ_3: i32 = (size_of::<le32_t>() as i32) * (2 + 2 * VFS_CAP_U32_3);
 

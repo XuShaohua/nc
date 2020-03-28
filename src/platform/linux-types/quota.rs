@@ -31,23 +31,23 @@ pub const fn QCMD(cmd: i32, type_: i32) -> i32 {
 }
 
 /// sync disk copy of a filesystems quotas
-pub const Q_SYNC: i32 = 0x800001;
+pub const Q_SYNC: i32 = 0x800_001;
 /// turn quotas on
-pub const Q_QUOTAON: i32 = 0x800002;
+pub const Q_QUOTAON: i32 = 0x800_002;
 /// turn quotas off
-pub const Q_QUOTAOFF: i32 = 0x800003;
+pub const Q_QUOTAOFF: i32 = 0x800_003;
 /// get quota format used on given filesystem
-pub const Q_GETFMT: i32 = 0x800004;
+pub const Q_GETFMT: i32 = 0x800_004;
 /// get information about quota files
-pub const Q_GETINFO: i32 = 0x800005;
+pub const Q_GETINFO: i32 = 0x800_005;
 /// set information about quota files
-pub const Q_SETINFO: i32 = 0x800006;
+pub const Q_SETINFO: i32 = 0x800_006;
 /// get user quota structure
-pub const Q_GETQUOTA: i32 = 0x800007;
+pub const Q_GETQUOTA: i32 = 0x800_007;
 /// set user quota structure
-pub const Q_SETQUOTA: i32 = 0x800008;
+pub const Q_SETQUOTA: i32 = 0x800_008;
 /// get disk limits and usage >= ID
-pub const Q_GETNEXTQUOTA: i32 = 0x800009;
+pub const Q_GETNEXTQUOTA: i32 = 0x800_009;
 
 /// Quota format type IDs
 pub const QFMT_VFS_OLD: i32 = 1;

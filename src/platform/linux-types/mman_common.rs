@@ -13,9 +13,9 @@ pub const PROT_SEM: i32 = 0x8;
 /// page can not be accessed
 pub const PROT_NONE: i32 = 0x0;
 /// mprotect flag: extend change to start of growsdown vma
-pub const PROT_GROWSDOWN: i32 = 0x01000000;
+pub const PROT_GROWSDOWN: i32 = 0x0100_0000;
 /// mprotect flag: extend change to end of growsup vma
-pub const PROT_GROWSUP: i32 = 0x02000000;
+pub const PROT_GROWSUP: i32 = 0x0200_0000;
 
 /// 0x01 - 0x03 are defined in linux/mman.h
 /// Mask for type of mapping
@@ -26,11 +26,11 @@ pub const MAP_FIXED: i32 = 0x10;
 pub const MAP_ANONYMOUS: i32 = 0x20;
 // TODO(Shaohua): CONFIG_MMAP_ALLOW_UNINITIALIZED
 /// For anonymous mmap, memory could be uninitialized
-pub const MAP_UNINITIALIZED: i32 = 0x4000000;
+pub const MAP_UNINITIALIZED: i32 = 0x400_0000;
 
 /// 0x0100 - 0x80000 flags are defined in asm-generic/mman.h
 /// MAP_FIXED which doesn't unmap underlying mapping
-pub const MAP_FIXED_NOREPLACE: i32 = 0x100000;
+pub const MAP_FIXED_NOREPLACE: i32 = 0x100_000;
 
 /// Flags for mlock
 /// Lock pages in range after they are faulted in, do not prefault

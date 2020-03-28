@@ -14,18 +14,18 @@ pub const EPOLL_CTL_DEL: i32 = 2;
 pub const EPOLL_CTL_MOD: i32 = 3;
 
 /// Epoll event masks
-pub const EPOLLIN: poll_t = 0x00000001;
-pub const EPOLLPRI: poll_t = 0x00000002;
-pub const EPOLLOUT: poll_t = 0x00000004;
-pub const EPOLLERR: poll_t = 0x00000008;
-pub const EPOLLHUP: poll_t = 0x00000010;
-pub const EPOLLNVAL: poll_t = 0x00000020;
-pub const EPOLLRDNORM: poll_t = 0x00000040;
-pub const EPOLLRDBAND: poll_t = 0x00000080;
-pub const EPOLLWRNORM: poll_t = 0x00000100;
-pub const EPOLLWRBAND: poll_t = 0x00000200;
-pub const EPOLLMSG: poll_t = 0x00000400;
-pub const EPOLLRDHUP: poll_t = 0x00002000;
+pub const EPOLLIN: poll_t = 0x0000_0001;
+pub const EPOLLPRI: poll_t = 0x0000_0002;
+pub const EPOLLOUT: poll_t = 0x0000_0004;
+pub const EPOLLERR: poll_t = 0x0000_0008;
+pub const EPOLLHUP: poll_t = 0x0000_0010;
+pub const EPOLLNVAL: poll_t = 0x0000_0020;
+pub const EPOLLRDNORM: poll_t = 0x0000_0040;
+pub const EPOLLRDBAND: poll_t = 0x0000_0080;
+pub const EPOLLWRNORM: poll_t = 0x0000_0100;
+pub const EPOLLWRBAND: poll_t = 0x0000_0200;
+pub const EPOLLMSG: poll_t = 0x0000_0400;
+pub const EPOLLRDHUP: poll_t = 0x0000_2000;
 
 /// Set exclusive wakeup mode for the target file descriptor
 pub const EPOLLEXCLUSIVE: poll_t = 1 << 28;

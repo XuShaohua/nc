@@ -4,34 +4,34 @@
 
 use super::types::*;
 
-pub const O_ACCMODE: i32 = 0o0000003;
-pub const O_RDONLY: i32 = 0o0000000;
-pub const O_WRONLY: i32 = 0o0000001;
-pub const O_RDWR: i32 = 0o0000002;
+pub const O_ACCMODE: i32 = 0o000_0003;
+pub const O_RDONLY: i32 = 0o000_0000;
+pub const O_WRONLY: i32 = 0o000_0001;
+pub const O_RDWR: i32 = 0o000_0002;
 /// not fcntl
-pub const O_CREAT: i32 = 0o0000100;
+pub const O_CREAT: i32 = 0o000_0100;
 /// not fcntl
-pub const O_EXCL: i32 = 0o0000200;
+pub const O_EXCL: i32 = 0o000_0200;
 /// not fcntl
-pub const O_NOCTTY: i32 = 0o0000400;
+pub const O_NOCTTY: i32 = 0o000_0400;
 /// not fcntl
-pub const O_TRUNC: i32 = 0o0001000;
-pub const O_APPEND: i32 = 0o0002000;
-pub const O_NONBLOCK: i32 = 0o0004000;
+pub const O_TRUNC: i32 = 0o000_1000;
+pub const O_APPEND: i32 = 0o000_2000;
+pub const O_NONBLOCK: i32 = 0o000_4000;
 /// used to be O_SYNC, see below
-pub const O_DSYNC: i32 = 0o0010000;
+pub const O_DSYNC: i32 = 0o001_0000;
 /// fcntl, for BSD compatibility
-pub const FASYNC: i32 = 0o0020000;
+pub const FASYNC: i32 = 0o002_0000;
 /// direct disk access hint
-pub const O_DIRECT: i32 = 0o0040000;
-pub const O_LARGEFILE: i32 = 0o0100000;
+pub const O_DIRECT: i32 = 0o004_0000;
+pub const O_LARGEFILE: i32 = 0o010_0000;
 /// must be a directory
-pub const O_DIRECTORY: i32 = 0o0200000;
+pub const O_DIRECTORY: i32 = 0o020_0000;
 /// don't follow links
-pub const O_NOFOLLOW: i32 = 0o0400000;
-pub const O_NOATIME: i32 = 0o1000000;
+pub const O_NOFOLLOW: i32 = 0o040_0000;
+pub const O_NOATIME: i32 = 0o100_0000;
 /// set close_on_exec
-pub const O_CLOEXEC: i32 = 0o2000000;
+pub const O_CLOEXEC: i32 = 0o200_0000;
 
 ///  Before Linux 2.6.33 only O_DSYNC semantics were implemented, but using
 /// the O_SYNC flag.  We continue to use the existing numerical value
@@ -44,12 +44,12 @@ pub const O_CLOEXEC: i32 = 0o2000000;
 /// wherever we do not care if O_DSYNC or O_SYNC is used.
 ///
 /// Note: __O_SYNC must never be used directly.
-pub const __O_SYNC: i32 = 0o4000000;
+pub const __O_SYNC: i32 = 0o400_0000;
 pub const O_SYNC: i32 = __O_SYNC | O_DSYNC;
 
-pub const O_PATH: i32 = 0o10000000;
+pub const O_PATH: i32 = 0o1000_0000;
 
-pub const __O_TMPFILE: i32 = 0o20000000;
+pub const __O_TMPFILE: i32 = 0o2000_0000;
 
 /// a horrid kludge trying to make sure that this will fail on old kernels
 pub const O_TMPFILE: i32 = __O_TMPFILE | O_DIRECTORY;

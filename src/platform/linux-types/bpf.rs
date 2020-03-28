@@ -2670,7 +2670,7 @@ pub const BPF_F_SEQ_NUMBER: i32 = 1 << 3;
 
 /// BPF_FUNC_perf_event_output, BPF_FUNC_perf_event_read and
 /// BPF_FUNC_perf_event_read_value flags.
-pub const BPF_F_INDEX_MASK: u64 = 0xffffffff;
+pub const BPF_F_INDEX_MASK: u64 = 0xffff_ffff;
 pub const BPF_F_CURRENT_CPU: u64 = BPF_F_INDEX_MASK;
 
 /// BPF_FUNC_perf_event_output for sk_buff input context.
@@ -3077,7 +3077,7 @@ pub union bpf_sock_ops_reply_t {
     /// Optionally passed to bpf program
     pub args: [u32; 4],
 
-    /// Returned by bpf program	    
+    /// Returned by bpf program
     pub reply: u32,
 
     /* Optionally returned by bpf prog  */

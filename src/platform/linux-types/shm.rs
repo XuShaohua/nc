@@ -18,9 +18,9 @@ pub const SHMMIN: i32 = 1;
 /// max num of segs system wide
 pub const SHMMNI: i32 = 4096;
 /// max shared seg size (bytes)
-pub const SHMMAX: usize = core::usize::MAX - (1 as usize) << 24;
+pub const SHMMAX: usize = core::usize::MAX - (1_usize << 24);
 /// max shm system wide (pages)
-pub const SHMALL: usize = core::usize::MAX - (1 as usize) << 24;
+pub const SHMALL: usize = core::usize::MAX - (1_usize << 24);
 /// max shared segs per process
 pub const SHMSEG: i32 = SHMMNI;
 
@@ -53,14 +53,14 @@ pub struct shmid_ds_t {
 /// shmget() shmflg values.
 /// The bottom nine bits are the same as open(2) mode flags
 /// or S_IRUGO from <linux/stat.h>
-pub const SHM_R: i32 = 0400;
+pub const SHM_R: i32 = 0o400;
 /// or S_IWUGO from <linux/stat.h>
-pub const SHM_W: i32 = 0200;
+pub const SHM_W: i32 = 0o200;
 /// Bits 9 & 10 are IPC_CREAT and IPC_EXCL
 /// segment will use huge TLB pages
-pub const SHM_HUGETLB: i32 = 04000;
+pub const SHM_HUGETLB: i32 = 0o4000;
 /// don't check for reservations
-pub const SHM_NORESERVE: i32 = 010000;
+pub const SHM_NORESERVE: i32 = 0o10_000;
 
 /// Huge page size encoding when SHM_HUGETLB is specified, and a huge page
 /// size other than the default is desired.  See hugetlb_encode.h
@@ -82,13 +82,13 @@ pub const SHM_HUGE_16GB: usize = HUGETLB_FLAG_ENCODE_16GB;
 
 /// shmat() shmflg values
 /// read-only access
-pub const SHM_RDONLY: i32 = 010000;
+pub const SHM_RDONLY: i32 = 0o10_000;
 /// round attach address to SHMLBA boundary
-pub const SHM_RND: i32 = 020000;
+pub const SHM_RND: i32 = 0o20_000;
 /// take-over region on attach
-pub const SHM_REMAP: i32 = 040000;
+pub const SHM_REMAP: i32 = 0o40_000;
 /// execution access
-pub const SHM_EXEC: i32 = 0100000;
+pub const SHM_EXEC: i32 = 0o100_000;
 
 /// super user shmctl commands
 pub const SHM_LOCK: i32 = 11;

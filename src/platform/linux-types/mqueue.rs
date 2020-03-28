@@ -4,7 +4,7 @@
 
 pub const MQ_PRIO_MAX: i32 = 32768;
 /// per-uid limit of kernel memory used by mqueue, in bytes
-pub const MQ_BYTES_MAX: i32 = 819200;
+pub const MQ_BYTES_MAX: i32 = 819_200;
 
 #[repr(C)]
 pub struct mq_attr_t {

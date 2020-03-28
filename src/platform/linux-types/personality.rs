@@ -29,8 +29,8 @@ pub const PER_CLEAR_ON_SETID: i32 =
 /// These go in the low byte.  Avoid using the top bit, it will
 /// conflict with error returns.
 pub const PER_LINUX: i32 = 0x0000;
-pub const PER_LINUX_32BIT: i32 = 0x0000 | ADDR_LIMIT_32BIT;
-pub const PER_LINUX_FDPIC: i32 = 0x0000 | FDPIC_FUNCPTRS;
+pub const PER_LINUX_32BIT: i32 = ADDR_LIMIT_32BIT;
+pub const PER_LINUX_FDPIC: i32 = FDPIC_FUNCPTRS;
 pub const PER_SVR4: i32 = 0x0001 | STICKY_TIMEOUTS | MMAP_PAGE_ZERO;
 pub const PER_SVR3: i32 = 0x0002 | STICKY_TIMEOUTS | SHORT_INODE;
 pub const PER_SCOSVR3: i32 = 0x0003 | STICKY_TIMEOUTS | WHOLE_SECONDS | SHORT_INODE;

@@ -4,7 +4,7 @@
 
 use super::fcntl::*;
 
-pub const F_SETLEASE: i32 = F_LINUX_SPECIFIC_BASE + 0;
+pub const F_SETLEASE: i32 = F_LINUX_SPECIFIC_BASE;
 pub const F_GETLEASE: i32 = F_LINUX_SPECIFIC_BASE + 1;
 
 /// Request nofications on a directory.
@@ -60,20 +60,20 @@ pub const RWH_WRITE_LIFE_EXTREME: i32 = 5;
 
 /// Types of directory notifications that may be requested.
 /// File accessed
-pub const DN_ACCESS: i32 = 0x00000001;
+pub const DN_ACCESS: i32 = 0x0000_0001;
 /// File modified
-pub const DN_MODIFY: i32 = 0x00000002;
+pub const DN_MODIFY: i32 = 0x0000_0002;
 /// File created
-pub const DN_CREATE: i32 = 0x00000004;
+pub const DN_CREATE: i32 = 0x0000_0004;
 /// File removed
-pub const DN_DELETE: i32 = 0x00000008;
+pub const DN_DELETE: i32 = 0x0000_0008;
 /// File renamed
-pub const DN_RENAME: i32 = 0x00000010;
+pub const DN_RENAME: i32 = 0x0000_0010;
 /// File changed attibutes
-pub const DN_ATTRIB: i32 = 0x00000020;
+pub const DN_ATTRIB: i32 = 0x0000_0020;
 /// Don't remove notifier
 #[allow(overflowing_literals)]
-pub const DN_MULTISHOT: i32 = 0x80000000;
+pub const DN_MULTISHOT: i32 = 0x8000_0000;
 
 /// Special value used to indicate openat should use the current working directory.
 pub const AT_FDCWD: i32 = -100;

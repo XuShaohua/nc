@@ -130,7 +130,7 @@ pub struct serial_rs485_t {
 }
 
 /// If enabled
-pub const SER_RS485_ENABLED: i32 = 1 << 0;
+pub const SER_RS485_ENABLED: i32 = 1;
 
 /// Logical level for RTS pin when sending
 pub const SER_RS485_RTS_ON_SEND: i32 = 1 << 1;
@@ -156,7 +156,7 @@ pub struct serial_iso7816_t {
     reserved: [u32; 5],
 }
 
-pub const SER_ISO7816_ENABLED: i32 = 1 << 0;
+pub const SER_ISO7816_ENABLED: i32 = 1;
 pub const SER_ISO7816_T_PARAM: i32 = 0x0f << 4;
 
 #[inline]

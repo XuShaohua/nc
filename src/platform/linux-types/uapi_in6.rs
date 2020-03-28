@@ -78,8 +78,8 @@ pub const IPV6_FL_S_ANY: i32 = 255;
 ///
 /// Note that this are in host byte order while the flowinfo field of
 /// sockaddr_in6 is in network byte order.
-pub const IPV6_FLOWINFO_FLOWLABEL: i32 = 0x000fffff;
-pub const IPV6_FLOWINFO_PRIORITY: i32 = 0x0ff00000;
+pub const IPV6_FLOWINFO_FLOWLABEL: i32 = 0x000f_ffff;
+pub const IPV6_FLOWINFO_PRIORITY: i32 = 0x0ff0_0000;
 
 /// These definitions are obsolete
 pub const IPV6_PRIORITY_UNCHARACTERIZED: i32 = 0x0000;

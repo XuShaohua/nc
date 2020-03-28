@@ -240,14 +240,14 @@ pub const MAX_BPF_ATTACH_TYPE: i32 = BPF_FLOW_DISSECTOR + 1;
 ///
 /// All eligible programs are executed regardless of return code from
 /// earlier programs.
-pub const BPF_F_ALLOW_OVERRIDE: i32 = 1 << 0;
+pub const BPF_F_ALLOW_OVERRIDE: i32 = 1;
 pub const BPF_F_ALLOW_MULTI: i32 = 1 << 1;
 
 /// If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
 /// verifier will perform strict alignment checking as if the kernel
 /// has been built with CONFIG_EFFICIENT_UNALIGNED_ACCESS not set,
 /// and NET_IP_ALIGN defined to 2.
-pub const BPF_F_STRICT_ALIGNMENT: i32 = 1 << 0;
+pub const BPF_F_STRICT_ALIGNMENT: i32 = 1;
 
 /// If BPF_F_ANY_ALIGNMENT is used in BPF_PROF_LOAD command, the
 /// verifier will allow any alignment whatsoever.  On platforms
@@ -280,7 +280,7 @@ pub const BPF_EXIST: i32 = 2;
 pub const BPF_F_LOCK: i32 = 4;
 
 /// flags for BPF_MAP_CREATE command
-pub const BPF_F_NO_PREALLOC: i32 = 1 << 0;
+pub const BPF_F_NO_PREALLOC: i32 = 1;
 
 /// Instead of having one common LRU list in the
 /// BPF_MAP_TYPE_LRU_[PERCPU_]HASH map, use a percpu LRU list
@@ -305,7 +305,7 @@ pub const BPF_F_STACK_BUILD_ID: i32 = 1 << 5;
 pub const BPF_F_ZERO_SEED: i32 = 1 << 6;
 
 /// flags for BPF_PROG_QUERY
-pub const BPF_F_QUERY_EFFECTIVE: i32 = 1 << 0;
+pub const BPF_F_QUERY_EFFECTIVE: i32 = 1;
 
 /// user space need an empty entry to identify end of a trace
 pub const BPF_STACK_BUILD_ID_EMPTY: i32 = 0;
@@ -2634,7 +2634,7 @@ pub union bpf_attr_t {
 /// All flags used by eBPF helper functions, placed here.
 
 /// BPF_FUNC_skb_store_bytes flags.
-pub const BPF_F_RECOMPUTE_CSUM: i32 = 1 << 0;
+pub const BPF_F_RECOMPUTE_CSUM: i32 = 1;
 pub const BPF_F_INVALIDATE_HASH: i32 = 1 << 1;
 
 /* BPF_FUNC_l3_csum_replace and BPF_FUNC_l4_csum_replace flags.
@@ -2648,10 +2648,10 @@ pub const BPF_F_MARK_MANGLED_0: i32 = 1 << 5;
 pub const BPF_F_MARK_ENFORCE: i32 = 1 << 6;
 
 /// BPF_FUNC_clone_redirect and BPF_FUNC_redirect flags.
-pub const BPF_F_INGRESS: i32 = 1 << 0;
+pub const BPF_F_INGRESS: i32 = 1;
 
 /// BPF_FUNC_skb_set_tunnel_key and BPF_FUNC_skb_get_tunnel_key flags.
-pub const BPF_F_TUNINFO_IPV6: i32 = 1 << 0;
+pub const BPF_F_TUNINFO_IPV6: i32 = 1;
 
 /// flags for both BPF_FUNC_get_stackid and BPF_FUNC_get_stack.
 pub const BPF_F_SKIP_FIELD_MASK: i32 = 0xff;
@@ -3151,7 +3151,7 @@ pub struct bpf_sock_ops_t {
 }
 
 /// Definitions for bpf_sock_ops_cb_flags
-pub const BPF_SOCK_OPS_RTO_CB_FLAG: i32 = 1 << 0;
+pub const BPF_SOCK_OPS_RTO_CB_FLAG: i32 = 1;
 pub const BPF_SOCK_OPS_RETRANS_CB_FLAG: i32 = 1 << 1;
 pub const BPF_SOCK_OPS_STATE_CB_FLAG: i32 = 1 << 2;
 /// Mask of all currently supported cb flags
@@ -3237,11 +3237,11 @@ pub struct bpf_perf_event_value_t {
     pub running: u64,
 }
 
-pub const BPF_DEVCG_ACC_MKNOD: i32 = 1 << 0;
+pub const BPF_DEVCG_ACC_MKNOD: i32 = 1;
 pub const BPF_DEVCG_ACC_READ: i32 = 1 << 1;
 pub const BPF_DEVCG_ACC_WRITE: i32 = 1 << 2;
 
-pub const BPF_DEVCG_DEV_BLOCK: i32 = 1 << 0;
+pub const BPF_DEVCG_DEV_BLOCK: i32 = 1;
 pub const BPF_DEVCG_DEV_CHAR: i32 = 1 << 1;
 
 #[repr(C)]

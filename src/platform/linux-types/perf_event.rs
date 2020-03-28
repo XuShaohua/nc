@@ -78,7 +78,7 @@ pub const PERF_COUNT_SW_MAX: i32 = 11;
 
 /// Bits that can be set in attr.sample_type to request information
 /// in the overflow packets.
-pub const PERF_SAMPLE_IP: u32 = 1 << 0;
+pub const PERF_SAMPLE_IP: u32 = 1;
 pub const PERF_SAMPLE_TID: u32 = 1 << 1;
 pub const PERF_SAMPLE_TIME: u32 = 1 << 2;
 pub const PERF_SAMPLE_ADDR: u32 = 1 << 3;
@@ -215,7 +215,7 @@ pub const PERF_SAMPLE_REGS_ABI_64: i32 = 2;
 /// Values for the memory transaction event qualifier, mostly for
 /// abort events. Multiple bits can be set.
 /// From elision
-pub const PERF_TXN_ELISION: i32 = 1 << 0;
+pub const PERF_TXN_ELISION: i32 = 1;
 /// From transaction
 pub const PERF_TXN_TRANSACTION: i32 = 1 << 1;
 /// Instruction is related
@@ -260,7 +260,7 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 /// };
 /// ```
 
-pub const PERF_FORMAT_TOTAL_TIME_ENABLED: i32 = 1 << 0;
+pub const PERF_FORMAT_TOTAL_TIME_ENABLED: i32 = 1;
 pub const PERF_FORMAT_TOTAL_TIME_RUNNING: i32 = 1 << 1;
 pub const PERF_FORMAT_ID: i32 = 1 << 2;
 pub const PERF_FORMAT_GROUP: i32 = 1 << 3;
@@ -510,7 +510,7 @@ pub fn perf_flags(attr: &perf_event_attr_t) -> u64 {
 //#define PERF_EVENT_IOC_QUERY_BPF		_IOWR('$', 10, struct perf_event_query_bpf *)
 //#define PERF_EVENT_IOC_MODIFY_ATTRIBUTES	_IOW('$', 11, struct perf_event_attr *)
 
-pub const PERF_IOC_FLAG_GROUP: u32 = 1 << 0;
+pub const PERF_IOC_FLAG_GROUP: u32 = 1;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -697,13 +697,13 @@ pub struct perf_event_mmap_page_t {
     pub aux_size: u64,
 }
 
-pub const PERF_RECORD_MISC_CPUMODE_MASK: i32 = 7 << 0;
-pub const PERF_RECORD_MISC_CPUMODE_UNKNOWN: i32 = 0 << 0;
-pub const PERF_RECORD_MISC_KERNEL: i32 = 1 << 0;
-pub const PERF_RECORD_MISC_USER: i32 = 2 << 0;
-pub const PERF_RECORD_MISC_HYPERVISOR: i32 = 3 << 0;
-pub const PERF_RECORD_MISC_GUEST_KERNEL: i32 = 4 << 0;
-pub const PERF_RECORD_MISC_GUEST_USER: i32 = 5 << 0;
+pub const PERF_RECORD_MISC_CPUMODE_MASK: i32 = 7;
+pub const PERF_RECORD_MISC_CPUMODE_UNKNOWN: i32 = 0;
+pub const PERF_RECORD_MISC_KERNEL: i32 = 1;
+pub const PERF_RECORD_MISC_USER: i32 = 2;
+pub const PERF_RECORD_MISC_HYPERVISOR: i32 = 3;
+pub const PERF_RECORD_MISC_GUEST_KERNEL: i32 = 4;
+pub const PERF_RECORD_MISC_GUEST_USER: i32 = 5;
 
 /// Indicates that /proc/PID/maps parsing are truncated by time out.
 pub const PERF_RECORD_MISC_PROC_MAP_PARSE_TIMEOUT: i32 = 1 << 12;
@@ -1047,7 +1047,7 @@ pub const PERF_AUX_FLAG_PARTIAL: i32 = 0x04;
 /// sample collided with another
 pub const PERF_AUX_FLAG_COLLISION: i32 = 0x08;
 
-pub const PERF_FLAG_FD_NO_GROUP: usize = 1 << 0;
+pub const PERF_FLAG_FD_NO_GROUP: usize = 1;
 pub const PERF_FLAG_FD_OUTPUT: usize = 1 << 1;
 /// pid=cgroup id, per-cpu mode only
 pub const PERF_FLAG_PID_CGROUP: usize = 1 << 2;

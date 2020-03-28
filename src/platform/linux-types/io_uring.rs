@@ -55,7 +55,7 @@ pub struct io_uring_sqe_t {
 
 /// sqe->flags
 /// use fixed fileset
-pub const IOSQE_FIXED_FILE: u32 = 1 << 0;
+pub const IOSQE_FIXED_FILE: u32 = 1;
 /// issue after inflight IO
 pub const IOSQE_IO_DRAIN: u32 = 1 << 1;
 /// links next sqe
@@ -63,7 +63,7 @@ pub const IOSQE_IO_LINK: u32 = 1 << 2;
 
 /// io_uring_setup() flags
 /// io_context is polled
-pub const IORING_SETUP_IOPOLL: u32 = 1 << 0;
+pub const IORING_SETUP_IOPOLL: u32 = 1;
 /// SQ poll thread
 pub const IORING_SETUP_SQPOLL: u32 = 1 << 1;
 /// sq_thread_cpu is valid
@@ -82,7 +82,7 @@ pub const IORING_OP_SENDMSG: i32 = 9;
 pub const IORING_OP_RECVMSG: i32 = 10;
 
 /// sqe->fsync_flags
-pub const IORING_FSYNC_DATASYNC: u32 = 1 << 0;
+pub const IORING_FSYNC_DATASYNC: u32 = 1;
 
 /// IO completion data structure (Completion Queue Entry)
 #[repr(C)]
@@ -117,7 +117,7 @@ pub struct io_sqring_offsets_t {
 
 /// sq_ring->flags
 /// needs io_uring_enter wakeup
-pub const IORING_SQ_NEED_WAKEUP: u32 = 1 << 0;
+pub const IORING_SQ_NEED_WAKEUP: u32 = 1;
 
 #[repr(C)]
 pub struct io_cqring_offsets_t {
@@ -131,7 +131,7 @@ pub struct io_cqring_offsets_t {
 }
 
 /// io_uring_enter(2) flags
-pub const IORING_ENTER_GETEVENTS: u32 = 1 << 0;
+pub const IORING_ENTER_GETEVENTS: u32 = 1;
 pub const IORING_ENTER_SQ_WAKEUP: u32 = 1 << 1;
 
 /// Passed in for io_uring_setup(2). Copied back with updated info on success
@@ -150,7 +150,7 @@ pub struct io_uring_params_t {
 }
 
 /// io_uring_params->features flags
-pub const IORING_FEAT_SINGLE_MMAP: u32 = 1 << 0;
+pub const IORING_FEAT_SINGLE_MMAP: u32 = 1;
 
 /// io_uring_register(2) opcodes and arguments
 pub const IORING_REGISTER_BUFFERS: i32 = 0;

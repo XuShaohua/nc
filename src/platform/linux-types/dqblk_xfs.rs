@@ -121,7 +121,7 @@ pub struct fs_disk_quota_t {
 }
 
 /// These fields are sent to Q_XSETQLIM to specify fields that need to change.
-pub const FS_DQ_ISOFT: i32 = 1 << 0;
+pub const FS_DQ_ISOFT: i32 = 1;
 pub const FS_DQ_IHARD: i32 = 1 << 1;
 pub const FS_DQ_BSOFT: i32 = 1 << 2;
 pub const FS_DQ_BHARD: i32 = 1 << 3;
@@ -159,7 +159,7 @@ pub const FS_DQ_ACCT_MASK: i32 = FS_DQ_BCOUNT | FS_DQ_ICOUNT | FS_DQ_RTBCOUNT;
 
 /// Various flags related to quotactl(2).
 /// user quota accounting
-pub const FS_QUOTA_UDQ_ACCT: i32 = 1 << 0;
+pub const FS_QUOTA_UDQ_ACCT: i32 = 1;
 /// user quota limits enforcement
 pub const FS_QUOTA_UDQ_ENFD: i32 = 1 << 1;
 /// group quota accounting
@@ -172,7 +172,7 @@ pub const FS_QUOTA_PDQ_ACCT: i32 = 1 << 4;
 pub const FS_QUOTA_PDQ_ENFD: i32 = 1 << 5;
 
 /// user quota type
-pub const FS_USER_QUOTA: i32 = 1 << 0;
+pub const FS_USER_QUOTA: i32 = 1;
 /// project quota type
 pub const FS_PROJ_QUOTA: i32 = 1 << 1;
 /// group quota type

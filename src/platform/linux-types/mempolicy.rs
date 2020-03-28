@@ -27,7 +27,7 @@ pub const MPOL_MODE_FLAGS: i32 = MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES;
 
 /// Flags for get_mempolicy
 /// return next IL mode instead of node mask
-pub const MPOL_F_NODE: i32 = 1 << 0;
+pub const MPOL_F_NODE: i32 = 1;
 /// look up vma using address
 pub const MPOL_F_ADDR: i32 = 1 << 1;
 /// return allowed memories
@@ -35,7 +35,7 @@ pub const MPOL_F_MEMS_ALLOWED: i32 = 1 << 2;
 
 /// Flags for mbind
 /// Verify existing pages in the mapping
-pub const MPOL_MF_STRICT: i32 = 1 << 0;
+pub const MPOL_MF_STRICT: i32 = 1;
 
 /// Move pages owned by this process to conform to policy
 pub const MPOL_MF_MOVE: i32 = 1 << 1;
@@ -52,7 +52,7 @@ pub const MPOL_MF_VALID: i32 = MPOL_MF_STRICT | MPOL_MF_MOVE | MPOL_MF_MOVE_ALL;
 /// "mode flags".  These flags are allocated from bit 0 up, as they
 /// are never OR'ed into the mode in mempolicy API arguments.
 /// identify shared policies
-pub const MPOL_F_SHARED: i32 = 1 << 0;
+pub const MPOL_F_SHARED: i32 = 1;
 /// preferred local allocation
 pub const MPOL_F_LOCAL: i32 = 1 << 1;
 /// this policy wants migrate on fault

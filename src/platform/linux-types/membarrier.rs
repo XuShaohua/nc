@@ -96,7 +96,7 @@
 /// be a single bit each, except for MEMBARRIER_CMD_QUERY which is assigned to
 /// the value 0.
 pub const MEMBARRIER_CMD_QUERY: i32 = 0;
-pub const MEMBARRIER_CMD_GLOBAL: i32 = 1 << 0;
+pub const MEMBARRIER_CMD_GLOBAL: i32 = 1;
 pub const MEMBARRIER_CMD_GLOBAL_EXPEDITED: i32 = 1 << 1;
 pub const MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED: i32 = 1 << 2;
 pub const MEMBARRIER_CMD_PRIVATE_EXPEDITED: i32 = 1 << 3;

@@ -19,7 +19,7 @@ pub const SECCOMP_GET_ACTION_AVAIL: i32 = 2;
 pub const SECCOMP_GET_NOTIF_SIZES: i32 = 3;
 
 /// Valid flags for SECCOMP_SET_MODE_FILTER
-pub const SECCOMP_FILTER_FLAG_TSYNC: usize = 1 << 0;
+pub const SECCOMP_FILTER_FLAG_TSYNC: usize = 1;
 pub const SECCOMP_FILTER_FLAG_LOG: usize = 1 << 1;
 pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: usize = 1 << 2;
 pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: usize = 1 << 3;

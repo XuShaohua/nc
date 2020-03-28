@@ -4,7 +4,7 @@
 
 use super::linux_socket::*;
 
-/// NET		An implementation of the SOCKET network access protocol.
+/// NET: An implementation of the SOCKET network access protocol.
 /// This is the master header file for the Linux NET layer,
 /// or, in plain English: the networking handling part of the kernel.
 

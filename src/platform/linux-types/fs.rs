@@ -40,7 +40,7 @@ pub const SEEK_HOLE: i32 = 4;
 pub const SEEK_MAX: i32 = SEEK_HOLE;
 
 /// Don't overwrite target
-pub const RENAME_NOREPLACE: i32 = 1 << 0;
+pub const RENAME_NOREPLACE: i32 = 1;
 /// Exchange source and dest
 pub const RENAME_EXCHANGE: i32 = 1 << 1;
 /// Whiteout source

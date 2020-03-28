@@ -10,18 +10,18 @@ use super::types::*;
 /// that to happen you need to do that yourself.
 
 /// kexec flags for different usage scenarios
-pub const KEXEC_ON_CRASH: i32 = 0x00000001;
-pub const KEXEC_PRESERVE_CONTEXT: i32 = 0x00000002;
-pub const KEXEC_ARCH_MASK: i32 = 0xffff0000;
+pub const KEXEC_ON_CRASH: i32 = 0x0000_0001;
+pub const KEXEC_PRESERVE_CONTEXT: i32 = 0x0000_0002;
+pub const KEXEC_ARCH_MASK: i32 = 0xffff_0000;
 
 /// Kexec file load interface flags.
 /// KEXEC_FILE_UNLOAD : Unload already loaded kexec/kdump image.
 /// KEXEC_FILE_ON_CRASH : Load/unload operation belongs to kdump image.
 /// KEXEC_FILE_NO_INITRAMFS : No initramfs is being loaded. Ignore the initrd
 /// fd field.
-pub const KEXEC_FILE_UNLOAD: i32 = 0x00000001;
-pub const KEXEC_FILE_ON_CRASH: i32 = 0x00000002;
-pub const KEXEC_FILE_NO_INITRAMFS: i32 = 0x00000004;
+pub const KEXEC_FILE_UNLOAD: i32 = 0x0000_0001;
+pub const KEXEC_FILE_ON_CRASH: i32 = 0x0000_0002;
+pub const KEXEC_FILE_NO_INITRAMFS: i32 = 0x0000_0004;
 
 /// These values match the ELF architecture values.
 /// Unless there is a good reason that should continue to be the case.

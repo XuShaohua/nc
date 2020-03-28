@@ -136,7 +136,7 @@ pub const PTRACE_EVENTMSG_SYSCALL_ENTRY: i32 = 1;
 pub const PTRACE_EVENTMSG_SYSCALL_EXIT: i32 = 2;
 
 /// Read signals from a shared (process wide) queue
-pub const PTRACE_PEEKSIGINFO_SHARED: i32 = 1 << 0;
+pub const PTRACE_PEEKSIGINFO_SHARED: i32 = 1;
 
 /// Wait extended result codes for the above trace options.
 pub const PTRACE_EVENT_FORK: i32 = 1;

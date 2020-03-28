@@ -811,10 +811,10 @@ pub fn getdents64(fd: i32) -> Result<Vec<linux_dirent64_extern_t>, Errno> {
                 d_type: (*d).d_type,
                 d_name: name,
             });
-            bpos = bpos + (*d).d_reclen as usize;
+            bpos += (*d).d_reclen as usize;
         }
     }
-    return Ok(result);
+    Ok(result)
 }
 
 /// Get the effective group ID of the calling process.
@@ -1554,9 +1554,8 @@ pub fn migrate_pages(
 ///  -EFAULT - vec points to an illegal address
 ///  -EINVAL - addr is not a multiple of PAGE_SIZE
 ///  -ENOMEM - Addresses in the range [addr, addr + len] are
-///  	invalid for the address space of this process, or
-///  	specify one or more pages which are not currently
-///  	mapped
+/// invalid for the address space of this process, or specify one or
+/// more pages which are not currently mapped
 ///  -EAGAIN - A kernel resource was temporarily unavailable.
 pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
     let len = len as usize;

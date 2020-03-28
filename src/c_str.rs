@@ -105,7 +105,7 @@ impl CStr {
     }
 
     #[inline]
-    pub unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
+    unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
         &*(bytes as *const [u8] as *const CStr)
     }
 

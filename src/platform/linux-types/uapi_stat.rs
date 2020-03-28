@@ -4,17 +4,17 @@
 
 use super::types::*;
 
-pub const S_IFMT: mode_t = 0o0170000;
-pub const S_IFSOCK: mode_t = 0o140000;
-pub const S_IFLNK: mode_t = 0o120000;
-pub const S_IFREG: mode_t = 0o100000;
-pub const S_IFBLK: mode_t = 0o060000;
-pub const S_IFDIR: mode_t = 0o040000;
-pub const S_IFCHR: mode_t = 0o020000;
-pub const S_IFIFO: mode_t = 0o010000;
-pub const S_ISUID: mode_t = 0o004000;
-pub const S_ISGID: mode_t = 0o002000;
-pub const S_ISVTX: mode_t = 0o001000;
+pub const S_IFMT: mode_t = 0o0_170_000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFLNK: mode_t = 0o120_000;
+pub const S_IFREG: mode_t = 0o100_000;
+pub const S_IFBLK: mode_t = 0o060_000;
+pub const S_IFDIR: mode_t = 0o040_000;
+pub const S_IFCHR: mode_t = 0o020_000;
+pub const S_IFIFO: mode_t = 0o010_000;
+pub const S_ISUID: mode_t = 0o004_000;
+pub const S_ISGID: mode_t = 0o002_000;
+pub const S_ISVTX: mode_t = 0o001_000;
 
 // TODO(Shaohua):
 //#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
@@ -152,35 +152,35 @@ pub struct statx_t {
 /// These bits should be set in the mask argument of statx() to request
 /// particular items when calling statx().
 /// Want/got stx_mode & S_IFMT
-pub const STATX_TYPE: u32 = 0x00000001;
+pub const STATX_TYPE: u32 = 0x0000_0001;
 /// Want/got stx_mode & ~S_IFMT
-pub const STATX_MODE: u32 = 0x00000002;
+pub const STATX_MODE: u32 = 0x0000_0002;
 /// Want/got stx_nlink
-pub const STATX_NLINK: u32 = 0x00000004;
+pub const STATX_NLINK: u32 = 0x000_00004;
 /// Want/got stx_uid
-pub const STATX_UID: u32 = 0x00000008;
+pub const STATX_UID: u32 = 0x0000_0008;
 /// Want/got stx_gid
-pub const STATX_GID: u32 = 0x00000010;
+pub const STATX_GID: u32 = 0x0000_0010;
 /// Want/got stx_atime
-pub const STATX_ATIME: u32 = 0x00000020;
+pub const STATX_ATIME: u32 = 0x0000_0020;
 /// Want/got stx_mtime
-pub const STATX_MTIME: u32 = 0x00000040;
+pub const STATX_MTIME: u32 = 0x0000_0040;
 /// Want/got stx_ctime
-pub const STATX_CTIME: u32 = 0x00000080;
+pub const STATX_CTIME: u32 = 0x0000_0080;
 /// Want/got stx_ino
-pub const STATX_INO: u32 = 0x00000100;
+pub const STATX_INO: u32 = 0x0000_0100;
 /// Want/got stx_size
-pub const STATX_SIZE: u32 = 0x00000200;
+pub const STATX_SIZE: u32 = 0x0000_0200;
 /// Want/got stx_blocks
-pub const STATX_BLOCKS: u32 = 0x00000400;
+pub const STATX_BLOCKS: u32 = 0x0000_0400;
 /// The stuff in the normal stat struct
-pub const STATX_BASIC_STATS: u32 = 0x000007ff;
+pub const STATX_BASIC_STATS: u32 = 0x000_007ff;
 /// Want/got stx_btime
-pub const STATX_BTIME: u32 = 0x00000800;
+pub const STATX_BTIME: u32 = 0x0000_0800;
 /// All currently supported flags
-pub const STATX_ALL: u32 = 0x00000fff;
+pub const STATX_ALL: u32 = 0x0000_0fff;
 /// Reserved for future struct statx expansion
-pub const STATX__RESERVED: u32 = 0x80000000;
+pub const STATX__RESERVED: u32 = 0x8000_0000;
 
 /// Attributes to be found in stx_attributes and masked in stx_attributes_mask.
 ///
@@ -192,15 +192,15 @@ pub const STATX__RESERVED: u32 = 0x80000000;
 /// semantically.  Where possible, the numerical value is picked to correspond
 /// also.
 /// [I] File is compressed by the fs
-pub const STATX_ATTR_COMPRESSED: i32 = 0x00000004;
+pub const STATX_ATTR_COMPRESSED: i32 = 0x0000_0004;
 /// [I] File is marked immutable
-pub const STATX_ATTR_IMMUTABLE: i32 = 0x00000010;
+pub const STATX_ATTR_IMMUTABLE: i32 = 0x0000_0010;
 /// [I] File is append-only
-pub const STATX_ATTR_APPEND: i32 = 0x00000020;
+pub const STATX_ATTR_APPEND: i32 = 0x0000_0020;
 /// [I] File is not to be dumped
-pub const STATX_ATTR_NODUMP: i32 = 0x00000040;
+pub const STATX_ATTR_NODUMP: i32 = 0x0000_0040;
 /// [I] File requires key to decrypt in fs
-pub const STATX_ATTR_ENCRYPTED: i32 = 0x00000800;
+pub const STATX_ATTR_ENCRYPTED: i32 = 0x0000_0800;
 
 /// Dir: Automount trigger
-pub const STATX_ATTR_AUTOMOUNT: i32 = 0x00001000;
+pub const STATX_ATTR_AUTOMOUNT: i32 = 0x0000_1000;

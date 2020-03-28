@@ -293,3 +293,4 @@ pub const SYS_FSCONFIG: Sysno = 431;
 pub const SYS_FSMOUNT: Sysno = 432;
 pub const SYS_FSPICK: Sysno = 433;
 pub const SYS_PIDFD_OPEN: Sysno = 434;
+pub const SYS_CLONE3: Sysno = 435;

@@ -232,6 +232,10 @@ def get_compiler(arch_name):
     return DEFINES[arch_name]["compiler"]
 
 
+def get_deb(arch_name):
+    return DEFINES[arch_name]["deb"]
+
+
 def get_include_dir(arch_name):
     return DEFINES[arch_name]["include"]
 
@@ -276,6 +280,14 @@ def gen_errno_and_sysno(os_name, arch_name):
     rust_fmt(sysno_file)
 
 
+def install_deb(deb_list):
+    print("install_deb:", deb_list)
+    cmd = ["apt", "install", "-y"]
+    cmd.extend(deb_list)
+    cmd = " ".join(cmd)
+    subprocess.run(cmd, shell=True)
+
+
 def main():
     if len(sys.argv) > 3 or len(sys.argv) < 2:
         print("Usage: %s arch" % sys.argv[0])
@@ -295,7 +307,10 @@ def main():
     os_name = "linux"
     if arch_name == "all":
         for arch_name in get_arch_names():
-            gen_errno_and_sysno(os_name, arch_name)
+            try:
+                gen_errno_and_sysno(os_name, arch_name)
+            except FileNotFoundError:
+                install_deb(get_deb(arch_name))
     else:
         gen_errno_and_sysno(os_name, arch_name)
 

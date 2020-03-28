@@ -1,3 +1,3 @@
 
 build-docker:
-	sudo docker build -t nc-multilib:1.0 .
+	sudo docker build -t nc-multilib:stable .

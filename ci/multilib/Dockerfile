@@ -1,5 +1,5 @@
 
-FROM debian:buster
+FROM debian:unstable
 
 LABEL MAINTAINER = "Xu Shaohua<shaohua@biofan.org>"
 LABEL DESCRIPTION = "Debian multilib environment for nc build"

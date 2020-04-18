@@ -72,7 +72,7 @@ pub union io_uring_sqe_opt_buf_t {
 #[derive(Copy, Clone)]
 pub struct io_uring_sqe_t {
     /// type of operation for this sqe
-    pub opcode: u8,
+    pub opcode: IOURING_OP,
 
     /// IOSQE_ flags
     pub flags: u8,
@@ -133,6 +133,8 @@ pub const IORING_SETUP_CLAMP: u32 = 1 << 4;
 /// attach to existing wq
 pub const IORING_SETUP_ATTACH_WQ: u32 = 1 << 5;
 
+#[repr(u8)]
+#[derive(Copy, Clone)]
 pub enum IOURING_OP {
     IORING_OP_NOP,
     IORING_OP_READV,

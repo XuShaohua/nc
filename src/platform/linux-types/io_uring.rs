@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 use super::fs::*;
+use super::types::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -204,13 +205,13 @@ pub const IORING_CQE_F_BUFFER: u32 = 1;
 pub const IORING_CQE_BUFFER_SHIFT: i32 = 16;
 
 /// Magic offsets for the application to mmap the data it needs
-pub const IORING_OFF_SQ_RING: u64 = 0;
-pub const IORING_OFF_CQ_RING: u64 = 0x8_000_000;
-pub const IORING_OFF_SQES: u64 = 0x10_000_000;
+pub const IORING_OFF_SQ_RING: off_t = 0;
+pub const IORING_OFF_CQ_RING: off_t = 0x8_000_000;
+pub const IORING_OFF_SQES: off_t = 0x10_000_000;
 
 /// Filled with the offset for mmap(2)
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct io_sqring_offsets_t {
     pub head: u32,
     pub tail: u32,
@@ -228,7 +229,7 @@ pub struct io_sqring_offsets_t {
 pub const IORING_SQ_NEED_WAKEUP: u32 = 1;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct io_cqring_offsets_t {
     pub head: u32,
     pub tail: u32,
@@ -245,7 +246,7 @@ pub const IORING_ENTER_SQ_WAKEUP: u32 = 1 << 1;
 
 /// Passed in for io_uring_setup(2). Copied back with updated info on success
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct io_uring_params_t {
     pub sq_entries: u32,
     pub cq_entries: u32,

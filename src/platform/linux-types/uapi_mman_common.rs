@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+/// From `uapi/asm-generic/mman-common.h`
+
 /// page can be read
 pub const PROT_READ: i32 = 0x1;
 /// page can be written
@@ -10,12 +12,14 @@ pub const PROT_WRITE: i32 = 0x2;
 pub const PROT_EXEC: i32 = 0x4;
 /// page may be used for atomic ops
 pub const PROT_SEM: i32 = 0x8;
+/// 0x10 reserved for arch-specific use
+/// 0x20 reserved for arch-specific use
 /// page can not be accessed
 pub const PROT_NONE: i32 = 0x0;
 /// mprotect flag: extend change to start of growsdown vma
-pub const PROT_GROWSDOWN: i32 = 0x0100_0000;
+pub const PROT_GROWSDOWN: i32 = 0x01000000;
 /// mprotect flag: extend change to end of growsup vma
-pub const PROT_GROWSUP: i32 = 0x0200_0000;
+pub const PROT_GROWSUP: i32 = 0x02000000;
 
 /// 0x01 - 0x03 are defined in linux/mman.h
 /// Mask for type of mapping
@@ -24,13 +28,23 @@ pub const MAP_TYPE: i32 = 0x0f;
 pub const MAP_FIXED: i32 = 0x10;
 /// don't use a file
 pub const MAP_ANONYMOUS: i32 = 0x20;
-// TODO(Shaohua): CONFIG_MMAP_ALLOW_UNINITIALIZED
-/// For anonymous mmap, memory could be uninitialized
-pub const MAP_UNINITIALIZED: i32 = 0x400_0000;
 
-/// 0x0100 - 0x80000 flags are defined in asm-generic/mman.h
+/// 0x0100 - 0x4000 flags are defined in asm-generic/mman.h
+/// populate (prefault) pagetables
+pub const MAP_POPULATE: i32 = 0x008000;
+/// do not block on IO
+pub const MAP_NONBLOCK: i32 = 0x010000;
+/// give out an address that is best suited for process/thread stacks
+pub const MAP_STACK: i32 = 0x020000;
+/// create a huge page mapping
+pub const MAP_HUGETLB: i32 = 0x040000;
+/// perform synchronous page faults for the mapping
+pub const MAP_SYNC: i32 = 0x080000;
 /// MAP_FIXED which doesn't unmap underlying mapping
-pub const MAP_FIXED_NOREPLACE: i32 = 0x100_000;
+pub const MAP_FIXED_NOREPLACE: i32 = 0x100000;
+
+/// For anonymous mmap, memory could be uninitialized
+pub const MAP_UNINITIALIZED: i32 = 0x4000000;
 
 /// Flags for mlock
 /// Lock pages in range after they are faulted in, do not prefault
@@ -87,6 +101,11 @@ pub const MADV_DODUMP: i32 = 17;
 pub const MADV_WIPEONFORK: i32 = 18;
 /// Undo MADV_WIPEONFORK
 pub const MADV_KEEPONFORK: i32 = 19;
+
+/// deactivate these pages
+pub const MADV_COLD: i32 = 20;
+/// reclaim these pages
+pub const MADV_PAGEOUT: i32 = 21;
 
 /// compatibility flags
 pub const MAP_FILE: i32 = 0;

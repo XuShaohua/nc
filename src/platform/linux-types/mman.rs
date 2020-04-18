@@ -2,31 +2,42 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// stack-like segment
-pub const MAP_GROWSDOWN: i32 = 0x0100;
-/// ETXTBSY
-pub const MAP_DENYWRITE: i32 = 0x0800;
-/// mark it as an executable
-pub const MAP_EXECUTABLE: i32 = 0x1000;
-/// pages are locked
-pub const MAP_LOCKED: i32 = 0x2000;
-/// don't check for reservations
-pub const MAP_NORESERVE: i32 = 0x4000;
-/// populate (prefault) pagetables
-pub const MAP_POPULATE: i32 = 0x8000;
-/// do not block on IO
-pub const MAP_NONBLOCK: i32 = 0x10000;
-/// give out an address that is best suited for process/thread stacks
-pub const MAP_STACK: i32 = 0x20000;
-/// create a huge page mapping
-pub const MAP_HUGETLB: i32 = 0x40000;
-/// perform synchronous page faults for the mapping
-pub const MAP_SYNC: i32 = 0x80000;
+use super::hugetlb_encode::*;
 
-/// Bits [26:31] are reserved, see mman-common.h for MAP_HUGETLB usage
-/// lock all current mappings
-pub const MCL_CURRENT: i32 = 1;
-/// lock all future mappings
-pub const MCL_FUTURE: i32 = 2;
-/// lock all pages that are faulted in
-pub const MCL_ONFAULT: i32 = 4;
+/// From `uapi/linux/mman.h`
+
+pub const MREMAP_MAYMOVE: i32 = 1;
+pub const MREMAP_FIXED: i32 = 2;
+pub const MREMAP_DONTUNMAP: i32 = 4;
+
+pub const OVERCOMMIT_GUESS: i32 = 0;
+pub const OVERCOMMIT_ALWAYS: i32 = 1;
+pub const OVERCOMMIT_NEVER: i32 = 2;
+
+/// Share changes
+pub const MAP_SHARED: i32 = 0x01;
+/// Changes are private
+pub const MAP_PRIVATE: i32 = 0x02;
+/// share + validate extension flags
+pub const MAP_SHARED_VALIDATE: i32 = 0x03;
+
+/// Huge page size encoding when MAP_HUGETLB is specified, and a huge page
+/// size other than the default is desired.  See hugetlb_encode.h.
+/// All known huge page size encodings are provided here.  It is the
+/// responsibility of the application to know which sizes are supported on
+/// the running system.  See mmap(2) man page for details.
+pub const MAP_HUGE_SHIFT: i32 = HUGETLB_FLAG_ENCODE_SHIFT;
+pub const MAP_HUGE_MASK: i32 = HUGETLB_FLAG_ENCODE_MASK;
+
+pub const MAP_HUGE_64KB: usize = HUGETLB_FLAG_ENCODE_64KB;
+pub const MAP_HUGE_512KB: usize = HUGETLB_FLAG_ENCODE_512KB;
+pub const MAP_HUGE_1MB: usize = HUGETLB_FLAG_ENCODE_1MB;
+pub const MAP_HUGE_2MB: usize = HUGETLB_FLAG_ENCODE_2MB;
+pub const MAP_HUGE_8MB: usize = HUGETLB_FLAG_ENCODE_8MB;
+pub const MAP_HUGE_16MB: usize = HUGETLB_FLAG_ENCODE_16MB;
+pub const MAP_HUGE_32MB: usize = HUGETLB_FLAG_ENCODE_32MB;
+pub const MAP_HUGE_256MB: usize = HUGETLB_FLAG_ENCODE_256MB;
+pub const MAP_HUGE_512MB: usize = HUGETLB_FLAG_ENCODE_512MB;
+pub const MAP_HUGE_1GB: usize = HUGETLB_FLAG_ENCODE_1GB;
+pub const MAP_HUGE_2GB: usize = HUGETLB_FLAG_ENCODE_2GB;
+pub const MAP_HUGE_16GB: usize = HUGETLB_FLAG_ENCODE_16GB;

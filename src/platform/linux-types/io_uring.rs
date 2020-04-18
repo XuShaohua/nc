@@ -217,8 +217,8 @@ pub struct io_sqring_offsets_t {
     pub flags: u32,
     pub dropped: u32,
     pub array: u32,
-    resv1: u32,
-    resv2: u64,
+    pub resv1: u32,
+    pub resv2: u64,
 }
 
 /// sq_ring->flags
@@ -234,7 +234,7 @@ pub struct io_cqring_offsets_t {
     pub ring_entries: u32,
     pub overflow: u32,
     pub cqes: u32,
-    resv: [u64; 2],
+    pub resv: [u64; 2],
 }
 
 /// io_uring_enter(2) flags
@@ -252,7 +252,7 @@ pub struct io_uring_params_t {
     pub sq_thread_idle: u32,
     pub features: u32,
     pub wq_fd: u32,
-    resv: [u32; 3],
+    pub resv: [u32; 3],
     pub sq_off: io_sqring_offsets_t,
     pub cq_off: io_cqring_offsets_t,
 }
@@ -282,7 +282,7 @@ pub const IORING_UNREGISTER_PERSONALITY: i32 = 10;
 #[derive(Copy, Clone)]
 pub struct io_uring_files_update_t {
     pub offset: u32,
-    resv: u32,
+    pub resv: u32,
     pub fds: u64,
 }
 
@@ -297,7 +297,7 @@ pub struct io_uring_probe_op_t {
     /// IO_URING_OP_* flags
     pub flags: u16,
 
-    resv2: u32,
+    pub resv2: u32,
 }
 
 #[repr(C)]
@@ -309,7 +309,7 @@ pub struct io_uring_probe_t {
     /// length of ops[] array below
     pub ops_len: u8,
 
-    resv: u16,
-    resv2: [u32; 3],
+    pub resv: u16,
+    pub resv2: [u32; 3],
     pub ops: *mut io_uring_probe_op_t,
 }

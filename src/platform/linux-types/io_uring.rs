@@ -135,7 +135,7 @@ pub const IORING_SETUP_CLAMP: u32 = 1 << 4;
 pub const IORING_SETUP_ATTACH_WQ: u32 = 1 << 5;
 
 #[repr(u8)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum IOURING_OP {
     IORING_OP_NOP,
     IORING_OP_READV,
@@ -188,7 +188,7 @@ pub const SPLICE_F_FD_IN_FIXED: u32 = 1 << 31;
 
 /// IO completion data structure (Completion Queue Entry)
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct io_uring_cqe_t {
     /// sqe->data submission passed back
     pub user_data: u64,
@@ -211,7 +211,7 @@ pub const IORING_OFF_SQES: off_t = 0x10_000_000;
 
 /// Filled with the offset for mmap(2)
 #[repr(C)]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct io_sqring_offsets_t {
     pub head: u32,
     pub tail: u32,
@@ -229,7 +229,7 @@ pub struct io_sqring_offsets_t {
 pub const IORING_SQ_NEED_WAKEUP: u32 = 1;
 
 #[repr(C)]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct io_cqring_offsets_t {
     pub head: u32,
     pub tail: u32,
@@ -246,7 +246,7 @@ pub const IORING_ENTER_SQ_WAKEUP: u32 = 1 << 1;
 
 /// Passed in for io_uring_setup(2). Copied back with updated info on success
 #[repr(C)]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct io_uring_params_t {
     pub sq_entries: u32,
     pub cq_entries: u32,
@@ -282,7 +282,7 @@ pub const IORING_REGISTER_PERSONALITY: i32 = 9;
 pub const IORING_UNREGISTER_PERSONALITY: i32 = 10;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct io_uring_files_update_t {
     pub offset: u32,
     pub resv: u32,
@@ -292,7 +292,7 @@ pub struct io_uring_files_update_t {
 pub const IO_URING_OP_SUPPORTED: u32 = 1;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct io_uring_probe_op_t {
     pub op: u8,
     pub resv: u8,

@@ -8,7 +8,7 @@ use super::types::*;
 #[repr(C)]
 pub struct iovec_t {
     /// BSD uses caddr_t (1003.1g requires void *)
-    iov_base: usize,
+    pub iov_base: usize,
     /// Must be size_t (1003.1g)
     pub iov_len: size_t,
 }

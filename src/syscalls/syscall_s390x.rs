@@ -8,7 +8,7 @@ use super::types::*;
 pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={r}"(ret)
          : "{r1}"(n)
          : "memory"
@@ -21,7 +21,7 @@ pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
 pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={r}"(ret)
          : "{r1}"(n),
            "{r2}"(a1)
@@ -35,7 +35,7 @@ pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
 pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -50,7 +50,7 @@ pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
 pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -66,7 +66,7 @@ pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errn
 pub fn syscall4(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -90,7 +90,7 @@ pub fn syscall5(
 ) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -116,7 +116,7 @@ pub fn syscall6(
 ) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        asm!("svc 0"
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),

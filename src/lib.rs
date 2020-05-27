@@ -4,7 +4,7 @@
 
 #![allow(dead_code)]
 #![no_std]
-#![cfg_attr(nightly, feature(asm))]
+#![cfg_attr(nightly, feature(llvm_asm, asm))]
 
 #[macro_use]
 extern crate alloc;

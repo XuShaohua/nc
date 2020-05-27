@@ -9,7 +9,7 @@ pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
     let mut n = n;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "={r7}"(ret)
          :
          : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
@@ -23,7 +23,7 @@ pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
     let mut n = n;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "={r7}"(ret)
          : "{r4}"(a1)
          : "$1", "$3", "$10", "$11", "$12", "$13", "$14", "$15", "$24", "$25", "hi", "lo", "memory"
@@ -37,7 +37,7 @@ pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
     let mut n = n;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "={r7}"(ret)
          : "{r4}"(a1),
            "{r5}"(a2)
@@ -52,7 +52,7 @@ pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errn
     let ret: usize;
     let mut n = n;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "={r7}"(ret)
          : "{r4}"(a1),
            "{r5}"(a2),
@@ -68,7 +68,7 @@ pub fn syscall4(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize) -> Result<
     let mut n = n;
     let mut a4 = a4;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "+{r7}"(a4)
          : "{r4}"(a1),
            "{r5}"(a2),
@@ -91,7 +91,7 @@ pub fn syscall5(
     let mut n = n;
     let mut a4 = a4;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "+{r7}"(a4)
          : "{r4}"(a1),
            "{r5}"(a2),
@@ -116,7 +116,7 @@ pub fn syscall6(
     let mut n = n;
     let mut a4 = a4;
     unsafe {
-        asm!("syscall"
+        llvm_asm!("syscall"
          : "+&{r2}"(n), "+{r7}"(a4)
          : "{r4}"(a1),
            "{r5}"(a2),

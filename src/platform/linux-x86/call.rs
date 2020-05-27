@@ -2797,10 +2797,9 @@ pub fn rt_tgsigqueueinfo(
 }
 
 /// Get a thread's CPU affinity mask.
-pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
+pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask_ptr: usize) -> Result<(), Errno> {
     let pid = pid as usize;
     let len = len as usize;
-    let user_mask_ptr = user_mask as *mut usize as usize;
     syscall3(SYS_SCHED_GETAFFINITY, pid, len, user_mask_ptr).map(drop)
 }
 

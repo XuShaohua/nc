@@ -397,15 +397,15 @@ pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> R
 /// Wait for an I/O event on an epoll file descriptor.
 pub fn epoll_wait(
     epfd: i32,
-    events: &mut epoll_event_t,
-    maxevents: i32,
+    events: &mut [epoll_event_t],
+    max_events: i32,
     timeout: i32,
 ) -> Result<i32, Errno> {
     let epfd = epfd as usize;
-    let events_ptr = events as *mut epoll_event_t as usize;
-    let maxevents = maxevents as usize;
+    let events_ptr = events.as_mut_ptr() as usize;
+    let max_events = max_events as usize;
     let timeout = timeout as usize;
-    syscall4(SYS_EPOLL_WAIT, epfd, events_ptr, maxevents, timeout).map(|ret| ret as i32)
+    syscall4(SYS_EPOLL_WAIT, epfd, events_ptr, max_events, timeout).map(|ret| ret as i32)
 }
 
 /// Create a file descriptor for event notification.

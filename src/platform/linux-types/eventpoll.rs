@@ -57,8 +57,25 @@ pub const EPOLLET: poll_t = 1 << 31;
 // TODO(Shaohua): pack struct
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy)]
+pub union epoll_data_t {
+    pub ptr: usize,
+    pub fd: i32,
+    pub v_u32: u32,
+    pub v_u64: u64,
+}
+
+impl Default for epoll_data_t {
+    fn default() -> Self {
+        epoll_data_t {
+            ptr: 0,
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Default)]
 pub struct epoll_event_t {
     pub events: poll_t,
-    data: u64,
+    pub data: epoll_data_t,
 }

@@ -57,6 +57,7 @@ pub const EPOLLET: poll_t = 1 << 31;
 // TODO(Shaohua): pack struct
 
 #[repr(C)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct epoll_event_t {
     pub events: poll_t,
     data: u64,

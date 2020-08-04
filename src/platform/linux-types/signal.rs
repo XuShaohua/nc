@@ -76,6 +76,7 @@ pub const SA_ONESHOT: i32 = SA_RESETHAND;
 pub const MINSIGSTKSZ: i32 = 2048;
 pub const SIGSTKSZ: i32 = 8192;
 
+#[derive(Default)]
 #[repr(C)]
 pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS as usize],
@@ -90,6 +91,7 @@ pub type old_sigset_t = usize;
 //#define __ARCH_HAS_SA_RESTORER
 //#endif
 
+#[derive(Default)]
 #[repr(C)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
@@ -101,6 +103,7 @@ pub struct sigaction_t {
     pub sa_mask: sigset_t,
 }
 
+#[derive(Default)]
 #[repr(C)]
 pub struct sigaltstack_t {
     // TODO(Shaohua):

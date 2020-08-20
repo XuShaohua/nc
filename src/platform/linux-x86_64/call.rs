@@ -2079,13 +2079,21 @@ pub fn preadv2(
 pub fn prlimit64(
     pid: pid_t,
     resource: i32,
-    new_limit: &rlimit_t,
-    old_limit: &mut rlimit_t,
+    new_limit: Option<&rlimit64_t>,
+    old_limit: Option<&mut rlimit64_t>,
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let resource = resource as usize;
-    let new_limit_ptr = new_limit as *const rlimit_t as usize;
-    let old_limit_ptr = old_limit as *mut rlimit_t as usize;
+    let new_limit_ptr = if let Some(new_limit_ref) = new_limit {
+        new_limit_ref as *const rlimit64_t as usize
+    } else {
+        0
+    };
+    let old_limit_ptr = if let Some(old_limit_ref) = old_limit {
+        old_limit_ref as *mut rlimit64_t as usize
+    } else {
+        0
+    };
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 

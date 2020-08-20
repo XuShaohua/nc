@@ -54,6 +54,7 @@ pub struct rusage_t {
     pub ru_nivcsw: isize,
 }
 
+#[derive(Debug, Default)]
 #[repr(C)]
 pub struct rlimit_t {
     pub rlim_cur: usize,
@@ -62,6 +63,7 @@ pub struct rlimit_t {
 
 pub const RLIM64_INFINITY: u64 = !0;
 
+#[derive(Debug, Default)]
 #[repr(C)]
 pub struct rlimit64_t {
     pub rlim_cur: u64,

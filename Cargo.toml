@@ -13,6 +13,6 @@ publish = true
 build = "build.rs"
 keywords = ["syscall", "linux"]
 categories = ["os", "no-std", "external-ffi-bindings"]
-exclude = ["/.travis.yml", ".gitignore"]
+exclude = ["/.travis.yml"]
 
 [dependencies]

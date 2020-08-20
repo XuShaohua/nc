@@ -20,11 +20,6 @@ Add this to `Cargo.toml`:
 nc = "0.4.12"
 ```
 
-And add this to crate code:
-```rust
-extern crate nc;
-```
-
 ## Examples
 Get file stat:
 ```rust
@@ -67,9 +62,8 @@ println!("ret: {:?}", ret);
 ```
 
 ## Stable version
-For stable version of rustc, please install `gcc` first.
-As `asm!` feature is unavailable in stable version. So we use a C library
-instead to wrap syscall APIs.
+For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
+As `asm!` feature is unavailable in stable version.
 
 
 ## Related projects

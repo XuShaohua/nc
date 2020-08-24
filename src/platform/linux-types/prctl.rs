@@ -1,5 +1,7 @@
 // From uapi/linux/prctl.h
 
+use core::u64;
+
 /// Values to pass as first argument to prctl()
 
 /// Second arg is a signal
@@ -171,7 +173,7 @@ pub struct prctl_mm_map_t {
 /// Set specific pid that is allowed to ptrace the current task.
 /// A value of 0 mean "no process".
 pub const PR_SET_PTRACER: i32 = 0x59616d61;
-pub const PR_SET_PTRACER_ANY: u64 = u64::max_value(); // ((unsigned long)-1);
+pub const PR_SET_PTRACER_ANY: u64 = u64::MAX; // ((unsigned long)-1);
 
 pub const PR_SET_CHILD_SUBREAPER: i32 = 36;
 pub const PR_GET_CHILD_SUBREAPER: i32 = 37;

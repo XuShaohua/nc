@@ -1,5 +1,7 @@
 // From uapi/linux/prctl.h
 
+use core::u64;
+
 /// Values to pass as first argument to prctl()
 
 /// Second arg is a signal

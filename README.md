@@ -17,7 +17,7 @@ Execute system call directly. `nc` do not depend on `std`.
 Add this to `Cargo.toml`:
 ```toml
 [dependencies]
-nc = "0.4.12"
+nc = "0.4.13"
 ```
 
 ## Examples

@@ -5,39 +5,39 @@
 mod types;
 pub use types::*;
 
-#[cfg(not(nightly))]
+#[cfg(not(has_asm))]
 #[path = "c.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "aarch64"))]
+#[cfg(all(has_asm, target_arch = "aarch64"))]
 #[path = "syscall_aarch64.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "arm"))]
+#[cfg(all(has_asm, target_arch = "arm"))]
 #[path = "syscall_arm.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "mips"))]
+#[cfg(all(has_asm, target_arch = "mips"))]
 #[path = "syscall_mips.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "mips64"))]
+#[cfg(all(has_asm, target_arch = "mips64"))]
 #[path = "syscall_mips64.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "powerpc64"))]
+#[cfg(all(has_asm, target_arch = "powerpc64"))]
 #[path = "syscall_powerpc64.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "s390x"))]
+#[cfg(all(has_asm, target_arch = "s390x"))]
 #[path = "syscall_s390x.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "x86"))]
+#[cfg(all(has_asm, target_arch = "x86"))]
 #[path = "syscall_x86.rs"]
 mod internal;
 
-#[cfg(all(nightly, target_arch = "x86_64"))]
+#[cfg(all(has_asm, target_arch = "x86_64"))]
 #[path = "syscall_x86_64.rs"]
 mod internal;
 

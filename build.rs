@@ -15,9 +15,8 @@ fn build_syscalls() {
 fn main() {
     let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or("stable".to_string());
     if rustc_toolchain.starts_with("nightly") {
-        println!("cargo:rustc-cfg=nightly");
+        println!("cargo:rustc-cfg=has_asm");
     } else {
-        println!("cargo:rustc-cfg=stable");
         build_syscalls();
     }
 }

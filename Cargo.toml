@@ -15,4 +15,5 @@ keywords = ["syscall", "linux"]
 categories = ["os", "no-std", "external-ffi-bindings"]
 exclude = ["/.travis.yml"]
 
-[dependencies]
+[build-dependencies]
+cc = "1.0.60"

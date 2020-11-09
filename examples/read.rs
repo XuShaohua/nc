@@ -13,7 +13,7 @@ fn main() {
 
     let mut buf: [u8; 256] = [0; 256];
     loop {
-        match nc::read(fd, &mut buf) {
+        match nc::read(fd, buf.as_mut_ptr() as usize, buf.len()) {
             Ok(n) => {
                 if n == 0 {
                     break;

@@ -1349,11 +1349,9 @@ pub fn pwritev2(
 }
 
 /// Read from a file descriptor.
-pub fn read(fd: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_mut_ptr() as usize;
-    let len = buf.len() as usize;
-    syscall3(SYS_READ, fd, buf_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_READ, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }
 
 /// Initialize file head into page cache.

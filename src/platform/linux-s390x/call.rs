@@ -27,7 +27,8 @@ pub fn accept4(
 
 /// Check user's permission for a file.
 /// ```
-/// assert!(nc::access("/etc/passwd", 0).is_ok());
+/// assert!(nc::access("/etc/passwd", nc::F_OK).is_ok());
+/// assert!(nc::access("/etc/passwd", nc::X_OK).is_err());
 /// ```
 pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
     let filename = CString::new(filename);
@@ -184,6 +185,15 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 }
 
 /// High resolution sleep with a specific clock.
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 3,
+///     tv_nsec: 0,
+/// };
+/// let mut rem = nc::timespec_t::default();
+/// let ret = nc::nanosleep(&t, &mut rem);
+/// assert!(ret.is_ok());
+/// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
     flags: i32,

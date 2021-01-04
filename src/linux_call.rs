@@ -151,6 +151,15 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 }
 
 /// High resolution sleep with a specific clock.
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 3,
+///     tv_nsec: 0,
+/// };
+/// let mut rem = nc::timespec_t::default();
+/// let ret = nc::nanosleep(&t, &mut rem);
+/// assert!(ret.is_ok());
+/// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
     flags: i32,

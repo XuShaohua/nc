@@ -289,6 +289,14 @@ pub fn copy_file_range(
 
 /// Create a file.
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
+/// ```
+/// let path = "/tmp/nc-creat-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn creat(filename: &str, mode: mode_t) -> Result<i32, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

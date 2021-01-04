@@ -124,17 +124,23 @@ def print_call(arch_name):
     rust_fmt(call_file)
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: %s arch-name" % sys.argv[0])
-        sys.exit(1)
-
-    arch_name = sys.argv[1]
-    if arch_name == "all":
+    def handle_all_arch():
         for arch_name in ["aarch64", "arm", "mips", "mips64","ppc64",
                           "s390x", "x86", "x86_64"]:
             print_call(arch_name)
+
+    if len(sys.argv) == 1:
+        handle_all_arch()
+
+    elif len(sys.argv) == 2:
+        arch_name = sys.argv[1]
+        if arch_name == "all":
+            handle_all_arch()
+        else:
+            print_call(arch_name)
     else:
-        print_call(arch_name)
+        print("Usage: %s arch-name" % sys.argv[0])
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

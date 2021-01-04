@@ -32,7 +32,7 @@ impl File {
 
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-        match nc::read(self.fd, buf) {
+        match nc::read(self.fd, buf.as_mut_ptr() as usize, buf.len()) {
             Ok(n_read) => Ok(n_read as usize),
             Err(_errno) => Err(io::Error::new(io::ErrorKind::Other, "errno")),
         }

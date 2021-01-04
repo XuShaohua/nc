@@ -31,7 +31,7 @@ fn test() -> Result<(), Errno> {
         println!("conn_fd: {:?}", conn_fd);
     }
 
-    return Ok(());
+    Ok(())
 }
 
 fn main() {

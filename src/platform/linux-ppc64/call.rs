@@ -331,7 +331,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 /// ```
-/// let path = "/tmp/nc-creat-file";
+/// let path = "/tmp/nc-dup-file";
 /// let fd = nc::creat(path, 0644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
@@ -349,7 +349,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
 /// ```
-/// let path = "/tmp/nc-creat-file";
+/// let path = "/tmp/nc-dup2-file";
 /// let fd = nc::creat(path, 0644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
@@ -366,7 +366,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 /// ```
-/// let path = "/tmp/nc-creat-file";
+/// let path = "/tmp/nc-dup3-file";
 /// let fd = nc::creat(path, 0644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
@@ -383,6 +383,12 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 }
 
 /// Open an epoll file descriptor.
+/// ```
+/// let ret = nc::epoll_create(32);
+/// assert!(ret.is_ok());
+/// let poll_fd = ret.unwrap();
+/// assert!(nc::close(poll_fd).is_ok());
+/// ```
 pub fn epoll_create(size: i32) -> Result<i32, Errno> {
     let size = size as usize;
     syscall1(SYS_EPOLL_CREATE, size).map(|ret| ret as i32)

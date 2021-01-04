@@ -257,7 +257,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 /// ```
-/// let path = "/tmp/nc-creat-file";
+/// let path = "/tmp/nc-dup-file";
 /// let fd = nc::creat(path, 0644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
@@ -274,7 +274,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 /// ```
-/// let path = "/tmp/nc-creat-file";
+/// let path = "/tmp/nc-dup3-file";
 /// let fd = nc::creat(path, 0644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();

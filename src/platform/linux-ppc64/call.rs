@@ -395,6 +395,12 @@ pub fn epoll_create(size: i32) -> Result<i32, Errno> {
 }
 
 /// Open an epoll file descriptor.
+/// ```
+/// let ret = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let poll_fd = ret.unwrap();
+/// assert!(nc::close(poll_fd).is_ok());
+/// ```
 pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_EPOLL_CREATE1, flags).map(|ret| ret as i32)

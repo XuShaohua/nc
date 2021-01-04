@@ -188,7 +188,7 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 /// High resolution sleep with a specific clock.
 /// ```
 /// let t = nc::timespec_t {
-///     tv_sec: 3,
+///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
@@ -243,6 +243,9 @@ pub fn clone3() {
 }
 
 /// Close a file descriptor.
+/// ```
+/// assert!(nc::close(2).is_ok());
+/// ```
 pub fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_CLOSE, fd).map(drop)

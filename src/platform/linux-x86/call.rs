@@ -394,6 +394,16 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 }
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
+/// ```
+/// let path = "/tmp/nc-creat-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let newfd = 8;
+/// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(newfd).is_ok());
+/// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;

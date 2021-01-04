@@ -204,3 +204,16 @@ pub const STATX_ATTR_ENCRYPTED: i32 = 0x0000_0800;
 
 /// Dir: Automount trigger
 pub const STATX_ATTR_AUTOMOUNT: i32 = 0x0000_1000;
+
+/// Check for file existence.
+// These definitions are found in kernel headers.
+pub const F_OK: i32 = 0;
+
+/// Check file is readable.
+pub const R_OK: i32 = 4;
+
+/// Check file is writable.
+pub const W_OK: i32 = 2;
+
+/// Check file is executable.
+pub const X_OK: i32 = 1;

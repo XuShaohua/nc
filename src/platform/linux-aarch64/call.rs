@@ -145,6 +145,15 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 }
 
 /// High resolution sleep with a specific clock.
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let mut rem = nc::timespec_t::default();
+/// let ret = nc::nanosleep(&t, &mut rem);
+/// assert!(ret.is_ok());
+/// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
     flags: i32,
@@ -193,6 +202,9 @@ pub fn clone3() {
 }
 
 /// Close a file descriptor.
+/// ```
+/// assert!(nc::close(2).is_ok());
+/// ```
 pub fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_CLOSE, fd).map(drop)
@@ -244,12 +256,33 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
-pub fn dup(oldfd: i32) -> Result<isize, Errno> {
+/// ```
+/// let path = "/tmp/nc-dup-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let fd_dup = nc::dup(fd);
+/// assert!(fd_dup.is_ok());
+/// let fd_dup = fd_dup.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd_dup).is_ok());
+/// ```
+pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
-    syscall1(SYS_DUP, oldfd).map(|ret| ret as isize)
+    syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
+/// ```
+/// let path = "/tmp/nc-dup3-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let newfd = 8;
+/// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(newfd).is_ok());
+/// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;

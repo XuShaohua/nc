@@ -35,7 +35,8 @@ pub fn accept4(
 
 /// Check user's permission for a file.
 /// ```
-/// assert!(nc::access("/etc/passwd", 0).is_ok());
+/// assert!(nc::access("/etc/passwd", nc::F_OK).is_ok());
+/// assert!(nc::access("/etc/passwd", nc::X_OK).is_err());
 /// ```
 pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
     let filename = CString::new(filename);
@@ -150,6 +151,15 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 }
 
 /// High resolution sleep with a specific clock.
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let mut rem = nc::timespec_t::default();
+/// let ret = nc::nanosleep(&t, &mut rem);
+/// assert!(ret.is_ok());
+/// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
     flags: i32,
@@ -171,6 +181,9 @@ pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errn
 }
 
 /// Close a file descriptor.
+/// ```
+/// assert!(nc::close(2).is_ok());
+/// ```
 pub fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_CLOSE, fd).map(drop)
@@ -214,6 +227,14 @@ pub fn copy_file_range(
 
 /// Create a file.
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
+/// ```
+/// let path = "/tmp/nc-creat-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn creat(filename: &str, mode: mode_t) -> Result<i32, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -223,13 +244,34 @@ pub fn creat(filename: &str, mode: mode_t) -> Result<i32, Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
-pub fn dup(oldfd: i32) -> Result<isize, Errno> {
+/// ```
+/// let path = "/tmp/nc-dup-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let fd_dup = nc::dup(fd);
+/// assert!(fd_dup.is_ok());
+/// let fd_dup = fd_dup.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd_dup).is_ok());
+/// ```
+pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
-    syscall1(SYS_DUP, oldfd).map(|ret| ret as isize)
+    syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
 
 /// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
+/// ```
+/// let path = "/tmp/nc-dup2-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let newfd = 8;
+/// assert!(nc::dup2(fd, newfd).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(newfd).is_ok());
+/// ```
 pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;
@@ -237,6 +279,16 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 }
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
+/// ```
+/// let path = "/tmp/nc-dup3-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let newfd = 8;
+/// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(newfd).is_ok());
+/// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;
@@ -271,6 +323,12 @@ pub fn execveat(
 }
 
 /// Open an epoll file descriptor.
+/// ```
+/// let ret = nc::epoll_create(32);
+/// assert!(ret.is_ok());
+/// let poll_fd = ret.unwrap();
+/// assert!(nc::close(poll_fd).is_ok());
+/// ```
 pub fn epoll_create(size: i32) -> Result<i32, Errno> {
     let size = size as usize;
     syscall1(SYS_EPOLL_CREATE, size).map(|ret| ret as i32)

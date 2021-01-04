@@ -262,6 +262,16 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
+/// ```
+/// let path = "/tmp/nc-creat-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let newfd = 8;
+/// assert!(nc::dup2(fd, newfd).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(newfd).is_ok());
+/// ```
 pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;

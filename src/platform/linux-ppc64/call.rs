@@ -330,9 +330,20 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
-pub fn dup(oldfd: i32) -> Result<isize, Errno> {
+/// ```
+/// let path = "/tmp/nc-creat-file";
+/// let fd = nc::creat(path, 0644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let fd_dup = nc::dup(fd);
+/// assert!(fd_dup.is_ok());
+/// let fd_dup = fd_dup.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd_dup).is_ok());
+/// ```
+pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
-    syscall1(SYS_DUP, oldfd).map(|ret| ret as isize)
+    syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
 
 /// Create a copy of the file descriptor `oldfd`, using the speficified file

@@ -33,6 +33,9 @@ pub fn accept4(
 }
 
 /// Check user's permission for a file.
+/// ```
+/// assert!(nc::access("/etc/passwd", 0).is_ok());
+/// ```
 pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -2188,9 +2191,9 @@ pub fn quotactl(cmd: i32, special: &str, id: qid_t, addr: usize) -> Result<(), E
 }
 
 /// Read from a file descriptor.
-pub fn read(fd: i32, buf: usize, count: size_t) -> Result<ssize_t, Errno> {
+pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    syscall3(SYS_READ, fd, buf, count).map(|ret| ret as ssize_t)
+    syscall3(SYS_READ, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }
 
 /// Initialize file head into page cache.

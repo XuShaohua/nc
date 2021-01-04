@@ -34,6 +34,9 @@ pub fn accept4(
 }
 
 /// Check user's permission for a file.
+/// ```
+/// assert!(nc::access("/etc/passwd", 0).is_ok());
+/// ```
 pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

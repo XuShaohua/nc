@@ -489,6 +489,9 @@ pub fn execveat(
 }
 
 /// Terminate current process.
+/// ```
+/// nc::exit(0);
+/// ```
 pub fn exit(status: u8) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);

@@ -402,6 +402,22 @@ pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
 }
 
 /// Control interface for an epoll file descriptor.
+/// ```
+/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(epfd.is_ok());
+/// let epfd = epfd.unwrap();
+/// let mut fds: [i32; 2] = [0, 0];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// let mut event = nc::epoll_event_t::default();
+/// event.events = nc::EPOLLIN | nc::EPOLLET;
+/// event.data.fd = fds[0];
+/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// assert!(ctl_ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// assert!(nc::close(epfd).is_ok());
+/// ```
 pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Result<(), Errno> {
     let epfd = epfd as usize;
     let op = op as usize;

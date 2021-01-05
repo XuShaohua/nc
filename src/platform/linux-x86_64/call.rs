@@ -515,6 +515,9 @@ pub fn exit_group(status: i32) -> ! {
 }
 
 /// Check user's permission for a file.
+/// ```
+/// assert!(nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK).is_ok());
+/// ```
 pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename);

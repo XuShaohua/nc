@@ -533,6 +533,9 @@ pub fn exit(status: u8) -> ! {
 }
 
 /// Exit all threads in a process's thread group.
+/// ```
+/// nc::exit_group(0);
+/// ```
 pub fn exit_group(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT_GROUP, status);

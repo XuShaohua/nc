@@ -649,6 +649,10 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
 }
 
 /// Get the effective group ID of the calling process.
+/// ```
+/// let egid = nc::getegid();
+/// assert!(egid > 0);
+/// ```
 pub fn getegid() -> gid_t {
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
 }

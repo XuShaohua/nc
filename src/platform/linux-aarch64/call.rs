@@ -956,6 +956,10 @@ pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), 
 }
 
 /// Get the real user ID of the calling process.
+/// ```
+/// let uid = nc::getuid();
+/// assert!(uid > 0);
+/// ```
 pub fn getuid() -> uid_t {
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }

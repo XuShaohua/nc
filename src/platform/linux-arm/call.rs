@@ -1081,6 +1081,11 @@ pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 }
 
 /// Get session Id.
+/// ```
+/// let ppid = nc::getppid();
+/// let sid = nc::getsid(ppid);
+/// assert!(sid > 0);
+/// ```
 pub fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t

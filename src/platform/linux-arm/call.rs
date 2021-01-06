@@ -414,12 +414,34 @@ pub fn epoll_create(size: i32) -> Result<i32, Errno> {
 }
 
 /// Open an epoll file descriptor.
+/// ```
+/// let ret = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let poll_fd = ret.unwrap();
+/// assert!(nc::close(poll_fd).is_ok());
+/// ```
 pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_EPOLL_CREATE1, flags).map(|ret| ret as i32)
 }
 
 /// Control interface for an epoll file descriptor.
+/// ```
+/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(epfd.is_ok());
+/// let epfd = epfd.unwrap();
+/// let mut fds: [i32; 2] = [0, 0];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// let mut event = nc::epoll_event_t::default();
+/// event.events = nc::EPOLLIN | nc::EPOLLET;
+/// event.data.fd = fds[0];
+/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// assert!(ctl_ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// assert!(nc::close(epfd).is_ok());
+/// ```
 pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Result<(), Errno> {
     let epfd = epfd as usize;
     let op = op as usize;
@@ -491,6 +513,9 @@ pub fn execveat(
 }
 
 /// Terminate current process.
+/// ```
+/// nc::exit(0);
+/// ```
 pub fn exit(status: u8) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);
@@ -498,6 +523,9 @@ pub fn exit(status: u8) -> ! {
 }
 
 /// Exit all threads in a process's thread group.
+/// ```
+/// nc::exit_group(0);
+/// ```
 pub fn exit_group(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT_GROUP, status);
@@ -505,6 +533,9 @@ pub fn exit_group(status: i32) -> ! {
 }
 
 /// Check user's permission for a file.
+/// ```
+/// assert!(nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK).is_ok());
+/// ```
 pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename);
@@ -881,6 +912,10 @@ pub fn getdents64(fd: i32) -> Result<Vec<linux_dirent64_extern_t>, Errno> {
 }
 
 /// Get the effective group ID of the calling process.
+/// ```
+/// let egid = nc::getegid();
+/// assert!(egid > 0);
+/// ```
 pub fn getegid() -> gid_t {
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
 }
@@ -892,6 +927,10 @@ pub fn getegid32() {
 }
 
 /// Get the effective user ID of the calling process.
+/// ```
+/// let euid = nc::geteuid();
+/// assert!(euid > 0);
+/// ```
 pub fn geteuid() -> uid_t {
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
@@ -903,6 +942,10 @@ pub fn geteuid32() {
 }
 
 /// Get the real group ID of the calling process.
+/// ```
+/// let gid = nc::getgid();
+/// assert!(gid > 0);
+/// ```
 pub fn getgid() -> gid_t {
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
 }
@@ -946,22 +989,39 @@ pub fn getpeername(
 }
 
 /// Returns the PGID(process group ID) of the process specified by `pid`.
+/// ```
+/// let ppid = nc::getppid();
+/// let pgid = nc::getpgid(ppid);
+/// assert!(pgid.is_ok());
+/// ```
 pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     let pid = pid as usize;
     syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t)
 }
 
 /// Get the process group ID of the calling process.
+/// ```
+/// let pgroup = nc::getpgrp();
+/// assert!(pgroup > 0);
+/// ```
 pub fn getpgrp() -> pid_t {
     syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
 }
 
 /// Get the process ID (PID) of the calling process.
+/// ```
+/// let pid = nc::getpid();
+/// assert!(pid > 0);
+/// ```
 pub fn getpid() -> pid_t {
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
 /// Get the process ID of the parent of the calling process.
+/// ```
+/// let ppid = nc::getppid();
+/// assert!(ppid > 0);
+/// ```
 pub fn getppid() -> pid_t {
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
@@ -980,14 +1040,31 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
 }
 
 /// Obtain a series of random bytes.
-pub fn getrandom(buf: &mut [u8], flags: u32) -> Result<ssize_t, Errno> {
+/// ```
+/// let mut buf = [0_u8; 32];
+/// let buf_len = buf.len();
+/// let ret = nc::getrandom(&mut buf, buf_len, 0);
+/// assert!(ret.is_ok());
+/// let size = ret.unwrap() as usize;
+/// assert!(size <= buf_len);
+/// ```
+pub fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, Errno> {
     let buf_ptr = buf.as_mut_ptr() as usize;
-    let buf_len = buf.len();
     let flags = flags as usize;
     syscall3(SYS_GETRANDOM, buf_ptr, buf_len, flags).map(|ret| ret as ssize_t)
 }
 
 /// Get real, effect and saved group ID.
+/// ```
+/// let mut rgid = 0;
+/// let mut egid = 0;
+/// let mut sgid = 0;
+/// let ret = nc::getresgid(&mut rgid, &mut egid, &mut sgid);
+/// assert!(ret.is_ok());
+/// assert!(rgid > 0);
+/// assert!(egid > 0);
+/// assert!(sgid > 0);
+/// ```
 pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
     let rgid_ptr = rgid as *mut gid_t as usize;
     let egid_ptr = egid as *mut gid_t as usize;
@@ -1001,6 +1078,16 @@ pub fn getresgid32() {
 }
 
 /// Get real, effect and saved user ID.
+/// ```
+/// let mut ruid = 0;
+/// let mut euid = 0;
+/// let mut suid = 0;
+/// let ret = nc::getresuid(&mut ruid, &mut euid, &mut suid);
+/// assert!(ret.is_ok());
+/// assert!(ruid > 0);
+/// assert!(euid > 0);
+/// assert!(suid > 0);
+/// ```
 pub fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result<(), Errno> {
     let ruid_ptr = ruid as *mut uid_t as usize;
     let euid_ptr = euid as *mut uid_t as usize;
@@ -1014,6 +1101,13 @@ pub fn getresuid32() {
 }
 
 /// Get resource usage.
+/// ```
+/// let mut usage = nc::rusage_t::default();
+/// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
+/// assert!(ret.is_ok());
+/// assert!(usage.ru_utime.tv_usec > 0);
+/// assert!(usage.ru_maxrss > 0);
+/// ```
 pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
     let usage_ptr = usage as *mut rusage_t as usize;
@@ -1021,6 +1115,11 @@ pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 }
 
 /// Get session Id.
+/// ```
+/// let ppid = nc::getppid();
+/// let sid = nc::getsid(ppid);
+/// assert!(sid > 0);
+/// ```
 pub fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
@@ -1063,6 +1162,10 @@ pub fn getsockopt(
 }
 
 /// Get the caller's thread ID (TID).
+/// ```
+/// let tid = nc::gettid();
+/// assert!(tid > 0);
+/// ```
 pub fn gettid() -> pid_t {
     syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
 }
@@ -1075,6 +1178,10 @@ pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), 
 }
 
 /// Get the real user ID of the calling process.
+/// ```
+/// let uid = nc::getuid();
+/// assert!(uid > 0);
+/// ```
 pub fn getuid() -> uid_t {
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }

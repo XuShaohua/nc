@@ -16,4 +16,4 @@ categories = ["os", "no-std", "external-ffi-bindings"]
 exclude = ["/.travis.yml"]
 
 [build-dependencies]
-cc = "1.0.62"
+cc = "1.0.66"

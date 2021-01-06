@@ -151,8 +151,7 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
-/// let ret = nc::nanosleep(&t, &mut rem);
-/// assert!(ret.is_ok());
+/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
 /// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
@@ -266,6 +265,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// let fd_dup = fd_dup.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(fd_dup).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
@@ -282,6 +282,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;

@@ -230,8 +230,7 @@ pub fn clock_gettime64() {
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
-/// let ret = nc::nanosleep(&t, &mut rem);
-/// assert!(ret.is_ok());
+/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
 /// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
@@ -377,6 +376,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// let fd_dup = fd_dup.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(fd_dup).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
@@ -394,6 +394,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// assert!(nc::dup2(fd, newfd).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -411,6 +412,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 /// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -1545,6 +1547,17 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+/// ```
+/// let filename = "/tmp/nc-lchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::lchown(filename, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -1566,13 +1579,14 @@ pub fn lgetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
 /// Make a new name for a file.
 /// ```
 /// let old_filename = "/tmp/nc-link-src";
-/// let ret = nc::creat(old_filename, 0644);
+/// let ret = nc::creat(old_filename, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// let new_filename = "/tmp/nc-link-dst";
-/// let ret = nc::link(old_filename, new_filename);
-/// assert!(ret.is_ok());
+/// assert!(nc::link(old_filename, new_filename).is_ok());
+/// assert!(nc::unlink(old_filename).is_ok());
+/// assert!(nc::unlink(new_filename).is_ok());
 /// ```
 pub fn link(old_filename: &str, new_filename: &str) -> Result<(), Errno> {
     let old_filename = CString::new(old_filename);

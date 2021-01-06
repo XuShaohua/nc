@@ -923,6 +923,10 @@ pub fn getegid32() {
 }
 
 /// Get the effective user ID of the calling process.
+/// ```
+/// let euid = nc::geteuid();
+/// assert!(euid > 0);
+/// ```
 pub fn geteuid() -> uid_t {
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }

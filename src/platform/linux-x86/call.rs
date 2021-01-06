@@ -1080,9 +1080,16 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
 }
 
 /// Obtain a series of random bytes.
-pub fn getrandom(buf: &mut [u8], flags: u32) -> Result<ssize_t, Errno> {
+/// ```
+/// let mut buf = [0_u8; 32];
+/// let buf_len = buf.len();
+/// let ret = nc::getrandom(&mut buf, buf_len, 0);
+/// assert!(ret.is_ok());
+/// let size = ret.unwrap() as usize;
+/// assert!(size <= buf_len);
+/// ```
+pub fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, Errno> {
     let buf_ptr = buf.as_mut_ptr() as usize;
-    let buf_len = buf.len();
     let flags = flags as usize;
     syscall3(SYS_GETRANDOM, buf_ptr, buf_len, flags).map(|ret| ret as ssize_t)
 }

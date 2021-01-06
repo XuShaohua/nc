@@ -879,6 +879,13 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
 }
 
 /// Get resource usage.
+/// ```
+/// let mut usage = nc::rusage_t::default();
+/// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
+/// assert!(ret.is_ok());
+/// assert!(usage.ru_utime.tv_usec > 0);
+/// assert!(usage.ru_maxrss > 0);
+/// ```
 pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
     let usage_ptr = usage as *mut rusage_t as usize;

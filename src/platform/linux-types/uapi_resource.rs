@@ -19,6 +19,7 @@ pub const RUSAGE_BOTH: i32 = -2;
 pub const RUSAGE_THREAD: i32 = 1;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct rusage_t {
     /// user time used
     pub ru_utime: timeval_t,

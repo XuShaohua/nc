@@ -988,6 +988,10 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 }
 
 /// Get the process group ID of the calling process.
+/// ```
+/// let pgroup = nc::getpgrp();
+/// assert!(pgroup > 0);
+/// ```
 pub fn getpgrp() -> pid_t {
     syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
 }

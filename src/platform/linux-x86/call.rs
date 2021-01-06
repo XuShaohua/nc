@@ -1095,6 +1095,16 @@ pub fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, 
 }
 
 /// Get real, effect and saved group ID.
+/// ```
+/// let mut rgid = 0;
+/// let mut egid = 0;
+/// let mut sgid = 0;
+/// let ret = nc::getresgid(&mut rgid, &mut egid, &mut sgid);
+/// assert!(ret.is_ok());
+/// assert!(rgid > 0);
+/// assert!(egid > 0);
+/// assert!(sgid > 0);
+/// ```
 pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
     let rgid_ptr = rgid as *mut gid_t as usize;
     let egid_ptr = egid as *mut gid_t as usize;

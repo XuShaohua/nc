@@ -859,6 +859,10 @@ pub fn geteuid() -> uid_t {
 }
 
 /// Get the real group ID of the calling process.
+/// ```
+/// let gid = nc::getgid();
+/// assert!(gid > 0);
+/// ```
 pub fn getgid() -> gid_t {
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
 }

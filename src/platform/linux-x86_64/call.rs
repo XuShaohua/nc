@@ -291,7 +291,7 @@ pub fn copy_file_range(
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
 /// ```
 /// let path = "/tmp/nc-creat-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -321,7 +321,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// file descriptor.
 /// ```
 /// let path = "/tmp/nc-dup-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let fd_dup = nc::dup(fd);
@@ -339,7 +339,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// descriptor `newfd`.
 /// ```
 /// let path = "/tmp/nc-dup2-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
@@ -356,7 +356,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 /// ```
 /// let path = "/tmp/nc-dup3-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
@@ -1475,12 +1475,22 @@ pub fn lgetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
 }
 
 /// Make a new name for a file.
-pub fn link(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
-    let oldfilename = CString::new(oldfilename);
-    let oldfilename_ptr = oldfilename.as_ptr() as usize;
-    let newfilename = CString::new(newfilename);
-    let newfilename_ptr = newfilename.as_ptr() as usize;
-    syscall2(SYS_LINK, oldfilename_ptr, newfilename_ptr).map(drop)
+/// ```
+/// let old_filename = "/tmp/nc-link-src";
+/// let ret = nc::creat(old_filename, 0644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_filename = "/tmp/nc-link-dst";
+/// let ret = nc::link(old_filename, new_filename);
+/// assert!(ret.is_ok());
+/// ```
+pub fn link(old_filename: &str, new_filename: &str) -> Result<(), Errno> {
+    let old_filename = CString::new(old_filename);
+    let old_filename_ptr = old_filename.as_ptr() as usize;
+    let new_filename = CString::new(new_filename);
+    let new_filename_ptr = new_filename.as_ptr() as usize;
+    syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
 }
 
 /// Make a new name for a file.

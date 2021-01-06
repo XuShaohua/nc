@@ -934,6 +934,10 @@ pub fn getpmsg() {
 }
 
 /// Get the process ID of the parent of the calling process.
+/// ```
+/// let ppid = nc::getppid();
+/// assert!(ppid > 0);
+/// ```
 pub fn getppid() -> pid_t {
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }

@@ -1162,6 +1162,10 @@ pub fn getsockopt(
 }
 
 /// Get the caller's thread ID (TID).
+/// ```
+/// let tid = nc::gettid();
+/// assert!(tid > 0);
+/// ```
 pub fn gettid() -> pid_t {
     syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
 }

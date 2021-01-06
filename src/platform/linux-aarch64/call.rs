@@ -766,6 +766,10 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 }
 
 /// Get the process ID (PID) of the calling process.
+/// ```
+/// let pid = nc::getpid();
+/// assert!(pid > 0);
+/// ```
 pub fn getpid() -> pid_t {
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }

@@ -88,6 +88,21 @@ pub fn afs_syscall() {
 }
 
 /// set an alarm clock for delivery of a signal.
+/// ```
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+/// }
+///
+/// fn main() {
+///     let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+///     assert!(ret.is_ok());
+///     let remaining = nc::alarm(1);
+///     let ret = nc::pause();
+///     assert!(ret.is_err());
+///     assert_eq!(ret, Err(nc::EINTR));
+///     assert_eq!(remaining, 0);
+/// }
+/// ```
 pub fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
     syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32

@@ -81,6 +81,21 @@ pub fn afs_syscall() {
 }
 
 /// set an alarm clock for delivery of a signal.
+/// ```
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+/// }
+///
+/// fn main() {
+///     let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+///     assert!(ret.is_ok());
+///     let remaining = nc::alarm(1);
+///     let ret = nc::pause();
+///     assert!(ret.is_err());
+///     assert_eq!(ret, Err(nc::EINTR));
+///     assert_eq!(remaining, 0);
+/// }
+/// ```
 pub fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
     syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32
@@ -3255,6 +3270,10 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
 
 /// Signal handling.
 /// Deprecated. Use sigaction() instead.
+/// ```
+/// nc::signal(nc::SIGTERM);
+/// nc::kill(nc::getpid(), nc::SIGTERM);
+/// ```
 pub fn signal(sig: i32, handler: sighandler_t) -> Result<sighandler_t, Errno> {
     let sig = sig as usize;
     let handler = handler as usize;

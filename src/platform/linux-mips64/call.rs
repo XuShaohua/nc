@@ -148,6 +148,15 @@ pub fn chdir(filename: &str) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+/// ```
+/// let filename = "/tmp/nc-chmod";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::chmod(filename, 0o600).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

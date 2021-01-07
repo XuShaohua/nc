@@ -3764,8 +3764,14 @@ pub fn sigaction(sig: i32, act: &sigaction_t, old_act: &mut sigaction_t) -> Resu
 /// Signal handling.
 /// Deprecated. Use sigaction() instead.
 /// ```
-/// nc::signal(nc::SIGTERM);
-/// nc::kill(nc::getpid(), nc::SIGTERM);
+/// fn handle_sigterm(signum: i32) {
+///     assert_eq!(signum, nc::SIGTERM);
+/// }
+/// // let ret = nc::signal(nc::SIGTERM, nc::SIG_IGN);
+/// let ret = nc::signal(nc::SIGTERM, handle_sigterm as nc::sighandler_t);
+/// assert!(ret.is_ok());
+/// let ret = nc::kill(nc::getpid(), nc::SIGTERM);
+/// assert!(ret.is_ok());
 /// ```
 pub fn signal(sig: i32, handler: sighandler_t) -> Result<sighandler_t, Errno> {
     let sig = sig as usize;

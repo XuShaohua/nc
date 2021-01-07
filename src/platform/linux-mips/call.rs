@@ -88,6 +88,21 @@ pub fn afs_syscall() {
 }
 
 /// set an alarm clock for delivery of a signal.
+/// ```
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+/// }
+///
+/// fn main() {
+///     let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+///     assert!(ret.is_ok());
+///     let remaining = nc::alarm(1);
+///     let ret = nc::pause();
+///     assert!(ret.is_err());
+///     assert_eq!(ret, Err(nc::EINTR));
+///     assert_eq!(remaining, 0);
+/// }
+/// ```
 pub fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
     syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32
@@ -165,6 +180,15 @@ pub fn chdir(filename: &str) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+/// ```
+/// let filename = "/tmp/nc-chmod";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::chmod(filename, 0o600).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -173,6 +197,17 @@ pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+/// ```
+/// let filename = "/tmp/nc-chown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::chown(filename, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -230,8 +265,7 @@ pub fn clock_gettime64() {
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
-/// let ret = nc::nanosleep(&t, &mut rem);
-/// assert!(ret.is_ok());
+/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
 /// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
@@ -339,7 +373,7 @@ pub fn copy_file_range(
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
 /// ```
 /// let path = "/tmp/nc-creat-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -369,7 +403,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// file descriptor.
 /// ```
 /// let path = "/tmp/nc-dup-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let fd_dup = nc::dup(fd);
@@ -377,6 +411,7 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 /// let fd_dup = fd_dup.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(fd_dup).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
@@ -387,13 +422,14 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// descriptor `newfd`.
 /// ```
 /// let path = "/tmp/nc-dup2-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
 /// assert!(nc::dup2(fd, newfd).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -404,13 +440,14 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 /// ```
 /// let path = "/tmp/nc-dup3-file";
-/// let fd = nc::creat(path, 0644);
+/// let fd = nc::creat(path, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
 /// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -619,6 +656,15 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+/// ```
+/// let filename = "/tmp/nc-fchmod";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::fchmod(fd, 0o600).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let mode = mode as usize;
@@ -626,6 +672,15 @@ pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+/// ```
+/// let filename = "/tmp/nc-fchmodat";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::fchmodat(nc::AT_FDCWD, filename, 0o600).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -635,6 +690,17 @@ pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+/// ```
+/// let filename = "/tmp/nc-fchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::fchown(fd, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let user = user as usize;
@@ -1544,7 +1610,18 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
-/// Change ownership of a file.
+/// Change ownership of a file. Does not deference symbolic link.
+/// ```
+/// let filename = "/tmp/nc-lchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::lchown(filename, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn lchown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -1564,12 +1641,23 @@ pub fn lgetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
 }
 
 /// Make a new name for a file.
-pub fn link(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
-    let oldfilename = CString::new(oldfilename);
-    let oldfilename_ptr = oldfilename.as_ptr() as usize;
-    let newfilename = CString::new(newfilename);
-    let newfilename_ptr = newfilename.as_ptr() as usize;
-    syscall2(SYS_LINK, oldfilename_ptr, newfilename_ptr).map(drop)
+/// ```
+/// let old_filename = "/tmp/nc-link-src";
+/// let ret = nc::creat(old_filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_filename = "/tmp/nc-link-dst";
+/// assert!(nc::link(old_filename, new_filename).is_ok());
+/// assert!(nc::unlink(old_filename).is_ok());
+/// assert!(nc::unlink(new_filename).is_ok());
+/// ```
+pub fn link(old_filename: &str, new_filename: &str) -> Result<(), Errno> {
+    let old_filename = CString::new(old_filename);
+    let old_filename_ptr = old_filename.as_ptr() as usize;
+    let new_filename = CString::new(new_filename);
+    let new_filename_ptr = new_filename.as_ptr() as usize;
+    syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
 }
 
 /// Make a new name for a file.
@@ -3358,6 +3446,15 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
 
 /// Signal handling.
 /// Deprecated. Use sigaction() instead.
+/// ```
+/// fn handle_sigterm(signum: i32) {
+///     assert_eq!(signum, nc::SIGTERM);
+/// }
+/// let ret = nc::signal(nc::SIGTERM, handle_sigterm as nc::sighandler_t);
+/// assert!(ret.is_ok());
+/// let ret = nc::kill(nc::getpid(), nc::SIGTERM);
+/// assert!(ret.is_ok());
+/// ```
 pub fn signal(sig: i32, handler: sighandler_t) -> Result<sighandler_t, Errno> {
     let sig = sig as usize;
     let handler = handler as usize;

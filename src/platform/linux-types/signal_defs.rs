@@ -23,4 +23,4 @@ pub const SIG_DFL: sighandler_t = 0;
 /// ignore signal
 pub const SIG_IGN: sighandler_t = 1;
 /// error return from signal
-pub const SIG_ERR: sighandler_t = -1;
+pub const SIG_ERR: sighandler_t = (-1_isize) as sighandler_t;

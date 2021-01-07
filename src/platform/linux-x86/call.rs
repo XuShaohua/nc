@@ -160,6 +160,17 @@ pub fn chmod(filename: &str, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+/// ```
+/// let filename = "/tmp/nc-chown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::chown(filename, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -1598,7 +1609,7 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
-/// Change ownership of a file.
+/// Change ownership of a file. Does not deference symbolic link.
 /// ```
 /// let filename = "/tmp/nc-lchown";
 /// let ret = nc::creat(filename, 0o644);

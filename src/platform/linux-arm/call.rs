@@ -630,6 +630,15 @@ pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+/// ```
+/// let filename = "/tmp/nc-fchmodat";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::fchmodat(nc::AT_FDCWD, filename, 0o600).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn fchmodat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);

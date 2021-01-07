@@ -61,6 +61,23 @@ let ret = nc::kill(pid, nc::SIGTERM);
 println!("ret: {:?}", ret);
 ```
 
+Or handle signals:
+```rust
+fn handle_alarm(signum: i32) {
+    assert_eq!(signum, nc::SIGALRM);
+}
+
+fn main() {
+    let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+    assert!(ret.is_ok());
+    let remaining = nc::alarm(1);
+    let ret = nc::pause();
+    assert!(ret.is_err());
+    assert_eq!(ret, Err(nc::EINTR));
+    assert_eq!(remaining, 0);
+}
+```
+
 ## Stable version
 For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
 As `asm!` feature is unavailable in stable version.

@@ -501,25 +501,18 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 
 /// Execute a new program.
 /// TODO(Shaohua): type of argv and env will be changed.
+/// And return value might be changed too.
 /// ```
 /// let pid = nc::fork();
-/// match pid {
-///     Ok(pid) => {
-///         if pid == 0 {
-///             println!("child process: {}", pid);
-///             let args = [""];
-///             let env = [""];
-///             match nc::execve("/bin/ls", &args, &env) {
-///                 Ok(_) => {},
-///                 Err(errno) => eprintln!("`ls` got err: {}", errno),
-///             }
-///         } else if pid < 0 {
-///             eprintln!("fork() error!");
-///         } else {
-///             println!("parent process!");
-///         }
-///     },
-///     Err(errno) => eprintln!("errno: {}", errno),
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/bin/ls", &args, &env);
+///     assert!(ret.is_ok());
 /// }
 /// ```
 pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
@@ -531,6 +524,21 @@ pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> 
 }
 
 /// Execute a new program relative to a directory file descriptor.
+/// TODO(Shaohua): type of argv and env will be changed.
+/// And return value might be changed too.
+/// ```rust
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn execveat(
     fd: i32,
     filename: &str,

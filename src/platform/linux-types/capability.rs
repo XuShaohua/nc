@@ -25,12 +25,14 @@ pub const LINUX_CAPABILITY_VERSION_3: i32 = 0x2008_0522;
 pub const LINUX_CAPABILITY_U32S_3: i32 = 2;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct cap_user_header_t {
     pub version: u32,
     pub pid: i32,
 }
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct cap_user_data_t {
     pub effective: u32,
     pub permitted: u32,

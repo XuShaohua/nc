@@ -52,6 +52,7 @@ pub const Q_XGETNEXTQUOTA: i32 = XQM_CMD(9);
 pub const FS_DQUOT_VERSION: i32 = 1;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fs_disk_quota_t {
     /// version of this structure
     pub d_version: i8,
@@ -183,6 +184,7 @@ pub const FS_QSTAT_VERSION: i32 = 1;
 
 /// Some basic information about 'quota files'.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fs_qfilestat_t {
     /// inode number
     pub qfs_ino: u64,
@@ -199,6 +201,7 @@ pub struct fs_qfilestat_t {
 /// eg. space taken up for user and group quotas, number of dquots currently
 /// incore.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fs_quota_stat_t {
     /// version number for future changes
     pub qs_version: i8,
@@ -239,6 +242,7 @@ pub const FS_QSTATV_VERSION1: i32 = 1;
 
 /// Some basic information about 'quota files' for Q_XGETQSTATV command
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fs_qfilestatv_t {
     /// inode number
     pub qfs_ino: u64,
@@ -271,6 +275,7 @@ pub struct fs_qfilestatv_t {
 /// be returned. User space caller can then reduce the version number and retry
 /// the same command.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fs_quota_statv_t {
     /// version for future changes
     pub qs_version: i8,

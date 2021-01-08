@@ -849,6 +849,19 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Get filesystem statistics.
+/// ```rust
+/// let path = "/usr";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let mut statfs = nc::statfs_t::default();
+/// let ret = nc::fstatfs(fd, &mut statfs);
+/// assert!(ret.is_ok());
+/// assert!(statfs.f_bfree > 0);
+/// assert!(statfs.f_bavail > 0);
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let buf_ptr = buf as *mut statfs_t as usize;

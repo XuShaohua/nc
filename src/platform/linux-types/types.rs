@@ -33,6 +33,7 @@ pub type ssize_t = isize;
 pub type ptrdiff_t = isize;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fsid_t {
     pub val: [i32; 2],
 }

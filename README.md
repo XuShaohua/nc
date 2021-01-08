@@ -36,10 +36,6 @@ let pid = nc::fork();
 match pid {
     Ok(pid) => {
         if pid == 0 {
-            println!("parent process!");
-        } else if pid < 0 {
-            eprintln!("fork() error!");
-        } else {
             println!("child process: {}", pid);
             let args = [""];
             let env = [""];
@@ -47,6 +43,10 @@ match pid {
                 Ok(_) => {},
                 Err(errno) => eprintln!("`ls` got err: {}", errno),
             }
+        } else if pid < 0 {
+            eprintln!("fork() error!");
+        } else {
+            println!("parent process!");
         }
     },
     Err(errno) => eprintln!("errno: {}", errno),

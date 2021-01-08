@@ -340,10 +340,6 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 /// match pid {
 ///     Ok(pid) => {
 ///         if pid == 0 {
-///             println!("parent process!");
-///         } else if pid < 0 {
-///             eprintln!("fork() error!");
-///         } else {
 ///             println!("child process: {}", pid);
 ///             let args = [""];
 ///             let env = [""];
@@ -351,6 +347,10 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 ///                 Ok(_) => {},
 ///                 Err(errno) => eprintln!("`ls` got err: {}", errno),
 ///             }
+///         } else if pid < 0 {
+///             eprintln!("fork() error!");
+///         } else {
+///             println!("parent process!");
 ///         }
 ///     },
 ///     Err(errno) => eprintln!("errno: {}", errno),
@@ -1038,6 +1038,23 @@ pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
 }
 
 /// Send signal to a process.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process.
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/usr/bin/yes", &args, &env);
+///     assert!(ret.is_ok());
+/// } else {
+///     // parent process.
+///     let ret = nc::kill(pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     let pid = pid as usize;
     let signal = signal as usize;

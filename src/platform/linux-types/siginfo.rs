@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 use super::types::*;
+use core::fmt;
 use core::mem::size_of;
 
 #[repr(C)]
@@ -10,6 +11,19 @@ use core::mem::size_of;
 pub union sigval_t {
     sival_int: i32,
     sival_ptr: usize,
+}
+
+impl fmt::Debug for sigval_t {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let val = unsafe { self.sival_ptr };
+        write!(f, "sigval_t: {}", val)
+    }
+}
+
+impl Default for sigval_t {
+    fn default() -> Self {
+        sigval_t { sival_ptr: 0 }
+    }
 }
 
 pub const SI_MAX_SIZE: usize = 128;
@@ -23,7 +37,7 @@ pub type arch_si_clock_t = clock_t;
 
 /// kill()
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct si_kill_t {
     /// sender's pid
     pub pid: pid_t,
@@ -33,7 +47,7 @@ pub struct si_kill_t {
 
 /// POSIX.1b timers
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct si_timer_t {
     /// timer id
     pub tid: timer_t,
@@ -47,7 +61,7 @@ pub struct si_timer_t {
 
 /// POSIX.1b signals
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct si_rt_t {
     /// sender's pid
     pub pid: pid_t,
@@ -58,7 +72,7 @@ pub struct si_rt_t {
 
 /// SIGCHLD
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct si_sigchld_t {
     /// which child
     pub pid: pid_t,
@@ -72,7 +86,7 @@ pub struct si_sigchld_t {
 
 /// SIGPOLL
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct si_sigpoll_t {
     /// POLL_IN, POLL_OUT, POLL_MSG
     pub band: arch_si_band_t,
@@ -81,7 +95,7 @@ pub struct si_sigpoll_t {
 
 /// SIGSYS
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct si_sigsys_t {
     /// calling user insn
     pub call_addr: usize,
@@ -123,6 +137,7 @@ pub struct siginfo_intern_t {
 //}
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union siginfo_t {
     pub siginfo: siginfo_intern_t,
     si_pad: [u8; SI_MAX_SIZE / size_of::<i32>()],
@@ -352,7 +367,7 @@ pub const SIGEV_MAX_SIZE: usize = 64;
 pub const SIGEV_PAD_SIZE: usize = (SIGEV_MAX_SIZE - ARCH_SIGEV_PREAMBLE_SIZE) / size_of::<i32>();
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigev_thread_t {
     pub function: usize,
     /// really pthread_attr_t
@@ -360,6 +375,7 @@ pub struct sigev_thread_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigev_un_t {
     pad: [i32; SIGEV_PAD_SIZE],
     pub tid: i32,
@@ -367,6 +383,7 @@ pub union sigev_un_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct sigevent_t {
     pub sigev_value: sigval_t,
     pub sigev_signo: i32,

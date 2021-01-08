@@ -21,6 +21,7 @@ use super::types::*;
 /// - 2 miscellaneous 32-bit values
 #[cfg(target_pointer_width = "64")]
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct shmid64_ds_t {
     /// operation perms
     pub shm_perm: ipc64_perm_t,
@@ -44,6 +45,7 @@ pub struct shmid64_ds_t {
 
 #[cfg(target_pointer_width = "32")]
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct shmid64_ds_t {
     /// operation perms
     pub shm_perm: ipc64_perm_t,
@@ -69,6 +71,7 @@ pub struct shmid64_ds_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct shminfo64_t {
     pub shmmax: usize,
     pub shmmin: usize,

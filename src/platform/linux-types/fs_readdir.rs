@@ -7,7 +7,7 @@ use super::types::*;
 /// From fs/readir.c
 
 #[repr(C)]
-#[derive(Clone, Debug)]
+#[derive(Debug, Default, Clone)]
 pub struct linux_dirent_t {
     /// Inode number
     pub d_ino: ino_t,

@@ -45,6 +45,7 @@ pub const KEXEC_SEGMENT_MAX: i32 = 16;
 /// This structure is used to hold the arguments that are used when
 /// loading  kernel binaries.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct kexec_segment_t {
     pub buf: usize,
     pub bufsz: size_t,

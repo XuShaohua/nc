@@ -44,6 +44,7 @@ pub const FUTEX_CMP_REQUEUE_PI_PRIVATE: i32 = FUTEX_CMP_REQUEUE_PI | FUTEX_PRIVA
 ///
 /// NOTE: this structure is part of the syscall ABI, and must not be changed.
 #[repr(C)]
+#[derive(Debug)]
 pub struct robust_list_t {
     pub next: *mut robust_list_t,
 }
@@ -55,6 +56,7 @@ pub struct robust_list_t {
 /// (When an incompatible change is done, we'll increase the structure
 /// size, which glibc will detect)
 #[repr(C)]
+#[derive(Debug)]
 pub struct robust_list_head_t {
     /// The head of the list. Points back to itself if empty:
     pub list: robust_list_t,

@@ -49,6 +49,7 @@ pub const S_IXOTH: mode_t = 0o0001;
 ///
 /// reserved is held in case we need a yet finer resolution.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct statx_timestamp_t {
     pub tv_sec: i64,
     pub tv_nsec: u32,

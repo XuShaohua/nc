@@ -19,7 +19,7 @@ pub const RUSAGE_BOTH: i32 = -2;
 pub const RUSAGE_THREAD: i32 = 1;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct rusage_t {
     /// user time used
     pub ru_utime: timeval_t,
@@ -55,8 +55,8 @@ pub struct rusage_t {
     pub ru_nivcsw: isize,
 }
 
-#[derive(Debug, Default)]
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct rlimit_t {
     pub rlim_cur: usize,
     pub rlim_max: usize,
@@ -64,8 +64,8 @@ pub struct rlimit_t {
 
 pub const RLIM64_INFINITY: u64 = !0;
 
-#[derive(Debug, Default)]
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct rlimit64_t {
     pub rlim_cur: u64,
     pub rlim_max: u64,

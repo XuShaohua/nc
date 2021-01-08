@@ -80,6 +80,7 @@ pub const QIF_TIMES: i32 = QIF_BTIME | QIF_ITIME;
 pub const QIF_ALL: i32 = QIF_LIMITS | QIF_USAGE | QIF_TIMES;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct if_dqblk_t {
     pub dqb_bhardlimit: u64,
     pub dqb_bsoftlimit: u64,
@@ -93,6 +94,7 @@ pub struct if_dqblk_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct if_nextdqblk_t {
     pub dqb_bhardlimit: u64,
     pub dqb_bsoftlimit: u64,
@@ -124,6 +126,7 @@ pub const DQF_ROOT_SQUASH: i32 = 1 << DQF_ROOT_SQUASH_B;
 pub const DQF_SYS_FILE: i32 = 1 << DQF_SYS_FILE_B;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct if_dqinfo_t {
     pub dqi_bgrace: u64,
     pub dqi_igrace: u64,

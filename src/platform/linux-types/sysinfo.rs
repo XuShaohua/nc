@@ -6,8 +6,8 @@ use core::mem::size_of;
 
 pub const SI_LOAD_SHIFT: i32 = 16;
 
-#[derive(Default, Debug)]
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct sysinfo_t {
     /// Seconds since boot
     pub uptime: isize,

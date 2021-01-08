@@ -47,6 +47,7 @@ pub const RENAME_EXCHANGE: i32 = 1 << 1;
 pub const RENAME_WHITEOUT: i32 = 1 << 2;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct file_clone_range_t {
     pub src_fd: i64,
     pub src_offset: u64,
@@ -55,6 +56,7 @@ pub struct file_clone_range_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fstrim_range_t {
     pub start: u64,
     pub len: u64,
@@ -67,6 +69,7 @@ pub const FILE_DEDUPE_RANGE_DIFFERS: i32 = 1;
 
 /// from struct btrfs_ioctl_file_extent_same_info
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct file_dedupe_range_info_t {
     /// in - destination file
     pub dest_fd: i64,
@@ -86,6 +89,7 @@ pub struct file_dedupe_range_info_t {
 
 /// from struct btrfs_ioctl_file_extent_same_args
 #[repr(C)]
+#[derive(Debug)]
 pub struct file_dedupe_range_t {
     /// in - start of extent in source
     pub src_offset: u64,
@@ -102,6 +106,7 @@ pub struct file_dedupe_range_t {
 
 /// And dynamically-tunable limits and defaults:
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct files_stat_struct_t {
     /// read only
     pub nr_files: usize,
@@ -112,6 +117,7 @@ pub struct files_stat_struct_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct inodes_stat_t {
     pub nr_inodes: isize,
     pub nr_unused: isize,
@@ -123,6 +129,7 @@ pub const NR_FILE: i32 = 8192; /* this can well be larger on a larger system */
 
 /// Structure for FS_IOC_FSGETXATTR[A] and FS_IOC_FSSETXATTR.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fsxattr_t {
     /// xflags field value (get/set)
     pub fsx_xflags: u32,
@@ -265,6 +272,7 @@ pub const FS_ENCRYPTION_MODE_SPECK128_256_CTS: i32 = 8;
 pub const FS_ENCRYPTION_MODE_ADIANTUM: i32 = 9;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct fscrypt_policy_t {
     pub version: u8,
     pub contents_encryption_mode: u8,
@@ -286,6 +294,7 @@ pub const FS_KEY_DESC_PREFIX_SIZE: i32 = 8;
 pub const FS_MAX_KEY_SIZE: i32 = 64;
 
 #[repr(C)]
+#[derive(Debug)]
 pub struct fscrypt_key_t {
     pub mode: u32,
     pub raw: [u8; FS_MAX_KEY_SIZE as usize],

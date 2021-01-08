@@ -62,6 +62,7 @@ pub const SECCOMP_RET_DATA: u32 = 0x0000_ffff;
 /// @args: up to 6 system call arguments always stored as 64-bit values
 ///        regardless of the architecture.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct seccomp_data_t {
     pub nr: i32,
     pub arch: u32,
@@ -70,6 +71,7 @@ pub struct seccomp_data_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct seccomp_notif_sizes_t {
     pub seccomp_notif: u16,
     pub seccomp_notif_resp: u16,
@@ -77,6 +79,7 @@ pub struct seccomp_notif_sizes_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct seccomp_notif_t {
     pub id: u64,
     pub pid: u32,
@@ -85,6 +88,7 @@ pub struct seccomp_notif_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct seccomp_notif_resp_t {
     pub id: u64,
     pub val: i64,

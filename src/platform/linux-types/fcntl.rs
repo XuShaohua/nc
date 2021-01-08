@@ -99,6 +99,7 @@ pub const F_OWNER_PID: i32 = 1;
 pub const F_OWNER_PGRP: i32 = 2;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct f_owner_ex_t {
     pub type_: i32,
     pub pid: pid_t,
@@ -138,12 +139,8 @@ pub const LOCK_RW: i32 = 192;
 
 pub const F_LINUX_SPECIFIC_BASE: i32 = 1024;
 
-//#ifndef HAVE_ARCH_STRUCT_FLOCK
-//#ifndef __ARCH_FLOCK_PAD
-//#define __ARCH_FLOCK_PAD
-//#endif
-
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct flock_t {
     pub l_type: i16,
     pub l_whence: i16,
@@ -154,12 +151,8 @@ pub struct flock_t {
     //__ARCH_FLOCK_PAD
 }
 
-//#ifndef HAVE_ARCH_STRUCT_FLOCK64
-//#ifndef __ARCH_FLOCK64_PAD
-//#define __ARCH_FLOCK64_PAD
-//#endif
-
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct flock64_t {
     pub l_type: i16,
     pub l_whence: i16,

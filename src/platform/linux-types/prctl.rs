@@ -144,6 +144,7 @@ pub const PR_SET_MM_MAP_SIZE: i32 = 15;
 /// output for a task. This mostly done in a
 /// sake of checkpoint/restore functionality.
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct prctl_mm_map_t {
     /// code section bounds
     pub start_code: u64,

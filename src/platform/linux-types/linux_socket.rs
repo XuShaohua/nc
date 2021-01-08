@@ -11,6 +11,7 @@ pub type sa_family_t = kernel_sa_family_t;
 
 /// 1003.1g requires sa_family_t and that sa_data is char.
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct sockaddr_t {
     /// address family, AF_xxx
     pub sa_family: sa_family_t,
@@ -19,6 +20,7 @@ pub struct sockaddr_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct linger_t {
     /// Linger active
     pub l_onoff: i32,
@@ -53,6 +55,7 @@ pub type sockaddr_storage_t = kernel_sockaddr_storage_t;
 //}
 
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct msghdr_t {
     /// ptr to socket address structure
     pub msg_name: usize,
@@ -74,6 +77,7 @@ pub type user_msghdr_t = msghdr_t;
 
 /// For recvmmsg/sendmmsg
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct mmsghdr_t {
     pub msg_hdr: msghdr_t,
     pub msg_len: u32,
@@ -83,6 +87,7 @@ pub struct mmsghdr_t {
 /// Ancillary data consits of a sequence of pairs of
 /// (cmsghdr, cmsg_data[])
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct cmsghdr_t {
     /// data byte count, including hdr
     pub cmsg_len: size_t,
@@ -124,6 +129,7 @@ pub const SCM_CREDENTIALS: i32 = 0x02;
 pub const SCM_SECURITY: i32 = 0x03;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct ucred_t {
     pub pid: u32,
     pub uid: u32,
@@ -384,6 +390,7 @@ pub const SOL_XDP: i32 = 283;
 pub const IPX_TYPE: i32 = 1;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct scm_timestamping_internal_t {
     pub ts: [timespec64_t; 3],
 }

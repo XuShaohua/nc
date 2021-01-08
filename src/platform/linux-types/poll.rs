@@ -27,6 +27,7 @@ pub const POLLFREE: poll_t = 0x4000;
 pub const POLL_BUSY_LOOP: poll_t = 0x8000;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct pollfd_t {
     pub fd: i32,
     pub events: i16,

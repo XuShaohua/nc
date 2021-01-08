@@ -7,6 +7,7 @@ pub const MQ_PRIO_MAX: i32 = 32768;
 pub const MQ_BYTES_MAX: i32 = 819_200;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct mq_attr_t {
     /// message queue flags
     pub mq_flags: isize,

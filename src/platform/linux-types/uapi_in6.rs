@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 use super::types::*;
+use core::fmt;
 
 /// SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note
 /// Types and definitions for AF_INET6
@@ -13,13 +14,30 @@ use super::types::*;
  */
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union in6_un_t {
     pub u6_addr8: [u8; 16],
     pub u6_addr16: [be16_t; 8],
     pub u6_addr32: [be32_t; 4],
 }
 
+impl fmt::Debug for in6_un_t {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let val = unsafe { self.u6_addr8 };
+        write!(f, "in6_un_t: {:?}", val)
+    }
+}
+
+impl Default for in6_un_t {
+    fn default() -> Self {
+        in6_un_t {
+            u6_addr8: [0_u8; 16],
+        }
+    }
+}
+
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct in6_addr_t {
     pub in6_u: in6_un_t,
 }
@@ -28,6 +46,7 @@ pub struct in6_addr_t {
 //#define s6_addr32		in6_u.u6_addr32
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct sockaddr_in6_t {
     pub sin6_family: u16,      /* AF_INET6 */
     pub sin6_port: be16_t,     /* Transport layer port # */
@@ -37,6 +56,7 @@ pub struct sockaddr_in6_t {
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct ipv6_mreq_t {
     /// IPv6 multicast address of group
     pub ipv6mr_multiaddr: in6_addr_t,
@@ -46,6 +66,7 @@ pub struct ipv6_mreq_t {
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct in6_flowlabel_req_t {
     pub flr_dst: in6_addr_t,
     pub flr_label: be32_t,

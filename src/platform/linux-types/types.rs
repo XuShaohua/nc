@@ -33,7 +33,7 @@ pub type ssize_t = isize;
 pub type ptrdiff_t = isize;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct fsid_t {
     pub val: [i32; 2],
 }
@@ -65,6 +65,7 @@ pub type gid16_t = u16;
 pub const FD_SETSIZE: usize = 1024;
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct fd_set_t {
     pub fds_bits: [usize; FD_SETSIZE / (8 * size_of::<isize>())],
 }
@@ -112,6 +113,7 @@ pub type slab_flags_t = u32;
 pub type fmode_t = u32;
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct ustat_t {
     pub f_tfree: usize,
     pub f_tinode: ino_t,
@@ -141,26 +143,31 @@ pub type pthread_key_t = i32;
 pub type pthread_spinlock_t = i32;
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct pthread_mutexattr_t {
     pub attr: u32,
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct pthread_condattr_t {
     pub attr: u32,
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct pthread_barrierattr_t {
     pub attr: i32,
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct pthread_rwlockattr_t {
     pub attr: [u32; 2],
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct io_file_t {
     pub x: u8,
 }

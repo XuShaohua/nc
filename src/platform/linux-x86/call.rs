@@ -681,6 +681,20 @@ pub fn fanotify_mark(
 }
 
 /// Change working directory.
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = nc::fchdir(fd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+///
+/// let pwd = nc::getcwd();
+/// assert!(pwd.is_ok());
+/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
+/// ```
 pub fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FCHDIR, fd).map(drop)

@@ -542,6 +542,28 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 }
 
 /// Execute a new program.
+/// TODO(Shaohua): type of argv and env will be changed.
+/// ```
+/// let pid = nc::fork();
+/// match pid {
+///     Ok(pid) => {
+///         if pid == 0 {
+///             println!("parent process!");
+///         } else if pid < 0 {
+///             eprintln!("fork() error!");
+///         } else {
+///             println!("child process: {}", pid);
+///             let args = [""];
+///             let env = [""];
+///             match nc::execve("/bin/ls", &args, &env) {
+///                 Ok(_) => {},
+///                 Err(errno) => eprintln!("`ls` got err: {}", errno),
+///             }
+///         }
+///     },
+///     Err(errno) => eprintln!("errno: {}", errno),
+/// }
+/// ```
 pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -3450,6 +3472,7 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
 /// fn handle_sigterm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGTERM);
 /// }
+/// // let ret = nc::signal(nc::SIGTERM, nc::SIG_IGN);
 /// let ret = nc::signal(nc::SIGTERM, handle_sigterm as nc::sighandler_t);
 /// assert!(ret.is_ok());
 /// let ret = nc::kill(nc::getpid(), nc::SIGTERM);

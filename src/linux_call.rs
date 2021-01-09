@@ -64,15 +64,13 @@ pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
 ///
-/// fn main() {
-///     let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
-///     assert!(ret.is_ok());
-///     let remaining = nc::alarm(1);
-///     let ret = nc::pause();
-///     assert!(ret.is_err());
-///     assert_eq!(ret, Err(nc::EINTR));
-///     assert_eq!(remaining, 0);
-/// }
+/// let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+/// assert!(ret.is_ok());
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EINTR));
+/// assert_eq!(remaining, 0);
 /// ```
 pub fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
@@ -370,7 +368,7 @@ pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> 
 /// Execute a new program relative to a directory file descriptor.
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
-/// ```rust
+/// ```
 /// let pid = nc::fork();
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -712,7 +710,7 @@ pub fn fork() -> Result<pid_t, Errno> {
 }
 
 /// Get file status about a file descriptor.
-/// ```rust
+/// ```
 /// let path = "/tmp";
 /// // Open folder directly.
 /// let fd = nc::open(path, nc::O_PATH, 0);
@@ -732,7 +730,7 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Get filesystem statistics.
-/// ```rust
+/// ```
 /// let path = "/usr";
 /// // Open folder directly.
 /// let fd = nc::open(path, nc::O_PATH, 0);
@@ -1578,7 +1576,20 @@ pub fn openat(dirfd: i32, filename: &str, flags: i32, mode: mode_t) -> Result<i3
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
 }
 
-// Pause the calling process to sleep until a signal is delivered.
+/// Pause the calling process to sleep until a signal is delivered.
+/// ```
+/// let handle_alarm = |signum: i32| {
+///     assert_eq!(signum, nc::SIGALRM);
+/// };
+///
+/// let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+/// assert!(ret.is_ok());
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EINTR));
+/// assert_eq!(remaining, 0);
+/// ```
 pub fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)
 }

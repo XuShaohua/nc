@@ -381,7 +381,7 @@ pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> 
 /// Execute a new program relative to a directory file descriptor.
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
-/// ```rust
+/// ```
 /// let pid = nc::fork();
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -680,7 +680,7 @@ pub fn fspick(dfd: i32, path: &str, flags: i32) -> Result<i32, Errno> {
 }
 
 /// Get file status about a file descriptor.
-/// ```rust
+/// ```
 /// let path = "/tmp";
 /// // Open folder directly.
 /// let fd = nc::open(path, nc::O_PATH, 0);
@@ -710,7 +710,7 @@ pub fn fstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> Res
 }
 
 /// Get filesystem statistics.
-/// ```rust
+/// ```
 /// let path = "/usr";
 /// // Open folder directly.
 /// let fd = nc::open(path, nc::O_PATH, 0);

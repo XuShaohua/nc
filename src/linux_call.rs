@@ -3611,6 +3611,23 @@ pub fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
 }
 
 /// Examine and change a signal action.
+/// ```
+/// use std::mem::size_of;
+///
+/// fn handle_sigterm(sig: i32) {
+///     assert_eq!(sig, nc::SIGTERM);
+/// }
+///
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_sigterm as nc::sighandler_t,
+///     sa_mask: nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGTERM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// let ret = nc::kill(nc::getpid(), nc::SIGTERM);
+/// assert!(ret.is_ok());
+/// ```
 pub fn rt_sigaction(
     sig: i32,
     act: &sigaction_t,

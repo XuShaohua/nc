@@ -3637,6 +3637,14 @@ pub fn stat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
 }
 
 /// Get filesystem statistics.
+/// ```
+/// let path = "/usr";
+/// let mut statfs = nc::statfs_t::default();
+/// let ret = nc::statfs(path, &mut statfs);
+/// assert!(ret.is_ok());
+/// assert!(statfs.f_bfree > 0);
+/// assert!(statfs.f_bavail > 0);
+/// ```
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

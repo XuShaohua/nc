@@ -2535,18 +2535,24 @@ pub fn open_tree(dfd: i32, filename: &str, flags: u32) -> Result<i32, Errno> {
 
 /// Pause the calling process to sleep until a signal is delivered.
 /// ```
-/// let handle_alarm = |signum: i32| {
-///     assert_eq!(signum, nc::SIGALRM);
-/// };
+/// use core::mem::size_of;
 ///
-/// let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+/// }
+///
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_alarm as nc::sighandler_t,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
 /// let remaining = nc::alarm(1);
 /// let ret = nc::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
-/// ```
 pub fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)
 }

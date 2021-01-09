@@ -234,7 +234,7 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
-/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
+/// assert!(nc::clock_nanosleep(nc::CLOCK_MONOTONIC, 0, &t, &mut rem).is_ok());
 /// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
@@ -2191,6 +2191,14 @@ pub fn name_to_handle_at(
 }
 
 /// High resolution sleep.
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let mut rem = nc::timespec_t::default();
+/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
+/// ```
 pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
     let rem_ptr = rem as *mut timespec_t as usize;

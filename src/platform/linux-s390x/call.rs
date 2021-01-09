@@ -149,6 +149,16 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 }
 
 /// Change working directory.
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let ret = nc::chdir(path);
+/// assert!(ret.is_ok());
+///
+/// let pwd = nc::getcwd();
+/// assert!(pwd.is_ok());
+/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
+/// ```
 pub fn chdir(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

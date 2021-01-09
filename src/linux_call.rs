@@ -750,6 +750,18 @@ pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
 }
 
 /// Flush all modified in-core data refered by `fd` to disk.
+/// ```
+/// let path = "/tmp/nc-fsync";
+/// let ret = nc::open(path, nc::O_CREAT | nc::O_WRONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let buf = b"Hello, Rust";
+/// let n_write = nc::write(fd, buf.as_ptr() as usize, buf.len());
+/// assert_eq!(n_write, Ok(buf.len() as isize));
+/// assert!(nc::fsync(fd).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fsync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FSYNC, fd).map(drop)

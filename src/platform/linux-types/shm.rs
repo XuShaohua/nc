@@ -26,6 +26,7 @@ pub const SHMSEG: i32 = SHMMNI;
 
 /// Obsolete, used only for backwards compatibility and libc5 compiles
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct shmid_ds_t {
     /// operation perms
     pub shm_perm: ipc_perm_t,
@@ -101,6 +102,7 @@ pub const SHM_STAT_ANY: i32 = 15;
 
 /// Obsolete, used only for backwards compatibility
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct shminfo_t {
     pub shmmax: i32,
     pub shmmin: i32,
@@ -110,6 +112,7 @@ pub struct shminfo_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct shm_info_t {
     pub used_ids: i32,
     /// total allocated shm

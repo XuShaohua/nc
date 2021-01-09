@@ -7,7 +7,7 @@ use super::types::*;
 use alloc::string::String;
 
 #[repr(C)]
-#[derive(Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct linux_dirent64_t {
     /// 64-bit inode number.
     pub d_ino: ino64_t,
@@ -26,7 +26,8 @@ pub struct linux_dirent64_t {
     pub d_name: [u8; PATH_MAX as usize],
 }
 
-#[derive(Clone, Debug)]
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct linux_dirent64_extern_t {
     /// 64-bit inode number.
     pub d_ino: ino64_t,
@@ -37,6 +38,7 @@ pub struct linux_dirent64_extern_t {
     /// File type.
     pub d_type: u8,
 
+    // TODO(Shaohua): Replace String with CString
     /// Filename.
     pub d_name: String,
 }

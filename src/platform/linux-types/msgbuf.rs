@@ -22,6 +22,7 @@ use super::types::*;
 /// - 2 miscellaneous 32-bit values
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct msqid64_ds_t {
     pub msg_perm: ipc_perm_t,
     /// last msgsnd time
@@ -46,6 +47,7 @@ pub struct msqid64_ds_t {
 
 #[cfg(target_pointer_size = "32")]
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct msqid64_ds_t {
     pub msg_perm: ipc_perm_t,
     /// last msgsnd time

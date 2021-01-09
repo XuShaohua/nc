@@ -23,8 +23,9 @@ pub const RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE: u32 = 1 << RSEQ_CS_FLAG_NO_RESTART
 /// struct rseq_cs is aligned on 4 * 8 bytes to ensure it is always
 /// contained within a single cache-line. It is usually declared as
 /// link-time constant data.
-#[repr(C)]
 // TODO(Shaohua): alignment __attribute__((aligned(4 * sizeof(__u64))));
+#[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct rseq_cs_t {
     /// Version of this structure.
     pub version: u32,
@@ -42,7 +43,7 @@ pub struct rseq_cs_t {
 
 #[cfg(target_endian = "big")]
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct rseq_cs_ptr_t {
     /// Initialized to zero.
     pub padding: u32,
@@ -52,7 +53,7 @@ pub struct rseq_cs_ptr_t {
 
 #[cfg(target_endian = "little")]
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct rseq_cs_ptr_t {
     pub ptr32: u32,
 
@@ -61,6 +62,7 @@ pub struct rseq_cs_ptr_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union rseq_cs_union_t {
     pub ptr64: u64,
     pub ptr: rseq_cs_ptr_t,
@@ -73,8 +75,9 @@ pub union rseq_cs_union_t {
 /// contained within a single cache-line.
 ///
 /// A single struct rseq per thread is allowed.
-#[repr(C)]
 // TODO(Shaohua): alignment __attribute__((aligned(4 * sizeof(__u64))));
+#[repr(C)]
+#[derive(Clone, Copy)]
 pub struct rseq_t {
     /// Restartable sequences cpu_id_start field. Updated by the
     /// kernel. Read by user-space with single-copy atomicity

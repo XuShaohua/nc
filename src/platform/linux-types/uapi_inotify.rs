@@ -12,6 +12,7 @@ use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
 /// When you are watching a directory, you will receive the filename for events
 /// such as IN_CREATE, IN_DELETE, IN_OPEN, IN_CLOSE, ..., relative to the wd.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct inotify_event_t {
     /// watch descriptor
     pub wd: u32,

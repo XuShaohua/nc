@@ -14,6 +14,7 @@ pub const LDT_ENTRY_SIZE: i32 = 8;
 /// not to the default values if you still want to do syscalls. This
 /// call is more for 32bit mode therefore.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct user_desc_t {
     pub entry_number: u32,
     pub base_addr: u32,

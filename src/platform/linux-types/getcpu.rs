@@ -16,6 +16,7 @@ pub const LINUX_GETCPU_H: i32 = 1;
 /// The user program must store this information per thread (__thread)
 /// If you want 100% accurate information pass NULL instead.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct getcpu_cache_t {
     pub blob: [usize; 128 / size_of::<usize>()],
 }

@@ -12,6 +12,7 @@ const K_SS_MAXSIZE: i32 = 128;
 pub type kernel_sa_family_t = u16;
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct kernel_sockaddr_storage_t {
     /// address family
     pub ss_family: kernel_sa_family_t,
@@ -22,3 +23,11 @@ pub struct kernel_sockaddr_storage_t {
 }
 // TODO(Shaohua):
 //__attribute__ ((aligned(_K_SS_ALIGNSIZE)));	/* force desired alignment */
+impl Default for kernel_sockaddr_storage_t {
+    fn default() -> Self {
+        kernel_sockaddr_storage_t {
+            ss_family: 0,
+            data: [0_u8; (K_SS_MAXSIZE - 2) as usize],
+        }
+    }
+}

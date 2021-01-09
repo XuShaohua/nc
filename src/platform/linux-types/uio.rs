@@ -6,6 +6,7 @@ use super::types::*;
 
 /// Berkeley style UIO structures
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct iovec_t {
     /// BSD uses caddr_t (1003.1g requires void *)
     pub iov_base: usize,

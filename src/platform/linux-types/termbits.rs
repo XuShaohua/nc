@@ -9,6 +9,7 @@ pub type tcflag_t = u32;
 pub const NCCS: usize = 19;
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct termios_t {
     /// input mode flags
     pub c_iflag: tcflag_t,
@@ -30,6 +31,7 @@ pub struct termios_t {
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct termios2_t {
     /// input mode flags
     pub c_iflag: tcflag_t,
@@ -57,6 +59,7 @@ pub struct termios2_t {
 }
 
 #[repr(C)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct ktermios_t {
     /// input mode flags
     pub c_iflag: tcflag_t,

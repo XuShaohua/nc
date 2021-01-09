@@ -70,34 +70,43 @@ pub const BPF_REG_10: i32 = 10;
 pub const MAX_BPF_REG: i32 = BPF_REG_10 + 1;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct bpf_insn_t {
     /// opcode
     pub code: u8,
-    //__u8	dst_reg:4;	/* dest register */
-    //__u8	src_reg:4;	/* source register */
+
+    //pub dst_reg: u8,
+    //pub src_reg: u8,
     /// dest register
     pub dst_reg: u32,
-    /// source register/
+
+    /// source register
     pub src_reg: u32,
+
     /// signed offset
     pub off: i16,
+
     /// signed immediate constant
     pub imm: i32,
 }
 
 /// Key of an a BPF_MAP_TYPE_LPM_TRIE entry
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct bpf_lpm_trie_key_t {
     /// up to 32 for AF_INET, 128 for AF_INET6
     pub prefixlen: u32,
+
     /// Arbitrary size
     pub data: [u8; 0],
 }
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct bpf_cgroup_storage_key_t {
     /// cgroup inode id
     pub cgroup_inode_id: u64,
+
     /// program attach type
     pub attach_type: u32,
 }

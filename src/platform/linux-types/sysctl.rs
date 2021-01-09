@@ -10,6 +10,7 @@ use super::types::*;
 pub const CTL_MAXNAME: i32 = 10;
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct sysctl_args_t {
     pub name: *mut i32,
     pub nlen: i32,

@@ -140,6 +140,16 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 }
 
 /// Change working directory.
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let ret = nc::chdir(path);
+/// assert!(ret.is_ok());
+///
+/// let pwd = nc::getcwd();
+/// assert!(pwd.is_ok());
+/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
+/// ```
 pub fn chdir(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -237,7 +247,7 @@ pub fn clock_gettime64() {
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
-/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
+/// assert!(nc::clock_nanosleep(nc::CLOCK_MONOTONIC, 0, &t, &mut rem).is_ok());
 /// ```
 pub fn clock_nanosleep(
     which_clock: clockid_t,
@@ -509,6 +519,21 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 }
 
 /// Execute a new program.
+/// TODO(Shaohua): type of argv and env will be changed.
+/// And return value might be changed too.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/bin/ls", &args, &env);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -518,6 +543,21 @@ pub fn execve(filename: &str, argv: &[&str], env: &[&str]) -> Result<(), Errno> 
 }
 
 /// Execute a new program relative to a directory file descriptor.
+/// TODO(Shaohua): type of argv and env will be changed.
+/// And return value might be changed too.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn execveat(
     fd: i32,
     filename: &str,
@@ -608,6 +648,20 @@ pub fn fanotify_mark(
 }
 
 /// Change working directory.
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = nc::fchdir(fd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+///
+/// let pwd = nc::getcwd();
+/// assert!(pwd.is_ok());
+/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
+/// ```
 pub fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FCHDIR, fd).map(drop)
@@ -741,6 +795,12 @@ pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 }
 
 /// Create a child process.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// ```
 pub fn fork() -> Result<pid_t, Errno> {
     syscall0(SYS_FORK).map(|ret| ret as pid_t)
 }
@@ -798,6 +858,19 @@ pub fn fspick(dfd: i32, path: &str, flags: i32) -> Result<i32, Errno> {
 }
 
 /// Get file status about a file descriptor.
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::fstat(fd, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a directory.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let statbuf_ptr = statbuf as *mut stat_t as usize;
@@ -805,6 +878,19 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Get file status.
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::fstat63(fd, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a directory.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let statbuf_ptr = statbuf as *mut stat64_t as usize;
@@ -822,6 +908,19 @@ pub fn fstatat64(dfd: i32, filename: &str, statbuf: &mut stat64_t, flag: i32) ->
 }
 
 /// Get filesystem statistics.
+/// ```
+/// let path = "/usr";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let mut statfs = nc::statfs_t::default();
+/// let ret = nc::fstatfs(fd, &mut statfs);
+/// assert!(ret.is_ok());
+/// assert!(statfs.f_bfree > 0);
+/// assert!(statfs.f_bavail > 0);
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let buf_ptr = buf as *mut statfs_t as usize;
@@ -836,6 +935,18 @@ pub fn fstatfs64(fd: i32, buf: &mut statfs64_t) -> Result<(), Errno> {
 }
 
 /// Flush all modified in-core data refered by `fd` to disk.
+/// ```
+/// let path = "/tmp/nc-fsync";
+/// let ret = nc::open(path, nc::O_CREAT | nc::O_WRONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let buf = b"Hello, Rust";
+/// let n_write = nc::write(fd, buf.as_ptr() as usize, buf.len());
+/// assert_eq!(n_write, Ok(buf.len() as isize));
+/// assert!(nc::fsync(fd).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fsync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FSYNC, fd).map(drop)
@@ -1556,6 +1667,23 @@ pub fn keyctl(
 }
 
 /// Send signal to a process.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process.
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/usr/bin/yes", &args, &env);
+///     assert!(ret.is_ok());
+/// } else {
+///     // parent process.
+///     let ret = nc::kill(pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     let pid = pid as usize;
     let signal = signal as usize;
@@ -2156,6 +2284,14 @@ pub fn name_to_handle_at(
 }
 
 /// High resolution sleep.
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let mut rem = nc::timespec_t::default();
+/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
+/// ```
 pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
     let rem_ptr = rem as *mut timespec_t as usize;
@@ -2181,6 +2317,13 @@ pub fn oabi_syscall_base() {
 }
 
 /// Open and possibly create a file.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -2190,6 +2333,13 @@ pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
 }
 
 /// Open and possibly create a file within a directory.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn openat(dirfd: i32, filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -2219,7 +2369,26 @@ pub fn open_tree(dfd: i32, filename: &str, flags: u32) -> Result<i32, Errno> {
     syscall3(SYS_OPEN_TREE, dfd, filename_ptr, flags).map(|ret| ret as i32)
 }
 
-// Pause the calling process to sleep until a signal is delivered.
+/// Pause the calling process to sleep until a signal is delivered.
+/// ```
+/// use core::mem::size_of;
+///
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+/// }
+///
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_alarm as nc::sighandler_t,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// assert!(ret.is_ok());
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EINTR));
+/// assert_eq!(remaining, 0);
 pub fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)
 }
@@ -2832,6 +3001,23 @@ pub fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
 }
 
 /// Examine and change a signal action.
+/// ```
+/// use std::mem::size_of;
+///
+/// fn handle_sigterm(sig: i32) {
+///     assert_eq!(sig, nc::SIGTERM);
+/// }
+///
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_sigterm as nc::sighandler_t,
+///     sa_mask: nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGTERM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// let ret = nc::kill(nc::getpid(), nc::SIGTERM);
+/// assert!(ret.is_ok());
+/// ```
 pub fn rt_sigaction(
     sig: i32,
     act: &sigaction_t,
@@ -3497,6 +3683,14 @@ pub fn splice(
 }
 
 /// Get file status about a file.
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::stat(path, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -3513,6 +3707,14 @@ pub fn stat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
 }
 
 /// Get filesystem statistics.
+/// ```
+/// let path = "/usr";
+/// let mut statfs = nc::statfs_t::default();
+/// let ret = nc::statfs(path, &mut statfs);
+/// assert!(ret.is_ok());
+/// assert!(statfs.f_bfree > 0);
+/// assert!(statfs.f_bavail > 0);
+/// ```
 pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -3529,6 +3731,14 @@ pub fn statfs64(filename: &str, buf: &mut statfs64_t) -> Result<(), Errno> {
 }
 
 /// Get file status about a file (extended).
+/// ```
+/// let path = "/etc/passwd";
+/// let mut statx = nc::statx_t::default();
+/// let ret = nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn statx(
     dirfd: i32,
     filename: &str,

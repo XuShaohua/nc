@@ -24,6 +24,7 @@ pub const IOCB_FLAG_IOPRIO: i32 = 1 << 1;
 
 /// read() from /dev/aio returns these structures.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct io_event_t {
     /// the data field from the iocb
     pub data: u64,
@@ -41,8 +42,9 @@ pub struct io_event_t {
 /// we always use a 64bit off_t when communicating
 /// with userland.  its up to libraries to do the
 /// proper padding and aio_error abstraction
-#[repr(C)]
 // TODO(Shaohua): Check int types to pre-defined types
+#[repr(C)]
+#[derive(Debug, Default)]
 pub struct iocb_t {
     /// these are internal to the kernel/libc.
     /// data to be returned in event's data */
@@ -63,7 +65,8 @@ pub struct iocb_t {
     pub aio_offset: i64,
 
     /// extra parameters
-    pub aio_reserved2: u64, // TODO: use this for a (struct sigevent *)
+    // TODO: use this for a (struct sigevent *)
+    pub aio_reserved2: u64,
 
     /// flags for the "struct iocb"
     pub aio_flags: u32,

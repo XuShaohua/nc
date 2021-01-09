@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sched_param_t {
     pub sched_priority: i32,
 }
@@ -97,6 +98,7 @@ pub const SCHED_ATTR_SIZE_VER1: i32 = 56;
 /// A task with a max utilization value smaller than 1024 is more likely
 /// scheduled on a CPU with no more capacity than the specified value.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sched_attr_t {
     pub size: u32,
 

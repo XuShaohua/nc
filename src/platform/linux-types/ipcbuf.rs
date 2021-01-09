@@ -17,6 +17,7 @@ use super::types::*;
 /// - 32-bit seq
 /// - 2 miscellaneous 32-bit values
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct ipc64_perm_t {
     pub key: key_t,
     pub uid: uid_t,

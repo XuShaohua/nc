@@ -47,6 +47,7 @@ pub const MSG_COPY: i32 = 0o40000;
 
 /// message buffer for msgsnd and msgrcv calls
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct msgbuf_t {
     /// type of message
     pub mtype: isize,
@@ -56,6 +57,7 @@ pub struct msgbuf_t {
 
 /// buffer for msgctl calls IPC_INFO, MSG_INFO
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct msginfo_t {
     pub msgpool: i32,
     pub msgmap: i32,

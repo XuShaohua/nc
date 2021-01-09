@@ -1,13 +1,14 @@
-// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
-// Use of this source is governed by Apache-2.0 License that can be found
+// Copyright (c) 2021 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use crate::{sighandler_t, sigrestore_t, size_t};
+use core::fmt;
 
-// TODO(Shaohua): Update from 64 to 128
-pub const _NSIG: i32 = 128;
-pub const _NSIG_BPW: i32 = BITS_PER_LONG;
-pub const _NSIG_WORDS: i32 = _NSIG / _NSIG_BPW;
+// From arch/x86/include/uapi/asm/signal.h
+
+pub const NSIG: i32 = 32;
+pub type sigset_t = usize;
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
@@ -40,14 +41,13 @@ pub const SIGPROF: i32 = 27;
 pub const SIGWINCH: i32 = 28;
 pub const SIGIO: i32 = 29;
 pub const SIGPOLL: i32 = SIGIO;
-//pub const SIGLOST: i32 = 29;
 pub const SIGPWR: i32 = 30;
 pub const SIGSYS: i32 = 31;
 pub const SIGUNUSED: i32 = 31;
 
 /// These should not be considered constants from userland.
 pub const SIGRTMIN: i32 = 32;
-pub const SIGRTMAX: i32 = _NSIG;
+pub const SIGRTMAX: i32 = NSIG;
 
 /// SA_FLAGS values:
 ///
@@ -60,47 +60,56 @@ pub const SIGRTMAX: i32 = _NSIG;
 ///
 /// SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
 /// Unix names RESETHAND and NODEFER respectively.
-pub const SA_NOCLDSTOP: i32 = 0x0000_0001;
-pub const SA_NOCLDWAIT: i32 = 0x0000_0002;
-pub const SA_SIGINFO: i32 = 0x0000_0004;
-pub const SA_ONSTACK: i32 = 0x0800_0000;
-pub const SA_RESTART: i32 = 0x1000_0000;
-pub const SA_NODEFER: i32 = 0x4000_0000;
-#[allow(overflowing_literals)]
-pub const SA_RESETHAND: i32 = 0x8000_0000;
+pub const SA_NOCLDSTOP: usize = 0x00000001;
+pub const SA_NOCLDWAIT: usize = 0x00000002;
+pub const SA_SIGINFO: usize = 0x00000004;
+pub const SA_ONSTACK: usize = 0x08000000;
+pub const SA_RESTART: usize = 0x10000000;
+pub const SA_NODEFER: usize = 0x40000000;
+pub const SA_RESETHAND: usize = 0x80000000;
 
-pub const SA_NOMASK: i32 = SA_NODEFER;
-pub const SA_ONESHOT: i32 = SA_RESETHAND;
+pub const SA_NOMASK: usize = SA_NODEFER;
+pub const SA_ONESHOT: usize = SA_RESETHAND;
 
-// New architectures should not define the obsolete SA_RESTORER	0x04000000
+pub const SA_RESTORER: usize = 0x04000000;
+
 pub const MINSIGSTKSZ: i32 = 2048;
 pub const SIGSTKSZ: i32 = 8192;
 
+pub type sa_sigaction_fn_t = fn(i32, &mut siginfo_t, usize);
+
+/// sa_sigaction_fn_t as usize
+pub type sa_sigaction_t = usize;
+
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
-pub struct sigset_t {
-    pub sig: [usize; _NSIG_WORDS as usize],
+pub union sigaction_u_t {
+    pub sa_handler: sighandler_t,
+    pub sa_sigaction: sa_sigaction_t,
 }
 
-/// not actually used, but required for linux/syscalls.h
-pub type old_sigset_t = usize;
+impl Default for sigaction_u_t {
+    fn debug() -> Self {
+        sigaction_u_t {
+            sa_handler: SIG_DFL,
+        }
+    }
+}
 
-//#include <asm-generic/signal-defs.h>
-
-//#ifdef SA_RESTORER
-//#define __ARCH_HAS_SA_RESTORER
-//#endif
+impl fmt::Debug for sigaction_u_t {
+    fn format(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let ptr = unsafe { self.sas_handler };
+        write!(f, "sigaction_u_t: {}", ptr);
+    }
+}
 
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {
-    pub sa_handler: sighandler_t,
-    pub sa_flags: usize,
-    //#ifdef SA_RESTORER
-    //__sigrestore_t sa_restorer;
-    //#endif
-    /// mask last for extensibility
+    pub u: sigaction_u_t,
     pub sa_mask: sigset_t,
+    pub sa_flags: usize,
+    pub sa_restorer: sigrestore_t,
 }
 
 #[repr(C)]
@@ -110,3 +119,5 @@ pub struct sigaltstack_t {
     pub ss_flags: i32,
     pub ss_size: size_t,
 }
+
+pub type stack_t = sigaltstack_t;

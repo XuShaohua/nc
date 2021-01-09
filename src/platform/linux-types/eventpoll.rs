@@ -65,16 +65,21 @@ pub union epoll_data_t {
     pub v_u64: u64,
 }
 
+impl core::fmt::Debug for epoll_data_t {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        let val: u64 = unsafe { self.v_u64 };
+        write!(f, "epoll_data: {}", val)
+    }
+}
+
 impl Default for epoll_data_t {
     fn default() -> Self {
-        epoll_data_t {
-            ptr: 0,
-        }
+        epoll_data_t { ptr: 0 }
     }
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct epoll_event_t {
     pub events: poll_t,
     pub data: epoll_data_t,

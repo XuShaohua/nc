@@ -6,6 +6,7 @@ pub type time64_t = i64;
 pub type timeu64_t = u64;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct timespec64_t {
     /// seconds
     pub tv_sec: time64_t,
@@ -14,6 +15,7 @@ pub struct timespec64_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct itimerspec64_t {
     pub it_interval: timespec64_t,
     pub it_value: timespec64_t,

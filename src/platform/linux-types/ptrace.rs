@@ -55,6 +55,7 @@ pub const PTRACE_LISTEN: i32 = 0x4208;
 pub const PTRACE_PEEKSIGINFO: i32 = 0x4209;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct ptrace_peeksiginfo_args_t {
     /// from which siginfo to start
     pub off: u64,
@@ -72,6 +73,7 @@ pub const PTRACE_SECCOMP_GET_FILTER: i32 = 0x420c;
 pub const PTRACE_SECCOMP_GET_METADATA: i32 = 0x420d;
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct seccomp_metadata_t {
     /// Input: which filter
     pub filter_off: u64,
@@ -87,21 +89,21 @@ pub const PTRACE_SYSCALL_INFO_EXIT: i32 = 2;
 pub const PTRACE_SYSCALL_INFO_SECCOMP: i32 = 3;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct ptrace_syscall_info_seccomp_entry_t {
     pub nr: u64,
     pub args: [u64; 6],
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct ptrace_syscall_info_seccomp_exit_t {
     pub rval: i64,
     pub is_error: u8,
 }
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct ptrace_syscall_info_seccomp_seccomp_t {
     pub nr: u64,
     pub args: [u64; 6],
@@ -109,6 +111,7 @@ pub struct ptrace_syscall_info_seccomp_seccomp_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union ptrace_syscall_info_seccomp_t {
     pub entry: ptrace_syscall_info_seccomp_entry_t,
 
@@ -118,6 +121,7 @@ pub union ptrace_syscall_info_seccomp_t {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct ptrace_syscall_info_t {
     /// PTRACE_SYSCALL_INFO_*
     pub op: u8,

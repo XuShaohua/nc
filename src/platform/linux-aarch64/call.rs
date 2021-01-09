@@ -700,6 +700,13 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Get file status
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::fstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW);
+/// assert!(ret.is_ok());
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn fstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename);

@@ -1929,6 +1929,13 @@ pub fn nfsservctl() {
 }
 
 /// Open and possibly create a file within a directory.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn openat(dirfd: i32, filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);

@@ -3,7 +3,9 @@
 // in the LICENSE file.
 
 mod ldt;
+mod signal;
 mod stat;
 
 pub use ldt::*;
+pub use signal::*;
 pub use stat::*;

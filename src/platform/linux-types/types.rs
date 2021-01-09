@@ -70,10 +70,6 @@ pub struct fd_set_t {
     pub fds_bits: [usize; FD_SETSIZE / (8 * size_of::<isize>())],
 }
 
-// Type of a signal handler.
-// TODO(Shaohua):
-pub type sighandler_t = usize;
-
 /// Type of a SYSV IPC key.
 pub type key_t = i32;
 pub type mqd_t = i32;

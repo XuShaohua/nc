@@ -89,11 +89,18 @@ pub fn afs_syscall() {
 
 /// set an alarm clock for delivery of a signal.
 /// ```
+/// use core::mem::size_of;
+///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
 ///
-/// let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_alarm as nc::sighandler_t,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
 /// let remaining = nc::alarm(1);
 /// let ret = nc::pause();

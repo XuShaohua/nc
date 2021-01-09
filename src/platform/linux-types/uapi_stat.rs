@@ -92,6 +92,7 @@ pub struct statx_timestamp_t {
 /// will have values installed for compatibility purposes so that stat() and
 /// co. can be emulated in userspace.
 #[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct statx_t {
     // 0x00
     /// What results were written [uncond]

@@ -3014,6 +3014,14 @@ pub fn statfs(filename: &str, buf: &mut statfs_t) -> Result<(), Errno> {
 }
 
 /// Get file status about a file (extended).
+/// ```
+/// let path = "/etc/passwd";
+/// let mut statx = nc::statx_t::default();
+/// let ret = nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn statx(
     dirfd: i32,
     filename: &str,

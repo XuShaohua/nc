@@ -1554,6 +1554,13 @@ pub fn newfstatat(dfd: i32, filename: &str, statbuf: &mut stat_t, flag: i32) -> 
 }
 
 /// Open and possibly create a file.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn open(filename: &str, flags: i32, mode: mode_t) -> Result<i32, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

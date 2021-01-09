@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 use crate::{sighandler_t, sigrestore_t, size_t};
+use core::fmt;
 
 // From arch/x86/include/uapi/asm/signal.h
 
@@ -75,15 +76,40 @@ pub const SA_RESTORER: usize = 0x04000000;
 pub const MINSIGSTKSZ: i32 = 2048;
 pub const SIGSTKSZ: i32 = 8192;
 
+pub type sa_sigaction_fn_t = fn(i32, &mut siginfo_t, usize);
+
+/// sa_sigaction_fn_t as usize
+pub type sa_sigaction_t = usize;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
+pub union sigaction_u_t {
+    pub sa_handler: sighandler_t,
+    pub sa_sigaction: sa_sigaction_t,
+}
+
+impl Default for sigaction_u_t {
+    fn debug() -> Self {
+        sigaction_u_t {
+            sa_handler: SIG_DFL,
+        }
+    }
+}
+
+impl fmt::Debug for sigaction_u_t {
+    fn format(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let ptr = unsafe { self.sas_handler };
+        write!(f, "sigaction_u_t: {}", ptr);
+    }
+}
+
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {
-    pub sa_handler: sighandler_t,
+    pub u: sigaction_u_t,
+    pub sa_mask: sigset_t,
     pub sa_flags: usize,
     pub sa_restorer: sigrestore_t,
-
-    /// mask last for extensibility
-    pub sa_mask: sigset_t,
 }
 
 #[repr(C)]

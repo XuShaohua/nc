@@ -2941,6 +2941,17 @@ pub fn rename(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
 }
 
 /// Change name or location of a file.
+/// ```
+/// let path = "/tmp/nc-rename";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-rename-new";
+/// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
 pub fn renameat(
     olddfd: i32,
     oldfilename: &str,

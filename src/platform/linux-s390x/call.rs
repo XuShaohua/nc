@@ -2823,6 +2823,17 @@ pub fn removexattr(filename: &str, name: &str) -> Result<(), Errno> {
 }
 
 /// Change name or location of a file.
+/// ```
+/// let path = "/tmp/nc-rename";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-rename-new";
+/// let ret = nc::rename(path, new_path);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
 pub fn rename(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
     let oldfilename = CString::new(oldfilename);
     let oldfilename_ptr = oldfilename.as_ptr() as usize;

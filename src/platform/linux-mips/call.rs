@@ -1910,6 +1910,14 @@ pub fn lsetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
 }
 
 /// Get file status about a file, without following symbolic.
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::lstat(path, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn lstat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

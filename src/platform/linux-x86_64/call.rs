@@ -622,6 +622,15 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Predeclare an access pattern for file data.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::fadvise64(fd, 0, 1024, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;

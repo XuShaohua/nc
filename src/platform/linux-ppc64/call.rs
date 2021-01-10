@@ -626,7 +626,7 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::fadvise64(fd, 0, 1024, 0);
+/// let ret = nc::fadvise64(fd, 0, 1024, nc::POSIX_FADV_NORMAL);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```

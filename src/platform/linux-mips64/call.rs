@@ -2660,7 +2660,7 @@ pub fn quotactl(cmd: i32, special: &str, id: qid_t, addr: usize) -> Result<(), E
 /// let ret = nc::read(fd, buf.as_mut_ptr() as usize, buf.len());
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap();
-/// assert!(n_read <= buf.len() as isize);
+/// assert!(n_read <= buf.len() as nc::ssize_t);
 /// assert!(nc::close(fd).is_ok());
 /// ```
 pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
@@ -3888,6 +3888,18 @@ pub fn waitid(
 }
 
 /// Write to a file descriptor.
+/// ```
+/// let path = "/tmp/nc-write";
+/// let ret = nc::open(path, nc::O_CREAT | nc::O_WRONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let msg = "Hello, Rust!";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)

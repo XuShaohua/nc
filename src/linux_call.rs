@@ -1312,6 +1312,12 @@ pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
 }
 
 /// Create a directory.
+/// ```
+/// let path = "/tmp/nc-mkdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
 pub fn mkdir(filename: &str, mode: mode_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

@@ -990,6 +990,13 @@ pub fn futimesat(dirfd: i32, filename: &str, times: &[timeval_t; 2]) -> Result<(
 }
 
 /// Determine CPU and NUMA node on which the calling thread is running.
+/// ```
+/// let mut cpu = 0;
+/// let mut node = 0;
+/// let mut cache = nc::getcpu_cache_t::default();
+/// let ret = nc::getcpu(&mut cpu, &mut node, &mut cache);
+/// assert!(ret.is_ok());
+/// ```
 pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Result<(), Errno> {
     let cpu_ptr = cpu as *mut u32 as usize;
     let node_ptr = node as *mut u32 as usize;

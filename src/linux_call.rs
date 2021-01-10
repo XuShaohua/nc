@@ -2024,6 +2024,12 @@ pub fn renameat2(
 }
 
 /// Delete a directory.
+/// ```
+/// let path = "/tmp/nc-rmdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
 pub fn rmdir(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

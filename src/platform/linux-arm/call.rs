@@ -620,6 +620,16 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Manipulate file space.
+/// ```
+/// let path = "/tmp/nc-fallocate";
+/// let fd = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = nc::fallocate(fd, 0, 0, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let mode = mode as usize;

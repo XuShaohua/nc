@@ -2174,6 +2174,9 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
 }
 
 /// Yield the processor.
+/// ```
+/// assert!(nc::sched_yield().is_ok());
+/// ```
 pub fn sched_yield() -> Result<(), Errno> {
     syscall0(SYS_SCHED_YIELD).map(drop)
 }

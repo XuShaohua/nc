@@ -363,6 +363,25 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
 }
 
 /// Copy a range of data from one file to another.
+/// ```
+/// let path_in = "/etc/passwd";
+/// let fd_in = nc::open(path_in, nc::O_RDONLY, 0);
+/// assert!(fd_in.is_ok());
+/// let fd_in = fd_in.unwrap();
+/// let path_out = "/tmp/nc-copy-file-range";
+/// let fd_out = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(fd_out.is_ok());
+/// let fd_out = fd_out.unwrap();
+/// let mut off_in = 0;
+/// let mut off_out = 0;
+/// let copy_len = 64;
+/// let ret = nc::copy_file_range(fd_in, &mut off_in, fd_out, &mut off_out, copy_len, 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(copy_len as nc::ssize_t));
+/// assert!(nc::close(fd_in).is_ok());
+/// assert!(nc::close(fd_out).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
+/// ```
 pub fn copy_file_range(
     fd_in: i32,
     off_in: &mut loff_t,
@@ -4573,6 +4592,7 @@ pub fn unlink(filename: &str) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// // /tmp folder is not empty, so this call always returns error.
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn unlinkat(dfd: i32, filename: &str, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;

@@ -2704,6 +2704,13 @@ pub fn pidfd_send_signal(
 }
 
 /// Create a pipe
+/// ```
+/// let mut fds = [-1_i32, 2];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// ```
 pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
     syscall1(SYS_PIPE, pipefd_ptr).map(drop)

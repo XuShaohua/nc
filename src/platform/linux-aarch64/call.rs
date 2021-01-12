@@ -1652,6 +1652,12 @@ pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
 }
 
 /// Create a directory.
+/// ```
+/// let path = "/tmp/nc-mkdir";
+/// let ret = nc::mkdirat(nc::AT_FDCWD, path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
 pub fn mkdirat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);

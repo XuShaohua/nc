@@ -2106,6 +2106,11 @@ pub fn mknodat(dirfd: i32, filename: &str, mode: mode_t, dev: dev_t) -> Result<(
 }
 
 /// Lock memory.
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let ret = nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len());
+/// assert!(ret.is_ok());
+/// ```
 pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MLOCK, addr, len).map(drop)

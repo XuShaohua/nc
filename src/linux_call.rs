@@ -2775,8 +2775,14 @@ pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, 
 }
 
 /// Get time in seconds.
-pub fn time() -> Result<time_t, Errno> {
-    syscall0(SYS_TIME).map(|ret| ret as time_t)
+/// ```
+/// let mut t = 0;
+/// let ret = nc::time(&mut t);
+/// assert_eq!(ret.unwrap(), t);
+/// assert!(t > 1610421040);
+/// ```
+pub fn time(t: &mut time_t) -> Result<time_t, Errno> {
+    syscall1(SYS_TIME, t as *mut time_t as usize).map(|ret| ret as time_t)
 }
 
 /// Create a per-process timer

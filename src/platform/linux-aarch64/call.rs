@@ -1695,6 +1695,11 @@ pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 }
 
 /// Lock memory.
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let ret = nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// ```
 pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     let len = len as usize;
     let flags = flags as usize;

@@ -2717,6 +2717,13 @@ pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
 }
 
 /// Create a pipe.
+/// ```
+/// let mut fds = [-1_i32, 2];
+/// let ret = nc::pipe2(&mut fds, nc::O_CLOEXEC | nc::O_NONBLOCK);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// ```
 pub fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
     let flags = flags as usize;

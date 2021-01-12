@@ -2305,6 +2305,17 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 }
 
 /// Unlock memory.
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let addr = passwd_buf.as_ptr() as usize;
+/// let ret = nc::mlock2(addr, passwd_buf.len(), nc::MCL_CURRENT);
+/// for i in 0..passwd_buf.len() {
+///   passwd_buf[i] = i as u8;
+/// }
+/// assert!(ret.is_ok());
+/// let ret = nc::munlock(addr, passwd_buf.len());
+/// assert!(ret.is_ok());
+/// ```
 pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MUNLOCK, addr, len).map(drop)

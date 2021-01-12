@@ -4395,6 +4395,15 @@ pub fn unlink(filename: &str) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
+/// ```
+/// let path = "/tmp/nc-unlinkat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// // /tmp folder is not empty, so this call always returns error.
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
+/// ```
 pub fn unlinkat(dfd: i32, filename: &str, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename);

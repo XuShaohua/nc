@@ -801,6 +801,18 @@ pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 }
 
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
+/// ```
+/// let path = "/tmp/nc-fdatasync";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let msg = b"Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fdatasync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FDATASYNC, fd).map(drop)

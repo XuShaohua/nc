@@ -1910,6 +1910,13 @@ pub fn mkdirat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Create a special or ordinary file.
+/// ```
+/// let path = "/tmp/nc-mknod";
+/// // Create a named pipe.
+/// let ret = nc::mknod(path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn mknod(filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

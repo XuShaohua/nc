@@ -230,6 +230,7 @@ pub fn chroot(filename: &str) -> Result<(), Errno> {
     syscall1(SYS_CHROOT, filename_ptr).map(drop)
 }
 
+/// Tune kernel clock. Returns clock state on success.
 pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tx_ptr = tx as *mut timex_t as usize;
@@ -242,6 +243,12 @@ pub fn clock_adjtime64() {
 }
 
 /// Get resolution(precision) of the specific clock.
+/// ```
+/// let mut tp = nc::timespec_t::default();
+/// let ret = nc::clock_getres(nc::CLOCK_BOOTTIME, &mut tp);
+/// assert!(ret.is_ok());
+/// assert!(tp.tv_nsec > 0);
+/// ```
 pub fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *mut timespec_t as usize;
@@ -254,6 +261,12 @@ pub fn clock_getres_time64() {
 }
 
 /// Get time of specific clock.
+/// ```
+/// let mut tp = nc::timespec_t::default();
+/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME_COARSE, &mut tp);
+/// assert!(ret.is_ok());
+/// assert!(tp.tv_sec > 0);
+/// ```
 pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *mut timespec_t as usize;
@@ -637,6 +650,15 @@ pub fn faccessat(dfd: i32, filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Predeclare an access pattern for file data.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::fadvise64(fd, 0, 1024, nc::POSIX_FADV_NORMAL);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
@@ -655,6 +677,16 @@ pub fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result
 }
 
 /// Manipulate file space.
+/// ```
+/// let path = "/tmp/nc-fallocate";
+/// let fd = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = nc::fallocate(fd, 0, 0, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let mode = mode as usize;
@@ -1008,6 +1040,16 @@ pub fn ftime() {
 }
 
 /// Truncate an opened file to a specified length.
+/// ```
+/// let path = "/tmp/nc-ftruncate";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::ftruncate(fd, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let length = length as usize;
@@ -1063,6 +1105,13 @@ pub fn futimesat(dirfd: i32, filename: &str, times: &[timeval_t; 2]) -> Result<(
 }
 
 /// Determine CPU and NUMA node on which the calling thread is running.
+/// ```
+/// let mut cpu = 0;
+/// let mut node = 0;
+/// let mut cache = nc::getcpu_cache_t::default();
+/// let ret = nc::getcpu(&mut cpu, &mut node, &mut cache);
+/// assert!(ret.is_ok());
+/// ```
 pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Result<(), Errno> {
     let cpu_ptr = cpu as *mut u32 as usize;
     let node_ptr = node as *mut u32 as usize;
@@ -1341,8 +1390,8 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
 /// let mut usage = nc::rusage_t::default();
 /// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
 /// assert!(ret.is_ok());
-/// assert!(usage.ru_utime.tv_usec > 0);
 /// assert!(usage.ru_maxrss > 0);
+/// assert_eq!(usage.ru_nswap, 0);
 /// ```
 pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
@@ -1910,6 +1959,15 @@ pub fn lremovexattr(filename: &str, name: &str) -> Result<(), Errno> {
 }
 
 /// Reposition file offset.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::lseek(fd, 42, nc::SEEK_SET);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
@@ -1928,6 +1986,14 @@ pub fn lsetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
 }
 
 /// Get file status about a file, without following symbolic.
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::lstat(path, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn lstat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -2045,6 +2111,12 @@ pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
 }
 
 /// Create a directory.
+/// ```
+/// let path = "/tmp/nc-mkdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
 pub fn mkdir(filename: &str, mode: mode_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -2053,6 +2125,12 @@ pub fn mkdir(filename: &str, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Create a directory.
+/// ```
+/// let path = "/tmp/nc-mkdir";
+/// let ret = nc::mkdirat(nc::AT_FDCWD, path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
 pub fn mkdirat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -2062,6 +2140,13 @@ pub fn mkdirat(dirfd: i32, filename: &str, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Create a special or ordinary file.
+/// ```
+/// let path = "/tmp/nc-mknod";
+/// // Create a named pipe.
+/// let ret = nc::mknod(path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn mknod(filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -2071,6 +2156,13 @@ pub fn mknod(filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
 }
 
 /// Create a special or ordinary file.
+/// ```
+/// let path = "/tmp/nc-mknodat";
+/// // Create a named pipe.
+/// let ret = nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn mknodat(dirfd: i32, filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -2081,12 +2173,22 @@ pub fn mknodat(dirfd: i32, filename: &str, mode: mode_t, dev: dev_t) -> Result<(
 }
 
 /// Lock memory.
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let ret = nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len());
+/// assert!(ret.is_ok());
+/// ```
 pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MLOCK, addr, len).map(drop)
 }
 
 /// Lock memory.
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let ret = nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// ```
 pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     let len = len as usize;
     let flags = flags as usize;
@@ -2094,12 +2196,49 @@ pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 }
 
 /// Lock memory.
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// ```
 pub fn mlockall(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
     syscall1(SYS_MLOCKALL, flags).map(drop)
 }
 
 /// Map files or devices into memory.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let mut sb = nc::stat_t::default();
+/// let ret = nc::fstat(fd, &mut sb);
+/// assert!(ret.is_ok());
+///
+/// let offset: usize = 0;
+/// let length: usize = sb.st_size as usize - offset;
+/// // Offset for mmap must be page aligned.
+/// let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
+/// let map_length = length + offset - pa_offset;
+///
+/// let addr = nc::mmap(
+///     0, // 0 as NULL
+///     map_length,
+///     nc::PROT_READ,
+///     nc::MAP_PRIVATE,
+///     fd,
+///     pa_offset as nc::off_t,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// let n_write = nc::write(1, addr + offset - pa_offset, length);
+/// assert!(n_write.is_ok());
+/// assert_eq!(n_write, Ok(length as nc::ssize_t));
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn mmap(
     start: usize,
     len: size_t,
@@ -2380,17 +2519,67 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 }
 
 /// Unlock memory.
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let addr = passwd_buf.as_ptr() as usize;
+/// let ret = nc::mlock2(addr, passwd_buf.len(), nc::MCL_CURRENT);
+/// for i in 0..passwd_buf.len() {
+///   passwd_buf[i] = i as u8;
+/// }
+/// assert!(ret.is_ok());
+/// let ret = nc::munlock(addr, passwd_buf.len());
+/// assert!(ret.is_ok());
+/// ```
 pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MUNLOCK, addr, len).map(drop)
 }
 
 /// Unlock memory.
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// let ret = nc::munlockall();
+/// assert!(ret.is_ok());
+/// ```
 pub fn munlockall() -> Result<(), Errno> {
     syscall0(SYS_MUNLOCKALL).map(drop)
 }
 
 /// Unmap files or devices from memory.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let mut sb = nc::stat_t::default();
+/// let ret = nc::fstat(fd, &mut sb);
+/// assert!(ret.is_ok());
+///
+/// let offset: usize = 0;
+/// let length: usize = sb.st_size as usize - offset;
+/// // Offset for mmap must be page aligned.
+/// let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
+/// let map_length = length + offset - pa_offset;
+///
+/// let addr = nc::mmap(
+///     0, // 0 as NULL
+///     map_length,
+///     nc::PROT_READ,
+///     nc::MAP_PRIVATE,
+///     fd,
+///     pa_offset as nc::off_t,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// let n_write = nc::write(1, addr + offset - pa_offset, length);
+/// assert!(n_write.is_ok());
+/// assert_eq!(n_write, Ok(length as nc::ssize_t));
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MUNMAP, addr, len).map(drop)
@@ -2613,12 +2802,26 @@ pub fn pidfd_send_signal(
 }
 
 /// Create a pipe
+/// ```
+/// let mut fds = [-1_i32, 2];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// ```
 pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
     syscall1(SYS_PIPE, pipefd_ptr).map(drop)
 }
 
 /// Create a pipe.
+/// ```
+/// let mut fds = [-1_i32, 2];
+/// let ret = nc::pipe2(&mut fds, nc::O_CLOEXEC | nc::O_NONBLOCK);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// ```
 pub fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
     let flags = flags as usize;
@@ -2917,6 +3120,18 @@ pub fn quotactl(cmd: i32, special: &str, id: qid_t, addr: usize) -> Result<(), E
 }
 
 /// Read from a file descriptor.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [0_u8; 4 * 1024];
+/// let ret = nc::read(fd, buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap();
+/// assert!(n_read <= buf.len() as nc::ssize_t);
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_READ, fd, buf_ptr, count).map(|ret| ret as ssize_t)
@@ -2936,6 +3151,19 @@ pub fn readdir() {
 }
 
 /// Read value of a symbolic link.
+/// ```
+/// let oldname = "/etc/passwd";
+/// let newname = "/tmp/nc-readlink";
+/// let ret = nc::symlink(oldname, newname);
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; nc::PATH_MAX as usize];
+/// let ret = nc::readlink(newname, &mut buf);
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as usize;
+/// assert_eq!(n_read, oldname.len());
+/// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
+/// assert!(nc::unlink(newname).is_ok());
+/// ```
 pub fn readlink(filename: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -2945,6 +3173,19 @@ pub fn readlink(filename: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
 }
 
 /// Read value of a symbolic link.
+/// ```
+/// let oldname = "/etc/passwd";
+/// let newname = "/tmp/nc-readlinkat";
+/// let ret = nc::symlink(oldname, newname);
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; nc::PATH_MAX as usize];
+/// let ret = nc::readlinkat(nc::AT_FDCWD, newname, &mut buf);
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as usize;
+/// assert_eq!(n_read, oldname.len());
+/// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
+/// assert!(nc::unlink(newname).is_ok());
+/// ```
 pub fn readlinkat(dirfd: i32, filename: &str, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -3049,6 +3290,17 @@ pub fn removexattr(filename: &str, name: &str) -> Result<(), Errno> {
 }
 
 /// Change name or location of a file.
+/// ```
+/// let path = "/tmp/nc-rename";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-rename-new";
+/// let ret = nc::rename(path, new_path);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
 pub fn rename(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
     let oldfilename = CString::new(oldfilename);
     let oldfilename_ptr = oldfilename.as_ptr() as usize;
@@ -3058,6 +3310,17 @@ pub fn rename(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
 }
 
 /// Change name or location of a file.
+/// ```
+/// let path = "/tmp/nc-rename";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-rename-new";
+/// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
 pub fn renameat(
     olddfd: i32,
     oldfilename: &str,
@@ -3136,6 +3399,12 @@ pub fn restart_syscall() -> Result<i32, Errno> {
 }
 
 /// Delete a directory.
+/// ```
+/// let path = "/tmp/nc-rmdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
 pub fn rmdir(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -3348,6 +3617,9 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
 }
 
 /// Yield the processor.
+/// ```
+/// assert!(nc::sched_yield().is_ok());
+/// ```
 pub fn sched_yield() -> Result<(), Errno> {
     syscall0(SYS_SCHED_YIELD).map(drop)
 }
@@ -3988,26 +4260,54 @@ pub fn swapon(filename: &str, flags: i32) -> Result<(), Errno> {
 }
 
 /// Make a new name for a file.
+/// ```
+/// let oldname = "/etc/passwd";
+/// let newname = "/tmp/nc-symlink";
+/// let ret = nc::symlink(oldname, newname);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(newname).is_ok());
+/// ```
 pub fn symlink(oldname: &str, newname: &str) -> Result<(), Errno> {
+    let oldname = CString::new(oldname);
     let oldname_ptr = oldname.as_ptr() as usize;
+    let newname = CString::new(newname);
     let newname_ptr = newname.as_ptr() as usize;
     syscall2(SYS_SYMLINK, oldname_ptr, newname_ptr).map(drop)
 }
 
 /// Make a new name for a file.
-pub fn symlinkat(oldname: &str, newfd: i32, newname: &str) -> Result<(), Errno> {
+/// ```
+/// let oldname = "/etc/passwd";
+/// let newname = "/tmp/nc-symlinkat";
+/// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(newname).is_ok());
+/// ```
+pub fn symlinkat(oldname: &str, newdirfd: i32, newname: &str) -> Result<(), Errno> {
+    let oldname = CString::new(oldname);
     let oldname_ptr = oldname.as_ptr() as usize;
-    let newfd = newfd as usize;
+    let newname = CString::new(newname);
     let newname_ptr = newname.as_ptr() as usize;
-    syscall3(SYS_SYMLINKAT, oldname_ptr, newfd, newname_ptr).map(drop)
+    let newdirfd = newdirfd as usize;
+    syscall3(SYS_SYMLINKAT, oldname_ptr, newdirfd, newname_ptr).map(drop)
 }
 
 /// Commit filesystem caches to disk.
-pub fn sync() {
-    let _ret = syscall0(SYS_SYNC);
+/// ```
+/// assert!(nc::sync().is_ok());
+/// ```
+pub fn sync() -> Result<(), Errno> {
+    syscall0(SYS_SYNC).map(drop)
 }
 
 /// Commit filesystem cache related to `fd` to disk.
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::syncfs(fd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
 pub fn syncfs(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_SYNCFS, fd).map(drop)
@@ -4062,8 +4362,14 @@ pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Get time in seconds.
-pub fn time() -> Result<time_t, Errno> {
-    syscall0(SYS_TIME).map(|ret| ret as time_t)
+/// ```
+/// let mut t = 0;
+/// let ret = nc::time(&mut t);
+/// assert_eq!(ret.unwrap(), t);
+/// assert!(t > 1610421040);
+/// ```
+pub fn time(t: &mut time_t) -> Result<time_t, Errno> {
+    syscall1(SYS_TIME, t as *mut time_t as usize).map(|ret| ret as time_t)
 }
 
 /// Create a timer that notifies via a file descriptor.
@@ -4180,6 +4486,16 @@ pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Truncate a file to a specified length.
+/// ```
+/// let path = "/tmp/nc-truncate";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::truncate(path, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -4234,6 +4550,14 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
+/// ```
+/// let path = "/tmp/nc-unlink";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn unlink(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -4241,6 +4565,15 @@ pub fn unlink(filename: &str) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
+/// ```
+/// let path = "/tmp/nc-unlinkat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// // /tmp folder is not empty, so this call always returns error.
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
+/// ```
 pub fn unlinkat(dfd: i32, filename: &str, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename);
@@ -4382,6 +4715,18 @@ pub fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_t, Errn
 }
 
 /// Write to a file descriptor.
+/// ```
+/// let path = "/tmp/nc-write";
+/// let ret = nc::open(path, nc::O_CREAT | nc::O_WRONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let msg = "Hello, Rust!";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)

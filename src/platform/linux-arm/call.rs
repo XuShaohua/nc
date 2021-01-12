@@ -984,7 +984,7 @@ pub fn fsync(fd: i32) -> Result<(), Errno> {
 /// let ret = nc::ftruncate(fd, 64 * 1024);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// //assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -4262,6 +4262,14 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
+/// ```
+/// let path = "/tmp/nc-unlink";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn unlink(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

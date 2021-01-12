@@ -1241,7 +1241,7 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
 /// let mut usage = nc::rusage_t::default();
 /// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
 /// assert!(ret.is_ok());
-/// assert!(usage.ru_utime.tv_usec > 0);
+/// assert_eq!(usage.ru_nswap, 0);
 /// assert!(usage.ru_maxrss > 0);
 /// ```
 pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
@@ -1974,6 +1974,13 @@ pub fn mknod(filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
 }
 
 /// Create a special or ordinary file.
+/// ```
+/// let path = "/tmp/nc-mknodat";
+/// // Create a named pipe.
+/// let ret = nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn mknodat(dirfd: i32, filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);

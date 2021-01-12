@@ -1366,6 +1366,13 @@ pub fn mknod(filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
 }
 
 /// Create a special or ordinary file.
+/// ```
+/// let path = "/tmp/nc-mknodat";
+/// // Create a named pipe.
+/// let ret = nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn mknodat(dirfd: i32, filename: &str, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);

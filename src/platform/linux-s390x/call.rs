@@ -3896,11 +3896,20 @@ pub fn symlink(oldname: &str, newname: &str) -> Result<(), Errno> {
 }
 
 /// Make a new name for a file.
-pub fn symlinkat(oldname: &str, newfd: i32, newname: &str) -> Result<(), Errno> {
+/// ```
+/// let oldname = "/etc/passwd";
+/// let newname = "/tmp/nc-symlinkat";
+/// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(newname).is_ok());
+/// ```
+pub fn symlinkat(oldname: &str, newdirfd: i32, newname: &str) -> Result<(), Errno> {
+    let oldname = CString::new(oldname);
     let oldname_ptr = oldname.as_ptr() as usize;
-    let newfd = newfd as usize;
+    let newname = CString::new(newname);
     let newname_ptr = newname.as_ptr() as usize;
-    syscall3(SYS_SYMLINKAT, oldname_ptr, newfd, newname_ptr).map(drop)
+    let newdirfd = newdirfd as usize;
+    syscall3(SYS_SYMLINKAT, oldname_ptr, newdirfd, newname_ptr).map(drop)
 }
 
 /// Commit filesystem caches to disk.

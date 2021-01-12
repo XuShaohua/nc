@@ -4113,6 +4113,13 @@ pub fn sync() -> Result<(), Errno> {
 }
 
 /// Commit filesystem cache related to `fd` to disk.
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::syncfs(fd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
 pub fn syncfs(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_SYNCFS, fd).map(drop)

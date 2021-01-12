@@ -3839,8 +3839,11 @@ pub fn symlinkat(oldname: &str, newdirfd: i32, newname: &str) -> Result<(), Errn
 }
 
 /// Commit filesystem caches to disk.
-pub fn sync() {
-    let _ret = syscall0(SYS_SYNC);
+/// ```
+/// assert!(nc::sync().is_ok());
+/// ```
+pub fn sync() -> Result<(), Errno> {
+    syscall0(SYS_SYNC).map(drop)
 }
 
 /// Commit filesystem cache related to `fd` to disk.

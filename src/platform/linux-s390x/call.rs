@@ -1235,8 +1235,8 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
 /// let mut usage = nc::rusage_t::default();
 /// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
 /// assert!(ret.is_ok());
-/// assert!(usage.ru_utime.tv_usec > 0);
 /// assert!(usage.ru_maxrss > 0);
+/// assert_eq!(usage.ru_nswap, 0);
 /// ```
 pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
@@ -2012,6 +2012,10 @@ pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 }
 
 /// Lock memory.
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// ```
 pub fn mlockall(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
     syscall1(SYS_MLOCKALL, flags).map(drop)

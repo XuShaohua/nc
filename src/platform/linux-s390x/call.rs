@@ -3186,9 +3186,31 @@ pub fn remap_file_pages(
 }
 
 /// Remove an extended attribute.
+/// ```
+/// let path = "/tmp/nc-removexattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let ret = nc::removexattr(path, attr_name);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn removexattr(filename: &str, name: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     syscall2(SYS_REMOVEXATTR, filename_ptr, name_ptr).map(drop)
 }

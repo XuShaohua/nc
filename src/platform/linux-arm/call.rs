@@ -1993,12 +1993,35 @@ pub fn listxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, E
 }
 
 /// List extended attribute names.
-pub fn llistxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-llistxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len);
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn llistxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
-    let list_ptr = list.as_mut_ptr() as usize;
-    let len = list.len();
-    syscall3(SYS_LLISTXATTR, filename_ptr, list_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_LLISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
 }
 
 /// Return a directory entry's path.

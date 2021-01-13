@@ -869,11 +869,34 @@ pub fn finit_module(fd: i32, param_values: &str, flags: i32) -> Result<(), Errno
 }
 
 /// List extended attribute names.
-pub fn flistxattr(fd: i32, list: &mut [u8]) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-flistxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::flistxattr(fd, buf.as_mut_ptr() as usize, buf_len);
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let list_ptr = list.as_mut_ptr() as usize;
-    let len = list.len();
-    syscall3(SYS_FLISTXATTR, fd, list_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_FLISTXATTR, fd, list, size).map(|ret| ret as ssize_t)
 }
 
 /// Apply or remove an advisory lock on an open file.

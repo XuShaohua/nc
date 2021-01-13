@@ -3353,6 +3353,13 @@ pub fn umount2(name: &str, flags: i32) -> Result<(), Errno> {
 }
 
 /// Get name and information about current kernel.
+/// ```
+/// let mut buf = nc::utsname_t::default();
+/// let ret = nc::uname(&mut buf);
+/// assert!(ret.is_ok());
+/// assert!(!buf.sysname.is_empty());
+/// assert!(!buf.machine.is_empty());
+/// ```
 pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
     let buf_ptr = buf as *mut utsname_t as usize;
     syscall1(SYS_UNAME, buf_ptr).map(drop)

@@ -714,6 +714,33 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 }
 
 /// Get extended attribute value.
+/// ```
+/// let path = "/tmp/nc-fgetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::fgetxattr(fd, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fgetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let name = CString::new(name);

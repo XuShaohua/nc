@@ -1335,13 +1335,40 @@ pub fn lremovexattr(filename: &str, name: &str) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
-pub fn lsetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-lsetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::lsetxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn lsetxattr(
+    filename: &str,
+    name: &str,
+    value: usize,
+    size: size_t,
+    flags: i32,
+) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
-    syscall4(SYS_LSETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let flags = flags as usize;
+    syscall5(SYS_LSETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
 }
 
 /// Reposition file offset.

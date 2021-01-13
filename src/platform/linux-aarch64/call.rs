@@ -1197,6 +1197,33 @@ pub fn getuid() -> uid_t {
 }
 
 /// Get extended attribute value.
+/// ```
+/// let path = "/tmp/nc-getxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::getxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

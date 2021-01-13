@@ -887,11 +887,33 @@ pub fn fsconfig(fd: i32, cmd: u32, key: &str, value: &str, aux: i32) -> Result<(
 }
 
 /// Set extended attribute value.
-pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-fsetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::fsetxattr(
+///     fd,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t, flags: i32) -> Result<(), Errno> {
     let fd = fd as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
-    syscall4(SYS_FSETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let flags = flags as usize;
+    syscall5(SYS_FSETXATTR, fd, name_ptr, value, size, flags).map(drop)
 }
 
 /// Create a kernel mount representation for a new, prepared superblock.

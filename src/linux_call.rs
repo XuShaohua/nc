@@ -716,6 +716,7 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 /// Get extended attribute value.
 pub fn fgetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
     syscall4(SYS_FGETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
@@ -2532,12 +2533,40 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
-pub fn setxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-setxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn setxattr(
+    filename: &str,
+    name: &str,
+    value: usize,
+    size: size_t,
+    flags: i32,
+) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
-    syscall4(SYS_SETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let flags = flags as usize;
+    syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
 }
 
 /// Attach the System V shared memory segment.

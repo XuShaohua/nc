@@ -895,8 +895,30 @@ pub fn fork() -> Result<pid_t, Errno> {
 }
 
 /// Remove an extended attribute.
+/// ```
+/// let path = "/tmp/nc-fremovexattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let ret = nc::fremovexattr(fd, attr_name);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fremovexattr(fd: i32, name: &str) -> Result<(), Errno> {
     let fd = fd as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     syscall2(SYS_FREMOVEXATTR, fd, name_ptr).map(drop)
 }

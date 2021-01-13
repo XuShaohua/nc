@@ -1416,14 +1416,41 @@ pub fn link(old_filename: &str, new_filename: &str) -> Result<(), Errno> {
 }
 
 /// Make a new name for a file.
-pub fn linkat(olddfd: i32, oldfilename: &str, newdfd: i32, newfilename: &str) -> Result<(), Errno> {
+/// ```
+/// let old_filename = "/tmp/nc-linkat-src";
+/// let ret = nc::open(old_filename, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_filename = "/tmp/nc-linkat-dst";
+/// let flags = nc::AT_SYMLINK_FOLLOW;
+/// assert!(nc::linkat(nc::AT_FDCWD, old_filename, nc::AT_FDCWD,  new_filename, flags).is_ok());
+/// assert!(nc::unlink(old_filename).is_ok());
+/// assert!(nc::unlink(new_filename).is_ok());
+/// ```
+pub fn linkat(
+    olddfd: i32,
+    oldfilename: &str,
+    newdfd: i32,
+    newfilename: &str,
+    flags: i32,
+) -> Result<(), Errno> {
     let olddfd = olddfd as usize;
     let oldfilename = CString::new(oldfilename);
     let oldfilename_ptr = oldfilename.as_ptr() as usize;
     let newdfd = newdfd as usize;
     let newfilename = CString::new(newfilename);
     let newfilename_ptr = newfilename.as_ptr() as usize;
-    syscall4(SYS_LINKAT, olddfd, oldfilename_ptr, newdfd, newfilename_ptr).map(drop)
+    let flags = flags as usize;
+    syscall5(
+        SYS_LINKAT,
+        olddfd,
+        oldfilename_ptr,
+        newdfd,
+        newfilename_ptr,
+        flags,
+    )
+    .map(drop)
 }
 
 /// Listen for connections on a socket.

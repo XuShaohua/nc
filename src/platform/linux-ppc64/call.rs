@@ -1950,6 +1950,31 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 }
 
 /// List extended attribute names.
+/// ```
+/// let path = "/tmp/nc-listxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::listxattr(path, buf.as_mut_ptr() as usize, buf_len);
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn listxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

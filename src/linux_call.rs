@@ -1435,12 +1435,13 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// assert!(nc::unlink(path).is_ok());
-pub fn listxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, Errno> {
-/// let filename = CString::new(filename);
-/// let filename_ptr = filename.as_ptr() as usize;
-/// syscall3(SYS_LISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
-}
 /// ```
+pub fn listxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, Errno> {
+    let filename = CString::new(filename);
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall3(SYS_LISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
+}
+
 /// List extended attribute names.
 pub fn llistxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);

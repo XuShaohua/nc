@@ -1966,6 +1966,27 @@ pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
 }
 
 /// Remove an extended attribute.
+/// ```
+/// let path = "/tmp/nc-lremovexattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let ret = nc::lremovexattr(path, attr_name);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn lremovexattr(filename: &str, name: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

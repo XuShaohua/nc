@@ -3075,12 +3075,22 @@ pub fn putpmsg() {
 }
 
 /// Write to a file descriptor without changing file offset.
-pub fn pwrite64(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-pwrite64";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let buf = "Hello, Rust";
+/// let ret = nc::pwrite64(fd, buf.as_ptr() as usize, buf.len(), 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(buf.len() as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
     let offset = offset as usize;
-    syscall4(SYS_PWRITE64, fd, buf_ptr, len, offset).map(|ret| ret as ssize_t)
+    syscall4(SYS_PWRITE64, fd, buf, count, offset).map(|ret| ret as ssize_t)
 }
 
 /// Write to a file descriptor without changing file offset.

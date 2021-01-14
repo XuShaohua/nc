@@ -2410,6 +2410,14 @@ pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Initialize file head into page cache.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// let fd = ret.unwrap();
+/// let ret = nc::readahead(fd, 0, 64);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;

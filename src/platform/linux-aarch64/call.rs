@@ -2588,12 +2588,22 @@ pub fn prctl(
 }
 
 /// Read from a file descriptor without changing file offset.
-pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [0_u8; 128];
+/// let read_count = 64;
+/// let ret = nc::pread64(fd, buf.as_mut_ptr() as usize, read_count, 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(read_count as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
     let offset = offset as usize;
-    syscall4(SYS_PREAD64, fd, buf_ptr, len, offset).map(|ret| ret as ssize_t)
+    syscall4(SYS_PREAD64, fd, buf, count, offset).map(|ret| ret as ssize_t)
 }
 
 /// Read from a file descriptor without changing file offset.

@@ -2347,18 +2347,48 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
 }
 
 /// Write to a file descriptor without changing file offset.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+///
+/// let path_out = "/tmp/nc-pwritev";
+/// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let flags = nc::RWF_DSYNC | nc::RWF_APPEND;
+/// let ret = nc::pwritev2(fd, &iov, 0, iov.len() - 1, flags);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
+/// ```
 pub fn pwritev2(
     fd: i32,
-    vec: &iovec_t,
-    vlen: usize,
+    vec: &[iovec_t],
     pos_l: usize,
     pos_h: usize,
     flags: rwf_t,
 ) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let vec_ptr = vec as *const iovec_t as usize;
+    let vec_ptr = vec.as_ptr() as usize;
+    let vec_len = vec.len();
     let flags = flags as usize;
-    syscall6(SYS_PWRITEV2, fd, vec_ptr, vlen, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
+    syscall6(SYS_PWRITEV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
 }
 
 /// Read from a file descriptor.
@@ -2503,7 +2533,7 @@ pub fn recvmmsg(
 ) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
-    let vlen = msgvec.len() as usize;
+    let vlen = msgvec.len();
     let flags = flags as usize;
     let timeout_ptr = timeout as *mut timespec_t as usize;
     syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr).map(|ret| ret as i32)
@@ -2752,7 +2782,7 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
 pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
-    let vlen = msgvec.len() as usize;
+    let vlen = msgvec.len();
     let flags = flags as usize;
     syscall4(SYS_SENDMMSG, sockfd, msgvec_ptr, vlen, flags).map(|ret| ret as i32)
 }

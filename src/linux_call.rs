@@ -4782,6 +4782,11 @@ pub fn idle() -> Result<(), Errno> {
 }
 
 /// Change I/O privilege level.
+/// ```
+/// let ret = nc::iopl(1);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn iopl(level: i32) -> Result<(), Errno> {
     let level = level as usize;
     syscall1(SYS_IOPL, level).map(drop)

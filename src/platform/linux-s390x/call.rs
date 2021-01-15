@@ -4303,7 +4303,7 @@ pub fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> 
     syscall3(SYS_SOCKET, domain, sock_type, protocol).map(|ret| ret as i32)
 }
 
-//// System call vectors.
+/// System call vectors.
 ///
 /// Argument checking cleaned up. Saved 20% in size.
 /// This function doesn't need to set the kernel lock because

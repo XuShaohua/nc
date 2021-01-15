@@ -4458,6 +4458,14 @@ pub fn stat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Get file status about a file.
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat64_t::default();
+/// let ret = nc::stat64(path, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn stat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

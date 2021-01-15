@@ -4955,7 +4955,7 @@ pub fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
     syscall1(SYS_SIGSUSPEND, mask_ptr).map(drop)
 }
 
-//// System call vectors.
+/// System call vectors.
 ///
 /// Argument checking cleaned up. Saved 20% in size.
 /// This function doesn't need to set the kernel lock because
@@ -4968,6 +4968,14 @@ pub fn socketcall(call: i32, args: &mut usize) -> Result<usize, Errno> {
 }
 
 /// Get file status about a file.
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat64_t::default();
+/// let ret = nc::stat64(path, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a regular file.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn stat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

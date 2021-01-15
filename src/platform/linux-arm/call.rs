@@ -4775,6 +4775,16 @@ pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
 }
 
 /// Truncate a file to a specific length.
+/// ```
+/// let path = "/tmp/nc-truncate64";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::truncate64(path, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn truncate64(path: &str, len: loff_t) -> Result<(), Errno> {
     let path = CString::new(path);
     let path_ptr = path.as_ptr() as usize;

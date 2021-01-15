@@ -1190,6 +1190,16 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
 }
 
 /// Truncate a file to a specific length.
+/// ```
+/// let path = "/tmp/nc-ftruncate64";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::ftruncate64(fd, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn ftruncate64(fd: i32, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let len = len as usize;

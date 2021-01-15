@@ -2,12 +2,13 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use super::limits::*;
 use super::types::*;
 
 /// From fs/readir.c
 
 #[repr(C)]
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct linux_dirent_t {
     /// Inode number
     pub d_ino: ino_t,
@@ -20,5 +21,7 @@ pub struct linux_dirent_t {
 
     /// Filename (null-terminated)
     //pub d_name: [u8; 1],
-    pub d_name: usize,
+    //pub d_name: usize,
+    pub d_name: [u8; PATH_MAX as usize],
+    // FIXME(Shaohua): Really bad idea.
 }

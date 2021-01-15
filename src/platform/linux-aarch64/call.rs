@@ -8,7 +8,6 @@ use super::sysno::*;
 use crate::c_str::CString;
 use crate::syscalls::*;
 use crate::types::*;
-use alloc::string::String;
 use alloc::vec::Vec;
 
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
@@ -242,6 +241,25 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
 }
 
 /// Copy a range of data from one file to another.
+/// ```
+/// let path_in = "/etc/passwd";
+/// let fd_in = nc::open(path_in, nc::O_RDONLY, 0);
+/// assert!(fd_in.is_ok());
+/// let fd_in = fd_in.unwrap();
+/// let path_out = "/tmp/nc-copy-file-range";
+/// let fd_out = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(fd_out.is_ok());
+/// let fd_out = fd_out.unwrap();
+/// let mut off_in = 0;
+/// let mut off_out = 0;
+/// let copy_len = 64;
+/// let ret = nc::copy_file_range(fd_in, &mut off_in, fd_out, &mut off_out, copy_len, 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(copy_len as nc::ssize_t));
+/// assert!(nc::close(fd_in).is_ok());
+/// assert!(nc::close(fd_out).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
+/// ```
 pub fn copy_file_range(
     fd_in: i32,
     off_in: &mut loff_t,
@@ -622,14 +640,54 @@ pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 }
 
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
+/// ```
+/// let path = "/tmp/nc-fdatasync";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let msg = b"Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fdatasync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FDATASYNC, fd).map(drop)
 }
 
 /// Get extended attribute value.
+/// ```
+/// let path = "/tmp/nc-fgetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::fgetxattr(fd, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fgetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
     syscall4(SYS_FGETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
@@ -645,11 +703,34 @@ pub fn finit_module(fd: i32, param_values: &str, flags: i32) -> Result<(), Errno
 }
 
 /// List extended attribute names.
-pub fn flistxattr(fd: i32, list: &mut [u8]) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-flistxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::flistxattr(fd, buf.as_mut_ptr() as usize, buf_len);
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let list_ptr = list.as_mut_ptr() as usize;
-    let len = list.len();
-    syscall3(SYS_FLISTXATTR, fd, list_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_FLISTXATTR, fd, list, size).map(|ret| ret as ssize_t)
 }
 
 /// Apply or remove an advisory lock on an open file.
@@ -660,8 +741,30 @@ pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 }
 
 /// Remove an extended attribute.
+/// ```
+/// let path = "/tmp/nc-fremovexattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let ret = nc::fremovexattr(fd, attr_name);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn fremovexattr(fd: i32, name: &str) -> Result<(), Errno> {
     let fd = fd as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     syscall2(SYS_FREMOVEXATTR, fd, name_ptr).map(drop)
 }
@@ -679,11 +782,33 @@ pub fn fsconfig(fd: i32, cmd: u32, key: &str, value: &str, aux: i32) -> Result<(
 }
 
 /// Set extended attribute value.
-pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-fsetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::fsetxattr(
+///     fd,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t, flags: i32) -> Result<(), Errno> {
     let fd = fd as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
-    syscall4(SYS_FSETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let flags = flags as usize;
+    syscall5(SYS_FSETXATTR, fd, name_ptr, value, size, flags).map(drop)
 }
 
 /// Create a kernel mount representation for a new, prepared superblock.
@@ -855,45 +980,51 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
 }
 
 /// Get directory entries.
-pub fn getdents64(fd: i32) -> Result<Vec<linux_dirent64_extern_t>, Errno> {
-    const BUF_SIZE: usize = 4096;
-
-    let buf: Vec<u8> = vec![0; BUF_SIZE];
-    let buf_box = buf.into_boxed_slice();
-    let buf_box_ptr = alloc::boxed::Box::into_raw(buf_box) as *mut u8 as usize;
+/// ```
+/// let path = "/etc";
+/// let ret = nc::open(path, nc::O_DIRECTORY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// const BUF_SIZE: usize = 4 * 1024;
+/// loop {
+///     // TODO(Shaohua): Only allocate one buf block.
+///     let mut buf: Vec<u8> = vec![0; BUF_SIZE];
+///     let ret = nc::getdents64(fd, buf.as_mut_ptr() as usize, BUF_SIZE);
+///     assert!(ret.is_ok());
+///
+///     let buf_box = buf.into_boxed_slice();
+///     let buf_box_ptr = Box::into_raw(buf_box) as *mut u8 as usize;
+///     let nread = ret.unwrap() as usize;
+///     if nread == 0 {
+///         break;
+///     }
+///
+///     let mut bpos: usize = 0;
+///     while bpos < nread {
+///         let d = (buf_box_ptr + bpos) as *mut nc::linux_dirent64_t;
+///         let d_ref = unsafe { &(*d) };
+///         let mut name_vec: Vec<u8> = vec![];
+///         // TODO(Shaohua): Calculate string len of name.
+///         for i in 0..nc::PATH_MAX {
+///             let c = d_ref.d_name[i as usize];
+///             if c == 0 {
+///                 break;
+///             }
+///             name_vec.push(c);
+///         }
+///         let name = String::from_utf8(name_vec).unwrap();
+///         println!("name: {}", name);
+///
+///         bpos += d_ref.d_reclen as usize;
+///     }
+/// }
+///
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let nread = syscall3(SYS_GETDENTS64, fd, buf_box_ptr, BUF_SIZE)?;
-    let mut result: Vec<linux_dirent64_extern_t> = Vec::new();
-
-    if nread == 0 {
-        return Ok(result);
-    }
-
-    let mut bpos = 0;
-    while bpos < nread {
-        let d = (buf_box_ptr + bpos) as *mut linux_dirent64_t;
-        let mut name_vec: Vec<u8> = vec![];
-        for i in 0..PATH_MAX {
-            unsafe {
-                let c = (*d).d_name[i as usize];
-                if c == 0 {
-                    break;
-                }
-                name_vec.push(c);
-            }
-        }
-        let name = String::from_utf8(name_vec).unwrap();
-        unsafe {
-            result.push(linux_dirent64_extern_t {
-                d_ino: (*d).d_ino,
-                d_off: (*d).d_off,
-                d_type: (*d).d_type,
-                d_name: name,
-            });
-            bpos += (*d).d_reclen as usize;
-        }
-    }
-    Ok(result)
+    syscall3(SYS_GETDENTS64, fd, dirp, count).map(|ret| ret as ssize_t)
 }
 
 /// Get the effective group ID of the calling process.
@@ -1143,6 +1274,33 @@ pub fn getuid() -> uid_t {
 }
 
 /// Get extended attribute value.
+/// ```
+/// let path = "/tmp/nc-getxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::getxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn getxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -1470,6 +1628,33 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 }
 
 /// Get extended attribute value.
+/// ```
+/// let path = "/tmp/nc-lgetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::lgetxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn lgetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -1480,14 +1665,41 @@ pub fn lgetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Resu
 }
 
 /// Make a new name for a file.
-pub fn linkat(olddfd: i32, oldfilename: &str, newdfd: i32, newfilename: &str) -> Result<(), Errno> {
+/// ```
+/// let old_filename = "/tmp/nc-linkat-src";
+/// let ret = nc::open(old_filename, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_filename = "/tmp/nc-linkat-dst";
+/// let flags = nc::AT_SYMLINK_FOLLOW;
+/// assert!(nc::linkat(nc::AT_FDCWD, old_filename, nc::AT_FDCWD,  new_filename, flags).is_ok());
+/// assert!(nc::unlink(old_filename).is_ok());
+/// assert!(nc::unlink(new_filename).is_ok());
+/// ```
+pub fn linkat(
+    olddfd: i32,
+    oldfilename: &str,
+    newdfd: i32,
+    newfilename: &str,
+    flags: i32,
+) -> Result<(), Errno> {
     let olddfd = olddfd as usize;
     let oldfilename = CString::new(oldfilename);
     let oldfilename_ptr = oldfilename.as_ptr() as usize;
     let newdfd = newdfd as usize;
     let newfilename = CString::new(newfilename);
     let newfilename_ptr = newfilename.as_ptr() as usize;
-    syscall4(SYS_LINKAT, olddfd, oldfilename_ptr, newdfd, newfilename_ptr).map(drop)
+    let flags = flags as usize;
+    syscall5(
+        SYS_LINKAT,
+        olddfd,
+        oldfilename_ptr,
+        newdfd,
+        newfilename_ptr,
+        flags,
+    )
+    .map(drop)
 }
 
 /// Listen for connections on a socket.
@@ -1498,21 +1710,67 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 }
 
 /// List extended attribute names.
-pub fn listxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-listxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::listxattr(path, buf.as_mut_ptr() as usize, buf_len);
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn listxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
-    let list_ptr = list.as_mut_ptr() as usize;
-    let len = list.len();
-    syscall3(SYS_LISTXATTR, filename_ptr, list_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_LISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
 }
 
 /// List extended attribute names.
-pub fn llistxattr(filename: &str, list: &mut [u8]) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-llistxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; 16];
+/// let buf_len = buf.len();
+/// let ret = nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len);
+/// let attr_len = ret.unwrap() as usize;
+/// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn llistxattr(filename: &str, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
-    let list_ptr = list.as_mut_ptr() as usize;
-    let len = list.len();
-    syscall3(SYS_LLISTXATTR, filename_ptr, list_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_LLISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
 }
 
 /// Return a directory entry's path.
@@ -1525,6 +1783,27 @@ pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
 }
 
 /// Remove an extended attribute.
+/// ```
+/// let path = "/tmp/nc-lremovexattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let ret = nc::lremovexattr(path, attr_name);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn lremovexattr(filename: &str, name: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -1551,13 +1830,40 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
-pub fn lsetxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-lsetxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::lsetxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn lsetxattr(
+    filename: &str,
+    name: &str,
+    value: usize,
+    size: size_t,
+    flags: i32,
+) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
-    syscall4(SYS_LSETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let flags = flags as usize;
+    syscall5(SYS_LSETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
 }
 
 /// Give advice about use of memory.
@@ -2287,32 +2593,83 @@ pub fn prctl(
 }
 
 /// Read from a file descriptor without changing file offset.
-pub fn pread64(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [0_u8; 128];
+/// let read_count = 64;
+/// let ret = nc::pread64(fd, buf.as_mut_ptr() as usize, read_count, 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(read_count as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
     let offset = offset as usize;
-    syscall4(SYS_PREAD64, fd, buf_ptr, len, offset).map(|ret| ret as ssize_t)
+    syscall4(SYS_PREAD64, fd, buf, count, offset).map(|ret| ret as ssize_t)
 }
 
 /// Read from a file descriptor without changing file offset.
-pub fn preadv(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let iov_len = iov.len();
+/// let ret = nc::preadv(fd, &mut iov, 0, iov_len - 1);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn preadv(fd: i32, vec: &mut [iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let vec_ptr = vec.as_ptr() as usize;
+    let vec_ptr = vec.as_mut_ptr() as usize;
     let vec_len = vec.len();
     syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
 }
 
 /// Read from a file descriptor without changing file offset.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let iov_len = iov.len();
+/// let flags = 0;
+/// let ret = nc::preadv2(fd, &mut iov, 0, iov_len - 1, flags);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn preadv2(
     fd: i32,
-    vec: &[iovec_t],
+    vec: &mut [iovec_t],
     pos_l: usize,
     pos_h: usize,
     flags: rwf_t,
 ) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let vec_ptr = vec.as_ptr() as usize;
+    let vec_ptr = vec.as_mut_ptr() as usize;
     let vec_len = vec.len();
     let flags = flags as usize;
     syscall6(SYS_PREADV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
@@ -2429,40 +2786,104 @@ pub fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Result<isiz
 }
 
 /// Write to a file descriptor without changing file offset.
-pub fn pwrite64(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-pwrite64";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let buf = "Hello, Rust";
+/// let ret = nc::pwrite64(fd, buf.as_ptr() as usize, buf.len(), 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(buf.len() as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
     let offset = offset as usize;
-    syscall4(SYS_PWRITE64, fd, buf_ptr, len, offset).map(|ret| ret as ssize_t)
+    syscall4(SYS_PWRITE64, fd, buf, count, offset).map(|ret| ret as ssize_t)
 }
 
 /// Write to a file descriptor without changing file offset.
-pub fn pwritev(
-    fd: i32,
-    vec: &iovec_t,
-    vlen: usize,
-    pos_l: usize,
-    pos_h: usize,
-) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+///
+/// let path_out = "/tmp/nc-pwritev";
+/// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::pwritev(fd, &iov, 0, iov.len() - 1);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
+/// ```
+pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let vec_ptr = vec as *const iovec_t as usize;
-    syscall5(SYS_PWRITEV, fd, vec_ptr, vlen, pos_l, pos_h).map(|ret| ret as ssize_t)
+    let vec_ptr = vec.as_ptr() as usize;
+    let vec_len = vec.len();
+    syscall5(SYS_PWRITEV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
 }
 
 /// Write to a file descriptor without changing file offset.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+///
+/// let path_out = "/tmp/nc-pwritev";
+/// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let flags = nc::RWF_DSYNC | nc::RWF_APPEND;
+/// let ret = nc::pwritev2(fd, &iov, 0, iov.len() - 1, flags);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
+/// ```
 pub fn pwritev2(
     fd: i32,
-    vec: &iovec_t,
-    vlen: usize,
+    vec: &[iovec_t],
     pos_l: usize,
     pos_h: usize,
     flags: rwf_t,
 ) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let vec_ptr = vec as *const iovec_t as usize;
+    let vec_ptr = vec.as_ptr() as usize;
+    let vec_len = vec.len();
     let flags = flags as usize;
-    syscall6(SYS_PWRITEV2, fd, vec_ptr, vlen, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
+    syscall6(SYS_PWRITEV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
 }
 
 /// Manipulate disk quotes.
@@ -2493,6 +2914,14 @@ pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Initialize file head into page cache.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// let fd = ret.unwrap();
+/// let ret = nc::readahead(fd, 0, 64);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
@@ -2524,6 +2953,26 @@ pub fn readlinkat(dirfd: i32, filename: &str, buf: &mut [u8]) -> Result<ssize_t,
 }
 
 /// Read from a file descriptor into multiple buffers.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+/// // TODO(Shaohua): Replace with as_mut_ptr()
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov.as_mut_ptr() as usize;
@@ -2574,7 +3023,7 @@ pub fn recvmmsg(
 ) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
-    let vlen = msgvec.len() as usize;
+    let vlen = msgvec.len();
     let flags = flags as usize;
     let timeout_ptr = timeout as *mut timespec_t as usize;
     syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr).map(|ret| ret as i32)
@@ -2605,9 +3054,31 @@ pub fn remap_file_pages(
 }
 
 /// Remove an extended attribute.
+/// ```
+/// let path = "/tmp/nc-removexattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// let ret = nc::removexattr(path, attr_name);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn removexattr(filename: &str, name: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     syscall2(SYS_REMOVEXATTR, filename_ptr, name_ptr).map(drop)
 }
@@ -2962,7 +3433,7 @@ pub fn sendfile(
 pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
-    let vlen = msgvec.len() as usize;
+    let vlen = msgvec.len();
     let flags = flags as usize;
     syscall4(SYS_SENDMMSG, sockfd, msgvec_ptr, vlen, flags).map(|ret| ret as i32)
 }
@@ -3147,12 +3618,40 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
-pub fn setxattr(filename: &str, name: &str, value: usize, size: size_t) -> Result<ssize_t, Errno> {
+/// ```
+/// let path = "/tmp/nc-setxattr";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let attr_name = "user.creator";
+/// let attr_value = "nc-0.0.1";
+/// //let flags = 0;
+/// let flags = nc::XATTR_CREATE;
+/// let ret = nc::setxattr(
+///     path,
+///     &attr_name,
+///     attr_value.as_ptr() as usize,
+///     attr_value.len(),
+///     flags,
+/// );
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn setxattr(
+    filename: &str,
+    name: &str,
+    value: usize,
+    size: size_t,
+    flags: i32,
+) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let size = size as usize;
-    syscall4(SYS_SETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let flags = flags as usize;
+    syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
 }
 
 /// Set default NUMA memory policy for a thread and its children
@@ -3516,6 +4015,14 @@ pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
 }
 
 /// Set file mode creation mask.
+/// ```
+/// let new_mask = 0o077;
+/// let ret = nc::umask(new_mask);
+/// assert!(ret.is_ok());
+/// let old_mask = ret.unwrap();
+/// let ret = nc::umask(old_mask);
+/// assert_eq!(ret, Ok(new_mask));
+/// ```
 pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     let mode = mode as usize;
     syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
@@ -3529,6 +4036,13 @@ pub fn umount2(name: &str, flags: i32) -> Result<(), Errno> {
 }
 
 /// Get name and information about current kernel.
+/// ```
+/// let mut buf = nc::utsname_t::default();
+/// let ret = nc::uname(&mut buf);
+/// assert!(ret.is_ok());
+/// assert!(!buf.sysname.is_empty());
+/// assert!(!buf.machine.is_empty());
+/// ```
 pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
     let buf_ptr = buf as *mut utsname_t as usize;
     syscall1(SYS_UNAME, buf_ptr).map(drop)
@@ -3543,6 +4057,7 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// // /tmp folder is not empty, so this call always returns error.
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn unlinkat(dfd: i32, filename: &str, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
@@ -3641,6 +4156,34 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Write to a file descriptor from multiple buffers.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+///
+/// let path_out = "/tmp/nc-writev";
+/// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::writev(fd, &iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov.as_ptr() as usize;

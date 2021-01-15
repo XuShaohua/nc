@@ -8,7 +8,6 @@ use super::sysno::*;
 use crate::c_str::CString;
 use crate::syscalls::*;
 use crate::types::*;
-use alloc::string::String;
 use alloc::vec::Vec;
 
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
@@ -1191,45 +1190,9 @@ pub fn getdents(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Get directory entries.
-pub fn getdents64(fd: i32) -> Result<Vec<linux_dirent64_extern_t>, Errno> {
-    const BUF_SIZE: usize = 4096;
-
-    let buf: Vec<u8> = vec![0; BUF_SIZE];
-    let buf_box = buf.into_boxed_slice();
-    let buf_box_ptr = alloc::boxed::Box::into_raw(buf_box) as *mut u8 as usize;
+pub fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let nread = syscall3(SYS_GETDENTS64, fd, buf_box_ptr, BUF_SIZE)?;
-    let mut result: Vec<linux_dirent64_extern_t> = Vec::new();
-
-    if nread == 0 {
-        return Ok(result);
-    }
-
-    let mut bpos = 0;
-    while bpos < nread {
-        let d = (buf_box_ptr + bpos) as *mut linux_dirent64_t;
-        let mut name_vec: Vec<u8> = vec![];
-        for i in 0..PATH_MAX {
-            unsafe {
-                let c = (*d).d_name[i as usize];
-                if c == 0 {
-                    break;
-                }
-                name_vec.push(c);
-            }
-        }
-        let name = String::from_utf8(name_vec).unwrap();
-        unsafe {
-            result.push(linux_dirent64_extern_t {
-                d_ino: (*d).d_ino,
-                d_off: (*d).d_off,
-                d_type: (*d).d_type,
-                d_name: name,
-            });
-            bpos += (*d).d_reclen as usize;
-        }
-    }
-    Ok(result)
+    syscall3(SYS_GETDENTS64, fd, dirp, count).map(|ret| ret as ssize_t)
 }
 
 /// Get the effective group ID of the calling process.

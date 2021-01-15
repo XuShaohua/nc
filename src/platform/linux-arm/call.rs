@@ -2785,9 +2785,13 @@ pub fn nfsservctl() {
 }
 
 /// Change the priority of current process.
-pub fn nice(increment: i32) -> Result<i32, Errno> {
+/// ```
+/// let ret = nc::nice(5);
+/// assert!(ret.is_ok());
+/// ```
+pub fn nice(increment: i32) -> Result<(), Errno> {
     let increment = increment as usize;
-    syscall1(SYS_NICE, increment).map(|ret| ret as i32)
+    syscall1(SYS_NICE, increment).map(drop)
 }
 
 pub fn oabi_syscall_base() {

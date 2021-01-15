@@ -1047,6 +1047,13 @@ pub fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
 }
 
 /// Get file status.
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat64_t::default();
+/// let ret = nc::fstatat64(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW);
+/// assert!(ret.is_ok());
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// ```
 pub fn fstatat64(dfd: i32, filename: &str, statbuf: &mut stat64_t, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename);

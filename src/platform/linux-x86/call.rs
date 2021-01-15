@@ -1285,10 +1285,9 @@ pub fn getcwd() -> Result<Vec<u8>, Errno> {
 }
 
 /// Get directory entries.
-/// Deprecated. Use `getdents64()` instead.
-pub fn getdents() {
-    core::unimplemented!();
-    // syscall0(SYS_GETDENTS);
+pub fn getdents(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    syscall3(SYS_GETDENTS, fd, dirp, count).map(|ret| ret as ssize_t)
 }
 
 /// Get directory entries.

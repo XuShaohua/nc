@@ -1142,6 +1142,10 @@ pub fn getppid() -> pid_t {
 }
 
 /// Get program scheduling priority.
+/// ```
+/// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
+/// assert!(ret.is_ok());
+/// ```
 pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;

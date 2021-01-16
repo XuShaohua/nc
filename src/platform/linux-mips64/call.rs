@@ -894,6 +894,21 @@ pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> 
 }
 
 /// Apply or remove an advisory lock on an open file.
+/// ```
+/// let path = "/tmp/nc-flock";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::flock(fd, nc::LOCK_EX);
+/// assert!(ret.is_ok());
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// let ret = nc::flock(fd, nc::LOCK_UN);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let operation = operation as usize;

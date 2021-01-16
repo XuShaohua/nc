@@ -3669,6 +3669,27 @@ pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
 }
 
 /// Change time timestamps with nanosecond precision.
+/// ```
+/// let path = "/tmp/nc-utimesat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timespec_t {
+///         tv_sec: 100,
+///         tv_nsec: 0,
+///     },
+///     nc::timespec_t {
+///         tv_sec: 10,
+///         tv_nsec: 0,
+///     },
+/// ];
+/// let flags = nc::AT_SYMLINK_NOFOLLOW;
+/// let ret = nc::utimensat(nc::AT_FDCWD, path, &times, flags);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn utimensat(
     dirfd: i32,
     filename: &str,

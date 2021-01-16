@@ -4350,6 +4350,11 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
 }
 
 /// Set program scheduling priority.
+/// ```
+/// let ret = nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EACCES))
+/// ```
 pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
     let which = which as usize;
     let who = who as usize;

@@ -3639,6 +3639,20 @@ pub fn ustat(dev: dev_t, ubuf: &mut ustat_t) -> Result<(), Errno> {
 }
 
 /// Change file last access and modification time.
+/// ```
+/// let path = "/tmp/nc-utime";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let time = nc::utimbuf_t {
+///     actime: 100,
+///     modtime: 10,
+/// };
+/// let ret = nc::utime(path, &time);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn utime(filename: &str, times: &utimbuf_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

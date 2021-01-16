@@ -1441,6 +1441,17 @@ pub fn getgid() -> gid_t {
 }
 
 /// Get list of supplementary group Ids.
+/// ```
+/// let mut groups = vec![];
+/// let ret = nc::getgroups(0, &mut groups);
+/// assert!(ret.is_ok());
+/// let total_num = ret.unwrap();
+/// groups.resize(total_num as usize, 0);
+
+/// let ret = nc::getgroups(total_num, &mut groups);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(total_num));
+/// ```
 pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
     let size = size as usize;
     let group_ptr = group_list.as_mut_ptr() as usize;

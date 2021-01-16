@@ -906,6 +906,7 @@ pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> 
 /// let ret = nc::flock(fd, nc::LOCK_UN);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
 /// ```
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1202,6 +1203,26 @@ pub fn futex_time64() {
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
+/// ```
+/// let path = "/tmp/nc-futimesat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timeval_t {
+///         tv_sec: 100,
+///         tv_usec: 0,
+///     },
+///     nc::timeval_t {
+///         tv_sec: 10,
+///         tv_usec: 0,
+///     },
+/// ];
+/// let ret = nc::futimesat(nc::AT_FDCWD, path, &times);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn futimesat(dirfd: i32, filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -5084,6 +5105,7 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
 /// ```
 pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;

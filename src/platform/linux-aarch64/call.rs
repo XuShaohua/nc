@@ -8,7 +8,6 @@ use super::sysno::*;
 use crate::c_str::CString;
 use crate::syscalls::*;
 use crate::types::*;
-use alloc::vec::Vec;
 
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -116,9 +115,13 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 /// let ret = nc::chdir(path);
 /// assert!(ret.is_ok());
 ///
-/// let pwd = nc::getcwd();
-/// assert!(pwd.is_ok());
-/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let new_cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert_eq!(new_cwd, Ok(path));
 /// ```
 pub fn chdir(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
@@ -552,10 +555,6 @@ pub fn fanotify_mark(
 /// let ret = nc::fchdir(fd);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-///
-/// let pwd = nc::getcwd();
-/// assert!(pwd.is_ok());
-/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
 /// ```
 pub fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -987,12 +986,18 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 }
 
 /// Get current working directory.
-// TODO(Shaohua): Convert path to string.
-pub fn getcwd() -> Result<Vec<u8>, Errno> {
-    let buf_len = (PATH_MAX + 1) as usize;
-    let buf = CString::with_capacity(buf_len);
-    let buf_ptr = buf.as_ptr() as usize;
-    syscall2(SYS_GETCWD, buf_ptr, buf_len).map(|_ret| buf.strim_into_bytes())
+/// ```
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert!(cwd.is_ok());
+/// println!("cwd: {:?}", cwd);
+/// ```
+pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
+    syscall2(SYS_GETCWD, buf, size).map(|ret| ret as ssize_t)
 }
 
 /// Get directory entries.

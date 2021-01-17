@@ -4088,6 +4088,10 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set real and effective user IDs of the calling process.
+/// ```
+/// let ret = nc::setreuid(0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     let ruid = ruid as usize;
     let euid = euid as usize;

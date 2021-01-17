@@ -3756,6 +3756,16 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
 }
 
 /// System V shared memory control.
+/// ```
+/// let size = 4 * nc::PAGE_SIZE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
+/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// assert!(ret.is_ok());
+/// let shmid = ret.unwrap();
+/// let mut buf = nc::shmid_ds_t::default();
+/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
     let shmid = shmid as usize;
     let cmd = cmd as usize;
@@ -3771,7 +3781,7 @@ pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 /// Allocates a System V shared memory segment.
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
-/// let flags = nc::IPC_CREAT | nc::IPC_EXCL;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
 /// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
 /// assert!(ret.is_ok());
 /// let _shmid = ret.unwrap();

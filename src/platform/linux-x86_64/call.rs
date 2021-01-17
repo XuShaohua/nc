@@ -4332,6 +4332,13 @@ pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 }
 
 /// Allocates a System V shared memory segment.
+/// ```
+/// let size = 4 * nc::PAGE_SIZE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL;
+/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// assert!(ret.is_ok());
+/// let _shmid = ret.unwrap();
+/// ```
 pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let size = size as usize;

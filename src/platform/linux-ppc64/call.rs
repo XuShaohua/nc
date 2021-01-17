@@ -4354,6 +4354,11 @@ pub fn setrlimit(resource: u32, rlimit: &rlimit_t) -> Result<(), Errno> {
 }
 
 /// Create a new session if the calling process is not a process group leader.
+/// ```
+/// let ret = nc::setsid();
+/// assert!(ret.is_ok());
+/// assert!(ret, Ok(nc::getpid()));
+/// ```
 pub fn setsid() -> Result<pid_t, Errno> {
     syscall0(SYS_SETSID).map(|ret| ret as pid_t)
 }

@@ -4692,11 +4692,11 @@ pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 }
 
 /// Allocates a System V shared memory segment.
-pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
+pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let size = size as usize;
     let shmflg = shmflg as usize;
-    syscall3(SYS_SHMGET, key, size, shmflg).map(drop)
+    syscall3(SYS_SHMGET, key, size, shmflg).map(|ret| ret as i32)
 }
 
 /// Shutdown part of a full-duplex connection.

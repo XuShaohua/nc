@@ -4379,6 +4379,10 @@ pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
 }
 
 /// Set the effective user ID of the calling process to `uid`.
+/// ```
+/// let ret = nc::setuid(0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setuid(uid: uid_t) -> Result<(), Errno> {
     let uid = uid as usize;
     syscall1(SYS_SETUID, uid).map(drop)

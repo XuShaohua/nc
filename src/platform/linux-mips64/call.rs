@@ -4061,6 +4061,10 @@ pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
 }
 
 /// Set real and effective group IDs of the calling process.
+/// ```
+/// let ret = nc::setregid(0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     let rgid = rgid as usize;
     let egid = egid as usize;

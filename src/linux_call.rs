@@ -2428,7 +2428,7 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
 ///
-/// let path_out = "/tmp/nc-pwritev";
+/// let path_out = "/tmp/nc-pwritev2";
 /// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
@@ -4584,6 +4584,13 @@ pub fn ppoll(
 }
 
 /// Get/set the resource limits of an arbitary process.
+/// ```
+/// let mut old_limit = nc::rlimit64_t::default();
+/// let ret = nc::prlimit64(nc::getpid(), nc::RLIMIT_NOFILE, None, Some(&mut old_limit));
+/// assert!(ret.is_ok());
+/// assert!(old_limit.rlim_cur > 0);
+/// assert!(old_limit.rlim_max > 0);
+/// ```
 pub fn prlimit64(
     pid: pid_t,
     resource: i32,

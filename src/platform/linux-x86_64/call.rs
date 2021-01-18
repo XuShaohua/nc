@@ -798,6 +798,18 @@ pub fn fchownat(
 }
 
 /// manipulate file descriptor.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let ret = nc::fcntl(fd, nc::F_DUPFD, 0);
+/// assert!(ret.is_ok());
+/// let fd2 = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd2).is_ok());
+/// ```
 pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;

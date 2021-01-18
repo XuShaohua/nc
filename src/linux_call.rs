@@ -4982,6 +4982,18 @@ pub fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result
 }
 
 /// Manipulate file descriptor.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let ret = nc::fcntl64(fd, nc::F_DUPFD, 0);
+/// assert!(ret.is_ok());
+/// let fd2 = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd2).is_ok());
+/// ```
 pub fn fcntl64(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;

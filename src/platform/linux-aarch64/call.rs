@@ -1402,6 +1402,17 @@ pub fn init_module(module_image: usize, len: usize, param_values: &str) -> Resul
 }
 
 /// Add a watch to an initialized inotify instance.
+/// ```
+/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let path = "/etc/passwd";
+/// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
+/// assert!(ret.is_ok());
+/// let _wd = re.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errno> {
     let fd = fd as usize;
     let filename = CString::new(filename);

@@ -4,7 +4,7 @@
 
 /// Gives us 8 prio classes with 13-bits of data for each class
 pub const IOPRIO_CLASS_SHIFT: u8 = 13;
-pub const IOPRIO_PRIO_MASK: usize = (1 << IOPRIO_CLASS_SHIFT) - 1;
+pub const IOPRIO_PRIO_MASK: i32 = (1 << IOPRIO_CLASS_SHIFT) - 1;
 
 #[inline]
 pub const fn ioprio_prio_class(mask: i32) -> i32 {
@@ -12,13 +12,13 @@ pub const fn ioprio_prio_class(mask: i32) -> i32 {
 }
 
 #[inline]
-pub const fn ioprio_prio_data(mask: i32) -> usize {
-    (mask as usize) & IOPRIO_PRIO_MASK
+pub const fn ioprio_prio_data(mask: i32) -> i32 {
+    mask & IOPRIO_PRIO_MASK
 }
 
 #[inline]
-pub const fn ioprio_prio_value(class_: i32, data: usize) -> usize {
-    ((class_ as usize) << IOPRIO_CLASS_SHIFT) | data
+pub const fn ioprio_prio_value(class_: i32, data: i32) -> i32 {
+    (class_ << IOPRIO_CLASS_SHIFT) | data
 }
 
 #[inline]

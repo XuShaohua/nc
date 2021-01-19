@@ -1818,6 +1818,20 @@ pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 }
 
 /// Set I/O scheduling class and priority
+/// ```
+/// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0);
+/// assert!(ret.is_ok());
+/// let prio = ret.unwrap();
+/// let prio_class = nc::ioprio_prio_class(prio);
+/// assert_eq!(prio_class, nc::IOPRIO_CLASS_NONE);
+/// let prio_data = nc::ioprio_prio_data(prio);
+///
+/// // Higher priority
+/// let new_prio_data = prio_data - 1;
+/// let new_prio = nc::ioprio_prio_value(nc::IOPRIO_CLASS_BE, new_prio_data);
+/// let ret = nc::ioprio_set(nc::IOPRIO_WHO_PROCESS, 0, new_prio);
+/// assert!(ret.is_ok());
+/// ```
 pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
     let which = which as usize;
     let who = who as usize;

@@ -1897,6 +1897,12 @@ pub fn inotify_init() -> Result<i32, Errno> {
 }
 
 /// Initialize an inotify instance.
+/// ```
+/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_INOTIFY_INIT1, flags).map(|ret| ret as i32)

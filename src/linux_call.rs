@@ -44,6 +44,16 @@ pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Switch process accounting.
+/// ```
+/// let path = "/tmp/nc-acct";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::acct(path);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn acct(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

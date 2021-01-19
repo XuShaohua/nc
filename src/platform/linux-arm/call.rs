@@ -1803,6 +1803,10 @@ pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
 }
 
 /// Get I/O scheduling class and priority
+/// ```
+/// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid());
+/// assert!(ret.is_ok());
+/// ```
 pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;

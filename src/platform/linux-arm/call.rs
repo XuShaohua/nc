@@ -1764,6 +1764,12 @@ pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errn
 }
 
 /// Initialize an inotify instance.
+/// ```
+/// let ret = nc::inotify_init();
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_init() -> Result<i32, Errno> {
     syscall0(SYS_INOTIFY_INIT).map(|ret| ret as i32)
 }

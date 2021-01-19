@@ -1448,6 +1448,10 @@ pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
 /// ```
 /// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid());
 /// assert!(ret.is_ok());
+/// let prio = ret.unwrap();
+/// let prio_class = nc::ioprio_prio_class(prio);
+/// assert_eq!(prio_class, nc::IOPRIO_CLASS_NONE);
+/// let _prio_data = nc::ioprio_prio_data(prio);
 /// ```
 pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;

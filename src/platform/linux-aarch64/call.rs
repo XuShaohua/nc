@@ -1434,6 +1434,19 @@ pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
 }
 
 /// Remove an existing watch from an inotify instance.
+/// ```
+/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let path = "/etc/passwd";
+/// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
+/// assert!(ret.is_ok());
+/// let wd = ret.unwrap();
+/// let ret = nc::inotify_rm_watch(fd, wd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let wd = wd as usize;

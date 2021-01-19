@@ -1824,7 +1824,7 @@ pub fn init_module(module_image: usize, len: usize, param_values: &str) -> Resul
 /// let path = "/etc/passwd";
 /// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
 /// assert!(ret.is_ok());
-/// let _wd = re.unwrap();
+/// let _wd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// ```
 pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errno> {

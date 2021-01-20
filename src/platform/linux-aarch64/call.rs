@@ -2214,8 +2214,11 @@ pub fn mount(
     flags: usize,
     data: usize,
 ) -> Result<(), Errno> {
+    let dev_name = CString::new(dev_name);
     let dev_name_ptr = dev_name.as_ptr() as usize;
+    let dir_name = CString::new(dir_name);
     let dir_name_ptr = dir_name.as_ptr() as usize;
+    let fs_type = CString::new(fs_type);
     let fs_type_ptr = fs_type.as_ptr() as usize;
     syscall5(
         SYS_MOUNT,

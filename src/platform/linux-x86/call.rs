@@ -5467,15 +5467,15 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 }
 
 /// Umount filesystem.
-pub fn umount(name: &str, flags: i32) -> Result<(), Errno> {
+pub fn umount(name: &str) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
-    let flags = flags as usize;
-    syscall2(SYS_UMOUNT, name_ptr, flags).map(drop)
+    syscall1(SYS_UMOUNT, name_ptr).map(drop)
 }
 
 /// Umount filesystem.
 pub fn umount2(name: &str, flags: i32) -> Result<(), Errno> {
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
     syscall2(SYS_UMOUNT2, name_ptr, flags).map(drop)

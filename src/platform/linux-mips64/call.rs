@@ -4825,6 +4825,25 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 }
 
 /// Umount filesystem.
+/// ```
+/// let target_dir = "/tmp/nc-umount2";
+/// let ret = nc::mkdir(target_dir, 0o755);
+/// assert!(ret.is_ok());
+///
+/// let src_dir = "/etc";
+/// let fs_type = "";
+/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let data = 0;
+/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// let flags = 0;
+/// let ret = nc::umount2(target_dir, flags);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// assert!(nc::rmdir(target_dir).is_ok());
 pub fn umount2(name: &str, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;

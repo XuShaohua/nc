@@ -2811,6 +2811,20 @@ pub fn modify_ldt() {
 }
 
 /// Mount filesystem.
+/// ```
+/// let target_dir = "/tmp/nc-mount";
+/// let ret = nc::mkdir(target_dir, 0o755);
+/// assert!(ret.is_ok());
+///
+/// let src_dir = "/etc";
+/// let fs_type = "";
+/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let data = 0;
+/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// assert!(nc::rmdir(target_dir).is_ok());
 pub fn mount(
     dev_name: &str,
     dir_name: &str,

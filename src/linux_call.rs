@@ -8,7 +8,6 @@ use super::sysno::*;
 use crate::c_str::CString;
 use crate::syscalls::*;
 use crate::types::*;
-use alloc::vec::Vec;
 
 /// Accept a connection on a socket.
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
@@ -45,6 +44,16 @@ pub fn access(filename: &str, mode: i32) -> Result<(), Errno> {
 }
 
 /// Switch process accounting.
+/// ```
+/// let path = "/tmp/nc-acct";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::acct(path);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn acct(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -125,9 +134,13 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 /// let ret = nc::chdir(path);
 /// assert!(ret.is_ok());
 ///
-/// let pwd = nc::getcwd();
-/// assert!(pwd.is_ok());
-/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let new_cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert_eq!(new_cwd, Ok(path));
 /// ```
 pub fn chdir(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
@@ -631,10 +644,6 @@ pub fn fanotify_mark(
 /// let ret = nc::fchdir(fd);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-///
-/// let pwd = nc::getcwd();
-/// assert!(pwd.is_ok());
-/// assert_eq!(pwd, Ok(path.as_bytes().to_vec()));
 /// ```
 pub fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -839,6 +848,22 @@ pub fn fsetxattr(fd: i32, name: &str, value: usize, size: size_t, flags: i32) ->
 }
 
 /// Apply or remove an advisory lock on an open file.
+/// ```
+/// let path = "/tmp/nc-flock";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::flock(fd, nc::LOCK_EX);
+/// assert!(ret.is_ok());
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// let ret = nc::flock(fd, nc::LOCK_UN);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let operation = operation as usize;
@@ -949,6 +974,26 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
+/// ```
+/// let path = "/tmp/nc-futimesat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timeval_t {
+///         tv_sec: 100,
+///         tv_usec: 0,
+///     },
+///     nc::timeval_t {
+///         tv_sec: 10,
+///         tv_usec: 0,
+///     },
+/// ];
+/// let ret = nc::futimesat(nc::AT_FDCWD, path, &times);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn futimesat(dirfd: i32, filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename);
@@ -1010,12 +1055,18 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 }
 
 /// Get current working directory.
-// TODO(Shaohua): Convert path to string.
-pub fn getcwd() -> Result<Vec<u8>, Errno> {
-    let buf_len = (PATH_MAX + 1) as usize;
-    let buf = CString::with_capacity(buf_len);
-    let buf_ptr = buf.as_ptr() as usize;
-    syscall2(SYS_GETCWD, buf_ptr, buf_len).map(|_ret| buf.strim_into_bytes())
+/// ```
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert!(cwd.is_ok());
+/// println!("cwd: {:?}", cwd);
+/// ```
+pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
+    syscall2(SYS_GETCWD, buf, size).map(|ret| ret as ssize_t)
 }
 
 /// Get the effective group ID of the calling process.
@@ -1046,6 +1097,17 @@ pub fn getgid() -> gid_t {
 }
 
 /// Get list of supplementary group Ids.
+/// ```
+/// let mut groups = vec![];
+/// let ret = nc::getgroups(0, &mut groups);
+/// assert!(ret.is_ok());
+/// let total_num = ret.unwrap();
+/// groups.resize(total_num as usize, 0);
+
+/// let ret = nc::getgroups(total_num, &mut groups);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(total_num));
+/// ```
 pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
     let size = size as usize;
     let group_ptr = group_list.as_mut_ptr() as usize;
@@ -1053,6 +1115,51 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
 }
 
 /// Get value of an interval timer.
+/// ```
+/// use core::mem::size_of;
+///
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+///     let msg = "Hello alarm";
+///     let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
+/// }
+///
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_alarm as nc::sighandler_t,
+///     sa_flags: 0,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// assert!(ret.is_ok());
+///
+/// // Single shot timer, actived after 1 second.
+/// let itv = nc::itimerval_t {
+///     it_value: nc::timeval_t {
+///         tv_sec: 1,
+///         tv_usec: 0,
+///     },
+///     it_interval: nc::timeval_t {
+///         tv_sec: 0,
+///         tv_usec: 0,
+///     },
+/// };
+/// let mut prev_itv = nc::itimerval_t::default();
+/// let ret = nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// assert!(ret.is_ok());
+/// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
+///
+/// let ret = nc::pause();
+/// assert_eq!(ret, Err(nc::EINTR));
+///
+/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// assert!(ret.is_ok());
+/// assert_eq!(prev_itv.it_value.tv_sec, 0);
+/// assert_eq!(prev_itv.it_value.tv_usec, 0);
+/// ```
 pub fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
     let which = which as usize;
     let curr_val_ptr = curr_val as *mut itimerval_t as usize;
@@ -1110,6 +1217,10 @@ pub fn getppid() -> pid_t {
 }
 
 /// Get program scheduling priority.
+/// ```
+/// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
+/// assert!(ret.is_ok());
+/// ```
 pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;
@@ -1274,6 +1385,17 @@ pub fn getuid() -> uid_t {
 }
 
 /// Add a watch to an initialized inotify instance.
+/// ```
+/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let path = "/etc/passwd";
+/// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
+/// assert!(ret.is_ok());
+/// let _wd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errno> {
     let fd = fd as usize;
     let filename = CString::new(filename);
@@ -1283,17 +1405,42 @@ pub fn inotify_add_watch(fd: i32, filename: &str, mask: u32) -> Result<i32, Errn
 }
 
 /// Initialize an inotify instance.
+/// ```
+/// let ret = nc::inotify_init();
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_init() -> Result<i32, Errno> {
     syscall0(SYS_INOTIFY_INIT).map(|ret| ret as i32)
 }
 
 /// Initialize an inotify instance.
+/// ```
+/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_INOTIFY_INIT1, flags).map(|ret| ret as i32)
 }
 
 /// Remove an existing watch from an inotify instance.
+/// ```
+/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let path = "/etc/passwd";
+/// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
+/// assert!(ret.is_ok());
+/// let wd = ret.unwrap();
+/// let ret = nc::inotify_rm_watch(fd, wd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let wd = wd as usize;
@@ -1301,6 +1448,20 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 }
 
 /// Control device.
+/// ```
+/// let path = "/tmp/nc-ioctl";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut attr: i32 = 0;
+/// let cmd = -2146933247; // nc::FS_IOC_GETFLAGS
+/// let ret = nc::ioctl(fd, cmd, &mut attr as *mut i32 as usize);
+/// assert!(ret.is_ok());
+/// println!("attr: {}", attr);
+///
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
@@ -1624,6 +1785,26 @@ pub fn lstat(filename: &str, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Give advice about use of memory.
+/// ```
+/// // Initialize an anonymous mapping with 4 pages.
+/// let map_length = 4 * nc::PAGE_SIZE;
+/// let addr = nc::mmap(
+///     0,
+///     map_length,
+///     nc::PROT_READ | nc::PROT_WRITE,
+///     nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+///     -1,
+///     0,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// // Set the third page readonly. And we will run into SIGSEGV when updating it.
+/// let ret = nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_RANDOM);
+/// assert!(ret.is_ok());
+///
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// ```
 pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
     let len = len as usize;
     let advice = advice as usize;
@@ -1776,6 +1957,20 @@ pub fn mmap(
 }
 
 /// Mount filesystem.
+/// ```
+/// let target_dir = "/tmp/nc-mount";
+/// let ret = nc::mkdir(target_dir, 0o755);
+/// assert!(ret.is_ok());
+///
+/// let src_dir = "/etc";
+/// let fs_type = "";
+/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let data = 0;
+/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// assert!(nc::rmdir(target_dir).is_ok());
 pub fn mount(
     dev_name: &str,
     dir_name: &str,
@@ -1783,8 +1978,11 @@ pub fn mount(
     flags: usize,
     data: usize,
 ) -> Result<(), Errno> {
+    let dev_name = CString::new(dev_name);
     let dev_name_ptr = dev_name.as_ptr() as usize;
+    let dir_name = CString::new(dir_name);
     let dir_name_ptr = dir_name.as_ptr() as usize;
+    let fs_type = CString::new(fs_type);
     let fs_type_ptr = fs_type.as_ptr() as usize;
     syscall5(
         SYS_MOUNT,
@@ -1798,6 +1996,26 @@ pub fn mount(
 }
 
 /// Set protection on a region of memory.
+/// ```
+/// // Initialize an anonymous mapping with 4 pages.
+/// let map_length = 4 * nc::PAGE_SIZE;
+/// let addr = nc::mmap(
+///     0,
+///     map_length,
+///     nc::PROT_READ | nc::PROT_WRITE,
+///     nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+///     -1,
+///     0,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// // Set the third page readonly. And we will run into SIGSEGV when updating it.
+/// let ret = nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ);
+/// assert!(ret.is_ok());
+///
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// ```
 pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     let len = len as usize;
     let prot = prot as usize;
@@ -1907,6 +2125,17 @@ pub fn mremap(
 }
 
 /// System V message control operations.
+/// ```
+/// let key = nc::IPC_PRIVATE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
+/// let ret = nc::msgget(key, flags);
+/// assert!(ret.is_ok());
+/// let msq_id = ret.unwrap();
+
+/// let mut buf = nc::msqid_ds_t::default();
+/// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     let msqid = msqid as usize;
     let cmd = cmd as usize;
@@ -1915,6 +2144,17 @@ pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> 
 }
 
 /// Get a System V message queue identifier.
+/// ```
+/// let key = nc::IPC_PRIVATE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
+/// let ret = nc::msgget(key, flags);
+/// assert!(ret.is_ok());
+/// let msq_id = ret.unwrap();
+
+/// let mut buf = nc::msqid_ds_t::default();
+/// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let msgflg = msgflg as usize;
@@ -1922,14 +2162,157 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 }
 
 /// Receive messages from a System V message queue.
-pub fn msgrcv(msqid: i32, msgq: usize, msgsz: size_t, msgtyp: isize) -> Result<ssize_t, Errno> {
+/// ```
+/// const MAX_MTEXT: usize = 1024;
+///
+/// const MTYPE_NULL: isize = 0;
+/// const MTYPE_CLIENT: isize = 1;
+/// const _MTYPE_SERVER: isize = 2;
+///
+/// #[derive(Debug, Clone, Copy)]
+/// struct Message {
+///     pub mtype: isize,
+///     pub mtext: [u8; MAX_MTEXT],
+/// }
+///
+/// impl Default for Message {
+///     fn default() -> Self {
+///         Message {
+///             mtype: MTYPE_NULL,
+///             mtext: [0; MAX_MTEXT],
+///         }
+///     }
+/// }
+///
+/// fn main() {
+///     let key = nc::IPC_PRIVATE;
+///     let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
+///     let ret = nc::msgget(key, flags);
+///     assert!(ret.is_ok());
+///     let msq_id = ret.unwrap();
+///
+///     // Write to message queue.
+///     let msg = "Hello, Rust";
+///     let mut client_msg = Message {
+///         mtype: MTYPE_CLIENT,
+///         mtext: [0; MAX_MTEXT],
+///     };
+///     let msg_len = msg.len();
+///     unsafe {
+///         let src_ptr = msg.as_ptr();
+///         let dst_ptr = client_msg.mtext.as_mut_ptr();
+///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
+///     }
+///
+///     let ret = nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0);
+///     assert!(ret.is_ok());
+///
+///     // Read from message queue.
+///     let mut recv_msg = Message::default();
+///     let ret = nc::msgrcv(
+///         msq_id,
+///         &mut recv_msg as *mut Message as usize,
+///         MAX_MTEXT,
+///         MTYPE_CLIENT,
+///         0,
+///     );
+///     assert!(ret.is_ok());
+///     let recv_msg_len = ret.unwrap() as usize;
+///     assert_eq!(recv_msg_len, msg_len);
+///     let recv_text = core::str::from_utf8(&recv_msg.mtext[..recv_msg_len]);
+///     assert!(recv_text.is_ok());
+///     let recv_text = recv_text.unwrap();
+///     assert_eq!(recv_text, msg);
+///     println!("recv text: {}", recv_text);
+///
+///     let mut buf = nc::msqid_ds_t::default();
+///     let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+///     assert!(ret.is_ok());
+/// }
+/// ```
+pub fn msgrcv(
+    msqid: i32,
+    msgq: usize,
+    msgsz: size_t,
+    msgtyp: isize,
+    msgflg: i32,
+) -> Result<ssize_t, Errno> {
     let msqid = msqid as usize;
     let msgsz = msgsz as usize;
     let msgtyp = msgtyp as usize;
-    syscall4(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp).map(|ret| ret as ssize_t)
+    let msgflg = msgflg as usize;
+    syscall5(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp, msgflg).map(|ret| ret as ssize_t)
 }
 
 /// Append the message to a System V message queue.
+/// ```
+/// const MAX_MTEXT: usize = 1024;
+///
+/// const MTYPE_NULL: isize = 0;
+/// const MTYPE_CLIENT: isize = 1;
+/// const _MTYPE_SERVER: isize = 2;
+///
+/// #[derive(Debug, Clone, Copy)]
+/// struct Message {
+///     pub mtype: isize,
+///     pub mtext: [u8; MAX_MTEXT],
+/// }
+///
+/// impl Default for Message {
+///     fn default() -> Self {
+///         Message {
+///             mtype: MTYPE_NULL,
+///             mtext: [0; MAX_MTEXT],
+///         }
+///     }
+/// }
+///
+/// fn main() {
+///     let key = nc::IPC_PRIVATE;
+///     let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
+///     let ret = nc::msgget(key, flags);
+///     assert!(ret.is_ok());
+///     let msq_id = ret.unwrap();
+///
+///     // Write to message queue.
+///     let msg = "Hello, Rust";
+///     let mut client_msg = Message {
+///         mtype: MTYPE_CLIENT,
+///         mtext: [0; MAX_MTEXT],
+///     };
+///     let msg_len = msg.len();
+///     unsafe {
+///         let src_ptr = msg.as_ptr();
+///         let dst_ptr = client_msg.mtext.as_mut_ptr();
+///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
+///     }
+///
+///     let ret = nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0);
+///     assert!(ret.is_ok());
+///
+///     // Read from message queue.
+///     let mut recv_msg = Message::default();
+///     let ret = nc::msgrcv(
+///         msq_id,
+///         &mut recv_msg as *mut Message as usize,
+///         MAX_MTEXT,
+///         MTYPE_CLIENT,
+///         0,
+///     );
+///     assert!(ret.is_ok());
+///     let recv_msg_len = ret.unwrap() as usize;
+///     assert_eq!(recv_msg_len, msg_len);
+///     let recv_text = core::str::from_utf8(&recv_msg.mtext[..recv_msg_len]);
+///     assert!(recv_text.is_ok());
+///     let recv_text = recv_text.unwrap();
+///     assert_eq!(recv_text, msg);
+///     println!("recv text: {}", recv_text);
+///
+///     let mut buf = nc::msqid_ds_t::default();
+///     let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
     let msqid = msqid as usize;
     let msgsz = msgsz as usize;
@@ -2372,7 +2755,7 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
 ///
-/// let path_out = "/tmp/nc-pwritev";
+/// let path_out = "/tmp/nc-pwritev2";
 /// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
@@ -2869,6 +3252,51 @@ pub fn sethostname(name: &str) -> Result<(), Errno> {
 }
 
 /// Set value of an interval timer.
+/// ```
+/// use core::mem::size_of;
+///
+/// fn handle_alarm(signum: i32) {
+///     assert_eq!(signum, nc::SIGALRM);
+///     let msg = "Hello alarm";
+///     let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
+/// }
+///
+/// let sa = nc::sigaction_t {
+///     sa_handler: handle_alarm as nc::sighandler_t,
+///     sa_flags: 0,
+///     ..nc::sigaction_t::default()
+/// };
+/// let mut old_sa = nc::sigaction_t::default();
+/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// assert!(ret.is_ok());
+///
+/// // Single shot timer, actived after 1 second.
+/// let itv = nc::itimerval_t {
+///     it_value: nc::timeval_t {
+///         tv_sec: 1,
+///         tv_usec: 0,
+///     },
+///     it_interval: nc::timeval_t {
+///         tv_sec: 0,
+///         tv_usec: 0,
+///     },
+/// };
+/// let mut prev_itv = nc::itimerval_t::default();
+/// let ret = nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// assert!(ret.is_ok());
+/// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
+///
+/// let ret = nc::pause();
+/// assert_eq!(ret, Err(nc::EINTR));
+///
+/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// assert!(ret.is_ok());
+/// assert_eq!(prev_itv.it_value.tv_sec, 0);
+/// assert_eq!(prev_itv.it_value.tv_usec, 0);
+/// ```
 pub fn setitimer(
     which: i32,
     new_val: &itimerval_t,
@@ -2895,6 +3323,11 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
 }
 
 /// Set program scheduling priority.
+/// ```
+/// let ret = nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EACCES))
+/// ```
 pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
     let which = which as usize;
     let who = who as usize;
@@ -2903,6 +3336,10 @@ pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
 }
 
 /// Set real and effective group IDs of the calling process.
+/// ```
+/// let ret = nc::setregid(0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     let rgid = rgid as usize;
     let egid = egid as usize;
@@ -2910,6 +3347,10 @@ pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set real and effective user IDs of the calling process.
+/// ```
+/// let ret = nc::setreuid(0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     let ruid = ruid as usize;
     let euid = euid as usize;
@@ -2917,6 +3358,10 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set real, effective and saved group Ids of the calling process.
+/// ```
+/// let ret = nc::setresgid(0, 0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
     let rgid = rgid as usize;
     let egid = egid as usize;
@@ -2925,6 +3370,10 @@ pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set real, effective and saved user Ids of the calling process.
+/// ```
+/// let ret = nc::setresuid(0, 0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
     let ruid = ruid as usize;
     let euid = euid as usize;
@@ -2933,13 +3382,26 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set resource limit
-pub fn setrlimit(resource: u32, rlimit: &rlimit_t) -> Result<(), Errno> {
+/// ```
+/// let rlimit = nc::rlimit_t {
+///     rlim_cur: 128,
+///     rlim_max: 128,
+/// };
+/// let ret = nc::setrlimit(nc::RLIMIT_NOFILE, &rlimit);
+/// assert!(ret.is_ok());
+/// ```
+pub fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
     let rlimit_ptr = rlimit as *const rlimit_t as usize;
     syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(drop)
 }
 
 /// Create a new session if the calling process is not a process group leader.
+/// ```
+/// let ret = nc::setsid();
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(nc::getpid()));
+/// ```
 pub fn setsid() -> Result<pid_t, Errno> {
     syscall0(SYS_SETSID).map(|ret| ret as pid_t)
 }
@@ -2967,6 +3429,10 @@ pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
 }
 
 /// Set the effective user ID of the calling process to `uid`.
+/// ```
+/// let ret = nc::setuid(0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setuid(uid: uid_t) -> Result<(), Errno> {
     let uid = uid as usize;
     syscall1(SYS_SETUID, uid).map(drop)
@@ -3010,6 +3476,28 @@ pub fn setxattr(
 }
 
 /// Attach the System V shared memory segment.
+/// ```
+/// let size = 4 * nc::PAGE_SIZE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
+/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// assert!(ret.is_ok());
+/// let shmid = ret.unwrap();
+///
+/// let addr: usize = 0;
+/// let ret = nc::shmat(shmid, addr, 0);
+/// assert!(ret.is_ok());
+/// let addr = ret.unwrap();
+///
+/// let mut buf = nc::shmid_ds_t::default();
+/// let ret = nc::shmctl(shmid, nc::IPC_STAT, &mut buf);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::shmdt(addr);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
     let shmid = shmid as usize;
     let shmflg = shmflg as usize;
@@ -3017,11 +3505,43 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
 }
 
 /// Detach the System V shared memory segment.
+/// ```
+/// let size = 4 * nc::PAGE_SIZE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
+/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// assert!(ret.is_ok());
+/// let shmid = ret.unwrap();
+///
+/// let addr: usize = 0;
+/// let ret = nc::shmat(shmid, addr, 0);
+/// assert!(ret.is_ok());
+/// let addr = ret.unwrap();
+///
+/// let mut buf = nc::shmid_ds_t::default();
+/// let ret = nc::shmctl(shmid, nc::IPC_STAT, &mut buf);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::shmdt(addr);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
     syscall1(SYS_SHMDT, shmaddr).map(drop)
 }
 
 /// System V shared memory control.
+/// ```
+/// let size = 4 * nc::PAGE_SIZE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
+/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// assert!(ret.is_ok());
+/// let shmid = ret.unwrap();
+/// let mut buf = nc::shmid_ds_t::default();
+/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
     let shmid = shmid as usize;
     let cmd = cmd as usize;
@@ -3030,11 +3550,18 @@ pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> 
 }
 
 /// Allocates a System V shared memory segment.
-pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<(), Errno> {
+/// ```
+/// let size = 4 * nc::PAGE_SIZE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
+/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// assert!(ret.is_ok());
+/// let _shmid = ret.unwrap();
+/// ```
+pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let size = size as usize;
     let shmflg = shmflg as usize;
-    syscall3(SYS_SHMGET, key, size, shmflg).map(drop)
+    syscall3(SYS_SHMGET, key, size, shmflg).map(|ret| ret as i32)
 }
 
 /// Shutdown part of a full-duplex connection.
@@ -3500,6 +4027,7 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
 /// ```
 pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -3523,7 +4051,51 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 }
 
 /// Umount filesystem.
+/// ```
+/// let target_dir = "/tmp/nc-umount";
+/// let ret = nc::mkdir(target_dir, 0o755);
+/// assert!(ret.is_ok());
+///
+/// let src_dir = "/etc";
+/// let fs_type = "";
+/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let data = 0;
+/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// let ret = nc::umount(target_dir);
+/// assert!(ret.is_err());
+///
+/// assert!(nc::rmdir(target_dir).is_ok());
+pub fn umount(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS_UMOUNT, name_ptr).map(drop)
+}
+
+/// Umount filesystem.
+/// ```
+/// let target_dir = "/tmp/nc-umount2";
+/// let ret = nc::mkdir(target_dir, 0o755);
+/// assert!(ret.is_ok());
+///
+/// let src_dir = "/etc";
+/// let fs_type = "";
+/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let data = 0;
+/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// let flags = 0;
+/// let ret = nc::umount2(target_dir, flags);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// assert!(nc::rmdir(target_dir).is_ok());
 pub fn umount2(name: &str, flags: i32) -> Result<(), Errno> {
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
     syscall2(SYS_UMOUNT2, name_ptr, flags).map(drop)
@@ -3602,6 +4174,20 @@ pub fn ustat(dev: dev_t, ubuf: &mut ustat_t) -> Result<(), Errno> {
 }
 
 /// Change file last access and modification time.
+/// ```
+/// let path = "/tmp/nc-utime";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let time = nc::utimbuf_t {
+///     actime: 100,
+///     modtime: 10,
+/// };
+/// let ret = nc::utime(path, &time);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn utime(filename: &str, times: &utimbuf_t) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -3618,6 +4204,27 @@ pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
 }
 
 /// Change time timestamps with nanosecond precision.
+/// ```
+/// let path = "/tmp/nc-utimesat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timespec_t {
+///         tv_sec: 100,
+///         tv_nsec: 0,
+///     },
+///     nc::timespec_t {
+///         tv_sec: 10,
+///         tv_nsec: 0,
+///     },
+/// ];
+/// let flags = nc::AT_SYMLINK_NOFOLLOW;
+/// let ret = nc::utimensat(nc::AT_FDCWD, path, &times, flags);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn utimensat(
     dirfd: i32,
     filename: &str,
@@ -3696,6 +4303,18 @@ pub fn delete_module(name: &str, flags: i32) -> Result<(), Errno> {
 }
 
 /// manipulate file descriptor.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let ret = nc::fcntl(fd, nc::F_DUPFD, 0);
+/// assert!(ret.is_ok());
+/// let fd2 = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd2).is_ok());
+/// ```
 pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
@@ -3921,6 +4540,14 @@ pub fn init_module(module_image: usize, len: usize, param_values: &str) -> Resul
 }
 
 /// Get I/O scheduling class and priority
+/// ```
+/// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid());
+/// assert!(ret.is_ok());
+/// let prio = ret.unwrap();
+/// let prio_class = nc::ioprio_prio_class(prio);
+/// assert_eq!(prio_class, nc::IOPRIO_CLASS_NONE);
+/// let _prio_data = nc::ioprio_prio_data(prio);
+/// ```
 pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;
@@ -3928,6 +4555,20 @@ pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 }
 
 /// Set I/O scheduling class and priority
+/// ```
+/// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0);
+/// assert!(ret.is_ok());
+/// let prio = ret.unwrap();
+/// let prio_class = nc::ioprio_prio_class(prio);
+/// assert_eq!(prio_class, nc::IOPRIO_CLASS_NONE);
+/// let prio_data = nc::ioprio_prio_data(prio);
+///
+/// // Higher priority
+/// let new_prio_data = prio_data - 1;
+/// let new_prio = nc::ioprio_prio_value(nc::IOPRIO_CLASS_BE, new_prio_data);
+/// let ret = nc::ioprio_set(nc::IOPRIO_WHO_PROCESS, 0, new_prio);
+/// assert!(ret.is_ok());
+/// ```
 pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
     let which = which as usize;
     let who = who as usize;
@@ -4393,6 +5034,13 @@ pub fn ppoll(
 }
 
 /// Get/set the resource limits of an arbitary process.
+/// ```
+/// let mut old_limit = nc::rlimit64_t::default();
+/// let ret = nc::prlimit64(nc::getpid(), nc::RLIMIT_NOFILE, None, Some(&mut old_limit));
+/// assert!(ret.is_ok());
+/// assert!(old_limit.rlim_cur > 0);
+/// assert!(old_limit.rlim_max > 0);
+/// ```
 pub fn prlimit64(
     pid: pid_t,
     resource: i32,
@@ -4740,6 +5388,15 @@ pub fn arch_prctl(code: i32, arg2: usize) -> Result<(), Errno> {
 }
 
 /// Predeclare an access pattern for file data.
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let offset = 0;
+/// let len = 4 * 1024;
+/// let ret = nc::fadvise64_64(fd, offset, len, nc::POSIX_FADV_NORMAL);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
 pub fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
@@ -4749,6 +5406,18 @@ pub fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result
 }
 
 /// Manipulate file descriptor.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let ret = nc::fcntl64(fd, nc::F_DUPFD, 0);
+/// assert!(ret.is_ok());
+/// let fd2 = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd2).is_ok());
+/// ```
 pub fn fcntl64(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
@@ -4892,6 +5561,39 @@ pub fn lstat64(filename: &str, statbuf: &mut stat64_t) -> Result<(), Errno> {
 }
 
 /// Map files or devices into memory.
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let mut sb = nc::stat_t::default();
+/// let ret = nc::fstat(fd, &mut sb);
+/// assert!(ret.is_ok());
+///
+/// let offset: usize = 0;
+/// let length: usize = sb.st_size as usize - offset;
+/// // Offset for mmap must be page aligned.
+/// let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
+/// let map_length = length + offset - pa_offset;
+///
+/// let addr = nc::mmap2(
+///     0, // 0 as NULL
+///     map_length,
+///     nc::PROT_READ,
+///     nc::MAP_PRIVATE,
+///     fd,
+///     pa_offset as nc::off_t,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// let n_write = nc::write(1, addr + offset - pa_offset, length);
+/// assert!(n_write.is_ok());
+/// assert_eq!(n_write, Ok(length as nc::ssize_t));
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn mmap2(
     start: usize,
     len: size_t,
@@ -5087,14 +5789,6 @@ pub fn truncate64(path: &str, len: loff_t) -> Result<(), Errno> {
     let path_ptr = path.as_ptr() as usize;
     let len = len as usize;
     syscall2(SYS_TRUNCATE64, path_ptr, len).map(drop)
-}
-
-/// Umount filesystem.
-pub fn umount(name: &str, flags: i32) -> Result<(), Errno> {
-    let name = CString::new(name);
-    let name_ptr = name.as_ptr() as usize;
-    let flags = flags as usize;
-    syscall2(SYS_UMOUNT, name_ptr, flags).map(drop)
 }
 
 /// Wait for process to chane state.

@@ -3019,14 +3019,89 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 }
 
 /// Receive messages from a System V message queue.
-pub fn msgrcv(msqid: i32, msgq: usize, msgsz: size_t, msgtyp: isize) -> Result<ssize_t, Errno> {
+pub fn msgrcv(
+    msqid: i32,
+    msgq: usize,
+    msgsz: size_t,
+    msgtyp: isize,
+    msgflg: i32,
+) -> Result<ssize_t, Errno> {
     let msqid = msqid as usize;
     let msgsz = msgsz as usize;
     let msgtyp = msgtyp as usize;
-    syscall4(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp).map(|ret| ret as ssize_t)
+    let msgflg = msgflg as usize;
+    syscall5(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp, msgflg).map(|ret| ret as ssize_t)
 }
 
 /// Append the message to a System V message queue.
+/// ```
+/// const MAX_MTEXT: usize = 1024;
+///
+/// const MTYPE_NULL: isize = 0;
+/// const MTYPE_CLIENT: isize = 1;
+/// const _MTYPE_SERVER: isize = 2;
+///
+/// #[derive(Debug, Clone, Copy)]
+/// struct Message {
+///     pub mtype: isize,
+///     pub mtext: [u8; MAX_MTEXT],
+/// }
+///
+/// impl Default for Message {
+///     fn default() -> Self {
+///         Message {
+///             mtype: MTYPE_NULL,
+///             mtext: [0; MAX_MTEXT],
+///         }
+///     }
+/// }
+///
+/// fn main() {
+///     let key = nc::IPC_PRIVATE;
+///     let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
+///     let ret = nc::msgget(key, flags);
+///     assert!(ret.is_ok());
+///     let msq_id = ret.unwrap();
+///
+///     // Write to message queue.
+///     let msg = "Hello, Rust";
+///     let mut client_msg = Message {
+///         mtype: MTYPE_CLIENT,
+///         mtext: [0; MAX_MTEXT],
+///     };
+///     let msg_len = msg.len();
+///     unsafe {
+///         let src_ptr = msg.as_ptr();
+///         let dst_ptr = client_msg.mtext.as_mut_ptr();
+///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
+///     }
+///
+///     let ret = nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0);
+///     assert!(ret.is_ok());
+///
+///     // Read from message queue.
+///     let mut recv_msg = Message::default();
+///     let ret = nc::msgrcv(
+///         msq_id,
+///         &mut recv_msg as *mut Message as usize,
+///         MAX_MTEXT,
+///         MTYPE_CLIENT,
+///         0,
+///     );
+///     assert!(ret.is_ok());
+///     let recv_msg_len = ret.unwrap() as usize;
+///     assert_eq!(recv_msg_len, msg_len);
+///     let recv_text = core::str::from_utf8(&recv_msg.mtext[..recv_msg_len]);
+///     assert!(recv_text.is_ok());
+///     let recv_text = recv_text.unwrap();
+///     assert_eq!(recv_text, msg);
+///     println!("recv text: {}", recv_text);
+///
+///     let mut buf = nc::msqid_ds_t::default();
+///     let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
     let msqid = msqid as usize;
     let msgsz = msgsz as usize;

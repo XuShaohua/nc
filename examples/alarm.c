@@ -1,17 +1,26 @@
 
 #include <stdio.h>
-#include <unistd.h>
+#include <string.h>
 #include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-void handle_alarm_signal(int sig) {
-  (void) sig;
+static void sig_handler(int sig) {
+  const char* msg = "Cauth Signal.\n";
+  write(STDOUT_FILENO, msg, strlen(msg));
 }
 
-int main() {
-  signal(SIGALRM, handle_alarm_signal);
+int main(void) {
+  struct sigaction sa;
+  sa.sa_flags = 0;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_handler = sig_handler;
+  if (sigaction(SIGALRM, &sa, NULL) == -1) {
+    perror("sigaction()");
+    return 1;
+  }
+  alarm(2);
+  pause();
 
-  int r = alarm(1);
-  sleep(2);
-  printf("r: %d\n", r);
   return 0;
 }

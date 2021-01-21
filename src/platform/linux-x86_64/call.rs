@@ -2880,6 +2880,17 @@ pub fn mremap(
 }
 
 /// System V message control operations.
+/// ```
+/// let key = nc::IPC_PRIVATE;
+/// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
+/// let ret = nc::msgget(key, flags);
+/// assert!(ret.is_ok());
+/// let msq_id = ret.unwrap();
+
+/// let mut buf = nc::msqid_ds_t::default();
+/// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+/// assert!(ret.is_ok());
+/// ```
 pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     let msqid = msqid as usize;
     let cmd = cmd as usize;

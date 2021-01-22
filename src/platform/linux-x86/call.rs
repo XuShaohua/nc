@@ -571,6 +571,47 @@ pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> R
 }
 
 /// Wait for an I/O event on an epoll file descriptor.
+/// ```
+/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(epfd.is_ok());
+/// let epfd = epfd.unwrap();
+/// let mut fds: [i32; 2] = [0, 0];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// let mut event = nc::epoll_event_t::default();
+/// event.events = nc::EPOLLIN | nc::EPOLLET;
+/// event.data.fd = fds[0];
+/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// assert!(ctl_ret.is_ok());
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fds[1], msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+///
+/// let mut events = vec![nc::epoll_event_t::default(); 4];
+/// let events_len = events.len();
+/// let ret = nc::epoll_wait(epfd, &mut events, events_len as i32, 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(1));
+///
+/// for event in &events {
+///     // Ready to read
+///     if event.events == nc::EPOLLIN {
+///         let ready_fd = unsafe { event.data.fd };
+///         assert_eq!(ready_fd, fds[0]);
+///         let mut buf = vec![0_u8; 64];
+///         let buf_len = buf.len();
+///         let ret = nc::read(ready_fd, buf.as_mut_ptr() as usize, buf_len);
+///         assert!(ret.is_ok());
+///         let n_read = ret.unwrap() as usize;
+///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
+///     }
+/// }
+///
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// assert!(nc::close(epfd).is_ok());
+/// ```
 pub fn epoll_wait(
     epfd: i32,
     events: &mut [epoll_event_t],

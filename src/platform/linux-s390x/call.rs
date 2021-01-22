@@ -521,12 +521,29 @@ pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Resu
 }
 
 /// Wait for an I/O event on an epoll file descriptor.
-pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> Result<i32, Errno> {
+pub fn epoll_pwait(
+    epfd: i32,
+    events: &mut [epoll_event_t],
+    max_events: i32,
+    timeout: i32,
+    sigmask: &sigset_t,
+    sigset_size: usize,
+) -> Result<i32, Errno> {
     let epfd = epfd as usize;
-    let op = op as usize;
-    let fd = fd as usize;
-    let events_ptr = events as *mut epoll_event_t as usize;
-    syscall4(SYS_EPOLL_PWAIT, epfd, op, fd, events_ptr).map(|ret| ret as i32)
+    let events_ptr = events.as_mut_ptr() as usize;
+    let max_events = max_events as usize;
+    let timeout = timeout as usize;
+    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    syscall6(
+        SYS_EPOLL_PWAIT,
+        epfd,
+        events_ptr,
+        max_events,
+        timeout,
+        sigmask_ptr,
+        sigset_size,
+    )
+    .map(|ret| ret as i32)
 }
 
 /// Wait for an I/O event on an epoll file descriptor.

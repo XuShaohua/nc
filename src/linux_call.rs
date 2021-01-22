@@ -186,6 +186,11 @@ pub fn chown(filename: &str, user: uid_t, group: gid_t) -> Result<(), Errno> {
 }
 
 /// Change the root directory.
+/// ```
+/// let ret = nc::chroot("/");
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn chroot(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

@@ -4721,6 +4721,12 @@ pub fn sendto(
 }
 
 /// Set NIS domain name.
+/// ```
+/// let name = "local-rust-domain";
+/// let ret = nc::setdomainname(name);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setdomainname(name: &str) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;

@@ -5289,6 +5289,12 @@ pub fn swapcontext() {
 }
 
 /// Stop swapping to file/device.
+/// ```
+/// let filename = "/dev/sda-no-exist";
+/// let ret = nc::swapoff(filename);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn swapoff(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

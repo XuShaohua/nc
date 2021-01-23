@@ -4647,7 +4647,14 @@ pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
 }
 
 /// Set hostname
+/// ```
+/// let name = "rust-machine";
+/// let ret = nc::sethostname(name);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn sethostname(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let name_len = name.len();
     syscall2(SYS_SETHOSTNAME, name_ptr, name_len).map(drop)

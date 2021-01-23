@@ -4043,6 +4043,12 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 }
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
+/// ```
+/// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
+///     nc::LINUX_REBOOT_CMD_RESTART, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
     let magic = magic as usize;
     let magic2 = magci2 as usize;

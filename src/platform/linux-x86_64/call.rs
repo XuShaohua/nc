@@ -905,6 +905,17 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+/// ```
+/// let filename = "/tmp/nc-fchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::fchownat(nc::AT_FDCWD, filename, 0, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn fchownat(
     dirfd: i32,
     filename: &str,
@@ -1725,6 +1736,13 @@ pub fn gettid() -> pid_t {
 }
 
 /// Get time.
+/// ```
+/// let mut tv = nc::timeval_t::default();
+/// let mut tz = nc::timezone_t::default();
+/// let ret = nc::gettimeofday(&mut tv, &mut tz);
+/// assert!(ret.is_ok());
+/// assert!(tv.tv_sec > 1611380386);
+/// ```
 pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
     let timeval_ptr = timeval as *mut timeval_t as usize;
     let tz_ptr = tz as *mut timezone_t as usize;
@@ -3987,6 +4005,12 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 }
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
+/// ```
+/// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
+///     nc::LINUX_REBOOT_CMD_RESTART, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
     let magic = magic as usize;
     let magic2 = magci2 as usize;
@@ -4542,6 +4566,12 @@ pub fn sendto(
 }
 
 /// Set NIS domain name.
+/// ```
+/// let name = "local-rust-domain";
+/// let ret = nc::setdomainname(name);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setdomainname(name: &str) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
@@ -4575,7 +4605,14 @@ pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
 }
 
 /// Set hostname
+/// ```
+/// let name = "rust-machine";
+/// let ret = nc::sethostname(name);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn sethostname(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let name_len = name.len();
     syscall2(SYS_SETHOSTNAME, name_ptr, name_len).map(drop)
@@ -4646,6 +4683,11 @@ pub fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
 }
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
+/// ```
+/// let ret = nc::setpgid(nc::getpid(), 1);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let pgid = pgid as usize;
@@ -4752,6 +4794,16 @@ pub fn setsockopt(
 }
 
 /// Set system time and timezone.
+/// ```
+/// let tv = nc::timeval_t {
+///     tv_sec: 0,
+///     tv_usec: 0,
+/// };
+/// let tz = nc::timezone_t::default();
+/// let ret = nc::settimeofday(&tv, &tz);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
     let timeval_ptr = timeval as *const timeval_t as usize;
     let tz_ptr = tz as *const timezone_t as usize;
@@ -5060,6 +5112,12 @@ pub fn statx(
 }
 
 /// Stop swapping to file/device.
+/// ```
+/// let filename = "/dev/sda-no-exist";
+/// let ret = nc::swapoff(filename);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn swapoff(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -5067,6 +5125,12 @@ pub fn swapoff(filename: &str) -> Result<(), Errno> {
 }
 
 /// Start swapping to file/device.
+/// ```
+/// let filename = "/dev/sda-no-exist";
+/// let ret = nc::swapon(filename, nc::SWAP_FLAG_PREFER);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn swapon(filename: &str, flags: i32) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -5268,6 +5332,13 @@ pub fn timer_settime(
 }
 
 /// Get process times.
+/// ```
+/// let mut tms = nc::tms_t::default();
+/// let ret = nc::times(&mut tms);
+/// assert!(ret.is_ok());
+/// let clock = ret.unwrap();
+/// assert!(clock > 0);
+/// ```
 pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
     let buf_ptr = buf as *mut tms_t as usize;
     syscall1(SYS_TIMES, buf_ptr).map(|ret| ret as clock_t)
@@ -5475,6 +5546,24 @@ pub fn utimensat(
 }
 
 /// Change file last access and modification time.
+/// let path = "/tmp/nc-utimes";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timespec_t {
+///         tv_sec: 100,
+///         tv_nsec: 0,
+///     },
+///     nc::timespec_t {
+///         tv_sec: 10,
+///         tv_nsec: 0,
+///     },
+/// ];
+/// let ret = nc::utimens(path, &times);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
 pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;

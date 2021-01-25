@@ -299,6 +299,15 @@ pub fn clock_nanosleep(
 }
 
 /// Set time of specific clock.
+/// ```
+/// let mut tp = nc::timespec_t::default();
+/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME, &mut tp);
+/// assert!(ret.is_ok());
+/// assert!(tp.tv_sec > 0);
+/// let ret = nc::clock_settime(nc::CLOCK_REALTIME, &tp);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *const timespec_t as usize;

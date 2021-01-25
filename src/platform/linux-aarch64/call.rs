@@ -3601,12 +3601,12 @@ pub fn removexattr(filename: &str, name: &str) -> Result<(), Errno> {
 
 /// Change name or location of a file.
 /// ```
-/// let path = "/tmp/nc-rename";
+/// let path = "/tmp/nc-renameat";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
-/// let new_path = "/tmp/nc-rename-new";
+/// let new_path = "/tmp/nc-renameat-new";
 /// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
 /// assert!(ret.is_ok());
 /// assert!(nc::unlink(new_path).is_ok());
@@ -3634,6 +3634,18 @@ pub fn renameat(
 }
 
 /// Change name or location of a file.
+/// ```
+/// let path = "/tmp/nc-renameat2";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-renameat2-new";
+/// let flags = nc::RENAME_NOREPLACE;
+/// let ret = nc::renameat2(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path, flags);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
 pub fn renameat2(
     olddfd: i32,
     oldfilename: &str,

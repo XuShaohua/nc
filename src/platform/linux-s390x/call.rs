@@ -239,10 +239,10 @@ pub fn chroot(filename: &str) -> Result<(), Errno> {
 
 /// Tune kernel clock. Returns clock state on success.
 /// ```
-/// let mut tp = nc::timespec_t::default();
-/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME_COARSE, &mut tp);
+/// let mut tm = nc::timex_t::default();
+/// let ret = nc::clock_adjtime(nc::CLOCK_REALTIME, &mut tm);
 /// assert!(ret.is_ok());
-/// assert!(tp.tv_sec > 0);
+/// assert!(tm.time.tv_sec > 1611552896);
 /// ```
 pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;

@@ -4985,16 +4985,24 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
 /// Splice data to/from pipe.
 pub fn splice(
     fd_in: i32,
-    off_in: &mut loff_t,
+    off_in: Option<&mut loff_t>,
     fd_out: i32,
-    off_out: &mut loff_t,
+    off_out: Option<&mut loff_t>,
     len: size_t,
     flags: u32,
 ) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
-    let off_in_ptr = off_in as *mut loff_t as usize;
+    let off_in_ptr = if let Some(off_in) = off_in {
+        off_in as *mut loff_t as usize
+    } else {
+        0
+    };
     let fd_out = fd_out as usize;
-    let off_out_ptr = off_out as *mut loff_t as usize;
+    let off_out_ptr = if let Some(off_out) = off_out {
+        off_out as *mut loff_t as usize
+    } else {
+        0
+    };
     let len = len as usize;
     let flags = flags as usize;
     syscall6(

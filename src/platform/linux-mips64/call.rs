@@ -4983,6 +4983,46 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
 }
 
 /// Splice data to/from pipe.
+/// ```
+/// let mut fds_left = [0, 0];
+/// let ret = nc::pipe(&mut fds_left);
+/// assert!(ret.is_ok());
+///
+/// let mut fds_right = [0, 0];
+/// let ret = nc::pipe(&mut fds_right);
+/// assert!(ret.is_ok());
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fds_left[1], msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// let n_write = ret.unwrap() as nc::size_t;
+/// assert_eq!(n_write, msg.len());
+///
+/// let ret = nc::splice(
+///     fds_left[0],
+///     None,
+///     fds_right[1],
+///     None,
+///     n_write,
+///     nc::SPLICE_F_MOVE,
+/// );
+/// assert!(ret.is_ok());
+///
+/// let mut buf = [0u8; 64];
+/// let buf_len = buf.len();
+/// let ret = nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as nc::size_t;
+/// assert_eq!(n_read, n_write);
+/// let read_msg = std::str::from_utf8(&buf[..n_read]);
+/// assert!(read_msg.is_ok());
+/// assert_eq!(Ok(msg), read_msg);
+///
+/// assert!(nc::close(fds_left[0]).is_ok());
+/// assert!(nc::close(fds_left[1]).is_ok());
+/// assert!(nc::close(fds_right[0]).is_ok());
+/// assert!(nc::close(fds_right[1]).is_ok());
+/// ```
 pub fn splice(
     fd_in: i32,
     off_in: Option<&mut loff_t>,

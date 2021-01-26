@@ -3092,6 +3092,19 @@ pub fn mq_timedsend(
 }
 
 /// Remove a message queue
+/// ```
+/// let name = "nc-mq-unlink";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_unlink(name: &str) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;

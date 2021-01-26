@@ -6362,7 +6362,25 @@ pub fn waitid(
     syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(drop)
 }
 
-/// Wait for process to chane state.
+/// Wait for process to change state.
+/// ```
+/// let ret = nc::fork();
+/// match ret {
+///     Err(errno) => {
+///         eprintln!("fork() error: {}", nc::strerror(errno));
+///         return;
+///     }
+///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(pid) => {
+///         let mut status = 0;
+///         let ret = nc::waitpid(pid, &mut status, 0);
+///         assert!(ret.is_ok());
+///         println!("status: {}", status);
+///         let exited_pid = ret.unwrap();
+///         assert_eq!(exited_pid, pid);
+///     }
+/// }
+/// ```
 pub fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_t, Errno> {
     let pid = pid as usize;
     let status_ptr = status as *mut i32 as usize;

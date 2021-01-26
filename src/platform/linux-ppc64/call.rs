@@ -3095,6 +3095,38 @@ pub fn mq_timedreceive(
 }
 
 /// Send message to a message queue
+/// ```
+/// let name = "nc-mq-timedsend";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+///
+/// let mut attr = nc::mq_attr_t::default();
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// println!("attr: {:?}", attr);
+///
+/// let msg = "Hello, Rust";
+/// let prio = 0;
+/// let timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let ret = nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// assert_eq!(attr.mq_curmsgs, 1);
+///
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_timedsend(
     mqdes: mqd_t,
     msg: &[u8],

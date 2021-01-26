@@ -2933,12 +2933,20 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
 /// Get/set message queue attributes
 pub fn mq_getsetattr(
     mqdes: mqd_t,
-    new_attr: &mut mq_attr_t,
-    old_attr: &mut mq_attr_t,
+    new_attr: Option<&mut mq_attr_t>,
+    old_attr: Option<&mut mq_attr_t>,
 ) -> Result<mqd_t, Errno> {
     let mqdes = mqdes as usize;
-    let new_attr_ptr = new_attr as *mut mq_attr_t as usize;
-    let old_attr_ptr = old_attr as *mut mq_attr_t as usize;
+    let new_attr_ptr = if let Some(new_attr) = new_attr {
+        new_attr as *mut mq_attr_t as usize
+    } else {
+        0
+    };
+    let old_attr_ptr = if let Some(old_attr) = old_attr {
+        old_attr as *mut mq_attr_t as usize
+    } else {
+        0
+    };
     syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)
 }
 

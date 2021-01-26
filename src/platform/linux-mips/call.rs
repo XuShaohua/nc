@@ -3179,13 +3179,17 @@ pub fn mq_open(
     name: &str,
     oflag: i32,
     mode: umode_t,
-    attr: &mut mq_attr_t,
+    attr: Option<&mut mq_attr_t>,
 ) -> Result<mqd_t, Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let oflag = oflag as usize;
     let mode = mode as usize;
-    let attr_ptr = attr as *mut mq_attr_t as usize;
+    let attr_ptr = if let Some(attr) = attr {
+        attr as *mut mq_attr_t as usize
+    } else {
+        0
+    };
     syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr).map(|ret| ret as mqd_t)
 }
 

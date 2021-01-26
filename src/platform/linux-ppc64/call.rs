@@ -6058,6 +6058,25 @@ pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ss
 }
 
 /// Wait for process to change state.
+/// ```
+/// let ret = nc::fork();
+/// match ret {
+///     Err(errno) => {
+///         eprintln!("fork() error: {}", nc::strerror(errno));
+///         nc::exit(1);
+///     }
+///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(pid) => {
+///         let mut status = 0;
+///         let mut usage = nc::rusage_t::default();
+///         let ret = nc::wait4(pid, &mut status, 0, &mut usage);
+///         assert!(ret.is_ok());
+///         println!("status: {}", status);
+///         let exited_pid = ret.unwrap();
+///         assert_eq!(exited_pid, pid);
+///     }
+/// }
+/// ```
 pub fn wait4(
     pid: pid_t,
     wstatus: &mut i32,

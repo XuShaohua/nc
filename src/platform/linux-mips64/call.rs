@@ -5632,7 +5632,7 @@ pub fn vserver() {
 ///     Ok(pid) => {
 ///         let mut status = 0;
 ///         let mut usage = nc::rusage_t::default();
-///         let ret = nc::wait4(pid, &mut status, 0, &mut usage);
+///         let ret = nc::wait4(-1, &mut status, 0, &mut usage);
 ///         assert!(ret.is_ok());
 ///         println!("status: {}", status);
 ///         let exited_pid = ret.unwrap();
@@ -5654,6 +5654,29 @@ pub fn wait4(
 }
 
 /// Wait for process to change state
+/// ```
+/// let ret = nc::fork();
+/// match ret {
+///     Err(errno) => {
+///         eprintln!("fork() error: {}", nc::strerror(errno));
+///         nc::exit(1);
+///     }
+///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(pid) => {
+///         let mut info = nc::siginfo_t::default();
+///         let options = nc::WEXITED;
+///         let mut usage = nc::rusage_t::default();
+///         let ret = nc::waitid(nc::P_ALL, -1, &mut info, options, &mut usage);
+///         match ret {
+///             Err(errno) => eprintln!("waitid() error: {}", nc::strerror(errno)),
+///             Ok(()) => {
+///                 let exited_pid = unsafe { info.siginfo.sifields.sigchld.pid };
+///                 assert_eq!(pid, exited_pid);
+///             }
+///         }
+///     }
+/// }
+/// ```
 pub fn waitid(
     which: i32,
     pid: pid_t,

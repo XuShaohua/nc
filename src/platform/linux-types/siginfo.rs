@@ -120,9 +120,17 @@ pub union sifields_t {
     pub sigsys: si_sigsys_t,
 }
 
+impl Default for sifields_t {
+    fn default() -> Self {
+        sifields_t {
+            rt: si_rt_t::default(),
+        }
+    }
+}
+
 // TODO(Shaohua): Move to arch specific types.
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Default, Clone, Copy)]
 pub struct siginfo_intern_t {
     pub si_signo: i32,
     pub si_errno: i32,
@@ -141,6 +149,14 @@ pub struct siginfo_intern_t {
 pub union siginfo_t {
     pub siginfo: siginfo_intern_t,
     si_pad: [u8; SI_MAX_SIZE / size_of::<i32>()],
+}
+
+impl Default for siginfo_t {
+    fn default() -> Self {
+        siginfo_t {
+            si_pad: [0; SI_MAX_SIZE / size_of::<i32>()],
+        }
+    }
 }
 
 /// How these fields are to be accessed.

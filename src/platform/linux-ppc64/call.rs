@@ -3032,9 +3032,13 @@ pub fn mq_getsetattr(
 }
 
 /// Register for notification when a message is available
-pub fn mq_notify(mqdes: mqd_t, notification: &sigevent_t) -> Result<(), Errno> {
+pub fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
-    let notification_ptr = notification as *const sigevent_t as usize;
+    let notification_ptr = if let Some(notification) = notification {
+        notification as *const sigevent_t as usize
+    } else {
+        0
+    };
     syscall2(SYS_MQ_NOTIFY, mqdes, notification_ptr).map(drop)
 }
 

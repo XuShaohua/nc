@@ -3222,6 +3222,25 @@ pub fn mpx() {
 }
 
 /// Get/set message queue attributes
+/// ```
+/// let name = "nc-mq-getsetattr";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+///
+/// let mut attr = nc::mq_attr_t::default();
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// println!("attr: {:?}", attr);
+///
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_getsetattr(
     mqdes: mqd_t,
     new_attr: Option<&mut mq_attr_t>,

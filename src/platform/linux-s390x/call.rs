@@ -2955,6 +2955,19 @@ pub fn mq_notify(mqdes: mqd_t, notification: &sigevent_t) -> Result<(), Errno> {
 }
 
 /// Open a message queue.
+/// ```
+/// let name = "nc-posix-mq";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_open(
     name: &str,
     oflag: i32,

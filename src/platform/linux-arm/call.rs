@@ -85,6 +85,12 @@ pub fn add_key(
 }
 
 /// Tune kernel clock. Returns clock state on success.
+/// ```
+/// let mut tm = nc::timex_t::default();
+/// let ret = nc::adjtimex(&mut tm);
+/// assert!(ret.is_ok());
+/// assert!(tm.time.tv_sec > 1611552896);
+/// ```
 pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     let buf_ptr = buf as *mut timex_t as usize;
     syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
@@ -211,6 +217,11 @@ pub fn chown32() {
 }
 
 /// Change the root directory.
+/// ```
+/// let ret = nc::chroot("/");
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn chroot(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -218,6 +229,12 @@ pub fn chroot(filename: &str) -> Result<(), Errno> {
 }
 
 /// Tune kernel clock. Returns clock state on success.
+/// ```
+/// let mut tm = nc::timex_t::default();
+/// let ret = nc::clock_adjtime(nc::CLOCK_REALTIME, &mut tm);
+/// assert!(ret.is_ok());
+/// assert!(tm.time.tv_sec > 1611552896);
+/// ```
 pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tx_ptr = tx as *mut timex_t as usize;
@@ -293,6 +310,15 @@ pub fn clock_nanosleep_time64() {
 }
 
 /// Set time of specific clock.
+/// ```
+/// let mut tp = nc::timespec_t::default();
+/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME, &mut tp);
+/// assert!(ret.is_ok());
+/// assert!(tp.tv_sec > 0);
+/// let ret = nc::clock_settime(nc::CLOCK_REALTIME, &tp);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *const timespec_t as usize;
@@ -527,15 +553,124 @@ pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Resu
 }
 
 /// Wait for an I/O event on an epoll file descriptor.
-pub fn epoll_pwait(epfd: i32, op: i32, fd: i32, events: &mut epoll_event_t) -> Result<i32, Errno> {
+/// ```
+/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(epfd.is_ok());
+/// let epfd = epfd.unwrap();
+/// let mut fds: [i32; 2] = [0, 0];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// let mut event = nc::epoll_event_t::default();
+/// event.events = nc::EPOLLIN | nc::EPOLLET;
+/// event.data.fd = fds[0];
+/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// assert!(ctl_ret.is_ok());
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fds[1], msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+///
+/// let mut events = vec![nc::epoll_event_t::default(); 4];
+/// let events_len = events.len();
+/// let timeout = 0;
+/// let sigmask = nc::sigset_t::default();
+/// let sigmask_size = core::mem::size_of_val(&sigmask);
+/// let ret = nc::epoll_pwait(
+///     epfd,
+///     &mut events,
+///     events_len as i32,
+///     timeout,
+///     &sigmask,
+///     sigmask_size,
+/// );
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(1));
+///
+/// for event in &events {
+///     // Ready to read
+///     if event.events == nc::EPOLLIN {
+///         let ready_fd = unsafe { event.data.fd };
+///         assert_eq!(ready_fd, fds[0]);
+///         let mut buf = vec![0_u8; 64];
+///         let buf_len = buf.len();
+///         let ret = nc::read(ready_fd, buf.as_mut_ptr() as usize, buf_len);
+///         assert!(ret.is_ok());
+///         let n_read = ret.unwrap() as usize;
+///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
+///     }
+/// }
+///
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// assert!(nc::close(epfd).is_ok());
+/// ```
+pub fn epoll_pwait(
+    epfd: i32,
+    events: &mut [epoll_event_t],
+    max_events: i32,
+    timeout: i32,
+    sigmask: &sigset_t,
+    sigset_size: usize,
+) -> Result<i32, Errno> {
     let epfd = epfd as usize;
-    let op = op as usize;
-    let fd = fd as usize;
-    let events_ptr = events as *mut epoll_event_t as usize;
-    syscall4(SYS_EPOLL_PWAIT, epfd, op, fd, events_ptr).map(|ret| ret as i32)
+    let events_ptr = events.as_mut_ptr() as usize;
+    let max_events = max_events as usize;
+    let timeout = timeout as usize;
+    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    syscall6(
+        SYS_EPOLL_PWAIT,
+        epfd,
+        events_ptr,
+        max_events,
+        timeout,
+        sigmask_ptr,
+        sigset_size,
+    )
+    .map(|ret| ret as i32)
 }
 
 /// Wait for an I/O event on an epoll file descriptor.
+/// ```
+/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// assert!(epfd.is_ok());
+/// let epfd = epfd.unwrap();
+/// let mut fds: [i32; 2] = [0, 0];
+/// let ret = nc::pipe(&mut fds);
+/// assert!(ret.is_ok());
+/// let mut event = nc::epoll_event_t::default();
+/// event.events = nc::EPOLLIN | nc::EPOLLET;
+/// event.data.fd = fds[0];
+/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// assert!(ctl_ret.is_ok());
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fds[1], msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+///
+/// let mut events = vec![nc::epoll_event_t::default(); 4];
+/// let events_len = events.len();
+/// let ret = nc::epoll_wait(epfd, &mut events, events_len as i32, 0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(1));
+///
+/// for event in &events {
+///     // Ready to read
+///     if event.events == nc::EPOLLIN {
+///         let ready_fd = unsafe { event.data.fd };
+///         assert_eq!(ready_fd, fds[0]);
+///         let mut buf = vec![0_u8; 64];
+///         let buf_len = buf.len();
+///         let ret = nc::read(ready_fd, buf.as_mut_ptr() as usize, buf_len);
+///         assert!(ret.is_ok());
+///         let n_read = ret.unwrap() as usize;
+///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
+///     }
+/// }
+///
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// assert!(nc::close(epfd).is_ok());
+/// ```
 pub fn epoll_wait(
     epfd: i32,
     events: &mut [epoll_event_t],
@@ -776,6 +911,17 @@ pub fn fchown32() {
 }
 
 /// Change ownership of a file.
+/// ```
+/// let filename = "/tmp/nc-fchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::fchownat(nc::AT_FDCWD, filename, 0, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
 pub fn fchownat(
     dirfd: i32,
     filename: &str,
@@ -1709,6 +1855,13 @@ pub fn gettid() -> pid_t {
 }
 
 /// Get time.
+/// ```
+/// let mut tv = nc::timeval_t::default();
+/// let mut tz = nc::timezone_t::default();
+/// let ret = nc::gettimeofday(&mut tv, &mut tz);
+/// assert!(ret.is_ok());
+/// assert!(tv.tv_sec > 1611380386);
+/// ```
 pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
     let timeval_ptr = timeval as *mut timeval_t as usize;
     let tz_ptr = tz as *mut timezone_t as usize;
@@ -2870,51 +3023,146 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
 }
 
 /// Get/set message queue attributes
+/// ```
+/// let name = "nc-mq-getsetattr";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+///
+/// let mut attr = nc::mq_attr_t::default();
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// println!("attr: {:?}", attr);
+///
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_getsetattr(
     mqdes: mqd_t,
-    new_attr: &mut mq_attr_t,
-    old_attr: &mut mq_attr_t,
+    new_attr: Option<&mut mq_attr_t>,
+    old_attr: Option<&mut mq_attr_t>,
 ) -> Result<mqd_t, Errno> {
     let mqdes = mqdes as usize;
-    let new_attr_ptr = new_attr as *mut mq_attr_t as usize;
-    let old_attr_ptr = old_attr as *mut mq_attr_t as usize;
+    let new_attr_ptr = if let Some(new_attr) = new_attr {
+        new_attr as *mut mq_attr_t as usize
+    } else {
+        0
+    };
+    let old_attr_ptr = if let Some(old_attr) = old_attr {
+        old_attr as *mut mq_attr_t as usize
+    } else {
+        0
+    };
     syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)
 }
 
 /// Register for notification when a message is available
-pub fn mq_notify(mqdes: mqd_t, notification: &sigevent_t) -> Result<(), Errno> {
+pub fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
-    let notification_ptr = notification as *const sigevent_t as usize;
+    let notification_ptr = if let Some(notification) = notification {
+        notification as *const sigevent_t as usize
+    } else {
+        0
+    };
     syscall2(SYS_MQ_NOTIFY, mqdes, notification_ptr).map(drop)
 }
 
 /// Open a message queue.
+/// ```
+/// let name = "nc-posix-mq";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_open(
     name: &str,
     oflag: i32,
     mode: umode_t,
-    attr: &mut mq_attr_t,
+    attr: Option<&mut mq_attr_t>,
 ) -> Result<mqd_t, Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let oflag = oflag as usize;
     let mode = mode as usize;
-    let attr_ptr = attr as *mut mq_attr_t as usize;
+    let attr_ptr = if let Some(attr) = attr {
+        attr as *mut mq_attr_t as usize
+    } else {
+        0
+    };
     syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr).map(|ret| ret as mqd_t)
 }
 
 /// Receive a message from a message queue
+/// ```
+/// let name = "nc-mq-timedreceive";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR | nc::O_EXCL,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+///
+/// let mut attr = nc::mq_attr_t::default();
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// println!("attr: {:?}", attr);
+///
+/// let msg = "Hello, Rust";
+/// let prio = 42;
+/// let timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let ret = nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// assert_eq!(attr.mq_curmsgs, 1);
+///
+/// let mut buf = vec![0_u8; attr.mq_msgsize as usize];
+/// let buf_len = buf.len();
+/// let mut recv_prio = 0;
+/// let read_timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let ret = nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout);
+/// if let Err(errno) = ret {
+///     eprintln!("mq_timedreceive() error: {}", nc::strerror(errno));
+/// }
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as usize;
+/// assert_eq!(n_read, msg.len());
+///
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_timedreceive(
     mqdes: mqd_t,
-    msg: &str,
-    msg_prio: u32,
+    msg: &mut [u8],
+    msg_len: usize,
+    msg_prio: &mut u32,
     abs_timeout: &timespec_t,
 ) -> Result<ssize_t, Errno> {
     let mqdes = mqdes as usize;
     let msg = CString::new(msg);
     let msg_ptr = msg.as_ptr() as usize;
-    let msg_len = msg.len();
-    let msg_prio = msg_prio as usize;
+    let msg_prio = msg_prio as *mut u32 as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(
         SYS_MQ_TIMEDRECEIVE,
@@ -2933,16 +3181,48 @@ pub fn mq_timedreceive_time64() {
 }
 
 /// Send message to a message queue
+/// ```
+/// let name = "nc-mq-timedsend";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+///
+/// let mut attr = nc::mq_attr_t::default();
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// println!("attr: {:?}", attr);
+///
+/// let msg = "Hello, Rust";
+/// let prio = 0;
+/// let timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// let ret = nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout);
+/// assert!(ret.is_ok());
+///
+/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// assert!(ret.is_ok());
+/// assert_eq!(attr.mq_curmsgs, 1);
+///
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_timedsend(
     mqdes: mqd_t,
-    msg: &str,
+    msg: &[u8],
+    msg_len: usize,
     msg_prio: u32,
     abs_timeout: &timespec_t,
 ) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
     let msg = CString::new(msg);
     let msg_ptr = msg.as_ptr() as usize;
-    let msg_len = msg.len();
     let msg_prio = msg_prio as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(
@@ -2962,6 +3242,19 @@ pub fn mq_timedsend_time64() {
 }
 
 /// Remove a message queue
+/// ```
+/// let name = "nc-mq-unlink";
+/// let ret = nc::mq_open(
+///     name,
+///     nc::O_CREAT | nc::O_RDWR,
+///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///     None,
+/// );
+/// assert!(ret.is_ok());
+/// let mq_id = ret.unwrap();
+/// assert!(nc::close(mq_id).is_ok());
+/// assert!(nc::mq_unlink(name).is_ok());
+/// ```
 pub fn mq_unlink(name: &str) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
@@ -4002,6 +4295,12 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 }
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
+/// ```
+/// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
+///     nc::LINUX_REBOOT_CMD_RESTART, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
     let magic = magic as usize;
     let magic2 = magci2 as usize;
@@ -4140,12 +4439,12 @@ pub fn rename(oldfilename: &str, newfilename: &str) -> Result<(), Errno> {
 
 /// Change name or location of a file.
 /// ```
-/// let path = "/tmp/nc-rename";
+/// let path = "/tmp/nc-renameat";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
-/// let new_path = "/tmp/nc-rename-new";
+/// let new_path = "/tmp/nc-renameat-new";
 /// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
 /// assert!(ret.is_ok());
 /// assert!(nc::unlink(new_path).is_ok());
@@ -4173,6 +4472,18 @@ pub fn renameat(
 }
 
 /// Change name or location of a file.
+/// ```
+/// let path = "/tmp/nc-renameat2";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-renameat2-new";
+/// let flags = nc::RENAME_NOREPLACE;
+/// let ret = nc::renameat2(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path, flags);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
 pub fn renameat2(
     olddfd: i32,
     oldfilename: &str,
@@ -4357,9 +4668,92 @@ pub fn rt_tgsigqueueinfo(
 }
 
 /// Get a thread's CPU affinity mask.
-pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask_ptr: usize) -> Result<(), Errno> {
+/// ```
+/// use core::mem::size_of;
+///
+/// const SET_BITS: usize = 16;
+/// #[repr(C)]
+/// #[derive(Debug, Clone, Copy, PartialEq)]
+/// struct CPUSet {
+///     pub bits: [usize; SET_BITS],
+/// }
+///
+/// impl Default for CPUSet {
+///     fn default() -> Self {
+///         CPUSet {
+///             bits: [0; SET_BITS],
+///         }
+///     }
+/// }
+///
+/// impl CPUSet {
+///     #[inline]
+///     pub const fn size() -> usize {
+///         SET_BITS * size_of::<usize>()
+///     }
+///
+///     #[inline]
+///     pub const fn bits_size() -> usize {
+///         CPUSet::size() * 8
+///     }
+///
+///     pub fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///         if pos >= CPUSet::bits_size() {
+///             return Err(nc::EINVAL);
+///         }
+///         let bit_pos = pos / 8 / size_of::<usize>();
+///         self.bits[bit_pos] |= 1 << (pos % (8 * size_of::<usize>()));
+///         Ok(())
+///     }
+///
+///     pub fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///         if pos >= CPUSet::bits_size() {
+///             return Err(nc::EINVAL);
+///         }
+///         let bit_pos = pos / 8 / size_of::<usize>();
+///         self.bits[bit_pos] &= !(1 << (pos % (8 * size_of::<usize>())));
+///         Ok(())
+///     }
+///
+///     pub fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
+///         if pos >= CPUSet::bits_size() {
+///             return Err(nc::EINVAL);
+///         }
+///         let bit_pos = pos / 8 / size_of::<usize>();
+///         let ret = self.bits[bit_pos] & (1 << (pos % (8 * size_of::<usize>())));
+///
+///         Ok(ret != 0)
+///     }
+///
+///     pub fn as_ptr(&self) -> &[usize] {
+///         &self.bits
+///     }
+///
+///     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
+///         &mut self.bits
+///     }
+/// }
+///
+/// fn main() {
+///     let mut set = CPUSet::default();
+///     assert!(set.set(1).is_ok());
+///     println!("set(1): {:?}", set.is_set(1));
+///     assert!(set.set(2).is_ok());
+///     assert!(set.clear(2).is_ok());
+///     println!("set(2): {:?}", set.is_set(2));
+///
+///     let ret = nc::sched_setaffinity(0, CPUSet::size(), set.as_ptr());
+///     assert!(ret.is_ok());
+///
+///     let mut set2 = CPUSet::default();
+///     let ret = nc::sched_getaffinity(0, CPUSet::size(), set2.as_mut_ptr());
+///     assert!(ret.is_ok());
+///     assert_eq!(set, set2);
+/// }
+/// ```
+pub fn sched_getaffinity(pid: pid_t, len: usize, user_mask: &mut [usize]) -> Result<(), Errno> {
     let pid = pid as usize;
-    let len = len as usize;
+    let user_mask_ptr = user_mask.as_mut_ptr() as usize;
     syscall3(SYS_SCHED_GETAFFINITY, pid, len, user_mask_ptr).map(drop)
 }
 
@@ -4378,6 +4772,12 @@ pub fn sched_getattr(
 }
 
 /// Get scheduling paramters.
+/// ```
+/// let mut param = nc::sched_param_t::default();
+/// let ret = nc::sched_getparam(0, &mut param);
+/// assert!(ret.is_ok());
+/// assert_eq!(param.sched_priority, 0);
+/// ```
 pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let param_ptr = param as *mut sched_param_t as usize;
@@ -4385,24 +4785,45 @@ pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno
 }
 
 /// Get scheduling parameter.
+/// ```
+/// let ret = nc::sched_getscheduler(0);
+/// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
+/// ```
 pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
     let pid = pid as usize;
     syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
 }
 
 /// Get static priority max value.
+/// ```
+/// let ret = nc::sched_get_priority_max(nc::SCHED_RR);
+/// assert!(ret.is_ok());
+/// let max_prio = ret.unwrap();
+/// assert_eq!(max_prio, 99);
+/// ```
 pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
     let policy = policy as usize;
     syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy).map(|ret| ret as i32)
 }
 
 /// Get static priority min value.
+/// ```
+/// let ret = nc::sched_get_priority_min(nc::SCHED_RR);
+/// assert!(ret.is_ok());
+/// let min_prio = ret.unwrap();
+/// assert_eq!(min_prio, 1);
+/// ```
 pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
     let policy = policy as usize;
     syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy).map(|ret| ret as i32)
 }
 
 /// Get the SCHED_RR interval for the named process.
+/// ```
+/// let mut ts = nc::timespec_t::default();
+/// let ret = nc::sched_rr_get_interval(0, &mut ts);
+/// assert!(ret.is_ok());
+/// ```
 pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let interval_ptr = interval as *mut timespec_t as usize;
@@ -4415,10 +4836,92 @@ pub fn sched_rr_get_interval_time64() {
 }
 
 /// Set a thread's CPU affinity mask.
-pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
+/// ```
+/// use core::mem::size_of;
+///
+/// const SET_BITS: usize = 16;
+/// #[repr(C)]
+/// #[derive(Debug, Clone, Copy, PartialEq)]
+/// struct CPUSet {
+///     pub bits: [usize; SET_BITS],
+/// }
+///
+/// impl Default for CPUSet {
+///     fn default() -> Self {
+///         CPUSet {
+///             bits: [0; SET_BITS],
+///         }
+///     }
+/// }
+///
+/// impl CPUSet {
+///     #[inline]
+///     pub const fn size() -> usize {
+///         SET_BITS * size_of::<usize>()
+///     }
+///
+///     #[inline]
+///     pub const fn bits_size() -> usize {
+///         CPUSet::size() * 8
+///     }
+///
+///     pub fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///         if pos >= CPUSet::bits_size() {
+///             return Err(nc::EINVAL);
+///         }
+///         let bit_pos = pos / 8 / size_of::<usize>();
+///         self.bits[bit_pos] |= 1 << (pos % (8 * size_of::<usize>()));
+///         Ok(())
+///     }
+///
+///     pub fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///         if pos >= CPUSet::bits_size() {
+///             return Err(nc::EINVAL);
+///         }
+///         let bit_pos = pos / 8 / size_of::<usize>();
+///         self.bits[bit_pos] &= !(1 << (pos % (8 * size_of::<usize>())));
+///         Ok(())
+///     }
+///
+///     pub fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
+///         if pos >= CPUSet::bits_size() {
+///             return Err(nc::EINVAL);
+///         }
+///         let bit_pos = pos / 8 / size_of::<usize>();
+///         let ret = self.bits[bit_pos] & (1 << (pos % (8 * size_of::<usize>())));
+///
+///         Ok(ret != 0)
+///     }
+///
+///     pub fn as_ptr(&self) -> &[usize] {
+///         &self.bits
+///     }
+///
+///     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
+///         &mut self.bits
+///     }
+/// }
+///
+/// fn main() {
+///     let mut set = CPUSet::default();
+///     assert!(set.set(1).is_ok());
+///     println!("set(1): {:?}", set.is_set(1));
+///     assert!(set.set(2).is_ok());
+///     assert!(set.clear(2).is_ok());
+///     println!("set(2): {:?}", set.is_set(2));
+///
+///     let ret = nc::sched_setaffinity(0, CPUSet::size(), set.as_ptr());
+///     assert!(ret.is_ok());
+///
+///     let mut set2 = CPUSet::default();
+///     let ret = nc::sched_getaffinity(0, CPUSet::size(), set2.as_mut_ptr());
+///     assert!(ret.is_ok());
+///     assert_eq!(set, set2);
+/// }
+/// ```
+pub fn sched_setaffinity(pid: pid_t, len: usize, user_mask: &[usize]) -> Result<(), Errno> {
     let pid = pid as usize;
-    let len = len as usize;
-    let user_mask_ptr = user_mask as *mut usize as usize;
+    let user_mask_ptr = user_mask.as_ptr() as usize;
     syscall3(SYS_SCHED_SETAFFINITY, pid, len, user_mask_ptr).map(drop)
 }
 
@@ -4431,6 +4934,14 @@ pub fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<
 }
 
 /// Set scheduling paramters.
+/// ```
+/// // This call always returns error because default scheduler is SCHED_NORMAL.
+/// // We shall call sched_setscheduler() and change to realtime policy
+/// // like SCHED_RR or SCHED_FIFO.
+/// let sched_param = nc::sched_param_t { sched_priority: 12 };
+/// let ret = nc::sched_setparam(0, &sched_param);
+/// assert_eq!(ret, Err(nc::EINVAL));
+/// ```
 pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let param_ptr = param as *const sched_param_t as usize;
@@ -4438,6 +4949,11 @@ pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
 }
 
 /// Set scheduling parameter.
+/// ```
+/// let sched_param = nc::sched_param_t { sched_priority: 12 };
+/// let ret = nc::sched_setscheduler(0, nc::SCHED_RR, &sched_param);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let policy = policy as usize;
@@ -4580,6 +5096,12 @@ pub fn sendto(
 }
 
 /// Set NIS domain name.
+/// ```
+/// let name = "local-rust-domain";
+/// let ret = nc::setdomainname(name);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setdomainname(name: &str) -> Result<(), Errno> {
     let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
@@ -4633,7 +5155,14 @@ pub fn setgroups32() {
 }
 
 /// Set hostname
+/// ```
+/// let name = "rust-machine";
+/// let ret = nc::sethostname(name);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn sethostname(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
     let name_ptr = name.as_ptr() as usize;
     let name_len = name.len();
     syscall2(SYS_SETHOSTNAME, name_ptr, name_len).map(drop)
@@ -4704,6 +5233,11 @@ pub fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
 }
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
+/// ```
+/// let ret = nc::setpgid(nc::getpid(), 1);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let pgid = pgid as usize;
@@ -4830,6 +5364,16 @@ pub fn setsockopt(
 }
 
 /// Set system time and timezone.
+/// ```
+/// let tv = nc::timeval_t {
+///     tv_sec: 0,
+///     tv_usec: 0,
+/// };
+/// let tz = nc::timezone_t::default();
+/// let ret = nc::settimeofday(&tv, &tz);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
     let timeval_ptr = timeval as *const timeval_t as usize;
     let tz_ptr = tz as *const timezone_t as usize;
@@ -5080,18 +5624,66 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
 }
 
 /// Splice data to/from pipe.
+/// ```
+/// let mut fds_left = [0, 0];
+/// let ret = nc::pipe(&mut fds_left);
+/// assert!(ret.is_ok());
+///
+/// let mut fds_right = [0, 0];
+/// let ret = nc::pipe(&mut fds_right);
+/// assert!(ret.is_ok());
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fds_left[1], msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// let n_write = ret.unwrap() as nc::size_t;
+/// assert_eq!(n_write, msg.len());
+///
+/// let ret = nc::splice(
+///     fds_left[0],
+///     None,
+///     fds_right[1],
+///     None,
+///     n_write,
+///     nc::SPLICE_F_MOVE,
+/// );
+/// assert!(ret.is_ok());
+///
+/// let mut buf = [0u8; 64];
+/// let buf_len = buf.len();
+/// let ret = nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as nc::size_t;
+/// assert_eq!(n_read, n_write);
+/// let read_msg = std::str::from_utf8(&buf[..n_read]);
+/// assert!(read_msg.is_ok());
+/// assert_eq!(Ok(msg), read_msg);
+///
+/// assert!(nc::close(fds_left[0]).is_ok());
+/// assert!(nc::close(fds_left[1]).is_ok());
+/// assert!(nc::close(fds_right[0]).is_ok());
+/// assert!(nc::close(fds_right[1]).is_ok());
+/// ```
 pub fn splice(
     fd_in: i32,
-    off_in: &mut loff_t,
+    off_in: Option<&mut loff_t>,
     fd_out: i32,
-    off_out: &mut loff_t,
+    off_out: Option<&mut loff_t>,
     len: size_t,
     flags: u32,
 ) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
-    let off_in_ptr = off_in as *mut loff_t as usize;
+    let off_in_ptr = if let Some(off_in) = off_in {
+        off_in as *mut loff_t as usize
+    } else {
+        0
+    };
     let fd_out = fd_out as usize;
-    let off_out_ptr = off_out as *mut loff_t as usize;
+    let off_out_ptr = if let Some(off_out) = off_out {
+        off_out as *mut loff_t as usize
+    } else {
+        0
+    };
     let len = len as usize;
     let flags = flags as usize;
     syscall6(
@@ -5196,6 +5788,12 @@ pub fn statx(
 }
 
 /// Stop swapping to file/device.
+/// ```
+/// let filename = "/dev/sda-no-exist";
+/// let ret = nc::swapoff(filename);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn swapoff(filename: &str) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -5203,6 +5801,12 @@ pub fn swapoff(filename: &str) -> Result<(), Errno> {
 }
 
 /// Start swapping to file/device.
+/// ```
+/// let filename = "/dev/sda-no-exist";
+/// let ret = nc::swapon(filename, nc::SWAP_FLAG_PREFER);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn swapon(filename: &str, flags: i32) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -5278,6 +5882,13 @@ pub fn sysfs(option: i32, arg1: usize, arg2: usize) -> Result<i32, Errno> {
 }
 
 /// Return system information.
+/// ```
+/// let mut info = nc::sysinfo_t::default();
+/// let ret = nc::sysinfo(&mut info);
+/// assert!(ret.is_ok());
+/// assert!(info.uptime > 0);
+/// assert!(info.freeram > 0);
+/// ```
 pub fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
     let info_ptr = info as *mut sysinfo_t as usize;
     syscall1(SYS_SYSINFO, info_ptr).map(drop)
@@ -5292,6 +5903,39 @@ pub fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 }
 
 /// Duplicate pipe content.
+/// ```
+/// let mut fds_left = [0, 0];
+/// let ret = nc::pipe(&mut fds_left);
+/// assert!(ret.is_ok());
+///
+/// let mut fds_right = [0, 0];
+/// let ret = nc::pipe(&mut fds_right);
+/// assert!(ret.is_ok());
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fds_left[1], msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// let n_write = ret.unwrap() as nc::size_t;
+/// assert_eq!(n_write, msg.len());
+///
+/// let ret = nc::tee(fds_left[0], fds_right[1], n_write, nc::SPLICE_F_NONBLOCK);
+/// assert!(ret.is_ok());
+///
+/// let mut buf = [0u8; 64];
+/// let buf_len = buf.len();
+/// let ret = nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len);
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as nc::size_t;
+/// assert_eq!(n_read, n_write);
+/// let read_msg = std::str::from_utf8(&buf[..n_read]);
+/// assert!(read_msg.is_ok());
+/// assert_eq!(Ok(msg), read_msg);
+///
+/// assert!(nc::close(fds_left[0]).is_ok());
+/// assert!(nc::close(fds_left[1]).is_ok());
+/// assert!(nc::close(fds_right[0]).is_ok());
+/// assert!(nc::close(fds_right[1]).is_ok());
+/// ```
 pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
     let fd_out = fd_out as usize;
@@ -5409,6 +6053,13 @@ pub fn timer_settime64() {
 }
 
 /// Get process times.
+/// ```
+/// let mut tms = nc::tms_t::default();
+/// let ret = nc::times(&mut tms);
+/// assert!(ret.is_ok());
+/// let clock = ret.unwrap();
+/// assert!(clock > 0);
+/// ```
 pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
     let buf_ptr = buf as *mut tms_t as usize;
     syscall1(SYS_TIMES, buf_ptr).map(|ret| ret as clock_t)
@@ -5617,6 +6268,24 @@ pub fn utimensat_time64() {
 }
 
 /// Change file last access and modification time.
+/// let path = "/tmp/nc-utimes";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timespec_t {
+///         tv_sec: 100,
+///         tv_nsec: 0,
+///     },
+///     nc::timespec_t {
+///         tv_sec: 10,
+///         tv_nsec: 0,
+///     },
+/// ];
+/// let ret = nc::utimens(path, &times);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
 pub fn utimes(filename: &str, times: &[timeval_t; 2]) -> Result<(), Errno> {
     let filename = CString::new(filename);
     let filename_ptr = filename.as_ptr() as usize;
@@ -5648,20 +6317,62 @@ pub fn vserver() {
 }
 
 /// Wait for process to change state.
+/// ```
+/// let ret = nc::fork();
+/// match ret {
+///     Err(errno) => {
+///         eprintln!("fork() error: {}", nc::strerror(errno));
+///         nc::exit(1);
+///     }
+///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(pid) => {
+///         let mut status = 0;
+///         let mut usage = nc::rusage_t::default();
+///         let ret = nc::wait4(-1, &mut status, 0, &mut usage);
+///         assert!(ret.is_ok());
+///         println!("status: {}", status);
+///         let exited_pid = ret.unwrap();
+///         assert_eq!(exited_pid, pid);
+///     }
+/// }
+/// ```
 pub fn wait4(
     pid: pid_t,
     wstatus: &mut i32,
     options: i32,
     rusage: &mut rusage_t,
-) -> Result<(), Errno> {
+) -> Result<pid_t, Errno> {
     let pid = pid as usize;
     let wstatus_ptr = wstatus as *mut i32 as usize;
     let options = options as usize;
     let rusage_ptr = rusage as *mut rusage_t as usize;
-    syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(drop)
+    syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t)
 }
 
 /// Wait for process to change state
+/// ```
+/// let ret = nc::fork();
+/// match ret {
+///     Err(errno) => {
+///         eprintln!("fork() error: {}", nc::strerror(errno));
+///         nc::exit(1);
+///     }
+///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(pid) => {
+///         let mut info = nc::siginfo_t::default();
+///         let options = nc::WEXITED;
+///         let mut usage = nc::rusage_t::default();
+///         let ret = nc::waitid(nc::P_ALL, -1, &mut info, options, &mut usage);
+///         match ret {
+///             Err(errno) => eprintln!("waitid() error: {}", nc::strerror(errno)),
+///             Ok(()) => {
+///                 let exited_pid = unsafe { info.siginfo.sifields.sigchld.pid };
+///                 assert_eq!(pid, exited_pid);
+///             }
+///         }
+///     }
+/// }
+/// ```
 pub fn waitid(
     which: i32,
     pid: pid_t,

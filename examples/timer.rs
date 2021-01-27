@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 use core::mem::size_of;
 
 fn handle_restore() {
@@ -7,7 +11,7 @@ fn handle_restore() {
     // do nothing.
 }
 
-fn handle_alarm(signum: i32) {
+fn handle_alarm(_signum: i32) {
     //assert_eq!(signum, nc::SIGALRM);
     //let msg = "Hello alarm\n";
     //let _ = nc::write(2, msg.as_ptr() as usize, msg.len());

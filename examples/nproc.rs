@@ -3,11 +3,10 @@
 // in the LICENSE file.
 
 pub fn get_num_cpu() -> Result<u16, nc::Errno> {
-    let mut set: [u8; 128] = [0; 128];
+    let mut set = [0; 128];
     set[0] = 1;
-    let set_ptr = set.as_ptr() as usize;
 
-    nc::sched_getaffinity(0, set.len() as u32, set_ptr)?;
+    nc::sched_getaffinity(0, set.len(), &mut set)?;
 
     let mut count = 0;
     for item in set.iter() {

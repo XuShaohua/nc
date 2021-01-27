@@ -1,3 +1,7 @@
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
 fn main() {
     let target_dir = "/tmp/nc-mount";
     let ret = nc::mkdir(target_dir, 0o755);

@@ -4766,10 +4766,9 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 }
 
 /// Set a thread's CPU affinity mask.
-pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<(), Errno> {
+pub fn sched_setaffinity(pid: pid_t, len: usize, user_mask: &[usize]) -> Result<(), Errno> {
     let pid = pid as usize;
-    let len = len as usize;
-    let user_mask_ptr = user_mask as *mut usize as usize;
+    let user_mask_ptr = user_mask.as_ptr() as usize;
     syscall3(SYS_SCHED_SETAFFINITY, pid, len, user_mask_ptr).map(drop)
 }
 

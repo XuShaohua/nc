@@ -3417,6 +3417,10 @@ pub fn sched_getaffinity(pid: pid_t, len: u32, user_mask_ptr: usize) -> Result<(
 }
 
 /// Get scheduling parameter.
+/// ```
+/// let ret = nc::sched_getscheduler(0);
+/// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
+/// ```
 pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
     let pid = pid as usize;
     syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
@@ -3439,9 +3443,9 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
 
 /// Set scheduling paramters.
 /// ```
-/// // This call always returns error because default scheduler is SCHED_OTHER.
-/// // We shall call sched_setscheduler() and set policy to SCHED_RR or
-/// // SCHED_FIFO.
+/// // This call always returns error because default scheduler is SCHED_NORMAL.
+/// // We shall call sched_setscheduler() and change to realtime policy
+/// // like SCHED_RR or SCHED_FIFO.
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };
 /// let ret = nc::sched_setparam(0, &sched_param);
 /// assert_eq!(ret, Err(nc::EINVAL));

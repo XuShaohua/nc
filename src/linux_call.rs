@@ -3438,6 +3438,14 @@ pub fn sched_setaffinity(pid: pid_t, len: u32, user_mask: &mut usize) -> Result<
 }
 
 /// Set scheduling paramters.
+/// ```
+/// // This call always returns error because default scheduler is SCHED_OTHER.
+/// // We shall call sched_setscheduler() and set policy to SCHED_RR or
+/// // SCHED_FIFO.
+/// let sched_param = nc::sched_param_t { sched_priority: 12 };
+/// let ret = nc::sched_setparam(0, &sched_param);
+/// assert_eq!(ret, Err(nc::EINVAL));
+/// ```
 pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let param_ptr = param as *const sched_param_t as usize;

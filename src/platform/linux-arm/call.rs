@@ -5113,6 +5113,11 @@ pub fn setdomainname(name: &str) -> Result<(), Errno> {
 }
 
 /// Set group identify used for filesystem checkes.
+/// ```
+/// let ret = nc::setfsgid(10);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(nc::getgid()));
+/// ```
 pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
     let fsgid = fsgid as usize;
     syscall1(SYS_SETFSGID, fsgid).map(|ret| ret as gid_t)

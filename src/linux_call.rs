@@ -4578,6 +4578,18 @@ pub fn truncate(filename: &str, length: off_t) -> Result<(), Errno> {
 }
 
 /// Send a signal to a thread.
+/// ```
+/// let ret = nc::fork();
+/// assert!(ret.is_ok());
+/// let pid = ret.unwrap();
+/// if pid == 0 {
+///     println!("[child] pid: {}", nc::getpid());
+///     let _ret = nc::pause();
+/// } else {
+///     let ret = nc::tgkill(pid, pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
     let tgid = tgid as usize;
     let tid = tid as usize;

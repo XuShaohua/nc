@@ -4365,7 +4365,7 @@ pub fn setdomainname(name: &str) -> Result<(), Errno> {
 
 /// Set group identify used for filesystem checkes.
 /// ```
-/// let ret = nc::setfsgid(10);
+/// let ret = nc::setfsgid(0);
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(nc::getgid()));
 /// ```
@@ -4375,6 +4375,11 @@ pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
 }
 
 /// Set user identify used for filesystem checkes.
+/// ```
+/// let ret = nc::setfsuid(0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(nc::getuid()));
+/// ```
 pub fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
     let fsuid = fsuid as usize;
     syscall1(SYS_SETFSUID, fsuid).map(|ret| ret as uid_t)

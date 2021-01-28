@@ -6697,6 +6697,30 @@ pub fn subpage_prot(addr: usize, len: usize, map: &mut u32) -> Result<(), Errno>
 }
 
 /// Sync a file segment with disk.
+/// ```
+/// let path = "/tmp/nc-sync-file-range";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// let n_write = ret.unwrap();
+/// assert_eq!(n_write, msg.len() as nc::ssize_t);
+///
+/// let flags = 0;
+/// let ret = nc::sync_file_range2(
+///     fd,
+///     flags,
+///     0,
+///     n_write,
+/// );
+/// assert!(ret.is_ok());
+///
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn sync_file_range2(fd: i32, flags: i32, offset: loff_t, nbytes: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let flags = flags as usize;

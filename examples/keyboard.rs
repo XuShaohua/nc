@@ -51,8 +51,7 @@ fn sleep(n: isize) {
         tv_sec: n,
         tv_nsec: 0,
     };
-    let mut remainder = nc::timespec_t::default();
-    let _ = nc::nanosleep(&req, &mut remainder);
+    let _ = nc::nanosleep(&req, None);
 }
 
 fn emit(fd: i32, event_type: u16, code: u16, value: i32) -> Result<isize, nc::Errno> {

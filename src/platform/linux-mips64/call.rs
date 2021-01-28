@@ -3414,12 +3414,15 @@ pub fn name_to_handle_at(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let mut rem = nc::timespec_t::default();
-/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
+/// assert!(nc::nanosleep(&t, None).is_ok());
 /// ```
-pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
+pub fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
-    let rem_ptr = rem as *mut timespec_t as usize;
+    let rem_ptr = if let Some(rem) = rem {
+        rem as *mut timespec_t as usize
+    } else {
+        0
+    };
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 

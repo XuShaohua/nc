@@ -4916,6 +4916,12 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set list of supplementary group Ids.
+/// ```
+/// let list = [0, 1, 2];
+/// let ret = nc::setgroups(&list);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     let group_ptr = group_list.as_ptr() as usize;
     let group_len = group_list.len();

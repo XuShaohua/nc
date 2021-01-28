@@ -5565,6 +5565,31 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
 }
 
 /// Sync a file segment to disk
+/// ```
+/// let path = "/tmp/nc-sync-file-range";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// let n_write = ret.unwrap();
+/// assert_eq!(n_write, msg.len() as nc::ssize_t);
+///
+/// let ret = nc::sync_file_range(
+///     fd,
+///     0,
+///     n_write,
+///     nc::SYNC_FILE_RANGE_WAIT_BEFORE
+///         | nc::SYNC_FILE_RANGE_WRITE
+///         | nc::SYNC_FILE_RANGE_WAIT_AFTER,
+/// );
+/// assert!(ret.is_ok());
+///
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;

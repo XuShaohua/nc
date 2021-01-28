@@ -4586,6 +4586,18 @@ pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Send a signal to a thread (obsolete).
+/// ```
+/// let ret = nc::fork();
+/// assert!(ret.is_ok());
+/// let pid = ret.unwrap();
+/// if pid == 0 {
+///     println!("[child] pid: {}", nc::getpid());
+///     let _ret = nc::pause();
+/// } else {
+///     let ret = nc::tkill(pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
     let tid = tid as usize;
     let sig = sig as usize;

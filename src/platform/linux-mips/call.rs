@@ -3708,12 +3708,15 @@ pub fn name_to_handle_at(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let mut rem = nc::timespec_t::default();
-/// assert!(nc::nanosleep(&t, &mut rem).is_ok());
+/// assert!(nc::nanosleep(&t, None).is_ok());
 /// ```
-pub fn nanosleep(req: &timespec_t, rem: &mut timespec_t) -> Result<(), Errno> {
+pub fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
-    let rem_ptr = rem as *mut timespec_t as usize;
+    let rem_ptr = if let Some(rem) = rem {
+        rem as *mut timespec_t as usize
+    } else {
+        0
+    };
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
@@ -5227,24 +5230,45 @@ pub fn setdomainname(name: &str) -> Result<(), Errno> {
 }
 
 /// Set group identify used for filesystem checkes.
+/// ```
+/// let ret = nc::setfsgid(0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(nc::getgid()));
+/// ```
 pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
     let fsgid = fsgid as usize;
     syscall1(SYS_SETFSGID, fsgid).map(|ret| ret as gid_t)
 }
 
 /// Set user identify used for filesystem checkes.
+/// ```
+/// let ret = nc::setfsuid(0);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(nc::getuid()));
+/// ```
 pub fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
     let fsuid = fsuid as usize;
     syscall1(SYS_SETFSUID, fsuid).map(|ret| ret as uid_t)
 }
 
 /// Set the group ID of the calling process to `gid`.
+/// ```
+/// let ret = nc::setgid(0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setgid(gid: gid_t) -> Result<(), Errno> {
     let gid = gid as usize;
     syscall1(SYS_SETGID, gid).map(drop)
 }
 
 /// Set list of supplementary group Ids.
+/// ```
+/// let list = [0, 1, 2];
+/// let ret = nc::setgroups(&list);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
 pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     let group_ptr = group_list.as_ptr() as usize;
     let group_len = group_list.len();
@@ -6015,6 +6039,31 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
 }
 
 /// Sync a file segment to disk
+/// ```
+/// let path = "/tmp/nc-sync-file-range";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// let n_write = ret.unwrap();
+/// assert_eq!(n_write, msg.len() as nc::ssize_t);
+///
+/// let ret = nc::sync_file_range(
+///     fd,
+///     0,
+///     n_write,
+///     nc::SYNC_FILE_RANGE_WAIT_BEFORE
+///         | nc::SYNC_FILE_RANGE_WRITE
+///         | nc::SYNC_FILE_RANGE_WAIT_AFTER,
+/// );
+/// assert!(ret.is_ok());
+///
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
@@ -6105,6 +6154,18 @@ pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, 
 }
 
 /// Send a signal to a thread.
+/// ```
+/// let ret = nc::fork();
+/// assert!(ret.is_ok());
+/// let pid = ret.unwrap();
+/// if pid == 0 {
+///     println!("[child] pid: {}", nc::getpid());
+///     let _ret = nc::pause();
+/// } else {
+///     let ret = nc::tgkill(pid, pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
     let tgid = tgid as usize;
     let tid = tid as usize;
@@ -6242,6 +6303,18 @@ pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 }
 
 /// Send a signal to a thread (obsolete).
+/// ```
+/// let ret = nc::fork();
+/// assert!(ret.is_ok());
+/// let pid = ret.unwrap();
+/// if pid == 0 {
+///     println!("[child] pid: {}", nc::getpid());
+///     let _ret = nc::pause();
+/// } else {
+///     let ret = nc::tkill(pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
 pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
     let tid = tid as usize;
     let sig = sig as usize;

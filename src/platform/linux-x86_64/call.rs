@@ -5809,11 +5809,15 @@ pub fn timerfd_settime(
 /// Create a per-process timer
 pub fn timer_create(
     clock: clockid_t,
-    event: &mut sigevent_t,
+    event: Option<&mut sigevent_t>,
     timer_id: &mut timer_t,
 ) -> Result<(), Errno> {
     let clock = clock as usize;
-    let event_ptr = event as *mut sigevent_t as usize;
+    let event_ptr = if let Some(event) = event {
+        event as *mut sigevent_t as usize
+    } else {
+        0 as usize
+    };
     let timer_id_ptr = timer_id as *mut timer_t as usize;
     syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr).map(drop)
 }

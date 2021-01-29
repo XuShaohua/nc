@@ -5713,10 +5713,10 @@ pub fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
 }
 
 /// Get current timer via a file descriptor.
-pub fn timerfd_gettime(ufd: i32, otmr: &mut itimerval_t) -> Result<(), Errno> {
+pub fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<(), Errno> {
     let ufd = ufd as usize;
-    let otmr_ptr = otmr as *mut itimerval_t as usize;
-    syscall2(SYS_TIMERFD_GETTIME, ufd, otmr_ptr).map(drop)
+    let cur_value_ptr = cur_value as *mut itimerspec_t as usize;
+    syscall2(SYS_TIMERFD_GETTIME, ufd, cur_value_ptr).map(drop)
 }
 
 /// Set current timer via a file descriptor.

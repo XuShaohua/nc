@@ -6147,9 +6147,9 @@ pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 }
 
 /// Get overrun count for a per-process timer
-pub fn timer_getoverrun(timer_id: timer_t) -> Result<(), Errno> {
+pub fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
     let timer_id = timer_id as usize;
-    syscall1(SYS_TIMER_GETOVERRUN, timer_id).map(drop)
+    syscall1(SYS_TIMER_GETOVERRUN, timer_id).map(|ret| ret as i32)
 }
 
 /// Fetch state of per-process timer

@@ -5138,6 +5138,11 @@ pub fn timerfd_settime(
 }
 
 /// Create a per-process timer
+/// ```
+/// let mut timerid = nc::timer_t::default();
+/// let ret = nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timerid);
+/// assert!(ret.is_ok());
+/// ```
 pub fn timer_create(
     clock: clockid_t,
     event: Option<&mut sigevent_t>,

@@ -5802,14 +5802,25 @@ pub fn timerfd_gettime(ufd: i32, otmr: &mut itimerval_t) -> Result<(), Errno> {
 pub fn timerfd_settime(
     ufd: i32,
     flags: i32,
-    utmr: &itimerval_t,
-    otmr: &mut itimerval_t,
+    new_value: &itimerspec_t,
+    old_value: Option<&mut itimerspec_t>,
 ) -> Result<(), Errno> {
     let ufd = ufd as usize;
     let flags = flags as usize;
-    let utmr_ptr = utmr as *const itimerval_t as usize;
-    let otmr_ptr = otmr as *mut itimerval_t as usize;
-    syscall4(SYS_TIMERFD_SETTIME, ufd, flags, utmr_ptr, otmr_ptr).map(drop)
+    let new_value_ptr = new_value as *const itimerspec_t as usize;
+    let old_value_ptr = if let Some(old_value) = old_value {
+        old_value as *mut itimerspec_t as usize
+    } else {
+        0
+    };
+    syscall4(
+        SYS_TIMERFD_SETTIME,
+        ufd,
+        flags,
+        new_value_ptr,
+        old_value_ptr,
+    )
+    .map(drop)
 }
 
 /// Create a per-process timer

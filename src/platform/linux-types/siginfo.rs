@@ -9,8 +9,8 @@ use core::mem::size_of;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub union sigval_t {
-    sival_int: i32,
-    sival_ptr: usize,
+    pub sival_int: i32,
+    pub sival_ptr: usize,
 }
 
 impl fmt::Debug for sigval_t {

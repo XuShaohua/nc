@@ -5989,6 +5989,12 @@ pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Create a timer that notifies via a file descriptor.
+/// ```
+/// let ret = nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
     let clockid = clockid as usize;
     let flags = flags as usize;

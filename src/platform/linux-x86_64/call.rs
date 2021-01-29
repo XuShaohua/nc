@@ -5858,12 +5858,16 @@ pub fn timer_settime(
     timer_id: timer_t,
     flags: i32,
     new_value: &itimerspec_t,
-    old_value: &mut itimerspec_t,
+    old_value: Option<&mut itimerspec_t>,
 ) -> Result<(), Errno> {
     let timer_id = timer_id as usize;
     let flags = flags as usize;
     let new_value_ptr = new_value as *const itimerspec_t as usize;
-    let old_value_ptr = old_value as *mut itimerspec_t as usize;
+    let old_value_ptr = if let Some(old_value) = old_value {
+        old_value as *mut itimerspec_t as usize
+    } else {
+        0 as usize
+    };
     syscall4(
         SYS_TIMER_SETTIME,
         timer_id,

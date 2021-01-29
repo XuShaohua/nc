@@ -398,8 +398,23 @@ pub union sigev_un_t {
     pub sigev_thread: sigev_thread_t,
 }
 
+impl Default for sigev_un_t {
+    fn default() -> Self {
+        sigev_un_t {
+            pad: [0; SIGEV_PAD_SIZE],
+        }
+    }
+}
+
+impl fmt::Debug for sigev_un_t {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let tid = unsafe { self.tid };
+        write!(f, "sigev_un_t.tid = {}", tid)
+    }
+}
+
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct sigevent_t {
     pub sigev_value: sigval_t,
     pub sigev_signo: i32,

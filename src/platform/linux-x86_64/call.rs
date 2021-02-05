@@ -3676,8 +3676,8 @@ pub fn pivot_root(new_root: &str, put_old: &str) -> Result<(), Errno> {
 }
 
 /// Create a new protection key.
-pub fn pkey_alloc(flags: usize, init_val: usize) -> Result<i32, Errno> {
-    syscall2(SYS_PKEY_ALLOC, flags, init_val).map(|ret| ret as i32)
+pub fn pkey_alloc(flags: usize, access_rights: usize) -> Result<i32, Errno> {
+    syscall2(SYS_PKEY_ALLOC, flags, access_rights).map(|ret| ret as i32)
 }
 
 /// Free a protection key.

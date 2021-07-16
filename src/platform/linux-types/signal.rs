@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 use super::types::*;
+use crate::sighandler_t;
 
 // TODO(Shaohua): Update from 64 to 128
 pub const _NSIG: i32 = 128;

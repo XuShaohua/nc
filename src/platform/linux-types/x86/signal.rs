@@ -2,8 +2,9 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL};
 use core::fmt;
+
+use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL};
 
 // From arch/x86/include/uapi/asm/signal.h
 
@@ -121,3 +122,6 @@ pub struct sigaltstack_t {
 }
 
 pub type stack_t = sigaltstack_t;
+
+/// not actually used, but required for linux/syscalls.h
+pub type old_sigset_t = usize;

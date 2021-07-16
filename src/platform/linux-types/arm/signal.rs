@@ -2,8 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
-use crate::sighandler_t;
+use crate::{sighandler_t, size_t, BITS_PER_LONG};
 
 // TODO(Shaohua): Update from 64 to 128
 pub const _NSIG: i32 = 128;

@@ -46,11 +46,6 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
-#[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
-mod signal;
-#[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
-pub use signal::*;
-
 mod aio;
 mod aio_abi;
 mod bpf;

@@ -1,6 +1,7 @@
 
-cross-all: cross-aarch64 cross-arm cross-i686 cross-mips cross-mips64 \
-	cross-mips64el cross-x86_64
+cross-all: cross-aarch64 cross-arm cross-i686 \
+	cross-mips cross-mips64 cross-mips64el cross-mipsel \
+	cross-powerpc64le cross-x86_64
 
 cross-aarch64:
 	cross build --target aarch64-unknown-linux-gnu
@@ -47,17 +48,17 @@ cross-powerpc64:
 cross-powerpc64le:
 	cross build --target powerpc64le-unknown-linux-gnu
 
-#cross-riscv64gc:
-#	cross build --target riscv64gc-unknown-linux-gnu
+cross-riscv64gc:
+	cross build --target riscv64gc-unknown-linux-gnu
 
 cross-s390x:
 	cross build --target s390x-unknown-linux-gnu
 
-#cross-sparc64:
-#	cross build --target sparc64-unknown-linux-gnu
+cross-sparc64:
+	cross build --target sparc64-unknown-linux-gnu
 
-#cross-thumbv7neon:
-#	cross build --target thumbv7neon-unknown-linux-gnueabihf
+cross-thumbv7neon:
+	cross build --target thumbv7neon-unknown-linux-gnueabihf
 
 cross-x86_64:
 	cross build --target x86_64-unknown-linux-gnu

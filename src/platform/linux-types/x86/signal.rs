@@ -2,7 +2,7 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-use crate::{sighandler_t, sigrestore_t, size_t};
+use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL};
 use core::fmt;
 
 // From arch/x86/include/uapi/asm/signal.h
@@ -82,14 +82,14 @@ pub type sa_sigaction_fn_t = fn(i32, &mut siginfo_t, usize);
 pub type sa_sigaction_t = usize;
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub union sigaction_u_t {
     pub sa_handler: sighandler_t,
     pub sa_sigaction: sa_sigaction_t,
 }
 
 impl Default for sigaction_u_t {
-    fn debug() -> Self {
+    fn default() -> Self {
         sigaction_u_t {
             sa_handler: SIG_DFL,
         }
@@ -97,9 +97,9 @@ impl Default for sigaction_u_t {
 }
 
 impl fmt::Debug for sigaction_u_t {
-    fn format(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let ptr = unsafe { self.sas_handler };
-        write!(f, "sigaction_u_t: {}", ptr);
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let ptr = unsafe { self.sa_handler };
+        write!(f, "sigaction_u_t: {}", ptr)
     }
 }
 

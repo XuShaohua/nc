@@ -76,6 +76,22 @@
 //! For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
 //! As `asm!` feature is unavailable in stable version.
 //!
+//! ## Platforms and Architectures
+//! - Linux
+//!   - [x] x86
+//!   - [x] x86-64
+//!   - [x] arm
+//!   - [x] aarch64
+//!   - [x] mips
+//!   - [x] mipsel
+//!   - [x] mips64
+//!   - [x] mips64el
+//!   - [x] powerpc64
+//!   - [x] s390x
+//!
+//! Current work is focused on linux networking.
+//! FreeBSD and other OS are unavailable yet.
+//!
 //!
 //! ## Related projects
 //! * [nix][nix]

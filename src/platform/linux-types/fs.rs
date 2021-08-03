@@ -127,7 +127,7 @@ pub struct inodes_stat_t {
 
 pub const NR_FILE: i32 = 8192; /* this can well be larger on a larger system */
 
-/// Structure for FS_IOC_FSGETXATTR[A] and FS_IOC_FSSETXATTR.
+/// Structure for `FS_IOC_FSGETXATTR[A]` and `FS_IOC_FSSETXATTR`.
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct fsxattr_t {

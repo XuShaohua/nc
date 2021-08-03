@@ -70,17 +70,17 @@ pub const LINUX_CAPABILITY_U32S: i32 = LINUX_CAPABILITY_U32S_1;
 
 /// POSIX-draft defined capabilities.
 
-/// In a system with the [_POSIX_CHOWN_RESTRICTED] option defined, this
+/// In a system with the `_POSIX_CHOWN_RESTRICTED` option defined, this
 /// overrides the restriction of changing file ownership and group ownership.
 pub const CAP_CHOWN: i32 = 0;
 
 /// Override all DAC access, including ACL execute access if
-/// [_POSIX_ACL] is defined. Excluding DAC access covered by
+/// `_POSIX_ACL` is defined. Excluding DAC access covered by
 /// CAP_LINUX_IMMUTABLE.
 pub const CAP_DAC_OVERRIDE: i32 = 1;
 
 /// Overrides all DAC restrictions regarding read and search on files
-/// and directories, including ACL restrictions if [_POSIX_ACL] is
+/// and directories, including ACL restrictions if `_POSIX_ACL` is
 /// defined. Excluding DAC access covered by CAP_LINUX_IMMUTABLE.
 pub const CAP_DAC_READ_SEARCH: i32 = 2;
 

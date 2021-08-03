@@ -21,7 +21,7 @@ pub const ADJ_OFFSET_READONLY: i32 = 0x2000;
 /// In David Mills' nanokernel reference implementation SHIFT_PLL is 4.
 /// However this seems to increase convergence time much too long.
 ///
-/// https://lists.ntp.org/pipermail/hackers/2008-January/003487.html
+/// <https://lists.ntp.org/pipermail/hackers/2008-January/003487.html>
 ///
 /// In the above mailing list discussion, it seems the value of 4
 /// was appropriate for other Unix systems with HZ=100, and that

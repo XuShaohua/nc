@@ -292,7 +292,7 @@ pub const BPF_F_LOCK: i32 = 4;
 pub const BPF_F_NO_PREALLOC: i32 = 1;
 
 /// Instead of having one common LRU list in the
-/// BPF_MAP_TYPE_LRU_[PERCPU_]HASH map, use a percpu LRU list
+/// `BPF_MAP_TYPE_LRU_[PERCPU_]` HASH map, use a percpu LRU list
 /// which can scale and perform better.
 /// Note, the LRU nodes (including free nodes) cannot be moved
 /// across different LRU lists.

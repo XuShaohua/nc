@@ -31,10 +31,25 @@ pub const NSEC_PER_SEC: i64 = 1_000_000_000;
 pub const FSEC_PER_SEC: i64 = 1_000_000_000_000_000;
 
 /// Located here for `timespec[64]_valid_strict`
-//#define TIME64_MAX			((s64)~((u64)1 << 63))
-//#define KTIME_MAX			((s64)~((u64)1 << 63))
-//#define KTIME_SEC_MAX			(KTIME_MAX / NSEC_PER_SEC)
-//TODO(Shaohua):
+/// ```rust
+/// assert_eq!(nc::TIME64_MAX, 9223372036854775807_i64);
+/// ```
+pub const TIME64_MAX: i64 = (!(1_u64 << 63)) as i64;
+
+/// ```rust
+/// assert_eq!(nc::TIME64_MIN, -9223372036854775808_i64);
+/// ```
+pub const TIME64_MIN: i64 = -TIME64_MAX - 1;
+
+/// ```rust
+/// assert_eq!(nc::KTIME_MAX, 9223372036854775807_i64);
+/// ```
+pub const KTIME_MAX: i64 = (!(1_u64 << 63)) as i64;
+
+/// ```rust
+/// assert_eq!(nc::KTIME_SEC_MAX, 9223372036_i64);
+/// ```
+pub const KTIME_SEC_MAX: i64 = KTIME_MAX / NSEC_PER_SEC;
 
 /// Limits for settimeofday():
 ///
@@ -43,4 +58,4 @@ pub const FSEC_PER_SEC: i64 = 1_000_000_000_000_000;
 /// should be really sufficient, which means the cutoff is 2232. At that
 /// point the cutoff is just a small part of the larger problem.
 pub const TIME_UPTIME_SEC_MAX: i64 = 30 * 365 * 24 * 3600;
-//pub const TIME_SETTOD_SEC_MAX: i64 = 		(KTIME_SEC_MAX - TIME_UPTIME_SEC_MAX);
+pub const TIME_SETTOD_SEC_MAX: i64 = KTIME_SEC_MAX - TIME_UPTIME_SEC_MAX;

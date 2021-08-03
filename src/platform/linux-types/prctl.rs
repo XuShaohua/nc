@@ -144,7 +144,7 @@ pub const PR_SET_MM_MAP: i32 = 14;
 pub const PR_SET_MM_MAP_SIZE: i32 = 15;
 
 /// This structure provides new memory descriptor
-/// map which mostly modifies /proc/pid/stat[m]
+/// map which mostly modifies `/proc/pid/stat[m]`
 /// output for a task. This mostly done in a
 /// sake of checkpoint/restore functionality.
 #[repr(C)]

@@ -95,11 +95,11 @@ pub struct statx_timestamp_t {
 #[derive(Debug, Default, Clone, Copy)]
 pub struct statx_t {
     // 0x00
-    /// What results were written [uncond]
+    /// What results were written (uncond)
     pub stx_mask: u32,
-    /// Preferred general I/O size [uncond]
+    /// Preferred general I/O size (uncond)
     pub stx_blksize: u32,
-    /// Flags conveying information about the file [uncond]
+    /// Flags conveying information about the file (uncond)
     pub stx_attributes: u64,
 
     // 0x10
@@ -134,10 +134,10 @@ pub struct statx_t {
     pub stx_mtime: statx_timestamp_t,
 
     // 0x80
-    /// Device ID of special file [if bdev/cdev]
+    /// Device ID of special file (if bdev/cdev)
     pub stx_rdev_major: u32,
     pub stx_rdev_minor: u32,
-    /// ID of device containing file [uncond]
+    /// ID of device containing file (uncond)
     pub stx_dev_major: u32,
     pub stx_dev_minor: u32,
 
@@ -190,18 +190,18 @@ pub const STATX__RESERVED: u32 = 0x8000_0000;
 /// be of use to ordinary userspace programs such as GUIs or ls rather than
 /// specialised tools.
 ///
-/// Note that the flags marked [I] correspond to generic FS_IOC_FLAGS
+/// Note that the flags marked `I` correspond to generic `FS_IOC_FLAGS`
 /// semantically.  Where possible, the numerical value is picked to correspond
 /// also.
-/// [I] File is compressed by the fs
+/// `I` File is compressed by the fs
 pub const STATX_ATTR_COMPRESSED: i32 = 0x0000_0004;
-/// [I] File is marked immutable
+/// `I` File is marked immutable
 pub const STATX_ATTR_IMMUTABLE: i32 = 0x0000_0010;
-/// [I] File is append-only
+/// `I` File is append-only
 pub const STATX_ATTR_APPEND: i32 = 0x0000_0020;
-/// [I] File is not to be dumped
+/// `I` File is not to be dumped
 pub const STATX_ATTR_NODUMP: i32 = 0x0000_0040;
-/// [I] File requires key to decrypt in fs
+/// `I` File requires key to decrypt in fs
 pub const STATX_ATTR_ENCRYPTED: i32 = 0x0000_0800;
 
 /// Dir: Automount trigger

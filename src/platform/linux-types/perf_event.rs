@@ -317,7 +317,7 @@ pub union perf_event_attr_config2_t {
     /// when kprobe_func == NULL
     pub kprobe_addr: u64,
 
-    /// for perf_[k,u]probe
+    /// for perf_k/u probe
     pub probe_offset: u64,
 
     /// extension of config1

@@ -6,7 +6,7 @@
 /// Without further specification, these system calls will use the
 /// system's default huge page size.  If a system supports multiple
 /// huge page sizes, the desired huge page size can be specified in
-/// bits [26:31] of the flag arguments.  The value in these 6 bits
+/// bits `[26:31]` of the flag arguments.  The value in these 6 bits
 /// will encode the log2 of the huge page size.
 ///
 /// The following definitions are associated with this huge page size

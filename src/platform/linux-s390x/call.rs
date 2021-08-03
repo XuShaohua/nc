@@ -2103,7 +2103,7 @@ pub fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno>
 /// Queue the nr iocbs pointed to by iocbpp for processing.  Returns
 /// the number of iocbs queued.  May return -EINVAL if the aio_context
 /// specified by ctx_id is invalid, if nr is < 0, if the iocb at
-/// *iocbpp[0] is not properly initialized, if the operation specified
+/// `*iocbpp[0]` is not properly initialized, if the operation specified
 /// is invalid for the file descriptor in the iocb.  May fail with
 /// -EFAULT if any of the data structures point to invalid data.  May
 /// fail with -EBADF if the file descriptor specified in the first

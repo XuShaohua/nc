@@ -30,7 +30,7 @@ pub const USEC_PER_SEC: i64 = 1_000_000;
 pub const NSEC_PER_SEC: i64 = 1_000_000_000;
 pub const FSEC_PER_SEC: i64 = 1_000_000_000_000_000;
 
-/// Located here for timespec[64]_valid_strict
+/// Located here for `timespec[64]_valid_strict`
 //#define TIME64_MAX			((s64)~((u64)1 << 63))
 //#define KTIME_MAX			((s64)~((u64)1 << 63))
 //#define KTIME_SEC_MAX			(KTIME_MAX / NSEC_PER_SEC)

@@ -52,7 +52,7 @@ pub const MS_KERNMOUNT: usize = 1 << 22;
 pub const MS_I_VERSION: usize = 1 << 23;
 /// Always perform atime updates
 pub const MS_STRICTATIME: usize = 1 << 24;
-/// Update the on-disk [acm]times lazily
+/// Update the on-disk `acm` times lazily
 pub const MS_LAZYTIME: usize = 1 << 25;
 
 /// These sb flags are internal to the kernel

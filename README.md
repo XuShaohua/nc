@@ -2,6 +2,7 @@
 nc
 ===
 
+![Build status](https://github.com/xushaohua/nc/actions/workflows/rust.yml/badge.svg)
 [![Latest version](https://img.shields.io/crates/v/nc.svg)](https://crates.io/crates/nc)
 [![Documentation](https://docs.rs/nc/badge.svg)](https://docs.rs/nc)
 ![Minimum rustc version](https://img.shields.io/badge/rustc-1.36+-yellow.svg)

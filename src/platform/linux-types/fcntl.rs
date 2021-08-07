@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/fcntl.h`
+
 use super::types::*;
 
 pub const O_ACCMODE: i32 = 0o000_0003;

@@ -2,10 +2,12 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod fcntl;
 mod posix_types;
 mod signal;
 mod stat;
 
+pub use fcntl::*;
 pub use posix_types::*;
 pub use signal::*;
 pub use stat::*;

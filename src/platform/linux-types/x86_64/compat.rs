@@ -4,8 +4,8 @@
 
 /// From `arch/x86/include/asm/compat.h`
 use crate::{
-    compat_ino_t, compat_key_t, compat_loff_t, compat_off_t, compat_pid_t, compat_size_t,
-    compat_ulong_t,
+    __kernel_fsid_t, compat_ino_t, compat_key_t, compat_loff_t, compat_off_t, compat_pid_t,
+    compat_size_t, compat_ulong_t,
 };
 
 pub const COMPAT_USER_HZ: i32 = 100;
@@ -94,7 +94,7 @@ pub struct compat_statfs_t {
     pub f_spare: [i32; 4],
 }
 
-pub const COMPAT_RLIM_INFINITY: i32 = 0xffffffff;
+pub const COMPAT_RLIM_INFINITY: u32 = 0xffffffff;
 
 /// at least 32 bits
 pub type compat_old_sigset_t = u32;
@@ -104,7 +104,7 @@ pub const _COMPAT_NSIG_BPW: i32 = 32;
 
 pub type compat_sigset_word = u32;
 
-pub const COMPAT_OFF_T_MAX: i32 = 0x7fffffff;
+pub const COMPAT_OFF_T_MAX: u32 = 0x7fffffff;
 
 #[repr(C)]
 #[derive(Debug)]

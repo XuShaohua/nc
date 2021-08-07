@@ -3,11 +3,13 @@
 // in the LICENSE file.
 
 mod ldt;
+mod page_types;
 mod ptrace_abi;
 mod signal;
 mod stat;
 
 pub use ldt::*;
+pub use page_types::*;
 pub use ptrace_abi::*;
 pub use signal::*;
 pub use stat::*;

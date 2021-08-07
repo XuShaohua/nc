@@ -5,6 +5,8 @@
 //! From `include/uapi/asm-generic/fcntl.h`
 
 use super::types::*;
+#[cfg(target_arch = "arm")]
+use super::O_DIRECTORY;
 
 pub const O_ACCMODE: i32 = 0o000_0003;
 pub const O_RDONLY: i32 = 0o000_0000;
@@ -24,13 +26,23 @@ pub const O_NONBLOCK: i32 = 0o000_4000;
 pub const O_DSYNC: i32 = 0o001_0000;
 /// fcntl, for BSD compatibility
 pub const FASYNC: i32 = 0o002_0000;
+
 /// direct disk access hint
+#[cfg(not(target_arch = "arm"))]
 pub const O_DIRECT: i32 = 0o004_0000;
+
+#[cfg(not(target_arch = "arm"))]
 pub const O_LARGEFILE: i32 = 0o010_0000;
+
 /// must be a directory
+#[cfg(not(target_arch = "arm"))]
+
 pub const O_DIRECTORY: i32 = 0o020_0000;
+
 /// don't follow links
+#[cfg(not(target_arch = "arm"))]
 pub const O_NOFOLLOW: i32 = 0o040_0000;
+
 pub const O_NOATIME: i32 = 0o100_0000;
 /// set close_on_exec
 pub const O_CLOEXEC: i32 = 0o200_0000;

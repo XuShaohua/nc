@@ -4,12 +4,14 @@
 
 mod fcntl;
 mod ioctls;
+mod page;
 mod posix_types;
 mod signal;
 mod stat;
 
 pub use fcntl::*;
 pub use ioctls::*;
+pub use page::*;
 pub use posix_types::*;
 pub use signal::*;
 pub use stat::*;

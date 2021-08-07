@@ -7,4 +7,4 @@
 /// PAGE_SHIFT determines the page size
 pub const PAGE_SHIFT: i32 = 12;
 pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;
-pub const PAGE_MASK: usize = !(1 << PAGE_SHIFT - 1);
+pub const PAGE_MASK: usize = !((1 << PAGE_SHIFT) - 1);

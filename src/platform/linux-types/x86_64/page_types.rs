@@ -42,4 +42,4 @@ pub const PAGE_OFFSET: usize = __PAGE_OFFSET;
 pub const IOREMAP_MAX_ORDER: i32 = PUD_SHIFT;
 
 // TODO(Shaohua): Handle `#ifdef CONFIG_DYNAMIC_PHYSICAL_MASK`
-pub const __PHYSICAL_MASK: usize = 1 << __PHYSICAL_MASK_SHIFT - 1;
+pub const __PHYSICAL_MASK: usize = (1 << __PHYSICAL_MASK_SHIFT) - 1;

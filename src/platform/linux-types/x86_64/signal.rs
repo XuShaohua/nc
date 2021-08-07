@@ -2,11 +2,12 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
+//! From arch/x86/include/uapi/asm/signal.h
+
 use crate::{sighandler_t, sigrestore_t, size_t};
 
-// From arch/x86/include/uapi/asm/signal.h
-
 pub const NSIG: i32 = 32;
+
 pub type sigset_t = usize;
 
 pub const SIGHUP: i32 = 1;
@@ -95,3 +96,6 @@ pub struct sigaltstack_t {
 }
 
 pub type stack_t = sigaltstack_t;
+
+/// not actually used, but required for linux/syscalls.h
+pub type old_sigset_t = usize;

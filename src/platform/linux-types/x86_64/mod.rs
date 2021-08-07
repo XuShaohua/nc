@@ -5,6 +5,7 @@
 mod ldt;
 mod page_64_types;
 mod page_types;
+mod pgtable_64_types;
 mod ptrace_abi;
 mod signal;
 mod stat;
@@ -12,6 +13,7 @@ mod stat;
 pub use ldt::*;
 pub use page_64_types::*;
 pub use page_types::*;
+pub use pgtable_64_types::*;
 pub use ptrace_abi::*;
 pub use signal::*;
 pub use stat::*;

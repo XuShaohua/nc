@@ -4,6 +4,8 @@
 
 //! From arch/x86/include/asm/page_types.h
 
+use super::__PHYSICAL_MASK_SHIFT;
+
 /// PAGE_SHIFT determines the page size
 pub const PAGE_SHIFT: i32 = 12;
 pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;

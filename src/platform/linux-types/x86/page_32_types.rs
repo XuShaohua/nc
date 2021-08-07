@@ -37,13 +37,13 @@ pub const __VIRTUAL_MASK_SHIFT: i32 = 32;
 //pub const __VIRTUAL_MASK_SHIFT: i32 = 32;
 
 /// User space process size: 3GB (default).
-pub const IA32_PAGE_OFFSET: i32 = __PAGE_OFFSET;
-pub const TASK_SIZE: i32 = __PAGE_OFFSET;
-pub const TASK_SIZE_LOW: i32 = TASK_SIZE;
-pub const TASK_SIZE_MAX: i32 = TASK_SIZE;
-pub const DEFAULT_MAP_WINDOW: i32 = TASK_SIZE;
-pub const STACK_TOP: i32 = TASK_SIZE;
-pub const STACK_TOP_MAX: i32 = STACK_TOP;
+pub const IA32_PAGE_OFFSET: usize = __PAGE_OFFSET;
+pub const TASK_SIZE: usize = __PAGE_OFFSET;
+pub const TASK_SIZE_LOW: usize = TASK_SIZE;
+pub const TASK_SIZE_MAX: usize = TASK_SIZE;
+pub const DEFAULT_MAP_WINDOW: usize = TASK_SIZE;
+pub const STACK_TOP: usize = TASK_SIZE;
+pub const STACK_TOP_MAX: usize = STACK_TOP;
 
 /// In spite of the name, KERNEL_IMAGE_SIZE is a limit on the maximum virtual
 /// address for the kernel image, rather than the limit on the size itself. On

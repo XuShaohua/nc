@@ -15,13 +15,17 @@ pub type __kernel_ulong_t = usize;
 
 pub type __kernel_ino_t = __kernel_ulong_t;
 
+#[cfg(not(target_arch = "arm"))]
 pub type __kernel_mode_t = u32;
 
 pub type __kernel_pid_t = i32;
 
+#[cfg(not(target_arch = "arm"))]
 pub type __kernel_ipc_pid_t = i32;
 
+#[cfg(not(target_arch = "arm"))]
 pub type __kernel_uid_t = u32;
+#[cfg(not(target_arch = "arm"))]
 pub type __kernel_gid_t = u32;
 pub type __kernel_suseconds_t = __kernel_long_t;
 
@@ -35,6 +39,7 @@ pub type __kernel_old_uid_t = __kernel_uid_t;
 #[cfg(not(target_arch = "aarch64"))]
 pub type __kernel_old_gid_t = __kernel_gid_t;
 
+#[cfg(not(target_arch = "arm"))]
 pub type __kernel_old_dev_t = u32;
 
 /// Most 32 bit architectures use "unsigned int" size_t,

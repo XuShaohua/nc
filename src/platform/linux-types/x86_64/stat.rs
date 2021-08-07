@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! arch/x86/include/uapi/asm/stat.h
+//! From arch/x86/include/uapi/asm/stat.h
 
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]

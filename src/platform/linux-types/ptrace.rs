@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// ptrace.h
-/// structs and defines to help the user use the ptrace system call.
+//! uapi/linux/ptrace.h
 
+/// structs and defines to help the user use the ptrace system call.
 /// has the defines to get at the registers.
 
 pub const PTRACE_TRACEME: i32 = 0;

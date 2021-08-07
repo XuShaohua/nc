@@ -5,7 +5,7 @@
 //! From `include/uapi/asm-generic/fcntl.h`
 
 use super::types::*;
-#[cfg(target_arch = "arm")]
+#[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
 use super::O_DIRECTORY;
 
 pub const O_ACCMODE: i32 = 0o000_0003;
@@ -28,19 +28,18 @@ pub const O_DSYNC: i32 = 0o001_0000;
 pub const FASYNC: i32 = 0o002_0000;
 
 /// direct disk access hint
-#[cfg(not(target_arch = "arm"))]
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_DIRECT: i32 = 0o004_0000;
 
-#[cfg(not(target_arch = "arm"))]
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_LARGEFILE: i32 = 0o010_0000;
 
 /// must be a directory
-#[cfg(not(target_arch = "arm"))]
-
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_DIRECTORY: i32 = 0o020_0000;
 
 /// don't follow links
-#[cfg(not(target_arch = "arm"))]
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_NOFOLLOW: i32 = 0o040_0000;
 
 pub const O_NOATIME: i32 = 0o100_0000;

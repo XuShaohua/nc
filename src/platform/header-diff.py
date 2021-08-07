@@ -32,6 +32,8 @@ def diff_folder(arch_name, nc_dir, linux_src_dir):
     arch_names_map = {
         "x86": "x86",
         "x86_64": "x86",
+        "arm": "arm",
+        "aarch64": "arm64",
     }
     linux_arch_name = arch_names_map[arch_name]
 

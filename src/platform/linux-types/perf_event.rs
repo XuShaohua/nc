@@ -2,108 +2,147 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From include/uapi/linux/perf_event.h
+
 /// User-space ABI bits:
 
 /// attr.type
-pub const PERF_TYPE_HARDWARE: i32 = 0;
-pub const PERF_TYPE_SOFTWARE: i32 = 1;
-pub const PERF_TYPE_TRACEPOINT: i32 = 2;
-pub const PERF_TYPE_HW_CACHE: i32 = 3;
-pub const PERF_TYPE_RAW: i32 = 4;
-pub const PERF_TYPE_BREAKPOINT: i32 = 5;
-/// non-ABI
-pub const PERF_TYPE_MAX: i32 = 6;
+#[repr(u8)]
+pub enum perf_type_id_t {
+    PERF_TYPE_HARDWARE = 0,
+    PERF_TYPE_SOFTWARE = 1,
+    PERF_TYPE_TRACEPOINT = 2,
+    PERF_TYPE_HW_CACHE = 3,
+    PERF_TYPE_RAW = 4,
+    PERF_TYPE_BREAKPOINT = 5,
+
+    /// non-ABI
+    PERF_TYPE_MAX = 6,
+}
 
 /// Generalized performance event event_id types, used by the
 /// attr.event_id parameter of the sys_perf_event_open()
 /// syscall:
 
 /// Common hardware events, generalized by the kernel:
-pub const PERF_COUNT_HW_CPU_CYCLES: i32 = 0;
-pub const PERF_COUNT_HW_INSTRUCTIONS: i32 = 1;
-pub const PERF_COUNT_HW_CACHE_REFERENCES: i32 = 2;
-pub const PERF_COUNT_HW_CACHE_MISSES: i32 = 3;
-pub const PERF_COUNT_HW_BRANCH_INSTRUCTIONS: i32 = 4;
-pub const PERF_COUNT_HW_BRANCH_MISSES: i32 = 5;
-pub const PERF_COUNT_HW_BUS_CYCLES: i32 = 6;
-pub const PERF_COUNT_HW_STALLED_CYCLES_FRONTEND: i32 = 7;
-pub const PERF_COUNT_HW_STALLED_CYCLES_BACKEND: i32 = 8;
-pub const PERF_COUNT_HW_REF_CPU_CYCLES: i32 = 9;
-/// non-ABI
-pub const PERF_COUNT_HW_MAX: i32 = 10;
+#[repr(u8)]
+pub enum perf_hw_id_t {
+    PERF_COUNT_HW_CPU_CYCLES = 0,
+    PERF_COUNT_HW_INSTRUCTIONS = 1,
+    PERF_COUNT_HW_CACHE_REFERENCES = 2,
+    PERF_COUNT_HW_CACHE_MISSES = 3,
+    PERF_COUNT_HW_BRANCH_INSTRUCTIONS = 4,
+    PERF_COUNT_HW_BRANCH_MISSES = 5,
+    PERF_COUNT_HW_BUS_CYCLES = 6,
+    PERF_COUNT_HW_STALLED_CYCLES_FRONTEND = 7,
+    PERF_COUNT_HW_STALLED_CYCLES_BACKEND = 8,
+    PERF_COUNT_HW_REF_CPU_CYCLES = 9,
+
+    /// non-ABI
+    PERF_COUNT_HW_MAX = 10,
+}
 
 /// Generalized hardware cache events:
 ///
 /// { L1-D, L1-I, LLC, ITLB, DTLB, BPU, NODE } x
 /// { read, write, prefetch } x
 /// { accesses, misses }
-pub const PERF_COUNT_HW_CACHE_L1D: i32 = 0;
-pub const PERF_COUNT_HW_CACHE_L1I: i32 = 1;
-pub const PERF_COUNT_HW_CACHE_LL: i32 = 2;
-pub const PERF_COUNT_HW_CACHE_DTLB: i32 = 3;
-pub const PERF_COUNT_HW_CACHE_ITLB: i32 = 4;
-pub const PERF_COUNT_HW_CACHE_BPU: i32 = 5;
-pub const PERF_COUNT_HW_CACHE_NODE: i32 = 6;
-/// non-ABI
-pub const PERF_COUNT_HW_CACHE_MAX: i32 = 7;
+#[repr(u8)]
+pub enum perf_hw_cache_id_t {
+    PERF_COUNT_HW_CACHE_L1D = 0,
+    PERF_COUNT_HW_CACHE_L1I = 1,
+    PERF_COUNT_HW_CACHE_LL = 2,
+    PERF_COUNT_HW_CACHE_DTLB = 3,
+    PERF_COUNT_HW_CACHE_ITLB = 4,
+    PERF_COUNT_HW_CACHE_BPU = 5,
+    PERF_COUNT_HW_CACHE_NODE = 6,
 
-pub const PERF_COUNT_HW_CACHE_OP_READ: i32 = 0;
-pub const PERF_COUNT_HW_CACHE_OP_WRITE: i32 = 1;
-pub const PERF_COUNT_HW_CACHE_OP_PREFETCH: i32 = 2;
-/// non-ABI
-pub const PERF_COUNT_HW_CACHE_OP_MAX: i32 = 3;
+    /// non-ABI
+    PERF_COUNT_HW_CACHE_MAX = 7,
+}
 
-pub const PERF_COUNT_HW_CACHE_RESULT_ACCESS: i32 = 0;
-pub const PERF_COUNT_HW_CACHE_RESULT_MISS: i32 = 1;
-/// non-ABI
-pub const PERF_COUNT_HW_CACHE_RESULT_MAX: i32 = 2;
+#[repr(u8)]
+pub enum perf_hw_cache_op_id_t {
+    PERF_COUNT_HW_CACHE_OP_READ = 0,
+    PERF_COUNT_HW_CACHE_OP_WRITE = 1,
+    PERF_COUNT_HW_CACHE_OP_PREFETCH = 2,
+
+    /// non-ABI
+    PERF_COUNT_HW_CACHE_OP_MAX = 3,
+}
+
+#[repr(u8)]
+pub enum perf_hw_cache_op_result_id_t {
+    PERF_COUNT_HW_CACHE_RESULT_ACCESS = 0,
+    PERF_COUNT_HW_CACHE_RESULT_MISS = 1,
+
+    /// non-ABI
+    PERF_COUNT_HW_CACHE_RESULT_MAX = 2,
+}
 
 /// Special "software" events provided by the kernel, even if the hardware
 /// does not support performance events. These events measure various
 /// physical and sw events of the kernel (and allow the profiling of them as
 /// well):
-pub const PERF_COUNT_SW_CPU_CLOCK: i32 = 0;
-pub const PERF_COUNT_SW_TASK_CLOCK: i32 = 1;
-pub const PERF_COUNT_SW_PAGE_FAULTS: i32 = 2;
-pub const PERF_COUNT_SW_CONTEXT_SWITCHES: i32 = 3;
-pub const PERF_COUNT_SW_CPU_MIGRATIONS: i32 = 4;
-pub const PERF_COUNT_SW_PAGE_FAULTS_MIN: i32 = 5;
-pub const PERF_COUNT_SW_PAGE_FAULTS_MAJ: i32 = 6;
-pub const PERF_COUNT_SW_ALIGNMENT_FAULTS: i32 = 7;
-pub const PERF_COUNT_SW_EMULATION_FAULTS: i32 = 8;
-pub const PERF_COUNT_SW_DUMMY: i32 = 9;
-pub const PERF_COUNT_SW_BPF_OUTPUT: i32 = 10;
-/// non-ABI
-pub const PERF_COUNT_SW_MAX: i32 = 11;
+#[repr(u8)]
+pub enum perf_sw_ids_t {
+    PERF_COUNT_SW_CPU_CLOCK = 0,
+    PERF_COUNT_SW_TASK_CLOCK = 1,
+    PERF_COUNT_SW_PAGE_FAULTS = 2,
+    PERF_COUNT_SW_CONTEXT_SWITCHES = 3,
+    PERF_COUNT_SW_CPU_MIGRATIONS = 4,
+    PERF_COUNT_SW_PAGE_FAULTS_MIN = 5,
+    PERF_COUNT_SW_PAGE_FAULTS_MAJ = 6,
+    PERF_COUNT_SW_ALIGNMENT_FAULTS = 7,
+    PERF_COUNT_SW_EMULATION_FAULTS = 8,
+    PERF_COUNT_SW_DUMMY = 9,
+    PERF_COUNT_SW_BPF_OUTPUT = 10,
+
+    /// non-ABI
+    PERF_COUNT_SW_MAX = 11,
+}
 
 /// Bits that can be set in attr.sample_type to request information
 /// in the overflow packets.
-pub const PERF_SAMPLE_IP: u32 = 1;
-pub const PERF_SAMPLE_TID: u32 = 1 << 1;
-pub const PERF_SAMPLE_TIME: u32 = 1 << 2;
-pub const PERF_SAMPLE_ADDR: u32 = 1 << 3;
-pub const PERF_SAMPLE_READ: u32 = 1 << 4;
-pub const PERF_SAMPLE_CALLCHAIN: u32 = 1 << 5;
-pub const PERF_SAMPLE_ID: u32 = 1 << 6;
-pub const PERF_SAMPLE_CPU: u32 = 1 << 7;
-pub const PERF_SAMPLE_PERIOD: u32 = 1 << 8;
-pub const PERF_SAMPLE_STREAM_ID: u32 = 1 << 9;
-pub const PERF_SAMPLE_RAW: u32 = 1 << 10;
-pub const PERF_SAMPLE_BRANCH_STACK: u32 = 1 << 11;
-pub const PERF_SAMPLE_REGS_USER: u32 = 1 << 12;
-pub const PERF_SAMPLE_STACK_USER: u32 = 1 << 13;
-pub const PERF_SAMPLE_WEIGHT: u32 = 1 << 14;
-pub const PERF_SAMPLE_DATA_SRC: u32 = 1 << 15;
-pub const PERF_SAMPLE_IDENTIFIER: u32 = 1 << 16;
-pub const PERF_SAMPLE_TRANSACTION: u32 = 1 << 17;
-pub const PERF_SAMPLE_REGS_INTR: u32 = 1 << 18;
-pub const PERF_SAMPLE_PHYS_ADDR: u32 = 1 << 19;
+#[repr(u64)]
+#[derive(Debug, PartialOrd, PartialEq)]
+pub enum perf_event_sample_format_t {
+    PERF_SAMPLE_IP = 1,
+    PERF_SAMPLE_TID = 1 << 1,
+    PERF_SAMPLE_TIME = 1 << 2,
+    PERF_SAMPLE_ADDR = 1 << 3,
+    PERF_SAMPLE_READ = 1 << 4,
+    PERF_SAMPLE_CALLCHAIN = 1 << 5,
+    PERF_SAMPLE_ID = 1 << 6,
+    PERF_SAMPLE_CPU = 1 << 7,
+    PERF_SAMPLE_PERIOD = 1 << 8,
+    PERF_SAMPLE_STREAM_ID = 1 << 9,
+    PERF_SAMPLE_RAW = 1 << 10,
+    PERF_SAMPLE_BRANCH_STACK = 1 << 11,
+    PERF_SAMPLE_REGS_USER = 1 << 12,
+    PERF_SAMPLE_STACK_USER = 1 << 13,
+    PERF_SAMPLE_WEIGHT = 1 << 14,
+    PERF_SAMPLE_DATA_SRC = 1 << 15,
+    PERF_SAMPLE_IDENTIFIER = 1 << 16,
+    PERF_SAMPLE_TRANSACTION = 1 << 17,
+    PERF_SAMPLE_REGS_INTR = 1 << 18,
+    PERF_SAMPLE_PHYS_ADDR = 1 << 19,
 
-/// non-ABI
-pub const PERF_SAMPLE_MAX: u32 = 1 << 20;
+    PERF_SAMPLE_AUX = 1 << 20,
+    PERF_SAMPLE_CGROUP = 1 << 21,
+    PERF_SAMPLE_DATA_PAGE_SIZE = 1 << 22,
+    PERF_SAMPLE_CODE_PAGE_SIZE = 1 << 23,
+    PERF_SAMPLE_WEIGHT_STRUCT = 1 << 24,
 
-/// non-ABI; internal use
-pub const __PERF_SAMPLE_CALLCHAIN_EARLY: u64 = 1 << 63;
+    /// non-ABI
+    PERF_SAMPLE_MAX = 1 << 25,
+
+    // non-ABI; internal use
+    __PERF_SAMPLE_CALLCHAIN_EARLY = 1 << 63,
+}
+
+pub const PERF_SAMPLE_WEIGHT_TYPE: u64 = perf_event_sample_format_t::PERF_SAMPLE_WEIGHT as u64
+    | perf_event_sample_format_t::PERF_SAMPLE_WEIGHT_STRUCT as u64;
 
 /// values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
 ///
@@ -114,70 +153,82 @@ pub const __PERF_SAMPLE_CALLCHAIN_EARLY: u64 = 1 << 63;
 /// The branch types can be combined, however BRANCH_ANY covers all types
 /// of branches and therefore it supersedes all the other types.
 /// user branches
-pub const PERF_SAMPLE_BRANCH_USER_SHIFT: i32 = 0;
-/// kernel branches
-pub const PERF_SAMPLE_BRANCH_KERNEL_SHIFT: i32 = 1;
-/// hypervisor branches
-pub const PERF_SAMPLE_BRANCH_HV_SHIFT: i32 = 2;
+#[repr(u8)]
+pub enum perf_branch_sample_type_shift_t {
+    PERF_SAMPLE_BRANCH_USER_SHIFT = 0,
+    /// kernel branches
+    PERF_SAMPLE_BRANCH_KERNEL_SHIFT = 1,
+    /// hypervisor branches
+    PERF_SAMPLE_BRANCH_HV_SHIFT = 2,
 
-/// any branch types
-pub const PERF_SAMPLE_BRANCH_ANY_SHIFT: i32 = 3;
-/// any call branch
-pub const PERF_SAMPLE_BRANCH_ANY_CALL_SHIFT: i32 = 4;
-/// any return branch
-pub const PERF_SAMPLE_BRANCH_ANY_RETURN_SHIFT: i32 = 5;
-/// indirect calls
-pub const PERF_SAMPLE_BRANCH_IND_CALL_SHIFT: i32 = 6;
-/// transaction aborts
-pub const PERF_SAMPLE_BRANCH_ABORT_TX_SHIFT: i32 = 7;
-/// in transaction
-pub const PERF_SAMPLE_BRANCH_IN_TX_SHIFT: i32 = 8;
-/// not in transaction
-pub const PERF_SAMPLE_BRANCH_NO_TX_SHIFT: i32 = 9;
-/// conditional branches
-pub const PERF_SAMPLE_BRANCH_COND_SHIFT: i32 = 10;
+    /// any branch types
+    PERF_SAMPLE_BRANCH_ANY_SHIFT = 3,
+    /// any call branch
+    PERF_SAMPLE_BRANCH_ANY_CALL_SHIFT = 4,
+    /// any return branch
+    PERF_SAMPLE_BRANCH_ANY_RETURN_SHIFT = 5,
+    /// indirect calls
+    PERF_SAMPLE_BRANCH_IND_CALL_SHIFT = 6,
+    /// transaction aborts
+    PERF_SAMPLE_BRANCH_ABORT_TX_SHIFT = 7,
+    /// in transaction
+    PERF_SAMPLE_BRANCH_IN_TX_SHIFT = 8,
+    /// not in transaction
+    PERF_SAMPLE_BRANCH_NO_TX_SHIFT = 9,
+    /// conditional branches
+    PERF_SAMPLE_BRANCH_COND_SHIFT = 10,
 
-/// call/ret stack
-pub const PERF_SAMPLE_BRANCH_CALL_STACK_SHIFT: i32 = 11;
-/// indirect jumps
-pub const PERF_SAMPLE_BRANCH_IND_JUMP_SHIFT: i32 = 12;
-/// direct call
-pub const PERF_SAMPLE_BRANCH_CALL_SHIFT: i32 = 13;
+    /// call/ret stack
+    PERF_SAMPLE_BRANCH_CALL_STACK_SHIFT = 11,
+    /// indirect jumps
+    PERF_SAMPLE_BRANCH_IND_JUMP_SHIFT = 12,
+    /// direct call
+    PERF_SAMPLE_BRANCH_CALL_SHIFT = 13,
 
-/// no flags
-pub const PERF_SAMPLE_BRANCH_NO_FLAGS_SHIFT: i32 = 14;
-/// no cycles
-pub const PERF_SAMPLE_BRANCH_NO_CYCLES_SHIFT: i32 = 15;
+    /// no flags
+    PERF_SAMPLE_BRANCH_NO_FLAGS_SHIFT = 14,
+    /// no cycles
+    PERF_SAMPLE_BRANCH_NO_CYCLES_SHIFT = 15,
 
-/// save branch type
-pub const PERF_SAMPLE_BRANCH_TYPE_SAVE_SHIFT: i32 = 16;
+    /// save branch type
+    PERF_SAMPLE_BRANCH_TYPE_SAVE_SHIFT = 16,
 
-/// non-ABI
-pub const PERF_SAMPLE_BRANCH_MAX_SHIFT: i32 = 17;
+    // save low level index of raw branch records
+    PERF_SAMPLE_BRANCH_HW_INDEX_SHIFT = 17,
 
-pub const PERF_SAMPLE_BRANCH_USER: u32 = 1 << PERF_SAMPLE_BRANCH_USER_SHIFT;
-pub const PERF_SAMPLE_BRANCH_KERNEL: u32 = 1 << PERF_SAMPLE_BRANCH_KERNEL_SHIFT;
-pub const PERF_SAMPLE_BRANCH_HV: u32 = 1 << PERF_SAMPLE_BRANCH_HV_SHIFT;
+    /// non-ABI
+    PERF_SAMPLE_BRANCH_MAX_SHIFT = 18,
+}
 
-pub const PERF_SAMPLE_BRANCH_ANY: u32 = 1 << PERF_SAMPLE_BRANCH_ANY_SHIFT;
-pub const PERF_SAMPLE_BRANCH_ANY_CALL: u32 = 1 << PERF_SAMPLE_BRANCH_ANY_CALL_SHIFT;
-pub const PERF_SAMPLE_BRANCH_ANY_RETURN: u32 = 1 << PERF_SAMPLE_BRANCH_ANY_RETURN_SHIFT;
-pub const PERF_SAMPLE_BRANCH_IND_CALL: u32 = 1 << PERF_SAMPLE_BRANCH_IND_CALL_SHIFT;
-pub const PERF_SAMPLE_BRANCH_ABORT_TX: u32 = 1 << PERF_SAMPLE_BRANCH_ABORT_TX_SHIFT;
-pub const PERF_SAMPLE_BRANCH_IN_TX: u32 = 1 << PERF_SAMPLE_BRANCH_IN_TX_SHIFT;
-pub const PERF_SAMPLE_BRANCH_NO_TX: u32 = 1 << PERF_SAMPLE_BRANCH_NO_TX_SHIFT;
-pub const PERF_SAMPLE_BRANCH_COND: u32 = 1 << PERF_SAMPLE_BRANCH_COND_SHIFT;
+use perf_branch_sample_type_shift_t::*;
 
-pub const PERF_SAMPLE_BRANCH_CALL_STACK: u32 = 1 << PERF_SAMPLE_BRANCH_CALL_STACK_SHIFT;
-pub const PERF_SAMPLE_BRANCH_IND_JUMP: u32 = 1 << PERF_SAMPLE_BRANCH_IND_JUMP_SHIFT;
-pub const PERF_SAMPLE_BRANCH_CALL: u32 = 1 << PERF_SAMPLE_BRANCH_CALL_SHIFT;
+#[repr(u32)]
+pub enum perf_branch_sample_type_t {
+    PERF_SAMPLE_BRANCH_USER = 1 << PERF_SAMPLE_BRANCH_USER_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_KERNEL = 1 << PERF_SAMPLE_BRANCH_KERNEL_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_HV = 1 << PERF_SAMPLE_BRANCH_HV_SHIFT as u32,
 
-pub const PERF_SAMPLE_BRANCH_NO_FLAGS: u32 = 1 << PERF_SAMPLE_BRANCH_NO_FLAGS_SHIFT;
-pub const PERF_SAMPLE_BRANCH_NO_CYCLES: u32 = 1 << PERF_SAMPLE_BRANCH_NO_CYCLES_SHIFT;
+    PERF_SAMPLE_BRANCH_ANY = 1 << PERF_SAMPLE_BRANCH_ANY_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_ANY_CALL = 1 << PERF_SAMPLE_BRANCH_ANY_CALL_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_ANY_RETURN = 1 << PERF_SAMPLE_BRANCH_ANY_RETURN_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_IND_CALL = 1 << PERF_SAMPLE_BRANCH_IND_CALL_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_ABORT_TX = 1 << PERF_SAMPLE_BRANCH_ABORT_TX_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_IN_TX = 1 << PERF_SAMPLE_BRANCH_IN_TX_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_NO_TX = 1 << PERF_SAMPLE_BRANCH_NO_TX_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_COND = 1 << PERF_SAMPLE_BRANCH_COND_SHIFT as u32,
 
-pub const PERF_SAMPLE_BRANCH_TYPE_SAVE: u32 = 1 << PERF_SAMPLE_BRANCH_TYPE_SAVE_SHIFT;
+    PERF_SAMPLE_BRANCH_CALL_STACK = 1 << PERF_SAMPLE_BRANCH_CALL_STACK_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_IND_JUMP = 1 << PERF_SAMPLE_BRANCH_IND_JUMP_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_CALL = 1 << PERF_SAMPLE_BRANCH_CALL_SHIFT as u32,
 
-pub const PERF_SAMPLE_BRANCH_MAX: u32 = 1 << PERF_SAMPLE_BRANCH_MAX_SHIFT;
+    PERF_SAMPLE_BRANCH_NO_FLAGS = 1 << PERF_SAMPLE_BRANCH_NO_FLAGS_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_NO_CYCLES = 1 << PERF_SAMPLE_BRANCH_NO_CYCLES_SHIFT as u32,
+
+    PERF_SAMPLE_BRANCH_TYPE_SAVE = 1 << PERF_SAMPLE_BRANCH_TYPE_SAVE_SHIFT as u32,
+
+    PERF_SAMPLE_BRANCH_HW_INDEX = 1 << PERF_SAMPLE_BRANCH_HW_INDEX_SHIFT as u32,
+    PERF_SAMPLE_BRANCH_MAX = 1 << PERF_SAMPLE_BRANCH_MAX_SHIFT as u32,
+}
 
 /// Common flow change classification
 /// unknown
@@ -204,13 +255,18 @@ pub const PERF_BR_COND_CALL: i32 = 9;
 pub const PERF_BR_COND_RET: i32 = 10;
 pub const PERF_BR_MAX: i32 = 11;
 
-pub const PERF_SAMPLE_BRANCH_PLM_ALL: u32 =
-    PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_KERNEL | PERF_SAMPLE_BRANCH_HV;
+pub const PERF_SAMPLE_BRANCH_PLM_ALL: u32 = perf_branch_sample_type_t::PERF_SAMPLE_BRANCH_USER
+    as u32
+    | perf_branch_sample_type_t::PERF_SAMPLE_BRANCH_KERNEL as u32
+    | perf_branch_sample_type_t::PERF_SAMPLE_BRANCH_HV as u32;
 
 /// Values to determine ABI of the registers dump.
-pub const PERF_SAMPLE_REGS_ABI_NONE: i32 = 0;
-pub const PERF_SAMPLE_REGS_ABI_32: i32 = 1;
-pub const PERF_SAMPLE_REGS_ABI_64: i32 = 2;
+#[repr(u8)]
+pub enum perf_sample_regs_abi_t {
+    PERF_SAMPLE_REGS_ABI_NONE = 0,
+    PERF_SAMPLE_REGS_ABI_32 = 1,
+    PERF_SAMPLE_REGS_ABI_64 = 2,
+}
 
 /// Values for the memory transaction event qualifier, mostly for
 /// abort events. Multiple bits can be set.
@@ -260,12 +316,16 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 /// };
 /// ```
 
-pub const PERF_FORMAT_TOTAL_TIME_ENABLED: i32 = 1;
-pub const PERF_FORMAT_TOTAL_TIME_RUNNING: i32 = 1 << 1;
-pub const PERF_FORMAT_ID: i32 = 1 << 2;
-pub const PERF_FORMAT_GROUP: i32 = 1 << 3;
-/// non-ABI
-pub const PERF_FORMAT_MAX: i32 = 1 << 4;
+#[repr(u8)]
+pub enum perf_event_read_format_t {
+    PERF_FORMAT_TOTAL_TIME_ENABLED = 1,
+    PERF_FORMAT_TOTAL_TIME_RUNNING = 1 << 1,
+    PERF_FORMAT_ID = 1 << 2,
+    PERF_FORMAT_GROUP = 1 << 3,
+
+    /// non-ABI
+    PERF_FORMAT_MAX = 1 << 4,
+}
 
 /// sizeof first published struct
 pub const PERF_ATTR_SIZE_VER0: i32 = 64;
@@ -762,277 +822,367 @@ pub const CGROUP_NS_INDEX: i32 = 6;
 /// number of available namespaces
 pub const NR_NAMESPACES: i32 = 7;
 
-/// perf_event_type:
+/// perf_event_type
+pub enum perf_event_type_t {
+    /// If perf_event_attr.sample_id_all is set then all event types will
+    /// have the sample_type selected fields related to where/when
+    /// (identity) an event took place (TID, TIME, ID, STREAM_ID, CPU
+    /// IDENTIFIER) described in PERF_RECORD_SAMPLE below, it will be stashed
+    /// just after the perf_event_header and the fields already present for
+    /// the existing fields, i.e. at the end of the payload. That way a newer
+    /// perf.data file will be supported by older perf tools, with these new
+    /// optional fields being ignored.
+    ///
+    /// struct sample_id {
+    ///   { u32 pid, tid; } && PERF_SAMPLE_TID
+    ///   { u64 time; } && PERF_SAMPLE_TIME
+    ///   { u64 id; } && PERF_SAMPLE_ID
+    ///   { u64 stream_id;} && PERF_SAMPLE_STREAM_ID
+    ///   { u32 cpu, res; } && PERF_SAMPLE_CPU
+    ///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
+    /// } && perf_event_attr::sample_id_all
+    ///
+    /// Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.  The
+    /// advantage of PERF_SAMPLE_IDENTIFIER is that its position is fixed
+    /// relative to header.size.
+    ///
+    ///
+    /// The MMAP events record the PROT_EXEC mappings so that we can
+    /// correlate userspace IPs to code. They have the following structure:
+    ///
+    /// struct {
+    ///   struct perf_event_header header;
+    ///
+    ///   u32 pid, tid;
+    ///   u64 addr;
+    ///   u64 len;
+    ///   u64 pgoff;
+    ///   char filename[];
+    ///   struct sample_id sample_id;
+    /// };
+    PERF_RECORD_MMAP = 1,
 
-/// If perf_event_attr.sample_id_all is set then all event types will
-/// have the sample_type selected fields related to where/when
-/// (identity) an event took place (TID, TIME, ID, STREAM_ID, CPU
-/// IDENTIFIER) described in PERF_RECORD_SAMPLE below, it will be stashed
-/// just after the perf_event_header and the fields already present for
-/// the existing fields, i.e. at the end of the payload. That way a newer
-/// perf.data file will be supported by older perf tools, with these new
-/// optional fields being ignored.
-///
-/// struct sample_id {
-///   { u32 pid, tid; } && PERF_SAMPLE_TID
-///   { u64 time; } && PERF_SAMPLE_TIME
-///   { u64 id; } && PERF_SAMPLE_ID
-///   { u64 stream_id;} && PERF_SAMPLE_STREAM_ID
-///   { u32 cpu, res; } && PERF_SAMPLE_CPU
-///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
-/// } && perf_event_attr::sample_id_all
-///
-/// Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.  The
-/// advantage of PERF_SAMPLE_IDENTIFIER is that its position is fixed
-/// relative to header.size.
-///
-///
-/// The MMAP events record the PROT_EXEC mappings so that we can
-/// correlate userspace IPs to code. They have the following structure:
-///
-/// struct {
-///   struct perf_event_header header;
-///
-///   u32 pid, tid;
-///   u64 addr;
-///   u64 len;
-///   u64 pgoff;
-///   char filename[];
-///   struct sample_id sample_id;
-/// };
-pub const PERF_RECORD_MMAP: i32 = 1;
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u64 id;
+    ///   u64 lost;
+    ///   struct sample_id sample_id;
+    /// };
+    PERF_RECORD_LOST = 2,
 
-/// struct {
-///   struct perf_event_header header;
-///   u64 id;
-///   u64 lost;
-///   struct sample_id sample_id;
-/// };
-pub const PERF_RECORD_LOST: i32 = 2;
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///
+    ///   u32 pid, tid;
+    ///   char comm[];
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_COMM = 3,
 
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///
-///   u32 pid, tid;
-///   char comm[];
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_COMM: i32 = 3;
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 pid, ppid;
+    ///   u32 tid, ptid;
+    ///   u64 time;
+    ///   struct sample_id sample_id;
+    /// };
+    PERF_RECORD_EXIT = 4,
 
-/// struct {
-///   struct perf_event_header header;
-///   u32 pid, ppid;
-///   u32 tid, ptid;
-///   u64 time;
-///   struct sample_id sample_id;
-/// };
-pub const PERF_RECORD_EXIT: i32 = 4;
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u64 time;
+    ///   u64 id;
+    ///   u64 stream_id;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_THROTTLE = 5,
 
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   u64 time;
-///   u64 id;
-///   u64 stream_id;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_THROTTLE: i32 = 5;
-pub const PERF_RECORD_UNTHROTTLE: i32 = 6;
+    PERF_RECORD_UNTHROTTLE = 6,
 
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   u32 pid, ppid;
-///   u32 tid, ptid;
-///   u64 time;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_FORK: i32 = 7;
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 pid, ppid;
+    ///   u32 tid, ptid;
+    ///   u64 time;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_FORK = 7,
 
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   u32 pid, tid;
-///
-///   struct read_format values;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_READ: i32 = 8;
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 pid, tid;
+    ///
+    ///   struct read_format values;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_READ = 8,
 
-///  ```c
-/// struct {
-///   struct perf_event_header header;
-///
-///   #
-///   # Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.
-///   # The advantage of PERF_SAMPLE_IDENTIFIER is that its position
-///   # is fixed relative to header.
-///   #
-///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
-///   { u64 ip; } && PERF_SAMPLE_IP
-///   { u32 pid, tid; } && PERF_SAMPLE_TID
-///   { u64 time; } && PERF_SAMPLE_TIME
-///   { u64 addr; } && PERF_SAMPLE_ADDR
-///   { u64 id; } && PERF_SAMPLE_ID
-///   { u64 stream_id; } && PERF_SAMPLE_STREAM_ID
-///   { u32 cpu, res; } && PERF_SAMPLE_CPU
-///   { u64 period; } && PERF_SAMPLE_PERIOD
-///
-///   { struct read_format values; } && PERF_SAMPLE_READ
-///
-///   { u64 nr;
-///     u64 ips[nr]; } && PERF_SAMPLE_CALLCHAIN
-///
-///   #
-///   # The RAW record below is opaque data wrt the ABI
-///   #
-///   # That is, the ABI doesn't make any promises wrt to
-///   # the stability of its content, it may vary depending
-///   # on event, hardware, kernel version and phase of
-///   # the moon.
-///   #
-///   # In other words, PERF_SAMPLE_RAW contents are not an ABI.
-///   #
-///
-///   { u32 size;
-///     char data[size]; }&& PERF_SAMPLE_RAW
-///
-///   { u64 nr;
-///     { u64 from, to, flags } lbr[nr];} && PERF_SAMPLE_BRANCH_STACK
-///
-///   { u64 abi; # enum perf_sample_regs_abi
-///     u64 regs[weight(mask)]; } && PERF_SAMPLE_REGS_USER
-//
-///   { u64 size;
-///     char data[size];
-///     u64 dyn_size; } && PERF_SAMPLE_STACK_USER
-///
-///   { u64 weight; } && PERF_SAMPLE_WEIGHT
-///   { u64 data_src; } && PERF_SAMPLE_DATA_SRC
-///   { u64 transaction; } && PERF_SAMPLE_TRANSACTION
-///   { u64 abi; # enum perf_sample_regs_abi
-///     u64 regs[weight(mask)]; } && PERF_SAMPLE_REGS_INTR
-///   { u64 phys_addr;} && PERF_SAMPLE_PHYS_ADDR
-/// };
-/// ```
-pub const PERF_RECORD_SAMPLE: i32 = 9;
+    ///  ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///
+    ///   #
+    ///   # Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.
+    ///   # The advantage of PERF_SAMPLE_IDENTIFIER is that its position
+    ///   # is fixed relative to header.
+    ///   #
+    ///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
+    ///   { u64 ip; } && PERF_SAMPLE_IP
+    ///   { u32 pid, tid; } && PERF_SAMPLE_TID
+    ///   { u64 time; } && PERF_SAMPLE_TIME
+    ///   { u64 addr; } && PERF_SAMPLE_ADDR
+    ///   { u64 id; } && PERF_SAMPLE_ID
+    ///   { u64 stream_id; } && PERF_SAMPLE_STREAM_ID
+    ///   { u32 cpu, res; } && PERF_SAMPLE_CPU
+    ///   { u64 period; } && PERF_SAMPLE_PERIOD
+    ///
+    ///   { struct read_format values; } && PERF_SAMPLE_READ
+    ///
+    ///   { u64 nr;
+    ///     u64 ips[nr]; } && PERF_SAMPLE_CALLCHAIN
+    ///
+    ///   #
+    ///   # The RAW record below is opaque data wrt the ABI
+    ///   #
+    ///   # That is, the ABI doesn't make any promises wrt to
+    ///   # the stability of its content, it may vary depending
+    ///   # on event, hardware, kernel version and phase of
+    ///   # the moon.
+    ///   #
+    ///   # In other words, PERF_SAMPLE_RAW contents are not an ABI.
+    ///   #
+    ///
+    ///   { u32 size;
+    ///     char data[size]; }&& PERF_SAMPLE_RAW
+    ///
+    ///   { u64 nr;
+    ///     { u64 from, to, flags } lbr[nr];} && PERF_SAMPLE_BRANCH_STACK
+    ///
+    ///   { u64 abi; # enum perf_sample_regs_abi
+    ///     u64 regs[weight(mask)]; } && PERF_SAMPLE_REGS_USER
+    //
+    ///   { u64 size;
+    ///     char data[size];
+    ///     u64 dyn_size; } && PERF_SAMPLE_STACK_USER
+    ///
+    ///   { u64 weight; } && PERF_SAMPLE_WEIGHT
+    ///   { u64 data_src; } && PERF_SAMPLE_DATA_SRC
+    ///   { u64 transaction; } && PERF_SAMPLE_TRANSACTION
+    ///   { u64 abi; # enum perf_sample_regs_abi
+    ///     u64 regs[weight(mask)]; } && PERF_SAMPLE_REGS_INTR
+    ///   { u64 phys_addr;} && PERF_SAMPLE_PHYS_ADDR
+    /// };
+    /// ```
+    PERF_RECORD_SAMPLE = 9,
 
-/// The MMAP2 records are an augmented version of MMAP, they add
-/// maj, min, ino numbers to be used to uniquely identify each mapping
-///
-/// struct {
-///   struct perf_event_header header;
-///   u32 pid, tid;
-///   u64 addr;
-///   u64 len;
-///   u64 pgoff;
-///   u32 maj;
-///   u32 min;
-///   u64 ino;
-///   u64 ino_generation;
-///   u32 prot, flags;
-///   char filename[];
-///   struct sample_id sample_id;
-/// };
-pub const PERF_RECORD_MMAP2: i32 = 10;
+    /// The MMAP2 records are an augmented version of MMAP, they add
+    /// maj, min, ino numbers to be used to uniquely identify each mapping
+    ///
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 pid, tid;
+    ///   u64 addr;
+    ///   u64 len;
+    ///   u64 pgoff;
+    ///   u32 maj;
+    ///   u32 min;
+    ///   u64 ino;
+    ///   u64 ino_generation;
+    ///   u32 prot, flags;
+    ///   char filename[];
+    ///   struct sample_id sample_id;
+    /// };
+    PERF_RECORD_MMAP2 = 10,
 
-/// Records that new data landed in the AUX buffer part.
-///
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///
-///   u64 aux_offset;
-///   u64 aux_size;
-///   u64 flags;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_AUX: i32 = 11;
+    /// Records that new data landed in the AUX buffer part.
+    ///
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///
+    ///   u64 aux_offset;
+    ///   u64 aux_size;
+    ///   u64 flags;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_AUX = 11,
 
-/// Indicates that instruction trace has started
-///
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   u32 pid;
-///   u32 tid;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_ITRACE_START: i32 = 12;
+    /// Indicates that instruction trace has started
+    ///
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 pid;
+    ///   u32 tid;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_ITRACE_START = 12,
 
-/// Records the dropped/lost sample number.
-///
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///
-///   u64 lost;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_LOST_SAMPLES: i32 = 13;
+    /// Records the dropped/lost sample number.
+    ///
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///
+    ///   u64 lost;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_LOST_SAMPLES = 13,
 
-/// Records a context switch in or out (flagged by
-/// PERF_RECORD_MISC_SWITCH_OUT). See also
-/// PERF_RECORD_SWITCH_CPU_WIDE.
-///
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_SWITCH: i32 = 14;
+    /// Records a context switch in or out (flagged by
+    /// PERF_RECORD_MISC_SWITCH_OUT). See also
+    /// PERF_RECORD_SWITCH_CPU_WIDE.
+    ///
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_SWITCH = 14,
 
-/// CPU-wide version of PERF_RECORD_SWITCH with next_prev_pid and
-/// next_prev_tid that are the next (switching out) or previous
-/// (switching in) pid/tid.
-///
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   u32 next_prev_pid;
-///   u32 next_prev_tid;
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_SWITCH_CPU_WIDE: i32 = 15;
+    /// CPU-wide version of PERF_RECORD_SWITCH with next_prev_pid and
+    /// next_prev_tid that are the next (switching out) or previous
+    /// (switching in) pid/tid.
+    ///
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 next_prev_pid;
+    ///   u32 next_prev_tid;
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_SWITCH_CPU_WIDE = 15,
 
-/// ```c
-/// struct {
-///   struct perf_event_header header;
-///   u32 pid;
-///   u32 tid;
-///   u64 nr_namespaces;
-///   { u64 dev, inode; } [nr_namespaces];
-///   struct sample_id sample_id;
-/// };
-/// ```
-pub const PERF_RECORD_NAMESPACES: i32 = 16;
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header header;
+    ///   u32 pid;
+    ///   u32 tid;
+    ///   u64 nr_namespaces;
+    ///   { u64 dev, inode; } [nr_namespaces];
+    ///   struct sample_id sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_NAMESPACES = 16,
 
-/// non-ABI
-pub const PERF_RECORD_MAX: i32 = 17;
+    /// Record ksymbol register/unregister events:
+    ///
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header	header;
+    ///   u64				addr;
+    ///   u32				len;
+    ///   u16				ksym_type;
+    ///   u16				flags;
+    ///   char				name[];
+    ///   struct sample_id		sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_KSYMBOL = 17,
+
+    /// Record bpf events:
+    /// ```c
+    /// enum perf_bpf_event_type {
+    ///   PERF_BPF_EVENT_UNKNOWN		= 0,
+    ///   PERF_BPF_EVENT_PROG_LOAD	= 1,
+    ///   PERF_BPF_EVENT_PROG_UNLOAD	= 2,
+    /// };
+    ///
+    /// struct {
+    ///   struct perf_event_header	header;
+    ///   u16				type;
+    ///   u16				flags;
+    ///   u32				id;
+    ///   u8				tag[BPF_TAG_SIZE];
+    ///   struct sample_id		sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_BPF_EVENT = 18,
+
+    /// ```c
+    /// struct {
+    ///   struct perf_event_header	header;
+    ///   u64				id;
+    ///   char				path[];
+    ///   struct sample_id		sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_CGROUP = 19,
+
+    /// Records changes to kernel text i.e. self-modified code. 'old_len' is
+    /// the number of old bytes, 'new_len' is the number of new bytes. Either
+    /// 'old_len' or 'new_len' may be zero to indicate, for example, the
+    /// addition or removal of a trampoline. 'bytes' contains the old bytes
+    /// followed immediately by the new bytes.
+    ///
+    /// ```c
+    /// struct {
+    /// struct perf_event_header	header;
+    ///   u64				addr;
+    ///   u16				old_len;
+    ///   u16				new_len;
+    ///   u8				bytes[];
+    ///   struct sample_id		sample_id;
+    /// };
+    /// ```
+    PERF_RECORD_TEXT_POKE = 20,
+
+    /// non-ABI
+    PERF_RECORD_MAX,
+}
+
+#[repr(u8)]
+pub enum perf_record_ksymbol_type_t {
+    PERF_RECORD_KSYMBOL_TYPE_UNKNOWN = 0,
+    PERF_RECORD_KSYMBOL_TYPE_BPF = 1,
+
+    /// Out of line code such as kprobe-replaced instructions or optimized
+    /// kprobes or ftrace trampolines.
+    PERF_RECORD_KSYMBOL_TYPE_OOL = 2,
+
+    /// non-ABI
+    PERF_RECORD_KSYMBOL_TYPE_MAX,
+}
+
+pub const PERF_RECORD_KSYMBOL_FLAGS_UNREGISTER: u8 = 1 << 0;
+
+#[repr(u8)]
+pub enum perf_bpf_event_type_t {
+    PERF_BPF_EVENT_UNKNOWN = 0,
+    PERF_BPF_EVENT_PROG_LOAD = 1,
+    PERF_BPF_EVENT_PROG_UNLOAD = 2,
+
+    /// non-ABI
+    PERF_BPF_EVENT_MAX,
+}
 
 pub const PERF_MAX_STACK_DEPTH: i32 = 127;
 pub const PERF_MAX_CONTEXTS_PER_STACK: i32 = 8;
 
-/// enum perf_callchain_context:
-//NOTE(Shaohua): Convert u64 to i64.
-pub const PERF_CONTEXT_HV: i64 = -32;
-pub const PERF_CONTEXT_KERNEL: i64 = -128;
-pub const PERF_CONTEXT_USER: i64 = -512;
+#[repr(i64)]
+pub enum perf_callchain_context_t {
+    PERF_CONTEXT_HV = -32,
+    PERF_CONTEXT_KERNEL = -128,
+    PERF_CONTEXT_USER = -512,
 
-pub const PERF_CONTEXT_GUEST: i64 = -2048;
-pub const PERF_CONTEXT_GUEST_KERNEL: i64 = -2176;
-pub const PERF_CONTEXT_GUEST_USER: i64 = -2560;
-pub const PERF_CONTEXT_MAX: i64 = -4095;
+    PERF_CONTEXT_GUEST = -2048,
+    PERF_CONTEXT_GUEST_KERNEL = -2176,
+    PERF_CONTEXT_GUEST_USER = -2560,
+    PERF_CONTEXT_MAX = -4095,
+}
 
 /// PERF_RECORD_AUX::flags bits
 /// record was truncated to fit

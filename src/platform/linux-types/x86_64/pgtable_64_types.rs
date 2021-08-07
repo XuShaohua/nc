@@ -43,12 +43,12 @@ pub const PUD_MASK: usize = !(PUD_SIZE - 1);
 pub const PGDIR_SIZE: usize = 1 << PGDIR_SHIFT;
 pub const PGDIR_MASK: usize = !(PGDIR_SIZE - 1);
 
-/// See Documentation/x86/x86_64/mm.rst for a description of the memory map.
-///
-/// Be very careful vs. KASLR when changing anything here. The KASLR address
-/// range must not overlap with anything except the KASAN shadow area, which
-/// is correct as KASAN disables KASLR.
-pub const MAXMEM: usize = 1 << MAX_PHYSMEM_BITS;
+// See Documentation/x86/x86_64/mm.rst for a description of the memory map.
+//
+// Be very careful vs. KASLR when changing anything here. The KASLR address
+// range must not overlap with anything except the KASAN shadow area, which
+// is correct as KASAN disables KASLR.
+//pub const MAXMEM: usize = 1 << MAX_PHYSMEM_BITS;
 
 pub const GUARD_HOLE_PGD_ENTRY: usize = -256isize as usize;
 pub const GUARD_HOLE_SIZE: usize = 16 << PGDIR_SHIFT;
@@ -90,10 +90,10 @@ pub const __VMEMMAP_BASE_L5: usize = 0xffd4000000000000;
 // #define MODULES_LEN		(MODULES_END - MODULES_VADDR)
 
 pub const ESPFIX_PGD_ENTRY: usize = -2isize as usize;
-pub const ESPFIX_BASE_ADDR: usize = ESPFIX_PGD_ENTRY << P4D_SHIFT;
+//pub const ESPFIX_BASE_ADDR: usize = ESPFIX_PGD_ENTRY << P4D_SHIFT;
 
 pub const CPU_ENTRY_AREA_PGD: usize = -4isize as usize;
-pub const CPU_ENTRY_AREA_BASE: usize = CPU_ENTRY_AREA_PGD << P4D_SHIFT;
+//pub const CPU_ENTRY_AREA_BASE: usize = CPU_ENTRY_AREA_PGD << P4D_SHIFT;
 
 pub const EFI_VA_START: usize = (-4isize * (1 << 30)) as usize;
 pub const EFI_VA_END: usize = (-68isize * (1 << 30)) as usize;

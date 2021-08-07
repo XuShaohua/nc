@@ -25,13 +25,24 @@ pub const IST_INDEX_DB: i32 = 2;
 pub const IST_INDEX_MCE: i32 = 3;
 pub const IST_INDEX_VC: i32 = 4;
 
-// TODO(Shaohua): Handles #ifdef CONFIG_DYNAMIC_MEMORY_LAYOUT
-pub const __PAGE_OFFSET: i32 = page_offset_base;
+/// Set __PAGE_OFFSET to the most negative possible address +
+/// PGDIR_SIZE*17 (pgd slot 273).
+///
+/// The gap is to allow a space for LDT remap for PTI (1 pgd slot) and space for
+/// a hypervisor (16 slots). Choosing 16 slots for a hypervisor is arbitrary,
+/// but it's what Xen requires.
+pub const __PAGE_OFFSET_BASE_L5: usize = 0xff11000000000000;
+pub const __PAGE_OFFSET_BASE_L4: usize = 0xffff888000000000;
 
-// pub const __START_KERNEL_map: i32 = _AC;(0xffffffff80000000, UL)
-//
-// /// See Documentation/x86/x86_64/mm.rst for a description of the memory map.
-// pub const __PHYSICAL_MASK_SHIFT: i32 = 52;
+// TODO(Shaohua): Handles #ifdef CONFIG_DYNAMIC_MEMORY_LAYOUT
+pub const __PAGE_OFFSET: usize = __PAGE_OFFSET_BASE_L4;
+//pub const __PAGE_OFFSET: usize = page_offset_base;
+
+pub const __START_KERNEL_MAP: usize = 0xf_fff_fff_f80_000_000;
+
+/// See Documentation/x86/x86_64/mm.rst for a description of the memory map.
+pub const __PHYSICAL_MASK_SHIFT: i32 = 52;
+
 //
 // /*
 //  * User space process size.  This is the first address outside the user range.

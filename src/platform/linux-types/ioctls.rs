@@ -119,6 +119,7 @@ pub const TIOCGICOUNT: i32 = 0x545D;
 
 /// Some arches already define FIOQSIZE due to a historical
 /// conflict with a Hayes modem-specific ioctl value.
+#[cfg(not(target_arch = "arm"))]
 pub const FIOQSIZE: i32 = 0x5460;
 
 /// Used for packet mode

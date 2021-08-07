@@ -2,6 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod compat;
 mod ldt;
 mod page_64_types;
 mod page_types;
@@ -10,6 +11,7 @@ mod ptrace_abi;
 mod signal;
 mod stat;
 
+pub use compat::*;
 pub use ldt::*;
 pub use page_64_types::*;
 pub use page_types::*;

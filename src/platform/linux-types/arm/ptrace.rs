@@ -30,65 +30,65 @@ pub const PTRACE_GETFDPIC_INTERP: i32 = 1;
 
 /// PSR bits
 /// Note on V7M there is no mode contained in the PSR
-pub const USR26_MODE: i32 = 0x00000000;
-pub const FIQ26_MODE: i32 = 0x00000001;
-pub const IRQ26_MODE: i32 = 0x00000002;
-pub const SVC26_MODE: i32 = 0x00000003;
+pub const USR26_MODE: usize = 0x00000000;
+pub const FIQ26_MODE: usize = 0x00000001;
+pub const IRQ26_MODE: usize = 0x00000002;
+pub const SVC26_MODE: usize = 0x00000003;
 /// Use 0 here to get code right that creates a userspace
 /// or kernel space thread.
-pub const USR_MODE: i32 = 0x00000000;
-pub const SVC_MODE: i32 = 0x00000000;
-pub const FIQ_MODE: i32 = 0x00000011;
-pub const IRQ_MODE: i32 = 0x00000012;
-pub const MON_MODE: i32 = 0x00000016;
-pub const ABT_MODE: i32 = 0x00000017;
-pub const HYP_MODE: i32 = 0x0000001a;
-pub const UND_MODE: i32 = 0x0000001b;
-pub const SYSTEM_MODE: i32 = 0x0000001f;
-pub const MODE32_BIT: i32 = 0x00000010;
-pub const MODE_MASK: i32 = 0x0000001f;
+pub const USR_MODE: usize = 0x00000000;
+pub const SVC_MODE: usize = 0x00000000;
+pub const FIQ_MODE: usize = 0x00000011;
+pub const IRQ_MODE: usize = 0x00000012;
+pub const MON_MODE: usize = 0x00000016;
+pub const ABT_MODE: usize = 0x00000017;
+pub const HYP_MODE: usize = 0x0000001a;
+pub const UND_MODE: usize = 0x0000001b;
+pub const SYSTEM_MODE: usize = 0x0000001f;
+pub const MODE32_BIT: usize = 0x00000010;
+pub const MODE_MASK: usize = 0x0000001f;
 
 /// >= V4T, but not V7M
-pub const V4_PSR_T_BIT: i32 = 0x00000020;
-pub const V7M_PSR_T_BIT: i32 = 0x01000000;
-pub const PSR_T_BIT: i32 = V7M_PSR_T_BIT;
+pub const V4_PSR_T_BIT: usize = 0x00000020;
+pub const V7M_PSR_T_BIT: usize = 0x01000000;
+pub const PSR_T_BIT: usize = V7M_PSR_T_BIT;
 
 /// >= V4, but not V7M
-pub const PSR_F_BIT: i32 = 0x00000040;
+pub const PSR_F_BIT: usize = 0x00000040;
 /// >= V4, but not V7M
-pub const PSR_I_BIT: i32 = 0x00000080;
+pub const PSR_I_BIT: usize = 0x00000080;
 /// >= V6, but not V7M
-pub const PSR_A_BIT: i32 = 0x00000100;
+pub const PSR_A_BIT: usize = 0x00000100;
 /// >= V6, but not V7M
-pub const PSR_E_BIT: i32 = 0x00000200;
+pub const PSR_E_BIT: usize = 0x00000200;
 /// >= V5J, but not V7M
-pub const PSR_J_BIT: i32 = 0x01000000;
+pub const PSR_J_BIT: usize = 0x01000000;
 /// >= V5E, including V7M
-pub const PSR_Q_BIT: i32 = 0x08000000;
-pub const PSR_V_BIT: i32 = 0x10000000;
-pub const PSR_C_BIT: i32 = 0x20000000;
-pub const PSR_Z_BIT: i32 = 0x40000000;
-pub const PSR_N_BIT: i32 = 0x80000000;
+pub const PSR_Q_BIT: usize = 0x08000000;
+pub const PSR_V_BIT: usize = 0x10000000;
+pub const PSR_C_BIT: usize = 0x20000000;
+pub const PSR_Z_BIT: usize = 0x40000000;
+pub const PSR_N_BIT: usize = 0x80000000;
 
 /// Groups of PSR bits
 /// Flags
-pub const PSR_f: i32 = 0xff000000;
+pub const PSR_F: usize = 0xff000000;
 /// Status
-pub const PSR_s: i32 = 0x00ff0000;
+pub const PSR_S: usize = 0x00ff0000;
 /// Extension
-pub const PSR_x: i32 = 0x0000ff00;
+pub const PSR_X: usize = 0x0000ff00;
 /// Control
-pub const PSR_c: i32 = 0x000000ff;
+pub const PSR_C: usize = 0x000000ff;
 
 /// ARMv7 groups of PSR bits
 /// N, Z, C, V, Q and GE flags
-pub const APSR_MASK: i32 = 0xf80f0000;
+pub const APSR_MASK: usize = 0xf80f0000;
 /// ISA state (J, T) mask
-pub const PSR_ISET_MASK: i32 = 0x01000010;
+pub const PSR_ISET_MASK: usize = 0x01000010;
 /// If-Then execution state mask
-pub const PSR_IT_MASK: i32 = 0x0600fc00;
+pub const PSR_IT_MASK: usize = 0x0600fc00;
 /// Endianness state mask
-pub const PSR_ENDIAN_MASK: i32 = 0x00000200;
+pub const PSR_ENDIAN_MASK: usize = 0x00000200;
 
 /// Default endianness state
 #[cfg(target_endian = "big")]

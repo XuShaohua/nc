@@ -30,7 +30,9 @@ pub type __kernel_daddr_t = i32;
 pub type __kernel_uid32_t = u32;
 pub type __kernel_gid32_t = u32;
 
+#[cfg(not(target_arch = "aarch64"))]
 pub type __kernel_old_uid_t = __kernel_uid_t;
+#[cfg(not(target_arch = "aarch64"))]
 pub type __kernel_old_gid_t = __kernel_gid_t;
 
 pub type __kernel_old_dev_t = u32;

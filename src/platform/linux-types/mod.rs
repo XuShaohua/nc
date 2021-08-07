@@ -46,6 +46,11 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
+#[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+mod page;
+#[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
+pub use page::*;
+
 mod aio;
 mod aio_abi;
 mod bpf;
@@ -84,11 +89,10 @@ mod mount;
 mod mqueue;
 mod msg;
 mod msgbuf;
-mod posix_types;
-//mod page;
 mod perf_event;
 mod personality;
 mod poll;
+mod posix_types;
 mod prctl;
 mod ptrace;
 mod quota;
@@ -176,11 +180,10 @@ pub use mount::*;
 pub use mqueue::*;
 pub use msg::*;
 pub use msgbuf::*;
-pub use posix_types::*;
-//pub use page::*;
 pub use perf_event::*;
 pub use personality::*;
 pub use poll::*;
+pub use posix_types::*;
 pub use prctl::*;
 pub use ptrace::*;
 pub use quota::*;

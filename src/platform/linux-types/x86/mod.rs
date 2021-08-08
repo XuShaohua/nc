@@ -10,6 +10,7 @@ mod pgtable_3level_types;
 mod ptrace_abi;
 mod signal;
 mod stat;
+mod uapi_signal;
 
 pub use ldt::*;
 pub use page_32_types::*;
@@ -19,3 +20,4 @@ pub use pgtable_3level_types::*;
 pub use ptrace_abi::*;
 pub use signal::*;
 pub use stat::*;
+pub use uapi_signal::*;

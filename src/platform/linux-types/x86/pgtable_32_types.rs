@@ -2,7 +2,7 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-//! From arch/x86/include/asm/pgtable_32_types.h
+//! From arch/x86/include/asm/pgtable_32_types.h (incomplete)
 
 use super::{PGDIR_SHIFT, PMD_SHIFT};
 

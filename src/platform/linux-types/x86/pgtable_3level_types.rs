@@ -2,7 +2,7 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-//! From arch/x86/include/asm/pgtable-3level_types.h
+//! From arch/x86/include/asm/pgtable-3level_types.h (incomplete)
 
 use super::CONFIG_PAGE_OFFSET;
 
@@ -25,8 +25,6 @@ pub union pte_t {
     pub pte_range: pte_range_t,
     pub pte: pteval_t,
 }
-
-//#define ARCH_PAGE_TABLE_SYNC_MASK	(SHARED_KERNEL_PMD ? 0 : PGTBL_PMD_MODIFIED)
 
 /// PGDIR_SHIFT determines what a top-level page table entry can map
 pub const PGDIR_SHIFT: i32 = 30;

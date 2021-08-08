@@ -72,7 +72,7 @@ pub struct sigaction_t {
 }
 
 // No SA_RESTORER
-#[cfg(any(target_arch = "aarch64", target_arch = "mips", target_arch = "mips64")))]
+#[cfg(any(target_arch = "aarch64", target_arch = "mips", target_arch = "mips64"))]
 #[repr(C)]
 #[derive(Debug)]
 pub struct sigaction_t {

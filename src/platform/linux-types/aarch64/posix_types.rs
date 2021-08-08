@@ -4,5 +4,5 @@
 
 //! From `arch/arm64/include/uapi/asm/posix_types.h`
 
-pub type __kernel_old_uid_t: u16 = impl u16;
-pub type __kernel_old_gid_t: u16 = impl u16;
+pub type __kernel_old_uid_t = u16;
+pub type __kernel_old_gid_t = u16;

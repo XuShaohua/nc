@@ -69,6 +69,7 @@ pub use signal::*;
 
 mod aio;
 mod aio_abi;
+mod bitsperlong;
 mod bpf;
 mod capability;
 mod compat;
@@ -160,6 +161,7 @@ mod utsname;
 
 pub use aio::*;
 pub use aio_abi::*;
+pub use bitsperlong::*;
 pub use bpf::*;
 pub use capability::*;
 pub use compat::*;

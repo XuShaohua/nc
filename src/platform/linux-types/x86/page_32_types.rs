@@ -4,6 +4,8 @@
 
 //! From arch/x86/include/asm/page_32_types.h
 
+use super::PAGE_SIZE;
+
 /// This handles the memory map.
 ///
 /// A __PAGE_OFFSET of 0xC0000000 means that the kernel has

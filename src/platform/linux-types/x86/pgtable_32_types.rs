@@ -4,6 +4,8 @@
 
 //! From arch/x86/include/asm/pgtable_32_types.h
 
+use super::{PGDIR_SHIFT, PMD_SHIFT};
+
 /// The Linux x86 paging architecture is 'compile-time dual-mode', it
 /// implements both the traditional 2-level x86 page tables and the
 /// newer 3-level PAE-mode page tables.

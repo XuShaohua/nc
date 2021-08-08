@@ -4,6 +4,8 @@
 
 //! From arch/x86/include/asm/pgtable-3level_types.h
 
+use super::CONFIG_PAGE_OFFSET;
+
 pub type pteval_t = u64;
 pub type pmdval_t = u64;
 pub type pudval_t = u64;
@@ -12,11 +14,11 @@ pub type pgdval_t = u64;
 pub type pgprotval_t = u64;
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct pte_range_t {
     pub pte_low: usize,
     pub pte_high: usize,
-},
+}
 
 #[repr(C)]
 pub union pte_t {

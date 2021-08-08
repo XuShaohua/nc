@@ -4,7 +4,7 @@
 
 //! From arch/x86/include/asm/page_types.h
 
-use super::__PHYSICAL_MASK_SHIFT;
+use super::{PMD_SHIFT, __PAGE_OFFSET, __PHYSICAL_MASK_SHIFT, __VIRTUAL_MASK_SHIFT};
 
 /// PAGE_SHIFT determines the page size
 pub const PAGE_SHIFT: i32 = 12;

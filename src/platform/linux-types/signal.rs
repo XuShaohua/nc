@@ -2,10 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From include/uapi/asm-generic/signal.h
+
 use crate::{sighandler_t, size_t, BITS_PER_LONG};
 
-// TODO(Shaohua): Update from 64 to 128
-pub const _NSIG: i32 = 128;
+pub const _NSIG: i32 = 64;
 pub const _NSIG_BPW: i32 = BITS_PER_LONG;
 pub const _NSIG_WORDS: i32 = _NSIG / _NSIG_BPW;
 
@@ -48,3 +49,51 @@ pub const SIGUNUSED: i32 = 31;
 /// These should not be considered constants from userland.
 pub const SIGRTMIN: i32 = 32;
 pub const SIGRTMAX: i32 = _NSIG;
+
+pub const MINSIGSTKSZ: i32 = 2048;
+pub const SIGSTKSZ: i32 = 8192;
+
+#[repr(C)]
+#[derive(Debug)]
+pub struct sigset_t {
+    pub sig: [usize; _NSIG_WORDS],
+}
+
+/// not actually used, but required for linux/syscalls.h
+pub type old_sigset_t = usize;
+
+#[cfg(any(target_arch = "arm",
+        target_arch = "powerpc64",
+        target_arch = "s390x",
+        target_arch = "x86",
+        target_arch = "x86_64"))]
+#[repr(C)]
+#[derive(Debug)]
+pub struct sigaction_t {
+    pub sa_handler: __sighandler_t,
+    pub sa_flags: usize,
+    pub sa_restorer: __sigrestore_t,
+}
+
+// No SA_RESTORER
+#[cfg(not(any(target_arch = "arm",
+            target_arch = "powerpc64",
+            target_arch = "s390x",
+            target_arch = "x86",
+            target_arch = "x86_64")))]
+#[repr(C)]
+#[derive(Debug)]
+pub struct sigaction_t {
+	pub sa_handler: __sighandler_t,
+	pub sa_flags: usize,
+    /// mask last for extensibility
+	pub sigset_t sa_mask;
+}
+
+pub struct sigaltstack_t {
+    pub ss_sp: usize,
+    pub ss_flags: i32,
+    pub ss_size: size_t,
+}
+
+pub type stack_t = signalstack_t;

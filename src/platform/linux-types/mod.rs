@@ -46,9 +46,20 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
-#[cfg(not(any(target_arch = "arm", target_arch = "x86", target_arch = "x86_64")))]
+#[cfg(not(any(
+    target_arch = "arm",
+    target_arch = "aarch64",
+    target_arch = "x86",
+    target_arch = "x86_64"
+)))]
 mod page;
-#[cfg(not(any(target_arch = "arm", target_arch = "x86", target_arch = "x86_64")))]
+
+#[cfg(not(any(
+    target_arch = "arm",
+    target_arch = "aarch64",
+    target_arch = "x86",
+    target_arch = "x86_64"
+)))]
 pub use page::*;
 
 #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]

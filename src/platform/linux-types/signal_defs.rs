@@ -24,9 +24,9 @@
 ///
 /// - SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
 /// Unix names RESETHAND and NODEFER respectively.
-pub const SA_NOCLDSTOP: i32 = 0x00000001;
-pub const SA_NOCLDWAIT: i32 = 0x00000002;
-pub const SA_SIGINFO: i32 = 0x00000004;
+pub const SA_NOCLDSTOP: u32 = 0x00000001;
+pub const SA_NOCLDWAIT: u32 = 0x00000002;
+pub const SA_SIGINFO: u32 = 0x00000004;
 /* 0x00000008 used on alpha, mips, parisc */
 /* 0x00000010 used on alpha, parisc */
 /* 0x00000020 used on alpha, parisc, sparc */
@@ -34,20 +34,20 @@ pub const SA_SIGINFO: i32 = 0x00000004;
 /* 0x00000080 used on parisc */
 /* 0x00000100 used on sparc */
 /* 0x00000200 used on sparc */
-pub const SA_UNSUPPORTED: i32 = 0x00000400;
-pub const SA_EXPOSE_TAGBITS: i32 = 0x00000800;
+pub const SA_UNSUPPORTED: u32 = 0x00000400;
+pub const SA_EXPOSE_TAGBITS: u32 = 0x00000800;
 /* 0x00010000 used on mips */
 /* 0x01000000 used on x86 */
 /* 0x02000000 used on x86 */
 /// New architectures should not define the obsolete
 /// SA_RESTORER	0x04000000
-pub const SA_ONSTACK: i32 = 0x08000000;
-pub const SA_RESTART: i32 = 0x10000000;
-pub const SA_NODEFER: i32 = 0x40000000;
-pub const SA_RESETHAND: i32 = 0x80000000;
+pub const SA_ONSTACK: u32 = 0x08000000;
+pub const SA_RESTART: u32 = 0x10000000;
+pub const SA_NODEFER: u32 = 0x40000000;
+pub const SA_RESETHAND: u32 = 0x80000000;
 
-pub const SA_NOMASK: i32 = SA_NODEFER;
-pub const SA_ONESHOT: i32 = SA_RESETHAND;
+pub const SA_NOMASK: u32 = SA_NODEFER;
+pub const SA_ONESHOT: u32 = SA_RESETHAND;
 
 /// for blocking signals
 pub const SIG_BLOCK: i32 = 0;

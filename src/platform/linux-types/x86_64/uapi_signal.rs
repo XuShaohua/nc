@@ -4,50 +4,51 @@
 
 //! From arch/x86/include/uapi/asm/signal.h
 
+use super::signal::_NSIG;
 use crate::{sighandler_t, sigrestore_t, size_t};
 
-pub const NSIG: i32 = 32;
+pub const NSIG: usize = 32;
 
 pub type sigset_t = usize;
 
-pub const SIGHUP: i32 = 1;
-pub const SIGINT: i32 = 2;
-pub const SIGQUIT: i32 = 3;
-pub const SIGILL: i32 = 4;
-pub const SIGTRAP: i32 = 5;
-pub const SIGABRT: i32 = 6;
-pub const SIGIOT: i32 = 6;
-pub const SIGBUS: i32 = 7;
-pub const SIGFPE: i32 = 8;
-pub const SIGKILL: i32 = 9;
-pub const SIGUSR1: i32 = 10;
-pub const SIGSEGV: i32 = 11;
-pub const SIGUSR2: i32 = 12;
-pub const SIGPIPE: i32 = 13;
-pub const SIGALRM: i32 = 14;
-pub const SIGTERM: i32 = 15;
-pub const SIGSTKFLT: i32 = 16;
-pub const SIGCHLD: i32 = 17;
-pub const SIGCONT: i32 = 18;
-pub const SIGSTOP: i32 = 19;
-pub const SIGTSTP: i32 = 20;
-pub const SIGTTIN: i32 = 21;
-pub const SIGTTOU: i32 = 22;
-pub const SIGURG: i32 = 23;
-pub const SIGXCPU: i32 = 24;
-pub const SIGXFSZ: i32 = 25;
-pub const SIGVTALRM: i32 = 26;
-pub const SIGPROF: i32 = 27;
-pub const SIGWINCH: i32 = 28;
-pub const SIGIO: i32 = 29;
-pub const SIGPOLL: i32 = SIGIO;
-pub const SIGPWR: i32 = 30;
-pub const SIGSYS: i32 = 31;
-pub const SIGUNUSED: i32 = 31;
+pub const SIGHUP: u32 = 1;
+pub const SIGINT: u32 = 2;
+pub const SIGQUIT: u32 = 3;
+pub const SIGILL: u32 = 4;
+pub const SIGTRAP: u32 = 5;
+pub const SIGABRT: u32 = 6;
+pub const SIGIOT: u32 = 6;
+pub const SIGBUS: u32 = 7;
+pub const SIGFPE: u32 = 8;
+pub const SIGKILL: u32 = 9;
+pub const SIGUSR1: u32 = 10;
+pub const SIGSEGV: u32 = 11;
+pub const SIGUSR2: u32 = 12;
+pub const SIGPIPE: u32 = 13;
+pub const SIGALRM: u32 = 14;
+pub const SIGTERM: u32 = 15;
+pub const SIGSTKFLT: u32 = 16;
+pub const SIGCHLD: u32 = 17;
+pub const SIGCONT: u32 = 18;
+pub const SIGSTOP: u32 = 19;
+pub const SIGTSTP: u32 = 20;
+pub const SIGTTIN: u32 = 21;
+pub const SIGTTOU: u32 = 22;
+pub const SIGURG: u32 = 23;
+pub const SIGXCPU: u32 = 24;
+pub const SIGXFSZ: u32 = 25;
+pub const SIGVTALRM: u32 = 26;
+pub const SIGPROF: u32 = 27;
+pub const SIGWINCH: u32 = 28;
+pub const SIGIO: u32 = 29;
+pub const SIGPOLL: u32 = SIGIO;
+pub const SIGPWR: u32 = 30;
+pub const SIGSYS: u32 = 31;
+pub const SIGUNUSED: u32 = 31;
 
 /// These should not be considered constants from userland.
-pub const SIGRTMIN: i32 = 32;
-pub const SIGRTMAX: i32 = NSIG;
+pub const SIGRTMIN: u32 = 32;
+pub const SIGRTMAX: u32 = _NSIG as u32;
 
 pub const SA_RESTORER: u32 = 0x04000000;
 

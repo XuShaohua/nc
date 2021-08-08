@@ -6,9 +6,9 @@
 
 use crate::{sighandler_t, size_t, BITS_PER_LONG};
 
-pub const _NSIG: i32 = 64;
-pub const _NSIG_BPW: i32 = BITS_PER_LONG;
-pub const _NSIG_WORDS: i32 = _NSIG / _NSIG_BPW;
+pub const _NSIG: usize = 64;
+pub const _NSIG_BPW: usize = BITS_PER_LONG;
+pub const _NSIG_WORDS: usize = _NSIG / _NSIG_BPW;
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;

@@ -5,11 +5,11 @@
 //! From `arch/x86/include/asm/signal.h`
 
 /// Most things should be clean enough to redefine this at will, if care is taken to make libc match.
-pub const _NSIG: i32 = 64;
+pub const _NSIG: usize = 64;
 
-pub const _NSIG_BPW: i32 = 64;
+pub const _NSIG_BPW: usize = 64;
 
-pub const _NSIG_WORDS: i32 = _NSIG / _NSIG_BPW;
+pub const _NSIG_WORDS: usize = _NSIG / _NSIG_BPW;
 
 /// at least 32 bits
 pub type old_sigset_t = usize;

@@ -5,11 +5,9 @@
 mod fcntl;
 mod posix_types;
 mod ptrace;
-mod signal;
 mod stat;
 
 pub use fcntl::*;
 pub use posix_types::*;
 pub use ptrace::*;
-pub use signal::*;
 pub use stat::*;

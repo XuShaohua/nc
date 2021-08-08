@@ -7,7 +7,6 @@ mod ioctls;
 mod page;
 mod posix_types;
 mod ptrace;
-mod signal;
 mod stat;
 
 pub use fcntl::*;
@@ -15,5 +14,4 @@ pub use ioctls::*;
 pub use page::*;
 pub use posix_types::*;
 pub use ptrace::*;
-pub use signal::*;
 pub use stat::*;

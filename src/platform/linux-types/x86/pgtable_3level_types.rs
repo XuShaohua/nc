@@ -12,11 +12,15 @@ pub type pgdval_t = u64;
 pub type pgprotval_t = u64;
 
 #[repr(C)]
+#[derive(Debug)]
+pub struct pte_range_t {
+    pub pte_low: usize,
+    pub pte_high: usize,
+},
+
+#[repr(C)]
 pub union pte_t {
-    pub pte_range: struct {
-        pub pte_low: usize,
-        pub pte_high: usize,
-    },
+    pub pte_range: pte_range_t,
     pub pte: pteval_t,
 }
 

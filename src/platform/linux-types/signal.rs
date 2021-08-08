@@ -56,7 +56,7 @@ pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS],
 }
@@ -68,9 +68,9 @@ pub type old_sigset_t = usize;
 #[repr(C)]
 #[derive(Debug)]
 pub struct sigaction_t {
-    pub sa_handler: __sighandler_t,
+    pub sa_handler: sighandler_t,
     pub sa_flags: usize,
-    pub sa_restorer: __sigrestore_t,
+    pub sa_restorer: sigrestore_t,
 }
 
 // No SA_RESTORER
@@ -78,10 +78,11 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug)]
 pub struct sigaction_t {
-	pub sa_handler: __sighandler_t,
-	pub sa_flags: usize,
+    pub sa_handler: sighandler_t,
+    pub sa_flags: usize,
+
     /// mask last for extensibility
-	pub sigset_t sa_mask;
+    pub sa_mask: sigset_t,
 }
 
 pub struct sigaltstack_t {
@@ -90,4 +91,4 @@ pub struct sigaltstack_t {
     pub ss_size: size_t,
 }
 
-pub type stack_t = signalstack_t;
+pub type stack_t = sigaltstack_t;

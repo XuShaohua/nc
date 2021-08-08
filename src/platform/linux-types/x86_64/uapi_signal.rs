@@ -50,7 +50,7 @@ pub const SIGUNUSED: i32 = 31;
 pub const SIGRTMIN: i32 = 32;
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
-pub const SA_RESTORER: u32 = 0x04000000;
+pub const SA_RESTORER: usize = 0x04000000;
 
 pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;

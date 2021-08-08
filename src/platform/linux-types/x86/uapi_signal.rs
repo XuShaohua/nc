@@ -51,32 +51,10 @@ pub const SIGUNUSED: i32 = 31;
 pub const SIGRTMIN: i32 = 32;
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
-/// SA_FLAGS values:
-///
-/// SA_ONSTACK indicates that a registered stack_t will be used.
-/// SA_RESTART flag to get restarting signals (which were the default long ago)
-/// SA_NOCLDSTOP flag to turn off SIGCHLD when children stop.
-/// SA_RESETHAND clears the handler when the signal is delivered.
-/// SA_NOCLDWAIT flag on SIGCHLD to inhibit zombies.
-/// SA_NODEFER prevents the current signal from being masked in the handler.
-///
-/// SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
-/// Unix names RESETHAND and NODEFER respectively.
-pub const SA_NOCLDSTOP: usize = 0x00000001;
-pub const SA_NOCLDWAIT: usize = 0x00000002;
-pub const SA_SIGINFO: usize = 0x00000004;
-pub const SA_ONSTACK: usize = 0x08000000;
-pub const SA_RESTART: usize = 0x10000000;
-pub const SA_NODEFER: usize = 0x40000000;
-pub const SA_RESETHAND: usize = 0x80000000;
-
-pub const SA_NOMASK: usize = SA_NODEFER;
-pub const SA_ONESHOT: usize = SA_RESETHAND;
-
 pub const SA_RESTORER: usize = 0x04000000;
 
-pub const MINSIGSTKSZ: i32 = 2048;
-pub const SIGSTKSZ: i32 = 8192;
+pub const MINSIGSTKSZ: usize = 2048;
+pub const SIGSTKSZ: usize = 8192;
 
 pub type sa_sigaction_fn_t = fn(i32, &mut siginfo_t, usize);
 

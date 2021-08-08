@@ -2,7 +2,8 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-/// From `include/uapi/asm-generic/posix_types.h`
+//! From `include/uapi/asm-generic/posix_types.h`
+use crate::{__kernel_gid_t, __kernel_uid_t};
 
 /// This file is generally used by user-level software, so you need to
 /// be a little careful about namespace pollution etc.

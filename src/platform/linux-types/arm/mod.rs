@@ -9,6 +9,7 @@ mod posix_types;
 mod ptrace;
 mod signal;
 mod stat;
+mod uapi_signal;
 
 pub use fcntl::*;
 pub use ioctls::*;
@@ -17,3 +18,4 @@ pub use posix_types::*;
 pub use ptrace::*;
 pub use signal::*;
 pub use stat::*;
+pub use uapi_signal::*;

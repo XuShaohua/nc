@@ -7,9 +7,11 @@ mod page_def;
 mod posix_types;
 mod ptrace;
 mod stat;
+mod uapi_signal;
 
 pub use fcntl::*;
 pub use page_def::*;
 pub use posix_types::*;
 pub use ptrace::*;
 pub use stat::*;
+pub use uapi_signal::*;

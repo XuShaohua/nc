@@ -5,6 +5,7 @@
 use super::super::types::*;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct stat_t {
     pub st_dev: u32,
     /// Reserved for network id
@@ -37,6 +38,7 @@ pub struct stat_t {
 /// struct stat of the 64-bit kernel.
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct stat64_t {
     pub st_dev: usize,
     /// Reserved for st_dev expansion  

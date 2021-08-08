@@ -66,7 +66,7 @@ pub type old_sigset_t = usize;
 
 #[cfg(any(target_arch = "arm", target_arch = "powerpc64", target_arch = "s390x"))]
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
@@ -76,7 +76,7 @@ pub struct sigaction_t {
 // No SA_RESTORER
 #[cfg(any(target_arch = "aarch64", target_arch = "mips", target_arch = "mips64"))]
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
@@ -85,6 +85,8 @@ pub struct sigaction_t {
     pub sa_mask: sigset_t,
 }
 
+#[repr(C)]
+#[derive(Debug, Default)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

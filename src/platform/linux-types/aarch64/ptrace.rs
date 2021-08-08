@@ -5,13 +5,13 @@
 //! From `arch/arm64/include/uapi/asm/ptrace.h`
 
 /// PSR bits
-pub const PSR_MODE_EL0t: usize = 0x00000000;
-pub const PSR_MODE_EL1t: usize = 0x00000004;
-pub const PSR_MODE_EL1h: usize = 0x00000005;
-pub const PSR_MODE_EL2t: usize = 0x00000008;
-pub const PSR_MODE_EL2h: usize = 0x00000009;
-pub const PSR_MODE_EL3t: usize = 0x0000000c;
-pub const PSR_MODE_EL3h: usize = 0x0000000d;
+pub const PSR_MODE_EL0T: usize = 0x00000000;
+pub const PSR_MODE_EL1T: usize = 0x00000004;
+pub const PSR_MODE_EL1H: usize = 0x00000005;
+pub const PSR_MODE_EL2T: usize = 0x00000008;
+pub const PSR_MODE_EL2H: usize = 0x00000009;
+pub const PSR_MODE_EL3T: usize = 0x0000000c;
+pub const PSR_MODE_EL3H: usize = 0x0000000d;
 pub const PSR_MODE_MASK: usize = 0x0000000f;
 
 /// AArch32 CPSR bits

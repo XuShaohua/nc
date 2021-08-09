@@ -36,6 +36,12 @@ def diff_folder(arch_name, nc_dir, linux_src_dir):
         "x86_64": "x86",
         "arm": "arm",
         "aarch64": "arm64",
+        "mips": "mips",
+        "mipsel": "mips",
+        "mips64": "mips",
+        "mips64el": "mips",
+        "powerpc64": "powerpc",
+        "s390x": "s390",
     }
     linux_arch_name = arch_names_map[arch_name]
 

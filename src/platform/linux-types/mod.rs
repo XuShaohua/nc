@@ -5,6 +5,8 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
+mod char;
+
 // First import architecture specific types.
 #[cfg(target_arch = "aarch64")]
 #[path = "aarch64/mod.rs"]

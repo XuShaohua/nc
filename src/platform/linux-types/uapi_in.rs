@@ -12,16 +12,6 @@ use core::mem::size_of;
 /// interface as the means of communication with the user level.
 ///
 /// Definitions of the Internet Protocol.
-///
-/// Version: @(#)in.h 1.0.1 04/21/93
-///
-/// Authors: Original taken from the GNU Project <netinet/in.h> file.
-/// Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
-///
-/// This program is free software; you can redistribute it and/or
-/// modify it under the terms of the GNU General Public License
-/// as published by the Free Software Foundation; either version
-/// 2 of the License, or (at your option) any later version.
 
 /// Standard well-defined IP protocols.
 /// Dummy protocol for TCP

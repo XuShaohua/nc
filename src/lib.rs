@@ -113,6 +113,7 @@ extern crate alloc;
 extern crate std;
 
 pub mod c_str;
+pub mod path;
 pub mod syscalls;
 pub use syscalls::Errno;
 

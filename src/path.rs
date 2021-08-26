@@ -15,6 +15,11 @@ impl Path {
     pub fn new<S: AsRef<[u8]> + ?Sized>(s: &S) -> &Path {
         unsafe { &*(s.as_ref() as *const [u8] as *const Path) }
     }
+
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.internal.len()
+    }
 }
 
 impl AsRef<Path> for str {

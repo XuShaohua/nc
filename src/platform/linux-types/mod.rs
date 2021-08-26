@@ -5,7 +5,7 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 
-mod char;
+pub type c_char = u8;
 
 // First import architecture specific types.
 #[cfg(target_arch = "aarch64")]

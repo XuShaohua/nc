@@ -13,6 +13,8 @@ use core::mem;
 use core::ops;
 use core::ptr;
 
+use crate::path::Path;
+
 pub struct CString {
     inner: Box<[u8]>,
 }
@@ -29,6 +31,11 @@ impl CString {
         CString {
             inner: v.into_boxed_slice(),
         }
+    }
+
+    #[inline]
+    pub fn from_path(path: &Path) -> CString {
+        CString::new(path.inner())
     }
 
     pub fn with_capacity(cap: usize) -> CString {

@@ -2,18 +2,18 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use alloc::string::String;
+use alloc::vec::Vec;
+
 /// Reimplementation of `std::path::Path`.
 pub struct Path {
     internal: [u8],
 }
 
 impl Path {
+    #[inline]
     pub fn new<S: AsRef<[u8]> + ?Sized>(s: &S) -> &Path {
         unsafe { &*(s.as_ref() as *const [u8] as *const Path) }
-    }
-
-    pub fn inner(&self) -> &[u8] {
-        &self.internal
     }
 }
 
@@ -24,10 +24,16 @@ impl AsRef<Path> for str {
     }
 }
 
-impl AsRef<Path> for alloc::string::String {
+impl AsRef<Path> for String {
     #[inline]
     fn as_ref(&self) -> &Path {
         Path::new(self)
+    }
+}
+
+impl Into<Vec<u8>> for &Path {
+    fn into(self) -> Vec<u8> {
+        self.internal.to_vec()
     }
 }
 

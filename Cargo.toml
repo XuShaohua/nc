@@ -17,3 +17,11 @@ exclude = ["/.travis.yml"]
 
 [build-dependencies]
 cc = "1.0.69"
+
+[features]
+default = ["std"]
+
+# Provide impls for common standard library types like Path and PathBuf.
+# Requires a dependency on the Rust standard library.
+std = []
+

@@ -45,37 +45,35 @@ impl Into<Vec<u8>> for &Path {
 #[cfg(feature = "std")]
 mod with_std {
     use std::borrow::Cow;
-    use std::ffi::{CString, OsStr, OsString};
+    use std::ffi::{OsStr, OsString};
     use std::os::unix::ffi::OsStrExt;
     use std::path;
 
+    use super::Path;
+
     impl AsRef<Path> for OsStr {
         #[inline]
-        fn as_ref(&self) -> &path::Path {
+        fn as_ref(&self) -> &Path {
             Path::new(self.as_bytes())
         }
     }
-
     impl AsRef<Path> for Cow<'_, OsStr> {
         #[inline]
         fn as_ref(&self) -> &Path {
             Path::new(self.as_bytes())
         }
     }
-
     impl AsRef<Path> for OsString {
         #[inline]
         fn as_ref(&self) -> &Path {
             Path::new(self.as_bytes())
         }
     }
-
     impl AsRef<Path> for path::PathBuf {
         fn as_ref(&self) -> &Path {
             self.as_path().as_ref()
         }
     }
-
     impl AsRef<Path> for path::Path {
         #[inline]
         fn as_ref(&self) -> &Path {

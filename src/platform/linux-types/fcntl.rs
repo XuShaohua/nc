@@ -2,7 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/fcntl.h`
+
 use super::types::*;
+#[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
+use super::O_DIRECTORY;
 
 pub const O_ACCMODE: i32 = 0o000_0003;
 pub const O_RDONLY: i32 = 0o000_0000;
@@ -22,13 +26,22 @@ pub const O_NONBLOCK: i32 = 0o000_4000;
 pub const O_DSYNC: i32 = 0o001_0000;
 /// fcntl, for BSD compatibility
 pub const FASYNC: i32 = 0o002_0000;
+
 /// direct disk access hint
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_DIRECT: i32 = 0o004_0000;
+
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_LARGEFILE: i32 = 0o010_0000;
+
 /// must be a directory
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_DIRECTORY: i32 = 0o020_0000;
+
 /// don't follow links
+#[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
 pub const O_NOFOLLOW: i32 = 0o040_0000;
+
 pub const O_NOATIME: i32 = 0o100_0000;
 /// set close_on_exec
 pub const O_CLOEXEC: i32 = 0o200_0000;

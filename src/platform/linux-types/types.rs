@@ -4,16 +4,6 @@
 
 use core::mem::size_of;
 
-// BEGIN of bitsperlong.h
-#[cfg(target_pointer_width = "64")]
-pub const BITS_PER_LONG: i32 = 64;
-
-#[cfg(target_pointer_width = "32")]
-pub const BITS_PER_LONG: i32 = 32;
-
-pub const BITS_PER_LONG_LONG: i32 = 64;
-// END of bitsperlong.h
-
 // BEGIN of posix_types.h
 pub type ino_t = usize;
 pub type mode_t = u32;

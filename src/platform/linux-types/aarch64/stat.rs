@@ -5,6 +5,7 @@
 pub const STAT_HAVE_NSEC: i32 = 0;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct stat_t {
     pub st_dev: usize,
     pub st_ino: usize,
@@ -31,6 +32,7 @@ pub struct stat_t {
 /// Note: The kernel zero's the padded region because glibc might read them
 /// in the hope that the kernel has stretched to using larger sizes.
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct stat64_t {
     pub st_dev: u64,
     pad0: [u8; 4],

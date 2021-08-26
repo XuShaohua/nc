@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/fcntl.h`
+
 use super::fcntl::*;
 
 pub const F_SETLEASE: i32 = F_LINUX_SPECIFIC_BASE;

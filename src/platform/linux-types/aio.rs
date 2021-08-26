@@ -2,8 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::arch::*;
-use super::types::*;
+use super::{sigset_t, size_t};
 
 // FROM fs/aio.c
 #[repr(C)]

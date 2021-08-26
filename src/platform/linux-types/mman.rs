@@ -4,7 +4,7 @@
 
 use super::hugetlb_encode::*;
 
-/// From `uapi/linux/mman.h`
+/// From `include/uapi/linux/mman.h`
 
 pub const MREMAP_MAYMOVE: i32 = 1;
 pub const MREMAP_FIXED: i32 = 2;

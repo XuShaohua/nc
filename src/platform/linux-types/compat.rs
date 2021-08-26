@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+/// From `include/asm-generic/compat.h`
+
 /// These types are common across all compat ABIs
 pub type compat_size_t = u32;
 pub type compat_ssize_t = i32;

@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From include/uapi/asm-generic/statfs.h
+
 use super::types::*;
 
 /// Most 64-bit platforms use 'long', while most 32-bit platforms use '__u32'.

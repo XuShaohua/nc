@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From include/uapi/asm-generic/ioctls.h
+
 use super::ioctl::*;
 use super::termbits::*;
 use super::uapi_serial::*;
@@ -117,6 +119,7 @@ pub const TIOCGICOUNT: i32 = 0x545D;
 
 /// Some arches already define FIOQSIZE due to a historical
 /// conflict with a Hayes modem-specific ioctl value.
+#[cfg(not(target_arch = "arm"))]
 pub const FIOQSIZE: i32 = 0x5460;
 
 /// Used for packet mode

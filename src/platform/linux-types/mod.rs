@@ -48,8 +48,40 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
+#[cfg(not(any(
+    target_arch = "arm",
+    target_arch = "aarch64",
+    target_arch = "x86",
+    target_arch = "x86_64"
+)))]
+mod page;
+
+#[cfg(not(any(
+    target_arch = "arm",
+    target_arch = "aarch64",
+    target_arch = "x86",
+    target_arch = "x86_64"
+)))]
+pub use page::*;
+
+#[cfg(not(any(
+    target_arch = "arm",
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "mips"
+)))]
+mod signal;
+#[cfg(not(any(
+    target_arch = "arm",
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "mips"
+)))]
+pub use signal::*;
+
 mod aio;
 mod aio_abi;
+mod bitsperlong;
 mod bpf;
 mod capability;
 mod compat;
@@ -75,6 +107,7 @@ mod linux_fs;
 mod linux_fs_types;
 mod linux_net;
 mod linux_quota;
+mod linux_signal;
 mod linux_socket;
 mod linux_time64;
 mod linux_timex;
@@ -86,10 +119,10 @@ mod mount;
 mod mqueue;
 mod msg;
 mod msgbuf;
-mod page;
 mod perf_event;
 mod personality;
 mod poll;
+mod posix_types;
 mod prctl;
 mod ptrace;
 mod quota;
@@ -140,6 +173,7 @@ mod utsname;
 
 pub use aio::*;
 pub use aio_abi::*;
+pub use bitsperlong::*;
 pub use bpf::*;
 pub use capability::*;
 pub use compat::*;
@@ -165,6 +199,7 @@ pub use linux_fs::*;
 pub use linux_fs_types::*;
 pub use linux_net::*;
 pub use linux_quota::*;
+pub use linux_signal::*;
 pub use linux_socket::*;
 pub use linux_time64::*;
 pub use linux_timex::*;
@@ -177,10 +212,10 @@ pub use mount::*;
 pub use mqueue::*;
 pub use msg::*;
 pub use msgbuf::*;
-pub use page::*;
 pub use perf_event::*;
 pub use personality::*;
 pub use poll::*;
+pub use posix_types::*;
 pub use prctl::*;
 pub use ptrace::*;
 pub use quota::*;

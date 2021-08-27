@@ -53,20 +53,32 @@
 //! assert_eq!(ret, Err(nc::EPERM));
 //! ```
 //!
-//! Or handle signals:
+//! Or get system info:
 //! ```rust
-//! fn handle_alarm(signum: i32) {
-//!     assert_eq!(signum, nc::SIGALRM);
+//! pub fn cstr_to_str(input: &[u8]) -> &str {
+//!     let nul_index = input.iter().position(|&b| b == 0).unwrap_or(input.len());
+//!     std::str::from_utf8(&input[0..nul_index]).unwrap()
 //! }
 //!
 //! fn main() {
-//!     let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+//!     let mut uts = nc::utsname_t::default();
+//!     let ret = nc::uname(&mut uts);
 //!     assert!(ret.is_ok());
-//!     let remaining = nc::alarm(1);
-//!     let ret = nc::pause();
-//!     assert!(ret.is_err());
-//!     assert_eq!(ret, Err(nc::EINTR));
-//!     assert_eq!(remaining, 0);
+//!
+//!     let mut result = Vec::new();
+//!
+//!     result.push(cstr_to_str(&uts.sysname));
+//!     result.push(cstr_to_str(&uts.nodename));
+//!     result.push(cstr_to_str(&uts.release));
+//!     result.push(cstr_to_str(&uts.version));
+//!     result.push(cstr_to_str(&uts.machine));
+//!     let domain_name = cstr_to_str(&uts.domainname);
+//!     if domain_name != "(none)" {
+//!         result.push(domain_name);
+//!     }
+//!
+//!     let result = result.join(" ");
+//!     println!("{}", result);
 //! }
 //! ```
 //!

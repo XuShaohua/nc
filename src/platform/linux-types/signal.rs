@@ -68,7 +68,7 @@ pub type old_sigset_t = usize;
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct sigaction_t {
-    pub sa_action: sighandler_t,
+    pub sa_handler: sighandler_t,
     pub sa_flags: usize,
     pub sa_restorer: sigrestore_t,
 }
@@ -78,7 +78,7 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct sigaction_t {
-    pub sa_sigaction: sighandler_t,
+    pub sa_handler: sighandler_t,
     pub sa_flags: usize,
 
     /// mask last for extensibility

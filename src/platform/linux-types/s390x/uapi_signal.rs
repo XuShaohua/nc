@@ -105,7 +105,7 @@ impl fmt::Debug for sigaction_u_t {
 pub struct sigaction_t {
     /// Actually its type is `sigaction_u_t`.
     /// Keep synched with rust-lang/libc.
-    pub sa_sigaction: sighandler_t,
+    pub sa_handler: sighandler_t,
     pub sa_flags: usize,
     pub sa_restorer: sigrestore_r,
     pub sa_mask: sigset_t,

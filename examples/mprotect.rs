@@ -12,7 +12,7 @@ fn handle_segfault(sig: i32) {
 fn main() {
     // Register SIGSEGV handler.
     let sa = nc::sigaction_t {
-        sa_sigaction: handle_segfault as nc::sighandler_t,
+        sa_handler: handle_segfault as nc::sighandler_t,
         sa_flags: nc::SA_SIGINFO,
         ..nc::sigaction_t::default()
     };

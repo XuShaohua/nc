@@ -12,7 +12,7 @@ fn handle_alarm(signum: i32) {
 
 fn main() {
     let sa = nc::sigaction_t {
-        sa_sigaction: handle_alarm as nc::sighandler_t,
+        sa_handler: handle_alarm as nc::sighandler_t,
         sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
         ..nc::sigaction_t::default()
     };

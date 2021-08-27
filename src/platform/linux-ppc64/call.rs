@@ -111,7 +111,7 @@ pub fn afs_syscall() {
 /// }
 ///
 /// let sa = nc::sigaction_t {
-///     sa_sigaction: handle_alarm as nc::sighandler_t,
+///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     ..nc::sigaction_t::default()
 /// };
 /// let mut old_sa = nc::sigaction_t::default();
@@ -1557,7 +1557,7 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
 /// }
 ///
 /// let sa = nc::sigaction_t {
-///     sa_sigaction: handle_alarm as nc::sighandler_t,
+///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: 0,
 ///     ..nc::sigaction_t::default()
 /// };
@@ -3735,7 +3735,7 @@ pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i3
 /// }
 ///
 /// let sa = nc::sigaction_t {
-///     sa_sigaction: handle_alarm as nc::sighandler_t,
+///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     ..nc::sigaction_t::default()
 /// };
 /// let mut old_sa = nc::sigaction_t::default();
@@ -4657,7 +4657,7 @@ pub fn rtas(args: &mut rtas_args_t) -> Result<(), Errno> {
 /// }
 ///
 /// let sa = nc::sigaction_t {
-///     sa_sigaction: handle_sigterm as nc::sighandler_t,
+///     sa_handler: handle_sigterm as nc::sighandler_t,
 ///     sa_mask: nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK,
 ///     ..nc::sigaction_t::default()
 /// };
@@ -5255,7 +5255,7 @@ pub fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// }
 ///
 /// let sa = nc::sigaction_t {
-///     sa_sigaction: handle_alarm as nc::sighandler_t,
+///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: 0,
 ///     ..nc::sigaction_t::default()
 /// };
@@ -6261,7 +6261,7 @@ pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///
 ///     let sa = nc::sigaction_t {
 ///         sa_flags: nc::SA_SIGINFO,
-///         sa_sigaction: handle_alarm as nc::sighandler_t,
+///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let mut old_sa = nc::sigaction_t::default();
@@ -6333,7 +6333,7 @@ pub fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///
 ///     let sa = nc::sigaction_t {
 ///         sa_flags: nc::SA_SIGINFO,
-///         sa_sigaction: handle_alarm as nc::sighandler_t,
+///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let mut old_sa = nc::sigaction_t::default();
@@ -6402,7 +6402,7 @@ pub fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), E
 ///
 ///     let sa = nc::sigaction_t {
 ///         sa_flags: nc::SA_SIGINFO,
-///         sa_sigaction: handle_alarm as nc::sighandler_t,
+///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let mut old_sa = nc::sigaction_t::default();

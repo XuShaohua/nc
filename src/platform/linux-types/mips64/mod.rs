@@ -3,5 +3,7 @@
 // in the LICENSE file.
 
 mod stat;
+mod uapi_signal;
 
 pub use stat::*;
+pub use uapi_signal::*;

@@ -4,6 +4,8 @@
 
 mod signal;
 mod stat;
+mod uapi_signal;
 
 pub use signal::*;
 pub use stat::*;
+pub use uapi_signal::*;

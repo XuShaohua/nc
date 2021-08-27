@@ -4,7 +4,7 @@
 
 fn main() {
     let path = "/etc";
-    let ret = nc::open(path, nc::O_DIRECTORY, 0);
+    let ret = nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0);
     assert!(ret.is_ok());
     let fd = ret.unwrap();
 

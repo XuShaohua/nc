@@ -70,7 +70,12 @@ fn emit(fd: i32, event_type: u16, code: u16, value: i32) -> Result<isize, nc::Er
 
 fn run() -> Result<(), nc::Errno> {
     let fd = {
-        match nc::open("/dev/uinput", nc::O_WRONLY | nc::O_NONBLOCK, 0) {
+        match nc::openat(
+            nc::AT_FDCWD,
+            "/dev/uinput",
+            nc::O_WRONLY | nc::O_NONBLOCK,
+            0,
+        ) {
             Ok(fd) => fd,
             Err(errno) => {
                 println!("Error to open uinput: {}", errno);

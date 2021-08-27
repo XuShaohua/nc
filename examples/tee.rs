@@ -60,7 +60,12 @@
 /// ```
 fn main() {
     let output_file = "/tmp/nc-splice";
-    let ret = nc::open(output_file, nc::O_WRONLY | nc::O_CREAT | nc::O_TRUNC, 0o644);
+    let ret = nc::openat(
+        nc::AT_FDCWD,
+        output_file,
+        nc::O_WRONLY | nc::O_CREAT | nc::O_TRUNC,
+        0o644,
+    );
     assert!(ret.is_ok());
     let fd = ret.unwrap();
 

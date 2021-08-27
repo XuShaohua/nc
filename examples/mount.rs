@@ -4,7 +4,7 @@
 
 fn main() {
     let target_dir = "/tmp/nc-mount";
-    let ret = nc::mkdir(target_dir, 0o755);
+    let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
     assert!(ret.is_ok());
 
     let src_dir = "/etc";
@@ -16,5 +16,5 @@ fn main() {
     let flags = 0;
     let ret = nc::umount2(target_dir, flags);
     assert!(ret.is_ok());
-    assert!(nc::rmdir(target_dir).is_ok());
+    assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
 }

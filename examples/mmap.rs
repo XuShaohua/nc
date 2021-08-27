@@ -4,7 +4,7 @@
 
 fn main() {
     let path = "/etc/passwd";
-    let ret = nc::open(path, nc::O_RDONLY, 0o644);
+    let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644);
     assert!(ret.is_ok());
     let fd = ret.unwrap();
 

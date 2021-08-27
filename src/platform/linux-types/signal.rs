@@ -64,11 +64,11 @@ pub struct sigset_t {
 /// not actually used, but required for linux/syscalls.h
 pub type old_sigset_t = usize;
 
-#[cfg(any(target_arch = "arm", target_arch = "powerpc64", target_arch = "s390x"))]
+#[cfg(any(target_arch = "arm", target_arch = "powerpc64"))]
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct sigaction_t {
-    pub sa_handler: sighandler_t,
+    pub sa_action: sighandler_t,
     pub sa_flags: usize,
     pub sa_restorer: sigrestore_t,
 }
@@ -78,7 +78,7 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct sigaction_t {
-    pub sa_handler: sighandler_t,
+    pub sa_sigaction: sighandler_t,
     pub sa_flags: usize,
 
     /// mask last for extensibility

@@ -58,7 +58,7 @@ pub const SIGSTKSZ: usize = 8192;
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {
-    pub sa_handler: sighandler_t,
+    pub sa_sigaction: sighandler_t,
     pub sa_flags: usize,
     pub sa_restorer: sigrestore_t,
 

@@ -2,14 +2,15 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-//! From arch/x86/include/uapi/asm/signal.h
+//! From `arch/s390/include/uapi/asm/signal.h`
+//! S390 version
+//! Derived from "include/asm-i386/signal.h"
 
 use core::fmt;
 
 use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
 
 pub const NSIG: usize = 32;
-
 pub type sigset_t = usize;
 
 pub const SIGHUP: i32 = 1;
@@ -43,6 +44,7 @@ pub const SIGPROF: i32 = 27;
 pub const SIGWINCH: i32 = 28;
 pub const SIGIO: i32 = 29;
 pub const SIGPOLL: i32 = SIGIO;
+// pub const SIGLOST: i32 = 29;
 pub const SIGPWR: i32 = 30;
 pub const SIGSYS: i32 = 31;
 pub const SIGUNUSED: i32 = 31;
@@ -55,6 +57,21 @@ pub const SA_RESTORER: usize = 0x04000000;
 
 pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;
+
+/// There are two system calls in regard to sigaction, sys_rt_sigaction
+/// and sys_sigaction. Internally the kernel uses the struct old_sigaction
+/// for the older sys_sigaction system call, and the kernel version of the
+/// struct sigaction for the newer sys_rt_sigaction.
+///
+/// The uapi definition for struct sigaction has made a strange distinction
+/// between 31-bit and 64-bit in the past. For 64-bit the uapi structure
+/// looks like the kernel struct sigaction, but for 31-bit it used to
+/// look like the kernel struct old_sigaction. That practically made the
+/// structure unusable for either system call. To get around this problem
+/// the glibc always had its own definitions for the sigaction structures.
+///
+/// The current struct sigaction uapi definition below is suitable for the
+/// sys_rt_sigaction system call only.
 
 pub type sa_sigaction_fn_t = fn(i32, &mut siginfo_t, usize);
 
@@ -89,13 +106,11 @@ pub struct sigaction_t {
     /// Actually its type is `sigaction_u_t`.
     /// Keep synched with rust-lang/libc.
     pub sa_sigaction: sighandler_t,
-    pub sa_mask: sigset_t,
     pub sa_flags: usize,
-    pub sa_restorer: sigrestore_t,
+    pub sa_restorer: sigrestore_r,
+    pub sa_mask: sigset_t,
 }
 
-#[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

@@ -11,8 +11,8 @@ fn handle_restore() {
     // do nothing.
 }
 
-fn handle_alarm(_signum: i32) {
-    //assert_eq!(signum, nc::SIGALRM);
+fn handle_alarm(signum: i32) {
+    assert_eq!(signum, nc::SIGALRM);
     //let msg = "Hello alarm\n";
     //let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
     //nc::exit(1);

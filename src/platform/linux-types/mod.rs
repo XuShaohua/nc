@@ -64,19 +64,9 @@ mod page;
 )))]
 pub use page::*;
 
-#[cfg(not(any(
-    target_arch = "arm",
-    target_arch = "x86",
-    target_arch = "x86_64",
-    target_arch = "mips"
-)))]
+#[cfg(target_arch = "aarch64")]
 mod signal;
-#[cfg(not(any(
-    target_arch = "arm",
-    target_arch = "x86",
-    target_arch = "x86_64",
-    target_arch = "mips"
-)))]
+#[cfg(target_arch = "aarch64")]
 pub use signal::*;
 
 mod aio;

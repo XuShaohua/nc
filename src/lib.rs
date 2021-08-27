@@ -47,12 +47,10 @@
 //! }
 //! ```
 //!
-//! Kill self:
+//! Kill init process:
 //! ```rust
-//! let pid = nc::getpid();
-//! let ret = nc::kill(pid, nc::SIGTERM);
-//! // Never reach here.
-//! println!("ret: {:?}", ret);
+//! let ret = nc::kill(1, nc::SIGTERM);
+//! assert_eq!(ret, Err(nc::EPERM));
 //! ```
 //!
 //! Or handle signals:

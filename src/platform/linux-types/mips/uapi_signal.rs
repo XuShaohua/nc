@@ -4,10 +4,9 @@
 
 //! From arch/mips/include/uapi/asm/signal.h
 
-use core::fmt;
 use core::mem::size_of;
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
+use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL};
 
 pub const _NSIG: usize = 128;
 pub const _NSIG_BPW: usize = size_of::<usize>() * 8;

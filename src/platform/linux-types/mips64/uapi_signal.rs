@@ -5,22 +5,22 @@
 //! From arch/mips/include/uapi/asm/signal.h
 
 use core::fmt;
-use core::mem::sizeof;
+use core::mem::size_of;
 
 use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
 
 pub const _NSIG: usize = 128;
-pub const _NSIG_BPW: usize = sizeof::<usize>() * 8;
+pub const _NSIG_BPW: usize = size_of::<usize>() * 8;
 pub const _NSIG_WORDS: usize = _NSIG / _NSIG_BPW;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS],
 }
 
 // at least 32 bits
-pub type old_sigset_t: usize = impl usize;
+pub type old_sigset_t = usize;
 
 /// Hangup (POSIX).
 pub const SIGHUP: i32 = 1;
@@ -122,7 +122,7 @@ pub const SIG_UNBLOCK: i32 = 2;
 pub const SIG_SETMASK: i32 = 3;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {
     pub sa_flags: u32,
     pub sa_handler: sighandler_t,
@@ -131,7 +131,7 @@ pub struct sigaction_t {
 
 /// IRIX compatible stack_t
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_size: size_t,

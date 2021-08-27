@@ -4,8 +4,7 @@
 
 //! From arch/x86/include/uapi/asm/signal.h
 
-use super::signal::_NSIG;
-use crate::{sighandler_t, sigrestore_t, size_t};
+use crate::{sighandler_t, sigrestore_t, size_t, _NSIG};
 
 pub const NSIG: usize = 32;
 

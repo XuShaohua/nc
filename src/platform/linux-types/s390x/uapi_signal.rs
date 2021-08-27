@@ -10,6 +10,7 @@ use core::fmt;
 
 use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
 
+// TODO(Shaohua): Replace sigset_t with signal.rs
 pub const NSIG: usize = 32;
 pub type sigset_t = usize;
 
@@ -111,6 +112,8 @@ pub struct sigaction_t {
     pub sa_mask: sigset_t,
 }
 
+#[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

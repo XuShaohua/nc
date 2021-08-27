@@ -56,7 +56,7 @@ pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS],
 }
@@ -67,7 +67,7 @@ pub type old_sigset_t = usize;
 // No SA_RESTORER
 #[cfg(any(target_arch = "aarch64"))]
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
@@ -77,7 +77,7 @@ pub struct sigaction_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

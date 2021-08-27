@@ -1,14 +1,25 @@
-// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
-// Use of this source is governed by Apache-2.0 License that can be found
+// Copyright (c) 2021 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/asm-generic/signal.h
+//! From `arch/powerpc/include/uapi/asm/signal.h`
 
-use crate::{sighandler_t, size_t, BITS_PER_LONG};
+use core::fmt;
+
+use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
 
 pub const _NSIG: usize = 64;
-pub const _NSIG_BPW: usize = BITS_PER_LONG;
+pub const _NSIG_BPW: usize = 64;
 pub const _NSIG_WORDS: usize = _NSIG / _NSIG_BPW;
+
+/// at least 32 bits
+pub type old_sigset_t = usize;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
+pub struct sigset_t {
+    pub sig: [usize; _NSIG_WORDS],
+}
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
@@ -41,7 +52,7 @@ pub const SIGPROF: i32 = 27;
 pub const SIGWINCH: i32 = 28;
 pub const SIGIO: i32 = 29;
 pub const SIGPOLL: i32 = SIGIO;
-//pub const SIGLOST: i32 = 29;
+// pub const SIGLOST: i32 = 29;
 pub const SIGPWR: i32 = 30;
 pub const SIGSYS: i32 = 31;
 pub const SIGUNUSED: i32 = 31;
@@ -50,47 +61,36 @@ pub const SIGUNUSED: i32 = 31;
 pub const SIGRTMIN: i32 = 32;
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
-#[cfg(not(target_arch = "aarch64"))]
+pub const SA_RESTORER: usize = 0x04000000;
+
 pub const MINSIGSTKSZ: usize = 2048;
-#[cfg(not(target_arch = "aarch64"))]
 pub const SIGSTKSZ: usize = 8192;
 
 #[repr(C)]
-#[derive(Debug, Default)]
-pub struct sigset_t {
-    pub sig: [usize; _NSIG_WORDS],
-}
-
-/// not actually used, but required for linux/syscalls.h
-pub type old_sigset_t = usize;
-
-#[cfg(any(target_arch = "arm"))]
-#[repr(C)]
-#[derive(Debug, Default)]
-pub struct sigaction_t {
+#[derive(Debug, Default, Clone, Copy)]
+pub struct old_sigaction_t {
     pub sa_handler: sighandler_t,
+    pub sa_mask: old_sigset_t,
     pub sa_flags: usize,
     pub sa_restorer: sigrestore_t,
 }
 
-// No SA_RESTORER
-#[cfg(any(target_arch = "aarch64", target_arch = "mips", target_arch = "mips64"))]
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
+    pub sa_restorer: sigrestore_t,
 
-    /// mask last for extensibility
+    // mask last for extensibility
     pub sa_mask: sigset_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,
     pub ss_size: size_t,
 }
-
 pub type stack_t = sigaltstack_t;

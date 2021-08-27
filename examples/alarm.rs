@@ -4,6 +4,8 @@
 
 use core::mem::{size_of, size_of_val};
 
+mod utils;
+
 fn handle_alarm(signum: i32) {
     println!("fuck alarm");
     assert_eq!(signum, nc::SIGALRM);
@@ -22,34 +24,10 @@ fn main() {
     assert!(ret.is_ok());
 
     let seconds = 1;
-
-    #[cfg(target_arch = "aarch64")]
-    let remaining = {
-        let mut it = nc::itimerval_t::default();
-        it.it_value.tv_sec = seconds;
-        let mut old = nc::itimerval_t::default();
-        nc::setitimer(nc::ITIMER_REAL, &mut it, &mut old);
-        old.it_value.tv_sec + !!old.it_value.tv_usec
-    };
-
-    #[cfg(target_arch = "aarch64")]
-    // ppoll(0, 0, 0, 0) in C.
-    let ret = nc::ppoll(
-        &mut nc::pollfd_t::default(),
-        0,
-        &nc::timespec_t::default(),
-        &nc::sigset_t::default(),
-        0,
-    );
-
-    #[cfg(not(target_arch = "aarch64"))]
-    let remaining = nc::alarm(seconds);
-
-    #[cfg(not(target_arch = "aarch64"))]
-    let ret = nc::pause();
-
+    let remaining = utils::alarm(seconds);
+    let ret = utils::pause();
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
-    assert_eq!(remaining, 0);
+    assert_eq!(remaining.unwrap(), 0);
     println!("ret: {:?}", ret);
 }

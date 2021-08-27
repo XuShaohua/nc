@@ -4,6 +4,8 @@
 
 use core::mem::size_of;
 
+mod utils;
+
 fn handle_restore() {
     //let msg = "Hello restore\n";
     //let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
@@ -22,7 +24,6 @@ fn main() {
     let sa = nc::sigaction_t {
         sa_handler: handle_alarm as nc::sighandler_t,
         sa_flags: nc::SA_RESTORER,
-        sa_restorer: handle_restore as nc::sigrestore_t,
         ..nc::sigaction_t::default()
     };
     let mut old_sa = nc::sigaction_t::default();
@@ -48,7 +49,7 @@ fn main() {
     assert!(ret.is_ok());
     assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 
-    let ret = nc::pause();
+    let ret = utils::pause();
     assert_eq!(ret, Err(nc::EINTR));
 
     let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);

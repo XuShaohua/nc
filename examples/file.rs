@@ -20,7 +20,7 @@ impl File {
     }
 
     pub fn open(&mut self) -> Result<(), nc::Errno> {
-        match nc::open(self.path.to_str().unwrap(), nc::O_RDONLY, 0) {
+        match nc::openat(nc::AT_FDCWD, self.path.to_str().unwrap(), nc::O_RDONLY, 0) {
             Ok(fd) => {
                 self.fd = fd;
                 Ok(())

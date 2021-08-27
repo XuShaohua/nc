@@ -20,8 +20,34 @@ fn main() {
     let mut old_sa = nc::sigaction_t::default();
     let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
     assert!(ret.is_ok());
-    let remaining = nc::alarm(1);
+
+    let seconds = 1;
+
+    #[cfg(target_arch = "aarch64")]
+    let remaining = {
+        let mut it = nc::itimerval_t::default();
+        it.it_value.tv_sec = seconds;
+        let mut old = nc::itimerval_t::default();
+        nc::setitimer(nc::ITIMER_REAL, &mut it, &mut old);
+        old.it_value.tv_sec + !!old.it_value.tv_usec
+    };
+
+    #[cfg(target_arch = "aarch64")]
+    // ppoll(0, 0, 0, 0) in C.
+    let ret = nc::ppoll(
+        &mut nc::pollfd_t::default(),
+        0,
+        &nc::timespec_t::default(),
+        &nc::sigset_t::default(),
+        0,
+    );
+
+    #[cfg(not(target_arch = "aarch64"))]
+    let remaining = nc::alarm(seconds);
+
+    #[cfg(not(target_arch = "aarch64"))]
     let ret = nc::pause();
+
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
     assert_eq!(remaining, 0);

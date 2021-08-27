@@ -101,13 +101,15 @@ FreeBSD and other OS are unavailable yet.
 
 
 ## Related projects
-* [nix][nix]
-* [syscall][syscall]
-* [relibc][relibc]
+- [nix][nix]
+- [syscall][syscall]
+- [relibc][relibc]
+- [Linux Syscall Support][lss]
 
 [syscall]: https://github.com/kmcallister/syscall.rs
 [relibc]: https://gitlab.redox-os.org/redox-os/relibc.git
 [nix]: https://github.com/nix-rust/nix
+[lss]: https://chromium.googlesource.com/linux-syscall-support
 
 ## License
 This library is release in [Apache License](LICENSE).

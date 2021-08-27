@@ -27,6 +27,16 @@ fn main() {
 
     // Initialize an anonymous mapping with 4 pages.
     let map_length = 4 * nc::PAGE_SIZE;
+    #[cfg(target_arch = "arm")]
+    let addr = nc::mmap2(
+        0,
+        map_length,
+        nc::PROT_READ | nc::PROT_WRITE,
+        nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+        -1,
+        0,
+    );
+    #[cfg(not(target_arch = "arm"))]
     let addr = nc::mmap(
         0,
         map_length,

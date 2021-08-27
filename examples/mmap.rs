@@ -18,6 +18,16 @@ fn main() {
     let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
     let map_length = length + offset - pa_offset;
 
+    #[cfg(target_arch = "arm")]
+    let addr = nc::mmap2(
+        0, // 0 as NULL
+        map_length,
+        nc::PROT_READ,
+        nc::MAP_PRIVATE,
+        fd,
+        pa_offset as nc::off_t,
+    );
+    #[cfg(not(target_arch = "arm"))]
     let addr = nc::mmap(
         0, // 0 as NULL
         map_length,

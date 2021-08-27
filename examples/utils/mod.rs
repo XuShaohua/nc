@@ -17,7 +17,7 @@ pub fn pause() -> Result<(), nc::Errno> {
 }
 
 pub fn alarm(seconds: u32) -> Result<u32, nc::Errno> {
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(any(target_arch = "aarch64", target_arch = "arm"))]
     let remaining = {
         let mut it = nc::itimerval_t::default();
         it.it_value.tv_sec = seconds as isize;
@@ -26,7 +26,7 @@ pub fn alarm(seconds: u32) -> Result<u32, nc::Errno> {
         (old.it_value.tv_sec + !!old.it_value.tv_usec) as u32
     };
 
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(any(target_arch = "aarch64", target_arch = "arm")))]
     let remaining = nc::alarm(seconds);
 
     Ok(remaining)

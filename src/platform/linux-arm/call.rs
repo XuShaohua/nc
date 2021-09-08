@@ -2422,8 +2422,8 @@ pub fn kexec_file_load<P: AsRef<Path>>(
         SYS_KEXEC_FILE_LOAD,
         kernel_fd,
         initrd_fd,
-        cmdline_ptr,
         cmdline_len,
+        cmdline_ptr,
         flags,
     )
     .map(drop)

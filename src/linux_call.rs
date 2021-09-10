@@ -675,7 +675,7 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 /// ```
 /// nc::exit(0);
 /// ```
-pub fn exit(status: u8) -> ! {
+pub fn exit(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);
     unreachable!();

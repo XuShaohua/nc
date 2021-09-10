@@ -798,7 +798,7 @@ pub fn execveat<P: AsRef<Path>>(
 /// ```
 /// nc::exit(0);
 /// ```
-pub fn exit(status: u8) -> ! {
+pub fn exit(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);
     unreachable!();

@@ -125,6 +125,7 @@ pub fn afs_syscall() {
 /// ```
 pub fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
+    // This function is always successful.
     syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32
 }
 
@@ -1507,6 +1508,7 @@ pub fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno>
 /// assert!(egid > 0);
 /// ```
 pub fn getegid() -> gid_t {
+    // This function is always successful.
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
 }
 
@@ -1516,6 +1518,7 @@ pub fn getegid() -> gid_t {
 /// assert!(euid > 0);
 /// ```
 pub fn geteuid() -> uid_t {
+    // This function is always successful.
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
 
@@ -1525,6 +1528,7 @@ pub fn geteuid() -> uid_t {
 /// assert!(gid > 0);
 /// ```
 pub fn getgid() -> gid_t {
+    // This function is always successful.
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
 }
 
@@ -1627,6 +1631,7 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 /// assert!(pgroup > 0);
 /// ```
 pub fn getpgrp() -> pid_t {
+    // This function is always successful.
     syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
 }
 
@@ -1636,6 +1641,7 @@ pub fn getpgrp() -> pid_t {
 /// assert!(pid > 0);
 /// ```
 pub fn getpid() -> pid_t {
+    // This function is always successful.
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
@@ -1650,6 +1656,7 @@ pub fn getpmsg() {
 /// assert!(ppid > 0);
 /// ```
 pub fn getppid() -> pid_t {
+    // This function is always successful.
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
 
@@ -1757,6 +1764,7 @@ pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 /// ```
 pub fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
+    // This function is always successful.
     syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
 }
 
@@ -1802,6 +1810,7 @@ pub fn getsockopt(
 /// assert!(tid > 0);
 /// ```
 pub fn gettid() -> pid_t {
+    // This function is always successful.
     syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
 }
 
@@ -1825,6 +1834,7 @@ pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), 
 /// assert!(uid > 0);
 /// ```
 pub fn getuid() -> uid_t {
+    // This function is always successful.
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }
 
@@ -4686,11 +4696,16 @@ pub fn rt_sigpending(set: &mut [sigset_t]) -> Result<(), Errno> {
 }
 
 /// Change the list of currently blocked signals.
-pub fn rt_sigprocmask(how: i32, set: &sigset_t, oldset: &mut sigset_t) -> Result<(), Errno> {
+pub fn rt_sigprocmask(
+    how: i32,
+    set: &sigset_t,
+    oldset: &mut sigset_t,
+    sigsetsize: size_t,
+) -> Result<(), Errno> {
     let how = how as usize;
     let set_ptr = set as *const sigset_t as usize;
     let oldset_ptr = oldset as *mut sigset_t as usize;
-    syscall3(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr).map(drop)
+    syscall4(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr, sigsetsize).map(drop)
 }
 
 /// Queue a signal and data.

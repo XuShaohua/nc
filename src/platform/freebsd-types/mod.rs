@@ -5,10 +5,10 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+mod _types;
 mod fcntl;
-mod types;
 mod uapi_stat;
 
+pub use _types::*;
 pub use fcntl::*;
-pub use types::*;
 pub use uapi_stat::*;

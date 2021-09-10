@@ -32,6 +32,7 @@ pub fn accept4(
 }
 
 /// Check user's permission for a file.
+///
 /// ```
 /// assert!(nc::access("/etc/passwd", nc::F_OK).is_ok());
 /// assert!(nc::access("/etc/passwd", nc::X_OK).is_err());
@@ -44,6 +45,7 @@ pub fn access<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errno> {
 }
 
 /// Switch process accounting.
+///
 /// ```
 /// let path = "/tmp/nc-acct";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -86,6 +88,7 @@ pub fn add_key<P: AsRef<Path>>(
 }
 
 /// Tune kernel clock. Returns clock state on success.
+///
 /// ```
 /// let mut tm = nc::timex_t::default();
 /// let ret = nc::adjtimex(&mut tm);
@@ -102,7 +105,8 @@ pub fn afs_syscall() {
     // syscall0(SYS_AFS_SYSCALL);
 }
 
-/// set an alarm clock for delivery of a signal.
+/// Set an alarm clock for delivery of a signal.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -194,6 +198,7 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 }
 
 /// Change working directory.
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
@@ -215,6 +220,7 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+///
 /// ```
 /// let filename = "/tmp/nc-chmod";
 /// let ret = nc::creat(filename, 0o644);
@@ -232,6 +238,7 @@ pub fn chmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+///
 /// ```
 /// let filename = "/tmp/nc-chown";
 /// let ret = nc::creat(filename, 0o644);
@@ -252,6 +259,7 @@ pub fn chown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<(
 }
 
 /// Change the root directory.
+///
 /// ```
 /// let ret = nc::chroot("/");
 /// assert!(ret.is_err());
@@ -264,6 +272,7 @@ pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 }
 
 /// Tune kernel clock. Returns clock state on success.
+///
 /// ```
 /// let mut tm = nc::timex_t::default();
 /// let ret = nc::clock_adjtime(nc::CLOCK_REALTIME, &mut tm);
@@ -282,6 +291,7 @@ pub fn clock_adjtime64() {
 }
 
 /// Get resolution(precision) of the specific clock.
+///
 /// ```
 /// let mut tp = nc::timespec_t::default();
 /// let ret = nc::clock_getres(nc::CLOCK_BOOTTIME, &mut tp);
@@ -300,6 +310,7 @@ pub fn clock_getres_time64() {
 }
 
 /// Get time of specific clock.
+///
 /// ```
 /// let mut tp = nc::timespec_t::default();
 /// let ret = nc::clock_gettime(nc::CLOCK_REALTIME_COARSE, &mut tp);
@@ -318,6 +329,7 @@ pub fn clock_gettime64() {
 }
 
 /// High resolution sleep with a specific clock.
+///
 /// ```
 /// let t = nc::timespec_t {
 ///     tv_sec: 1,
@@ -345,6 +357,7 @@ pub fn clock_nanosleep_time64() {
 }
 
 /// Set time of specific clock.
+///
 /// ```
 /// let mut tp = nc::timespec_t::default();
 /// let ret = nc::clock_gettime(nc::CLOCK_REALTIME, &mut tp);
@@ -393,6 +406,7 @@ pub fn clone3() {
 }
 
 /// Close a file descriptor.
+///
 /// ```
 /// assert!(nc::close(2).is_ok());
 /// ```
@@ -411,6 +425,7 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
 }
 
 /// Copy a range of data from one file to another.
+///
 /// ```
 /// let path_in = "/etc/passwd";
 /// let fd_in = nc::open(path_in, nc::O_RDONLY, 0);
@@ -457,6 +472,7 @@ pub fn copy_file_range(
 }
 
 /// Create a file.
+///
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
 /// ```
 /// let path = "/tmp/nc-creat-file";
@@ -488,6 +504,7 @@ pub fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
+///
 /// ```
 /// let path = "/tmp/nc-dup-file";
 /// let fd = nc::creat(path, 0o644);
@@ -507,6 +524,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 
 /// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
+///
 /// ```
 /// let path = "/tmp/nc-dup2-file";
 /// let fd = nc::creat(path, 0o644);
@@ -525,6 +543,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 }
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
+///
 /// ```
 /// let path = "/tmp/nc-dup3-file";
 /// let fd = nc::creat(path, 0o644);
@@ -544,6 +563,7 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 }
 
 /// Open an epoll file descriptor.
+///
 /// ```
 /// let ret = nc::epoll_create(32);
 /// assert!(ret.is_ok());
@@ -556,6 +576,7 @@ pub fn epoll_create(size: i32) -> Result<i32, Errno> {
 }
 
 /// Open an epoll file descriptor.
+///
 /// ```
 /// let ret = nc::epoll_create1(nc::EPOLL_CLOEXEC);
 /// assert!(ret.is_ok());
@@ -568,6 +589,7 @@ pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
 }
 
 /// Control interface for an epoll file descriptor.
+///
 /// ```
 /// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
 /// assert!(epfd.is_ok());
@@ -593,6 +615,7 @@ pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Resu
 }
 
 /// Wait for an I/O event on an epoll file descriptor.
+///
 /// ```
 /// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
 /// assert!(epfd.is_ok());
@@ -670,6 +693,7 @@ pub fn epoll_pwait(
 }
 
 /// Wait for an I/O event on an epoll file descriptor.
+///
 /// ```
 /// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
 /// assert!(epfd.is_ok());
@@ -738,6 +762,7 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 }
 
 /// Execute a new program.
+///
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
 /// ```
@@ -762,6 +787,7 @@ pub fn execve<P: AsRef<Path>>(filename: P, argv: &[&str], env: &[&str]) -> Resul
 }
 
 /// Execute a new program relative to a directory file descriptor.
+///
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
 /// ```
@@ -795,6 +821,7 @@ pub fn execveat<P: AsRef<Path>>(
 }
 
 /// Terminate current process.
+///
 /// ```
 /// nc::exit(0);
 /// ```
@@ -805,6 +832,7 @@ pub fn exit(status: i32) -> ! {
 }
 
 /// Exit all threads in a process's thread group.
+///
 /// ```
 /// nc::exit_group(0);
 /// ```
@@ -815,6 +843,7 @@ pub fn exit_group(status: i32) -> ! {
 }
 
 /// Check user's permission for a file.
+///
 /// ```
 /// assert!(nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK).is_ok());
 /// ```
@@ -827,6 +856,7 @@ pub fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Result<(),
 }
 
 /// Predeclare an access pattern for file data.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -845,6 +875,7 @@ pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<()
 }
 
 /// Manipulate file space.
+///
 /// ```
 /// let path = "/tmp/nc-fallocate";
 /// let fd = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -896,6 +927,7 @@ pub fn fanotify_mark<P: AsRef<Path>>(
 }
 
 /// Change working directory.
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
@@ -912,6 +944,7 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+///
 /// ```
 /// let filename = "/tmp/nc-fchmod";
 /// let ret = nc::creat(filename, 0o644);
@@ -928,6 +961,7 @@ pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Change permissions of a file.
+///
 /// ```
 /// let filename = "/tmp/nc-fchmodat";
 /// let ret = nc::creat(filename, 0o644);
@@ -946,6 +980,7 @@ pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result
 }
 
 /// Change ownership of a file.
+///
 /// ```
 /// let filename = "/tmp/nc-fchown";
 /// let ret = nc::creat(filename, 0o644);
@@ -965,6 +1000,7 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file.
+///
 /// ```
 /// let filename = "/tmp/nc-fchown";
 /// let ret = nc::creat(filename, 0o644);
@@ -993,6 +1029,7 @@ pub fn fchownat<P: AsRef<Path>>(
 }
 
 /// manipulate file descriptor.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -1012,6 +1049,7 @@ pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 }
 
 /// Manipulate file descriptor.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -1031,6 +1069,7 @@ pub fn fcntl64(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 }
 
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
+///
 /// ```
 /// let path = "/tmp/nc-fdatasync";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1049,6 +1088,7 @@ pub fn fdatasync(fd: i32) -> Result<(), Errno> {
 }
 
 /// Get extended attribute value.
+///
 /// ```
 /// let path = "/tmp/nc-fgetxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1099,6 +1139,7 @@ pub fn finit_module<P: AsRef<Path>>(fd: i32, param_values: P, flags: i32) -> Res
 }
 
 /// List extended attribute names.
+///
 /// ```
 /// let path = "/tmp/nc-flistxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1130,6 +1171,7 @@ pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> 
 }
 
 /// Apply or remove an advisory lock on an open file.
+///
 /// ```
 /// let path = "/tmp/nc-flock";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1153,6 +1195,7 @@ pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 }
 
 /// Create a child process.
+///
 /// ```
 /// let pid = nc::fork();
 /// assert!(pid.is_ok());
@@ -1164,6 +1207,7 @@ pub fn fork() -> Result<pid_t, Errno> {
 }
 
 /// Remove an extended attribute.
+///
 /// ```
 /// let path = "/tmp/nc-fremovexattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1211,6 +1255,7 @@ pub fn fsconfig<P: AsRef<Path>>(
 }
 
 /// Set extended attribute value.
+///
 /// ```
 /// let path = "/tmp/nc-fsetxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1272,6 +1317,7 @@ pub fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: i32) -> Result<i32, Errn
 }
 
 /// Get file status about a file descriptor.
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
@@ -1292,6 +1338,7 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 }
 
 /// Get file status.
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
@@ -1312,6 +1359,7 @@ pub fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
 }
 
 /// Get file status.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut stat = nc::stat64_t::default();
@@ -1334,6 +1382,7 @@ pub fn fstatat64<P: AsRef<Path>>(
 }
 
 /// Get filesystem statistics.
+///
 /// ```
 /// let path = "/usr";
 /// // Open folder directly.
@@ -1354,6 +1403,7 @@ pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
 }
 
 /// Get filesystem statistics.
+///
 /// ```
 /// let path = "/usr";
 /// // Open folder directly.
@@ -1374,6 +1424,7 @@ pub fn fstatfs64(fd: i32, buf: &mut statfs64_t) -> Result<(), Errno> {
 }
 
 /// Flush all modified in-core data refered by `fd` to disk.
+///
 /// ```
 /// let path = "/tmp/nc-fsync";
 /// let ret = nc::open(path, nc::O_CREAT | nc::O_WRONLY, 0o644);
@@ -1399,6 +1450,7 @@ pub fn ftime() {
 }
 
 /// Truncate an opened file to a specified length.
+///
 /// ```
 /// let path = "/tmp/nc-ftruncate";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1416,6 +1468,7 @@ pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
 }
 
 /// Truncate a file to a specific length.
+///
 /// ```
 /// let path = "/tmp/nc-ftruncate64";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1465,6 +1518,7 @@ pub fn futex_time64() {
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
+///
 /// ```
 /// let path = "/tmp/nc-futimesat";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -1498,6 +1552,7 @@ pub fn futimesat<P: AsRef<Path>>(
 }
 
 /// Determine CPU and NUMA node on which the calling thread is running.
+///
 /// ```
 /// let mut cpu = 0;
 /// let mut node = 0;
@@ -1513,6 +1568,7 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 }
 
 /// Get current working directory.
+///
 /// ```
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
 /// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
@@ -1528,6 +1584,7 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Get directory entries.
+///
 /// ```
 /// let path = "/etc";
 /// let ret = nc::open(path, nc::O_DIRECTORY, 0);
@@ -1575,6 +1632,7 @@ pub fn getdents(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Get directory entries.
+///
 /// ```
 /// let path = "/etc";
 /// let ret = nc::open(path, nc::O_DIRECTORY, 0);
@@ -1623,6 +1681,7 @@ pub fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno>
 }
 
 /// Get the effective group ID of the calling process.
+///
 /// ```
 /// let egid = nc::getegid();
 /// assert!(egid > 0);
@@ -1633,6 +1692,7 @@ pub fn getegid() -> gid_t {
 }
 
 /// Get the effective user ID of the calling process.
+///
 /// ```
 /// let euid = nc::geteuid();
 /// assert!(euid > 0);
@@ -1643,6 +1703,7 @@ pub fn geteuid() -> uid_t {
 }
 
 /// Get the real group ID of the calling process.
+///
 /// ```
 /// let gid = nc::getgid();
 /// assert!(gid > 0);
@@ -1653,6 +1714,7 @@ pub fn getgid() -> gid_t {
 }
 
 /// Get list of supplementary group Ids.
+///
 /// ```
 /// let mut groups = vec![];
 /// let ret = nc::getgroups(0, &mut groups);
@@ -1671,6 +1733,7 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
 }
 
 /// Get value of an interval timer.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -1735,6 +1798,7 @@ pub fn getpeername(
 }
 
 /// Returns the PGID(process group ID) of the process specified by `pid`.
+///
 /// ```
 /// let ppid = nc::getppid();
 /// let pgid = nc::getpgid(ppid);
@@ -1746,6 +1810,7 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 }
 
 /// Get the process group ID of the calling process.
+///
 /// ```
 /// let pgroup = nc::getpgrp();
 /// assert!(pgroup > 0);
@@ -1756,6 +1821,7 @@ pub fn getpgrp() -> pid_t {
 }
 
 /// Get the process ID (PID) of the calling process.
+///
 /// ```
 /// let pid = nc::getpid();
 /// assert!(pid > 0);
@@ -1771,6 +1837,7 @@ pub fn getpmsg() {
 }
 
 /// Get the process ID of the parent of the calling process.
+///
 /// ```
 /// let ppid = nc::getppid();
 /// assert!(ppid > 0);
@@ -1781,6 +1848,7 @@ pub fn getppid() -> pid_t {
 }
 
 /// Get program scheduling priority.
+///
 /// ```
 /// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
 /// assert!(ret.is_ok());
@@ -1798,6 +1866,7 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
 }
 
 /// Obtain a series of random bytes.
+///
 /// ```
 /// let mut buf = [0_u8; 32];
 /// let buf_len = buf.len();
@@ -1813,6 +1882,7 @@ pub fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, 
 }
 
 /// Get real, effect and saved group ID.
+///
 /// ```
 /// let mut rgid = 0;
 /// let mut egid = 0;
@@ -1831,6 +1901,7 @@ pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result
 }
 
 /// Get real, effect and saved user ID.
+///
 /// ```
 /// let mut ruid = 0;
 /// let mut euid = 0;
@@ -1849,6 +1920,7 @@ pub fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result
 }
 
 /// Get resource limit.
+///
 /// ```
 /// let mut rlimit = nc::rlimit_t::default();
 /// let ret = nc::getrlimit(nc::RLIMIT_NOFILE, &mut rlimit);
@@ -1863,6 +1935,7 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
 }
 
 /// Get resource usage.
+///
 /// ```
 /// let mut usage = nc::rusage_t::default();
 /// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
@@ -1877,6 +1950,7 @@ pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 }
 
 /// Get session Id.
+///
 /// ```
 /// let ppid = nc::getppid();
 /// let sid = nc::getsid(ppid);
@@ -1925,6 +1999,7 @@ pub fn getsockopt(
 }
 
 /// Get the caller's thread ID (TID).
+///
 /// ```
 /// let tid = nc::gettid();
 /// assert!(tid > 0);
@@ -1935,6 +2010,7 @@ pub fn gettid() -> pid_t {
 }
 
 /// Get time.
+///
 /// ```
 /// let mut tv = nc::timeval_t::default();
 /// let mut tz = nc::timezone_t::default();
@@ -1949,6 +2025,7 @@ pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), 
 }
 
 /// Get the real user ID of the calling process.
+///
 /// ```
 /// let uid = nc::getuid();
 /// assert!(uid > 0);
@@ -1959,6 +2036,7 @@ pub fn getuid() -> uid_t {
 }
 
 /// Get extended attribute value.
+///
 /// ```
 /// let path = "/tmp/nc-getxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2039,7 +2117,9 @@ pub fn gtty() {
 }
 
 /// Make process 0 idle.
+///
 /// Never returns for process 0, and already returns EPERM for a user process.
+///
 /// ```
 /// let ret = nc::idle();
 /// assert!(ret.is_err());
@@ -2061,6 +2141,7 @@ pub fn init_module<P: AsRef<Path>>(
 }
 
 /// Add a watch to an initialized inotify instance.
+///
 /// ```
 /// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
 /// assert!(ret.is_ok());
@@ -2081,6 +2162,7 @@ pub fn inotify_add_watch<P: AsRef<Path>>(fd: i32, filename: P, mask: u32) -> Res
 }
 
 /// Initialize an inotify instance.
+///
 /// ```
 /// let ret = nc::inotify_init();
 /// assert!(ret.is_ok());
@@ -2092,6 +2174,7 @@ pub fn inotify_init() -> Result<i32, Errno> {
 }
 
 /// Initialize an inotify instance.
+///
 /// ```
 /// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
 /// assert!(ret.is_ok());
@@ -2104,6 +2187,7 @@ pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
 }
 
 /// Remove an existing watch from an inotify instance.
+///
 /// ```
 /// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
 /// assert!(ret.is_ok());
@@ -2124,6 +2208,7 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 }
 
 /// Control device.
+///
 /// ```
 /// let path = "/tmp/nc-ioctl";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2151,6 +2236,7 @@ pub fn ioperm(from: usize, num: usize, turn_on: i32) -> Result<(), Errno> {
 }
 
 /// Change I/O privilege level.
+///
 /// ```
 /// let ret = nc::iopl(1);
 /// assert!(ret.is_err());
@@ -2161,7 +2247,8 @@ pub fn iopl(level: i32) -> Result<(), Errno> {
     syscall1(SYS_IOPL, level).map(drop)
 }
 
-/// Get I/O scheduling class and priority
+/// Get I/O scheduling class and priority.
+///
 /// ```
 /// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid());
 /// assert!(ret.is_ok());
@@ -2176,7 +2263,8 @@ pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     syscall2(SYS_IOPRIO_GET, which, who).map(|ret| ret as i32)
 }
 
-/// Set I/O scheduling class and priority
+/// Set I/O scheduling class and priority.
+///
 /// ```
 /// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0);
 /// assert!(ret.is_ok());
@@ -2414,6 +2502,7 @@ pub fn keyctl(
 }
 
 /// Send signal to a process.
+///
 /// ```
 /// let pid = nc::fork();
 /// assert!(pid.is_ok());
@@ -2438,6 +2527,7 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 }
 
 /// Change ownership of a file. Does not deference symbolic link.
+///
 /// ```
 /// let filename = "/tmp/nc-lchown";
 /// let ret = nc::creat(filename, 0o644);
@@ -2458,6 +2548,7 @@ pub fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<
 }
 
 /// Get extended attribute value.
+///
 /// ```
 /// let path = "/tmp/nc-lgetxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2500,6 +2591,7 @@ pub fn lgetxattr<P: AsRef<Path>>(
 }
 
 /// Make a new name for a file.
+///
 /// ```
 /// let old_filename = "/tmp/nc-link-src";
 /// let ret = nc::creat(old_filename, 0o644);
@@ -2520,6 +2612,7 @@ pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errn
 }
 
 /// Make a new name for a file.
+///
 /// ```
 /// let old_filename = "/tmp/nc-linkat-src";
 /// let ret = nc::open(old_filename, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2565,6 +2658,7 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 }
 
 /// List extended attribute names.
+///
 /// ```
 /// let path = "/tmp/nc-listxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2597,6 +2691,7 @@ pub fn listxattr<P: AsRef<Path>>(filename: P, list: usize, size: size_t) -> Resu
 }
 
 /// List extended attribute names.
+///
 /// ```
 /// let path = "/tmp/nc-llistxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2647,6 +2742,7 @@ pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
 }
 
 /// Remove an extended attribute.
+///
 /// ```
 /// let path = "/tmp/nc-lremovexattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2677,6 +2773,7 @@ pub fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
 }
 
 /// Reposition file offset.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -2694,6 +2791,7 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
+///
 /// ```
 /// let path = "/tmp/nc-lsetxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -2731,6 +2829,7 @@ pub fn lsetxattr<P: AsRef<Path>>(
 }
 
 /// Get file status about a file, without following symbolic.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut stat = nc::stat_t::default();
@@ -2747,6 +2846,7 @@ pub fn lstat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Er
 }
 
 /// Get file status about a file, without following symbolic.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut stat = nc::stat64_t::default();
@@ -2763,6 +2863,7 @@ pub fn lstat64<P: AsRef<Path>>(filename: P, statbuf: &mut stat64_t) -> Result<()
 }
 
 /// Give advice about use of memory.
+///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
@@ -2884,6 +2985,7 @@ pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
 }
 
 /// Create a directory.
+///
 /// ```
 /// let path = "/tmp/nc-mkdir";
 /// let ret = nc::mkdir(path, 0o755);
@@ -2898,6 +3000,7 @@ pub fn mkdir<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
 }
 
 /// Create a directory.
+///
 /// ```
 /// let path = "/tmp/nc-mkdir";
 /// let ret = nc::mkdirat(nc::AT_FDCWD, path, 0o755);
@@ -2913,6 +3016,7 @@ pub fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<
 }
 
 /// Create a special or ordinary file.
+///
 /// ```
 /// let path = "/tmp/nc-mknod";
 /// // Create a named pipe.
@@ -2929,6 +3033,7 @@ pub fn mknod<P: AsRef<Path>>(filename: P, mode: mode_t, dev: dev_t) -> Result<()
 }
 
 /// Create a special or ordinary file.
+///
 /// ```
 /// let path = "/tmp/nc-mknodat";
 /// // Create a named pipe.
@@ -2951,6 +3056,7 @@ pub fn mknodat<P: AsRef<Path>>(
 }
 
 /// Lock memory.
+///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
 /// let ret = nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len());
@@ -2962,6 +3068,7 @@ pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 }
 
 /// Lock memory.
+///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
 /// let ret = nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT);
@@ -2974,6 +3081,7 @@ pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 }
 
 /// Lock memory.
+///
 /// ```
 /// let ret = nc::mlockall(nc::MCL_CURRENT);
 /// assert!(ret.is_ok());
@@ -2984,6 +3092,7 @@ pub fn mlockall(flags: i32) -> Result<(), Errno> {
 }
 
 /// Map files or devices into memory.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0o644);
@@ -3034,6 +3143,7 @@ pub fn mmap(
 }
 
 /// Map files or devices into memory.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0o644);
@@ -3090,6 +3200,7 @@ pub fn modify_ldt() {
 }
 
 /// Mount filesystem.
+///
 /// ```
 /// let target_dir = "/tmp/nc-mount";
 /// let ret = nc::mkdir(target_dir, 0o755);
@@ -3185,6 +3296,7 @@ pub fn move_pages(
 }
 
 /// Set protection on a region of memory.
+///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
@@ -3217,6 +3329,7 @@ pub fn mpx() {
 }
 
 /// Get/set message queue attributes
+///
 /// ```
 /// let name = "nc-mq-getsetattr";
 /// let ret = nc::mq_open(
@@ -3267,6 +3380,7 @@ pub fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), 
 }
 
 /// Open a message queue.
+///
 /// ```
 /// let name = "nc-posix-mq";
 /// let ret = nc::mq_open(
@@ -3299,6 +3413,7 @@ pub fn mq_open<P: AsRef<Path>>(
 }
 
 /// Receive a message from a message queue
+///
 /// ```
 /// let name = "nc-mq-timedreceive";
 /// let ret = nc::mq_open(
@@ -3374,7 +3489,8 @@ pub fn mq_timedreceive_time64() {
     // syscall0(SYS_MQ_TIMEDRECEIVE_TIME64);
 }
 
-/// Send message to a message queue
+/// Send message to a message queue.
+///
 /// ```
 /// let name = "nc-mq-timedsend";
 /// let ret = nc::mq_open(
@@ -3435,7 +3551,8 @@ pub fn mq_timedsend_time64() {
     // syscall0(SYS_MQ_TIMEDSEND_TIME64);
 }
 
-/// Remove a message queue
+/// Remove a message queue.
+///
 /// ```
 /// let name = "nc-mq-unlink";
 /// let ret = nc::mq_open(
@@ -3469,6 +3586,7 @@ pub fn mremap(
 }
 
 /// System V message control operations.
+///
 /// ```
 /// let key = nc::IPC_PRIVATE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
@@ -3488,6 +3606,7 @@ pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> 
 }
 
 /// Get a System V message queue identifier.
+///
 /// ```
 /// let key = nc::IPC_PRIVATE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
@@ -3506,6 +3625,7 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 }
 
 /// Receive messages from a System V message queue.
+///
 /// ```
 /// const MAX_MTEXT: usize = 1024;
 ///
@@ -3589,6 +3709,7 @@ pub fn msgrcv(
 }
 
 /// Append the message to a System V message queue.
+///
 /// ```
 /// const MAX_MTEXT: usize = 1024;
 ///
@@ -3672,6 +3793,7 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 }
 
 /// Unlock memory.
+///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
 /// let addr = passwd_buf.as_ptr() as usize;
@@ -3689,6 +3811,7 @@ pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
 }
 
 /// Unlock memory.
+///
 /// ```
 /// let ret = nc::mlockall(nc::MCL_CURRENT);
 /// assert!(ret.is_ok());
@@ -3700,6 +3823,7 @@ pub fn munlockall() -> Result<(), Errno> {
 }
 
 /// Unmap files or devices from memory.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0o644);
@@ -3764,6 +3888,7 @@ pub fn name_to_handle_at<P: AsRef<Path>>(
 }
 
 /// High resolution sleep.
+///
 /// ```
 /// let t = nc::timespec_t {
 ///     tv_sec: 1,
@@ -3789,6 +3914,7 @@ pub fn nfsservctl() {
 }
 
 /// Change the priority of current process.
+///
 /// ```
 /// let ret = nc::nice(5);
 /// assert!(ret.is_ok());
@@ -3799,6 +3925,7 @@ pub fn nice(increment: i32) -> Result<(), Errno> {
 }
 
 /// Open and possibly create a file.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -3815,6 +3942,7 @@ pub fn open<P: AsRef<Path>>(filename: P, flags: i32, mode: mode_t) -> Result<i32
 }
 
 /// Open and possibly create a file within a directory.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
@@ -3857,6 +3985,7 @@ pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i3
 }
 
 /// Pause the calling process to sleep until a signal is delivered.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -3935,7 +4064,8 @@ pub fn pidfd_send_signal(
     syscall4(SYS_PIDFD_SEND_SIGNAL, pidfd, sig, info_ptr, flags).map(drop)
 }
 
-/// Create a pipe
+/// Create a pipe.
+///
 /// ```
 /// let mut fds = [-1_i32, 2];
 /// let ret = nc::pipe(&mut fds);
@@ -3949,6 +4079,7 @@ pub fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
 }
 
 /// Create a pipe.
+///
 /// ```
 /// let mut fds = [-1_i32, 2];
 /// let ret = nc::pipe2(&mut fds, nc::O_CLOEXEC | nc::O_NONBLOCK);
@@ -4043,6 +4174,7 @@ pub fn prctl(
 }
 
 /// Read from a file descriptor without changing file offset.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4062,6 +4194,7 @@ pub fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize
 }
 
 /// Read from a file descriptor without changing file offset.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4090,6 +4223,7 @@ pub fn preadv(fd: i32, vec: &mut [iovec_t], pos_l: usize, pos_h: usize) -> Resul
 }
 
 /// Read from a file descriptor without changing file offset.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4126,6 +4260,7 @@ pub fn preadv2(
 }
 
 /// Get/set the resource limits of an arbitary process.
+///
 /// ```
 /// let mut old_limit = nc::rlimit64_t::default();
 /// let ret = nc::prlimit64(nc::getpid(), nc::RLIMIT_NOFILE, None, Some(&mut old_limit));
@@ -4263,6 +4398,7 @@ pub fn putpmsg() {
 }
 
 /// Write to a file descriptor without changing file offset.
+///
 /// ```
 /// let path = "/tmp/nc-pwrite64";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -4282,6 +4418,7 @@ pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssi
 }
 
 /// Write to a file descriptor without changing file offset.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4319,6 +4456,7 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
 }
 
 /// Write to a file descriptor without changing file offset.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4378,6 +4516,7 @@ pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) ->
 }
 
 /// Read from a file descriptor.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
@@ -4396,6 +4535,7 @@ pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Initialize file head into page cache.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4417,6 +4557,7 @@ pub fn readdir() {
 }
 
 /// Read value of a symbolic link.
+///
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-readlink";
@@ -4439,6 +4580,7 @@ pub fn readlink<P: AsRef<Path>>(filename: P, buf: &mut [u8]) -> Result<ssize_t, 
 }
 
 /// Read value of a symbolic link.
+///
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-readlinkat";
@@ -4466,6 +4608,7 @@ pub fn readlinkat<P: AsRef<Path>>(
 }
 
 /// Read from a file descriptor into multiple buffers.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
@@ -4494,6 +4637,7 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 }
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
+///
 /// ```
 /// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
 ///     nc::LINUX_REBOOT_CMD_RESTART, 0);
@@ -4587,6 +4731,7 @@ pub fn remap_file_pages(
 }
 
 /// Remove an extended attribute.
+///
 /// ```
 /// let path = "/tmp/nc-removexattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -4617,6 +4762,7 @@ pub fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
 }
 
 /// Change name or location of a file.
+///
 /// ```
 /// let path = "/tmp/nc-rename";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -4637,6 +4783,7 @@ pub fn rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> Result<(), Errn
 }
 
 /// Change name or location of a file.
+///
 /// ```
 /// let path = "/tmp/nc-renameat";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -4671,6 +4818,7 @@ pub fn renameat<P: AsRef<Path>>(
 }
 
 /// Change name or location of a file.
+///
 /// ```
 /// let path = "/tmp/nc-renameat2";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -4748,6 +4896,7 @@ pub fn restart_syscall() -> Result<i32, Errno> {
 }
 
 /// Delete a directory.
+///
 /// ```
 /// let path = "/tmp/nc-rmdir";
 /// let ret = nc::mkdir(path, 0o755);
@@ -4770,6 +4919,7 @@ pub fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
 }
 
 /// Examine and change a signal action.
+///
 /// ```
 /// use std::mem::size_of;
 ///
@@ -4882,6 +5032,7 @@ pub fn rt_tgsigqueueinfo(
 }
 
 /// Get a thread's CPU affinity mask.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -4986,6 +5137,7 @@ pub fn sched_getattr(
 }
 
 /// Get scheduling paramters.
+///
 /// ```
 /// let mut param = nc::sched_param_t::default();
 /// let ret = nc::sched_getparam(0, &mut param);
@@ -4999,6 +5151,7 @@ pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno
 }
 
 /// Get scheduling parameter.
+///
 /// ```
 /// let ret = nc::sched_getscheduler(0);
 /// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
@@ -5009,6 +5162,7 @@ pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
 }
 
 /// Get static priority max value.
+///
 /// ```
 /// let ret = nc::sched_get_priority_max(nc::SCHED_RR);
 /// assert!(ret.is_ok());
@@ -5021,6 +5175,7 @@ pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
 }
 
 /// Get static priority min value.
+///
 /// ```
 /// let ret = nc::sched_get_priority_min(nc::SCHED_RR);
 /// assert!(ret.is_ok());
@@ -5033,6 +5188,7 @@ pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
 }
 
 /// Get the SCHED_RR interval for the named process.
+///
 /// ```
 /// let mut ts = nc::timespec_t::default();
 /// let ret = nc::sched_rr_get_interval(0, &mut ts);
@@ -5050,6 +5206,7 @@ pub fn sched_rr_get_interval_time64() {
 }
 
 /// Set a thread's CPU affinity mask.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -5148,6 +5305,7 @@ pub fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<
 }
 
 /// Set scheduling paramters.
+///
 /// ```
 /// // This call always returns error because default scheduler is SCHED_NORMAL.
 /// // We shall call sched_setscheduler() and change to realtime policy
@@ -5163,6 +5321,7 @@ pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
 }
 
 /// Set scheduling parameter.
+///
 /// ```
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };
 /// let ret = nc::sched_setscheduler(0, nc::SCHED_RR, &sched_param);
@@ -5176,6 +5335,7 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
 }
 
 /// Yield the processor.
+///
 /// ```
 /// assert!(nc::sched_yield().is_ok());
 /// ```
@@ -5293,6 +5453,7 @@ pub fn sendto(
 }
 
 /// Set NIS domain name.
+///
 /// ```
 /// let name = "local-rust-domain";
 /// let ret = nc::setdomainname(name);
@@ -5307,6 +5468,7 @@ pub fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 }
 
 /// Set group identify used for filesystem checkes.
+///
 /// ```
 /// let ret = nc::setfsgid(0);
 /// assert!(ret.is_ok());
@@ -5318,6 +5480,7 @@ pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
 }
 
 /// Set user identify used for filesystem checkes.
+///
 /// ```
 /// let ret = nc::setfsuid(0);
 /// assert!(ret.is_ok());
@@ -5329,6 +5492,7 @@ pub fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
 }
 
 /// Set the group ID of the calling process to `gid`.
+///
 /// ```
 /// let ret = nc::setgid(0);
 /// assert!(ret.is_err());
@@ -5340,6 +5504,7 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set list of supplementary group Ids.
+///
 /// ```
 /// let list = [0, 1, 2];
 /// let ret = nc::setgroups(&list);
@@ -5352,7 +5517,8 @@ pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
 }
 
-/// Set hostname
+/// Set hostname.
+///
 /// ```
 /// let name = "rust-machine";
 /// let ret = nc::sethostname(name);
@@ -5367,6 +5533,7 @@ pub fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 }
 
 /// Set value of an interval timer.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -5431,6 +5598,7 @@ pub fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
 }
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
+///
 /// ```
 /// let ret = nc::setpgid(nc::getpid(), 1);
 /// assert!(ret.is_err());
@@ -5443,6 +5611,7 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
 }
 
 /// Set program scheduling priority.
+///
 /// ```
 /// let ret = nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19);
 /// assert!(ret.is_err());
@@ -5456,6 +5625,7 @@ pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
 }
 
 /// Set real and effective group IDs of the calling process.
+///
 /// ```
 /// let ret = nc::setregid(0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
@@ -5467,6 +5637,7 @@ pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set real, effective and saved group Ids of the calling process.
+///
 /// ```
 /// let ret = nc::setresgid(0, 0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
@@ -5479,6 +5650,7 @@ pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
 }
 
 /// Set real, effective and saved user Ids of the calling process.
+///
 /// ```
 /// let ret = nc::setresuid(0, 0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
@@ -5491,6 +5663,7 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set real and effective user IDs of the calling process.
+///
 /// ```
 /// let ret = nc::setreuid(0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
@@ -5501,7 +5674,8 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     syscall2(SYS_SETREUID, ruid, euid).map(drop)
 }
 
-/// Set resource limit
+/// Set resource limit.
+///
 /// ```
 /// let rlimit = nc::rlimit_t {
 ///     rlim_cur: 128,
@@ -5517,6 +5691,7 @@ pub fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
 }
 
 /// Create a new session if the calling process is not a process group leader.
+///
 /// ```
 /// let ret = nc::setsid();
 /// assert!(ret.is_ok());
@@ -5542,6 +5717,7 @@ pub fn setsockopt(
 }
 
 /// Set system time and timezone.
+///
 /// ```
 /// let tv = nc::timeval_t {
 ///     tv_sec: 0,
@@ -5559,6 +5735,7 @@ pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
 }
 
 /// Set the effective user ID of the calling process to `uid`.
+///
 /// ```
 /// let ret = nc::setuid(0);
 /// assert_eq!(ret, Err(nc::EPERM));
@@ -5569,6 +5746,7 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
 }
 
 /// Set extended attribute value.
+///
 /// ```
 /// let path = "/tmp/nc-setxattr";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -5646,6 +5824,7 @@ pub fn sgetmask() {
 }
 
 /// Attach the System V shared memory segment.
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
@@ -5675,6 +5854,7 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
 }
 
 /// System V shared memory control.
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
@@ -5693,6 +5873,7 @@ pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> 
 }
 
 /// Detach the System V shared memory segment.
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
@@ -5720,6 +5901,7 @@ pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 }
 
 /// Allocates a System V shared memory segment.
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
@@ -5757,7 +5939,9 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
 }
 
 /// Signal handling.
+///
 /// Deprecated. Use sigaction() instead.
+///
 /// ```
 /// fn handle_sigterm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGTERM);
@@ -5847,6 +6031,7 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
 }
 
 /// Splice data to/from pipe.
+///
 /// ```
 /// let mut fds_left = [0, 0];
 /// let ret = nc::pipe(&mut fds_left);
@@ -5929,6 +6114,7 @@ pub fn ssetmask() {
 }
 
 /// Get file status about a file.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut stat = nc::stat_t::default();
@@ -5945,6 +6131,7 @@ pub fn stat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Err
 }
 
 /// Get file status about a file.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut stat = nc::stat64_t::default();
@@ -5961,6 +6148,7 @@ pub fn stat64<P: AsRef<Path>>(filename: P, statbuf: &mut stat64_t) -> Result<(),
 }
 
 /// Get filesystem statistics.
+///
 /// ```
 /// let path = "/usr";
 /// let mut statfs = nc::statfs_t::default();
@@ -5977,6 +6165,7 @@ pub fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<(), Err
 }
 
 /// Get filesystem statistics.
+///
 /// ```
 /// let path = "/usr";
 /// let mut statfs = nc::statfs64_t::default();
@@ -5993,6 +6182,7 @@ pub fn statfs64<P: AsRef<Path>>(filename: P, buf: &mut statfs64_t) -> Result<(),
 }
 
 /// Get file status about a file (extended).
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut statx = nc::statx_t::default();
@@ -6018,6 +6208,7 @@ pub fn statx<P: AsRef<Path>>(
 }
 
 /// Set time.
+///
 /// ```
 /// let t = 1611630530;
 /// let ret = nc::stime(t);
@@ -6035,6 +6226,7 @@ pub fn stty() {
 }
 
 /// Stop swapping to file/device.
+///
 /// ```
 /// let filename = "/dev/sda-no-exist";
 /// let ret = nc::swapoff(filename);
@@ -6048,6 +6240,7 @@ pub fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 }
 
 /// Start swapping to file/device.
+///
 /// ```
 /// let filename = "/dev/sda-no-exist";
 /// let ret = nc::swapon(filename, nc::SWAP_FLAG_PREFER);
@@ -6062,6 +6255,7 @@ pub fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errno> {
 }
 
 /// Make a new name for a file.
+///
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-symlink";
@@ -6078,6 +6272,7 @@ pub fn symlink<P: AsRef<Path>>(oldname: P, newname: P) -> Result<(), Errno> {
 }
 
 /// Make a new name for a file.
+///
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-symlinkat";
@@ -6095,6 +6290,7 @@ pub fn symlinkat<P: AsRef<Path>>(oldname: P, newdirfd: i32, newname: P) -> Resul
 }
 
 /// Commit filesystem caches to disk.
+///
 /// ```
 /// assert!(nc::sync().is_ok());
 /// ```
@@ -6116,6 +6312,7 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
 }
 
 /// Sync a file segment to disk
+///
 /// ```
 /// let path = "/tmp/nc-sync-file-range";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6163,6 +6360,7 @@ pub fn sysfs(option: i32, arg1: usize, arg2: usize) -> Result<i32, Errno> {
 }
 
 /// Return system information.
+///
 /// ```
 /// let mut info = nc::sysinfo_t::default();
 /// let ret = nc::sysinfo(&mut info);
@@ -6189,6 +6387,7 @@ pub fn sysmips() {
 }
 
 /// Duplicate pipe content.
+///
 /// ```
 /// let mut fds_left = [0, 0];
 /// let ret = nc::pipe(&mut fds_left);
@@ -6231,6 +6430,7 @@ pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, 
 }
 
 /// Send a signal to a thread.
+///
 /// ```
 /// let ret = nc::fork();
 /// assert!(ret.is_ok());
@@ -6251,6 +6451,7 @@ pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Get time in seconds.
+///
 /// ```
 /// let mut t = 0;
 /// let ret = nc::time(&mut t);
@@ -6267,6 +6468,7 @@ pub fn timerfd() {
 }
 
 /// Create a timer that notifies via a file descriptor.
+///
 /// ```
 /// let ret = nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC);
 /// assert!(ret.is_ok());
@@ -6292,6 +6494,7 @@ pub fn timerfd_gettime64() {
 }
 
 /// Set current timer via a file descriptor.
+///
 /// ```
 /// let ret = nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC);
 /// assert!(ret.is_ok());
@@ -6340,6 +6543,7 @@ pub fn timerfd_settime64() {
 }
 
 /// Create a per-process timer
+///
 /// ```
 /// let mut timerid = nc::timer_t::default();
 /// let ret = nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timerid);
@@ -6361,6 +6565,7 @@ pub fn timer_create(
 }
 
 /// Delete a per-process timer
+///
 /// ```
 /// let mut timer_id = nc::timer_t::default();
 /// let ret = nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timer_id);
@@ -6373,7 +6578,8 @@ pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
     syscall1(SYS_TIMER_DELETE, timer_id).map(drop)
 }
 
-/// Get overrun count for a per-process timer
+/// Get overrun count for a per-process timer.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -6445,7 +6651,8 @@ pub fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
     syscall1(SYS_TIMER_GETOVERRUN, timer_id).map(|ret| ret as i32)
 }
 
-/// Fetch state of per-process timer
+/// Fetch state of per-process timer>
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -6519,7 +6726,8 @@ pub fn timer_gettime64() {
     // syscall0(SYS_TIMER_GETTIME64);
 }
 
-/// Arm/disarm state of per-process timer
+/// Arm/disarm state of per-process timer.
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -6612,6 +6820,7 @@ pub fn timer_settime64() {
 }
 
 /// Get process times.
+///
 /// ```
 /// let mut tms = nc::tms_t::default();
 /// let ret = nc::times(&mut tms);
@@ -6625,6 +6834,7 @@ pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 }
 
 /// Send a signal to a thread (obsolete).
+///
 /// ```
 /// let ret = nc::fork();
 /// assert!(ret.is_ok());
@@ -6644,6 +6854,7 @@ pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Truncate a file to a specified length.
+///
 /// ```
 /// let path = "/tmp/nc-truncate";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6662,6 +6873,7 @@ pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno>
 }
 
 /// Truncate a file to a specific length.
+///
 /// ```
 /// let path = "/tmp/nc-truncate64";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6686,6 +6898,7 @@ pub fn ulimit() {
 }
 
 /// Set file mode creation mask.
+///
 /// ```
 /// let new_mask = 0o077;
 /// let ret = nc::umask(new_mask);
@@ -6700,6 +6913,7 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 }
 
 /// Umount filesystem.
+///
 /// ```
 /// let target_dir = "/tmp/nc-umount";
 /// let ret = nc::mkdir(target_dir, 0o755);
@@ -6724,6 +6938,7 @@ pub fn umount<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 }
 
 /// Umount filesystem.
+///
 /// ```
 /// let target_dir = "/tmp/nc-umount2";
 /// let ret = nc::mkdir(target_dir, 0o755);
@@ -6751,6 +6966,7 @@ pub fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
 }
 
 /// Get name and information about current kernel.
+///
 /// ```
 /// let mut buf = nc::utsname_t::default();
 /// let ret = nc::uname(&mut buf);
@@ -6764,6 +6980,7 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
+///
 /// ```
 /// let path = "/tmp/nc-unlink";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6779,6 +6996,7 @@ pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 }
 
 /// Delete a name and possibly the file it refers to.
+///
 /// ```
 /// let path = "/tmp/nc-unlinkat";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6854,6 +7072,7 @@ pub fn ustat(dev: dev_t, ubuf: &mut ustat_t) -> Result<(), Errno> {
 }
 
 /// Change file last access and modification time.
+///
 /// ```
 /// let path = "/tmp/nc-utime";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6876,6 +7095,7 @@ pub fn utime<P: AsRef<Path>>(filename: P, times: &utimbuf_t) -> Result<(), Errno
 }
 
 /// Change time timestamps with nanosecond precision.
+///
 /// ```
 /// let path = "/tmp/nc-utimesat";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
@@ -6966,6 +7186,7 @@ pub fn vserver() {
 }
 
 /// Wait for process to change state.
+///
 /// ```
 /// let ret = nc::fork();
 /// match ret {
@@ -6998,7 +7219,8 @@ pub fn wait4(
     syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t)
 }
 
-/// Wait for process to change state
+/// Wait for process to change state.
+///
 /// ```
 /// let ret = nc::fork();
 /// match ret {
@@ -7038,6 +7260,7 @@ pub fn waitid(
 }
 
 /// Wait for process to change state.
+///
 /// ```
 /// let ret = nc::fork();
 /// match ret {
@@ -7063,6 +7286,7 @@ pub fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_t, Errn
 }
 
 /// Write to a file descriptor.
+///
 /// ```
 /// let path = "/tmp/nc-write";
 /// let ret = nc::open(path, nc::O_CREAT | nc::O_WRONLY, 0o644);
@@ -7081,6 +7305,7 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Write to a file descriptor from multiple buffers.
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);

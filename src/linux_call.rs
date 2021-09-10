@@ -4,10 +4,10 @@
 
 extern crate alloc;
 
-use super::sysno::*;
 use crate::c_str::CString;
 use crate::path::Path;
 use crate::syscalls::*;
+use crate::sysno::*;
 use crate::types::*;
 
 /// Accept a connection on a socket.
@@ -6358,7 +6358,12 @@ pub fn rt_sigpending(set: &mut [sigset_t]) -> Result<(), Errno> {
 }
 
 /// Change the list of currently blocked signals.
-pub fn rt_sigprocmask(how: i32, set: &sigset_t, oldset: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
+pub fn rt_sigprocmask(
+    how: i32,
+    set: &sigset_t,
+    oldset: &mut sigset_t,
+    sigsetsize: size_t,
+) -> Result<(), Errno> {
     let how = how as usize;
     let set_ptr = set as *const sigset_t as usize;
     let oldset_ptr = oldset as *mut sigset_t as usize;

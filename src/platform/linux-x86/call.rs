@@ -4,10 +4,10 @@
 
 extern crate alloc;
 
-use super::sysno::*;
 use crate::c_str::CString;
 use crate::path::Path;
 use crate::syscalls::*;
+use crate::sysno::*;
 use crate::types::*;
 
 /// Accept a connection on a socket.

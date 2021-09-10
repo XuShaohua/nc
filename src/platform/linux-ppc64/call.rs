@@ -4,10 +4,10 @@
 
 extern crate alloc;
 
-use super::sysno::*;
 use crate::c_str::CString;
 use crate::path::Path;
 use crate::syscalls::*;
+use crate::sysno::*;
 use crate::types::*;
 
 pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {

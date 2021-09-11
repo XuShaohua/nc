@@ -867,6 +867,8 @@ pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<()
 }
 
 /// Predeclare an access pattern for file data.
+///
+/// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
 /// assert!(ret.is_ok());
@@ -876,6 +878,7 @@ pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<()
 /// let ret = nc::fadvise64_64(fd, offset, len, nc::POSIX_FADV_NORMAL);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
@@ -2348,8 +2351,8 @@ pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
 }
 
 /// Attempts to cancel an iocb previously passed to io_submit.
-/// Attempts to cancel an iocb previously passed to io_submit.  If
-/// the operation is successfully cancelled, the resulting event is
+///
+/// If the operation is successfully cancelled, the resulting event is
 /// copied into the memory pointed to by result without being placed
 /// into the completion queue and 0 is returned.  May fail with
 /// -EFAULT if any of the data structures pointed to are invalid.
@@ -2368,16 +2371,19 @@ pub fn io_cancel(
 }
 
 /// Destroy the aio_context specified.  May cancel any outstanding
-/// AIOs and block on completion.  Will fail with -ENOSYS if not
-/// implemented.  May fail with -EINVAL if the context pointed to is invalid.
+/// AIOs and block on completion.
+///
+/// Will fail with -ENOSYS if not implemented.  May fail with -EINVAL
+/// if the context pointed to is invalid.
 pub fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
     let ctx_id = ctx_id as usize;
     syscall1(SYS_IO_DESTROY, ctx_id).map(drop)
 }
 
 /// Attempts to read at least min_nr events and up to nr events from
-/// the completion queue for the aio_context specified by ctx_id. If
-/// it succeeds, the number of read events is returned. May fail with
+/// the completion queue for the aio_context specified by ctx_id.
+///
+/// If it succeeds, the number of read events is returned. May fail with
 /// -EINVAL if ctx_id is invalid, if min_nr is out of range, if nr is
 /// out of range, if timeout is out of range.  May fail with -EFAULT
 /// if any of the memory specified is invalid.  May return 0 or
@@ -2441,6 +2447,7 @@ pub fn io_pgetevents_time64() {
 }
 
 /// Create an asynchronous I/O context.
+///
 /// Create an aio_context capable of receiving at least nr_events.
 /// ctxp must not point to an aio_context that already exists, and
 /// must be initialized to 0 prior to the call.  On successful
@@ -2457,8 +2464,9 @@ pub fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno>
     syscall2(SYS_IO_SETUP, nr_events, ctx_id_ptr).map(drop)
 }
 
-/// Queue the nr iocbs pointed to by iocbpp for processing.  Returns
-/// the number of iocbs queued.  May return -EINVAL if the aio_context
+/// Queue the nr iocbs pointed to by iocbpp for processing.
+///
+/// Returns the number of iocbs queued.  May return -EINVAL if the aio_context
 /// specified by ctx_id is invalid, if nr is < 0, if the iocb at
 /// `*iocbpp[0]` is not properly initialized, if the operation specified
 /// is invalid for the file descriptor in the iocb.  May fail with
@@ -2972,6 +2980,7 @@ pub fn mbind(
 }
 
 /// sys_membarrier - issue memory barriers on a set of threads
+///
 /// @cmd:   Takes command values defined in enum membarrier_cmd.
 /// @flags: Currently needs to be 0. For future extensions.
 ///
@@ -3281,6 +3290,7 @@ pub fn modify_ldt() {
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
 /// assert!(nc::rmdir(target_dir).is_ok());
+/// ```
 pub fn mount<P: AsRef<Path>>(
     dev_name: P,
     dir_name: P,
@@ -3305,10 +3315,11 @@ pub fn mount<P: AsRef<Path>>(
     .map(drop)
 }
 
-/// Move a mount from one place to another. In combination with
-/// fsopen()/fsmount() this is used to install a new mount and in combination
-/// with open_tree(OPEN_TREE_CLONE [| AT_RECURSIVE]) it can be used to copy
-/// a mount subtree.
+/// Move a mount from one place to another.
+///
+/// In combination with fsopen()/fsmount() this is used to install a new mount
+/// and in combination with open_tree(OPEN_TREE_CLONE [| AT_RECURSIVE])
+/// it can be used to copy a mount subtree.
 ///
 /// Note the flags value is a combination of MOVE_MOUNT_* flags.
 pub fn move_mount<P: AsRef<Path>>(
@@ -4102,6 +4113,7 @@ pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i3
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
+/// ```
 pub fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)
 }
@@ -4133,6 +4145,7 @@ pub fn pidfd_open() {
 }
 
 /// sys_pidfd_send_signal - Signal a process through a pidfd
+///
 /// @pidfd:  file descriptor of the process
 /// @sig:    signal to send
 /// @info:   signal info
@@ -4447,6 +4460,7 @@ pub fn profil() {
 }
 
 /// Sychronous I/O multiplexing.
+///
 /// Most architectures can't handle 7-argument syscalls. So we provide a
 /// 6-argument version where the sixth argument is a pointer to a structure
 /// which has a pointer to the sigset_t itself followed by a size_t containing
@@ -5056,12 +5070,14 @@ pub fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Result<()
 }
 
 /// Return from signal handler and cleanup stack frame.
+///
 /// Never returns.
 pub fn rt_sigreturn() {
     let _ = syscall0(SYS_RT_SIGRETURN);
 }
 
 /// Wait for a signal.
+///
 /// Always returns Errno, normally EINTR.
 pub fn rt_sigsuspend(set: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
     let set_ptr = set as *mut sigset_t as usize;
@@ -6437,6 +6453,8 @@ pub fn sync() -> Result<(), Errno> {
 }
 
 /// Commit filesystem cache related to `fd` to disk.
+///
+/// ```
 /// let path = "/etc/passwd";
 /// let ret = nc::open(path, nc::O_RDONLY, 0);
 /// assert!(ret.is_ok());
@@ -6444,6 +6462,7 @@ pub fn sync() -> Result<(), Errno> {
 /// let ret = nc::syncfs(fd);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
+/// ```
 pub fn syncfs(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_SYNCFS, fd).map(drop)
@@ -7059,6 +7078,7 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 /// assert!(ret.is_err());
 ///
 /// assert!(nc::rmdir(target_dir).is_ok());
+/// ```
 pub fn umount<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
@@ -7086,6 +7106,7 @@ pub fn umount<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
 /// assert!(nc::rmdir(target_dir).is_ok());
+/// ```
 pub fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
@@ -7235,6 +7256,8 @@ pub fn utimensat_time64() {
 }
 
 /// Change file last access and modification time.
+///
+/// ```
 /// let path = "/tmp/nc-utimes";
 /// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
 /// assert!(ret.is_ok());
@@ -7253,6 +7276,7 @@ pub fn utimensat_time64() {
 /// let ret = nc::utimens(path, &times);
 /// assert!(ret.is_ok());
 /// assert!(nc::unlink(path).is_ok());
+/// ```
 pub fn utimes<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;

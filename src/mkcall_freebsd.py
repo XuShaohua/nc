@@ -43,7 +43,12 @@ def parse_template():
                 stack.append(line)
 
             if new_func_start and line == "}\n":
+                # Sometimes a function alias is critical.
+                alias_line = ""
                 for i, line in enumerate(stack):
+                    if "Alias" in line:
+                        alias_line = line
+
                     if line.startswith("pub fn"):
                         m = func_name_pattern.match(line)
                         func_name = m.group(1)
@@ -58,7 +63,9 @@ def parse_template():
                         else:
                             print("INVALID sysno:", line)
                             sys.exit(1)
-                        if sysno[4:].lower() != func_name:
+
+                        # SYS no. and function name not match. Nor it is a function alias.
+                        if sysno[4:].lower() != func_name and not alias_line:
                             print("func name and sysno mismatch :%s:%s:" % (sysno, func_name))
                             print(line)
                             sys.exit(1)

@@ -336,6 +336,15 @@ pub fn access<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errno> {
     syscall2(SYS_ACCESS, filename_ptr, mode).map(drop)
 }
 
+/// Commit filesystem caches to disk.
+///
+/// ```
+/// assert!(nc::sync().is_ok());
+/// ```
+pub fn sync() -> Result<(), Errno> {
+    syscall0(SYS_SYNC).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

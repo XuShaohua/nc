@@ -319,6 +319,15 @@ pub fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_RMDIR, filename_ptr).map(drop)
 }
 
+/// Commit filesystem caches to disk.
+///
+/// ```
+/// assert!(nc::sync().is_ok());
+/// ```
+pub fn sync() -> Result<(), Errno> {
+    syscall0(SYS_SYNC).map(drop)
+}
+
 /// Delete a name and possibly the file it refers to.
 ///
 /// ```

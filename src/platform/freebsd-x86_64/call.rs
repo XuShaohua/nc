@@ -4,7 +4,7 @@
 
 extern crate alloc;
 
-use crate::c_str::CString;
+use crate::c_str::{strlen, CString};
 use crate::path::Path;
 use crate::syscalls::*;
 use crate::sysno::*;
@@ -47,6 +47,23 @@ pub fn exit(status: i32) {
     unreachable!();
 }
 
+/// Change working directory.
+///
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = nc::fchdir(fd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn fchdir(fd: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    syscall1(SYS_FCHDIR, fd).map(drop)
+}
+
 /// Create a child process.
 ///
 /// ```
@@ -61,10 +78,23 @@ pub fn fork() -> Result<pid_t, Errno> {
 
 /// Get current working directory.
 ///
-/// Alias of [__getcwd()].
-#[inline]
+/// Note that `buf` shall be zeroized first.
+///
+/// ```
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert!(cwd.is_ok());
+/// println!("cwd: {:?}", cwd);
+/// ```
+///
+/// Wrapper of [__getcwd()].
 pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
-    __getcwd(buf, size)
+    __getcwd(buf, size)?;
+    Ok(strlen(buf, size) as ssize_t + 1)
 }
 
 /// Make a new name for a file.
@@ -160,17 +190,6 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 }
 
 /// Get current working directory.
-///
-/// ```
-/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
-/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
-/// assert!(ret.is_ok());
-/// // Remove null-terminal char.
-/// let path_len = ret.unwrap() as usize - 1;
-/// let cwd = std::str::from_utf8(&buf[..path_len]);
-/// assert!(cwd.is_ok());
-/// println!("cwd: {:?}", cwd);
-/// ```
-pub fn __getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
-    syscall2(SYS___GETCWD, buf, size).map(|ret| ret as ssize_t)
+pub fn __getcwd(buf: usize, size: size_t) -> Result<(), Errno> {
+    syscall2(SYS___GETCWD, buf, size).map(drop)
 }

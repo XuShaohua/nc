@@ -4,7 +4,7 @@
 
 extern crate alloc;
 
-use crate::c_str::CString;
+use crate::c_str::{strlen, CString};
 use crate::path::Path;
 use crate::syscalls::*;
 use crate::sysno::*;
@@ -145,6 +145,23 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_CHDIR, filename_ptr).map(drop)
 }
 
+/// Change working directory.
+///
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = nc::fchdir(fd);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn fchdir(fd: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    syscall1(SYS_FCHDIR, fd).map(drop)
+}
+
 /// Create a child process.
 ///
 /// ```
@@ -159,13 +176,7 @@ pub fn fork() -> Result<pid_t, Errno> {
 
 /// Get current working directory.
 ///
-/// Alias of [__getcwd()].
-#[inline]
-pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
-    __getcwd(buf, size)
-}
-
-/// Get current working directory.
+/// Note that `buf` shall be zeroized first.
 ///
 /// ```
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
@@ -177,6 +188,14 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 /// assert!(cwd.is_ok());
 /// println!("cwd: {:?}", cwd);
 /// ```
-pub fn __getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
-    syscall2(SYS___GETCWD, buf, size).map(|ret| ret as ssize_t)
+///
+/// Wrapper of [__getcwd()].
+pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
+    __getcwd(buf, size)?;
+    Ok(strlen(buf, size) as ssize_t + 1)
+}
+
+/// Get current working directory.
+pub fn __getcwd(buf: usize, size: size_t) -> Result<(), Errno> {
+    syscall2(SYS___GETCWD, buf, size).map(drop)
 }

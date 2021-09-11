@@ -46,7 +46,7 @@ def parse_template():
                 # Sometimes a function alias is critical.
                 alias_line = ""
                 for i, line in enumerate(stack):
-                    if "Alias" in line:
+                    if "Alias" in line or "Wrapper" in line:
                         alias_line = line
 
                     if line.startswith("pub fn"):

@@ -13,6 +13,24 @@ use core::mem;
 use core::ops;
 use core::ptr;
 
+/// Calculate the length of a string.
+///
+/// ```
+/// use nc::c_str::strlen;
+/// let buf = &[b'h', b'e', b'l', b'l', b'o', 0];
+/// let l = strlen(buf.as_ptr() as usize, buf.len());
+/// assert_eq!(l, 5);
+/// ```
+pub fn strlen(buf: usize, len: usize) -> usize {
+    for i in 0..len {
+        let chr: u8 = unsafe { *((buf + i) as *const u8) };
+        if chr == 0 {
+            return i;
+        }
+    }
+    return len;
+}
+
 pub struct CString {
     inner: Box<[u8]>,
 }

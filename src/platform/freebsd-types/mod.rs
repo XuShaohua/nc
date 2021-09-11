@@ -12,6 +12,8 @@ pub use arch::*;
 
 mod _types;
 mod limits;
+mod types;
 
 pub use _types::*;
 pub use limits::*;
+pub use types::*;

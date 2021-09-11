@@ -136,6 +136,17 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
     Ok(strlen(buf, size) as ssize_t + 1)
 }
 
+/// Get the effective user ID of the calling process.
+///
+/// ```
+/// let euid = nc::geteuid();
+/// assert!(euid > 0);
+/// ```
+pub fn geteuid() -> uid_t {
+    // This function is always successful.
+    syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
+}
+
 /// Get the process ID (PID) of the calling process.
 ///
 /// ```

@@ -290,6 +290,17 @@ pub fn __getcwd(buf: usize, size: size_t) -> Result<(), Errno> {
     syscall2(SYS___GETCWD, buf, size).map(drop)
 }
 
+/// Get the effective user ID of the calling process.
+///
+/// ```
+/// let euid = nc::geteuid();
+/// assert!(euid > 0);
+/// ```
+pub fn geteuid() -> uid_t {
+    // This function is always successful.
+    syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
+}
+
 /// Create a directory.
 ///
 /// ```

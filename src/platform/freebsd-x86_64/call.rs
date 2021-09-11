@@ -32,6 +32,24 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_CHDIR, filename_ptr).map(drop)
 }
 
+/// Change permissions of a file.
+///
+/// ```
+/// let filename = "/tmp/nc-chmod";
+/// let ret = nc::open(filename, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::chmod(filename, 0o600).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
+pub fn chmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall2(SYS_CHMOD, filename_ptr, mode).map(drop)
+}
+
 /// Close a file descriptor.
 ///
 /// ```

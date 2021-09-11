@@ -13,9 +13,11 @@ pub use arch::*;
 mod _types;
 mod fcntl;
 mod limits;
+mod syslimits;
 mod types;
 
 pub use _types::*;
 pub use fcntl::*;
 pub use limits::*;
+pub use syslimits::*;
 pub use types::*;

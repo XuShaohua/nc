@@ -4,6 +4,8 @@
 
 //! From x86/include/_limits.h
 
+use crate::{off_t, quad_t, size_t, ssize_t, u_quad_t};
+
 /// According to ANSI (section 2.2.4.2), the values below must be usable by
 /// #if preprocessing directives.  Additionally, the expression must have the
 /// same type as would an expression that is an object of the corresponding
@@ -65,20 +67,20 @@ pub const SSIZE_MAX: ssize_t = LONG_MAX;
 pub const SIZE_T_MAX: size_t = ULONG_MAX;
 
 /// max value for an off_t
-pub const OFF_MAX: off_t = LONG_MAX;
+pub const OFF_MAX: off_t = LONG_MAX as off_t;
 
 /// min value for an off_t
-pub const OFF_MIN: off_t = LONG_MIN;
+pub const OFF_MIN: off_t = LONG_MIN as off_t;
 
 /// Quads and longs are the same on the amd64. Ensure they stay in sync.
-/// max value for a uquad_t
-pub const UQUAD_MAX: uquad_t = ULONG_MAX;
+/// max value for a u_quad_t
+pub const UQUAD_MAX: u_quad_t = ULONG_MAX as u_quad_t;
 
 /// max value for a quad_t
-pub const QUAD_MAX: quad_t = LONG_MAX;
+pub const QUAD_MAX: quad_t = LONG_MAX as quad_t;
 
 /// min value for a quad_t
-pub const QUAD_MIN: quad_t = LONG_MIN;
+pub const QUAD_MIN: quad_t = LONG_MIN as quad_t;
 
 pub const LONG_BIT: usize = 64;
 

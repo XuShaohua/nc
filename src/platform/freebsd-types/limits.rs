@@ -4,6 +4,8 @@
 
 //! From sys/sys/limits.h
 
+use crate::{gid_t, uid_t, UINT_MAX};
+
 // TODO(Shaohua): Check __CHAR_UNSIGNED__ macro
 //#ifdef __CHAR_UNSIGNED__
 // max value for a char

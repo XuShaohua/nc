@@ -8,13 +8,13 @@
 pub type u_quad_t = u64;
 
 pub type quad_t = i64;
-pub type qaddr_t = *quad_t;
+pub type qaddr_t = *mut quad_t;
 
 /// core address
-pub type caddr_t = *u8;
+pub type caddr_t = *mut u8;
+
 /// core address, pointer to const
 pub type c_caddr_t = *const u8;
-
 
 /// base type for internet address
 pub type in_addr_t = u32;
@@ -22,7 +22,6 @@ pub type in_addr_t = u32;
 pub type in_port_t = u16;
 
 pub type sbintime_t = i64;
-
 
 /// Types suitable for exporting physical addresses, virtual addresses
 /// (pointers), and memory object sizes from the kernel independent of native

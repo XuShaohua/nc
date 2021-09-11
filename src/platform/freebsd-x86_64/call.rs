@@ -10,6 +10,19 @@ use crate::syscalls::*;
 use crate::sysno::*;
 use crate::types::*;
 
+/// Check user's permission for a file.
+///
+/// ```
+/// assert!(nc::access("/etc/passwd", nc::F_OK).is_ok());
+/// assert!(nc::access("/etc/passwd", nc::X_OK).is_err());
+/// ```
+pub fn access<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall2(SYS_ACCESS, filename_ptr, mode).map(drop)
+}
+
 /// Change working directory.
 ///
 /// ```

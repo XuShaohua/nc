@@ -9,15 +9,16 @@ import subprocess
 import sys
 
 
-def read_errno():
+HEADER_FILE = "/usr/src/sys/sys/errno.h"
+
+def read_errno(header_file):
     cmd = ["gcc", "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0 or err:
         print(err)
         sys.exit(1)
-    return parse_sysno(out.decode())
-
+    return parse_errno(out.decode())
 
 def parse_errno(content):
     macro_pattern = re.compile("#define\s+(E\w+)\s+([A-Z0-9_]+)")
@@ -46,7 +47,10 @@ def write_errno(arch_name, lines):
 
     rust_fmt(errno_file)
 
-
+# Download freebsd kernel source:
+# ```
+# wget ftp://ftp.freebsd.org/pub/`uname -s`/releases/`uname -m`/`uname -r | cut -d'-' -f1,2`/src.txz
+# ```
 def main():
     if len(sys.argv) < 2:
         print("Usage: %s arch-name" % sys.argv[0])
@@ -60,9 +64,8 @@ def main():
             print("\n".join(lines))
         return
 
-    lines = read_errno()
+    lines = read_errno(HEADER_FILE)
     write_errno(arch_name, lines)
-
 
 if __name__ == "__main__":
     main()

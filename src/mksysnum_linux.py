@@ -8,7 +8,6 @@ import re
 import subprocess
 import sys
 
-
 DEFINES = {
     "aarch64": {
         "compiler": "aarch64-linux-gnu-gcc-9",
@@ -128,7 +127,6 @@ def read_errno(arch_name):
     """)
     return lines 
 
-
 def parse_errno(content):
     # For `define    EKEYEXPIRED     127     /* Key has expired */`
     errno_pattern = re.compile("^#define\s+(E\w+)\s+(\d+)\s+/\\*([^\\*]+)\\*/")
@@ -161,7 +159,6 @@ def read_sysno(arch_name):
         print(err)
         sys.exit(1)
     return parse_sysno(out.decode())
-
 
 def parse_sysno(content):
     def f(name, num):
@@ -227,38 +224,29 @@ def parse_sysno(content):
 
     return lines
 
-
 def get_compiler(arch_name):
     return DEFINES[arch_name]["compiler"]
-
 
 def get_deb(arch_name):
     return DEFINES[arch_name]["deb"]
 
-
 def get_include_dir(arch_name):
     return DEFINES[arch_name]["include"]
-
 
 def get_errno_header(arch_name):
     return DEFINES[arch_name]["errno"]
 
-
 def get_sysno_header(arch_name):
     return DEFINES[arch_name]["sysno"]
-
 
 def get_defines(arch_name):
     return DEFINES[arch_name].get("defines", "")
 
-
 def get_arch_names():
     return DEFINES.keys()
 
-
 def rust_fmt(filename):
     subprocess.run(["rustfmt", filename])
-
 
 def gen_errno_and_sysno(os_name, arch_name):
     folder_name = "{0}-{1}".format(os_name, arch_name)
@@ -279,14 +267,12 @@ def gen_errno_and_sysno(os_name, arch_name):
         fh.write(sysno_content)
     rust_fmt(sysno_file)
 
-
 def install_deb(deb_list):
     print("install_deb:", deb_list)
     cmd = ["apt", "install", "-y"]
     cmd.extend(deb_list)
     cmd = " ".join(cmd)
     subprocess.run(cmd, shell=True)
-
 
 def main():
     if len(sys.argv) > 3 or len(sys.argv) < 2:
@@ -313,7 +299,6 @@ def main():
                 install_deb(get_deb(arch_name))
     else:
         gen_errno_and_sysno(os_name, arch_name)
-
 
 if __name__ == "__main__":
     main()

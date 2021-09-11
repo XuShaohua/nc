@@ -14,7 +14,6 @@ def download_syscall_file(url):
     with urllib.request.urlopen(url) as f:
         return f.read()
 
-
 def parse_sysno(content):
     sysnum_pattern = re.compile("^([0-9]+)\s*\S*\s*STD\s*({\s*\S*\s*(\w+).*)$")
     proto_pattern = re.compile("\s{2,}")
@@ -49,7 +48,6 @@ def parse_sysno(content):
             lines.append(line)
     return (lines, names)
 
-
 def print_sysnums(names):
     temp = '''
 pub fn %s() {
@@ -66,10 +64,8 @@ pub fn %s() {
         output.append(temp % (name, upper_name))
     return output
 
-
 def rust_fmt(filename):
     subprocess.run(["rustfmt", filename])
-
 
 def main():
     if len(sys.argv) != 2:
@@ -92,7 +88,6 @@ def main():
     with open(call_file, "w") as fh:
         fh.writelines(print_sysnums(names))
     rust_fmt(call_file)
-
 
 if __name__ == "__main__":
     main()

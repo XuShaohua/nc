@@ -86,22 +86,6 @@ pub fn close(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
-/// Delete a name and possibly the file it refers to.
-///
-/// ```
-/// let path = "/tmp/nc-unlink";
-/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
-/// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlink(path).is_ok());
-/// ```
-pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
-    let filename = CString::new(filename.as_ref());
-    let filename_ptr = filename.as_ptr() as usize;
-    syscall1(SYS_UNLINK, filename_ptr).map(drop)
-}
-
 /// Make a new name for a file.
 ///
 /// ```
@@ -121,4 +105,32 @@ pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errn
     let new_filename = CString::new(new_filename.as_ref());
     let new_filename_ptr = new_filename.as_ptr() as usize;
     syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
+}
+
+/// Delete a name and possibly the file it refers to.
+///
+/// ```
+/// let path = "/tmp/nc-unlink";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_UNLINK, filename_ptr).map(drop)
+}
+
+/// Create a child process.
+///
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// ```
+pub fn fork() -> Result<pid_t, Errno> {
+    syscall0(SYS_FORK).map(|ret| ret as pid_t)
 }

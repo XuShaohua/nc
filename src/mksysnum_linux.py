@@ -108,6 +108,7 @@ def read_errno(arch_name):
     ]
 
     for errno in errors:
+        lines.append("/// {0}".format(errno[2]))
         lines.append("pub const {0}: Errno = {1};".format(errno[0], errno[1]))
 
     lines.append("""
@@ -142,7 +143,6 @@ def parse_errno(content):
             if m:
                 errors.append((m.group(1), m.group(2)))
     return errors
-
 
 def read_sysno(arch_name):
     compiler = get_compiler(arch_name)

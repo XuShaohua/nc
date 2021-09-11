@@ -5,6 +5,11 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+#[cfg(target_arch = "x86_64")]
+#[path = "x86_64/mod.rs"]
+mod arch;
+pub use arch::*;
+
 mod _types;
 mod fcntl;
 mod uapi_stat;

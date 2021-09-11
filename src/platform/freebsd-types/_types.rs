@@ -37,10 +37,7 @@ pub type ssize_t = isize;
 /// ptr1 - ptr2
 pub type ptrdiff_t = isize;
 
-/*
- * Target-dependent type definitions.
- */
-//#include <machine/_types.h>
+// Target-dependent type definitions are imported automatically.
 
 /// Standard type definitions.
 /// file block size.

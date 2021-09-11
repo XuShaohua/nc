@@ -10,6 +10,7 @@
 mod arch;
 pub use arch::*;
 
+mod _sigset;
 mod _types;
 mod fcntl;
 mod limits;
@@ -17,6 +18,7 @@ mod syslimits;
 mod types;
 mod unistd;
 
+pub use _sigset::*;
 pub use _types::*;
 pub use fcntl::*;
 pub use limits::*;

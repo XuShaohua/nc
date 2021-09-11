@@ -61,6 +61,22 @@ pub fn read(fd: i32, buf: usize, count: size_t) -> Result<ssize_t, Errno> {
     syscall3(SYS_READ, fd, buf, count).map(|ret| ret as ssize_t)
 }
 
+/// Delete a name and possibly the file it refers to.
+///
+/// ```
+/// let path = "/tmp/nc-unlink";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_UNLINK, filename_ptr).map(drop)
+}
+
 /// Write to a file descriptor.
 ///
 /// ```
@@ -75,9 +91,7 @@ pub fn read(fd: i32, buf: usize, count: size_t) -> Result<ssize_t, Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlink(path).is_ok());
 /// ```
-pub fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
+pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len() as usize;
-    syscall3(SYS_WRITE, fd, buf_ptr, len).map(|ret| ret as ssize_t)
+    syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }

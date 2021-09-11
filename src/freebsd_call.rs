@@ -289,3 +289,18 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 pub fn __getcwd(buf: usize, size: size_t) -> Result<(), Errno> {
     syscall2(SYS___GETCWD, buf, size).map(drop)
 }
+
+/// Create a directory.
+///
+/// ```
+/// let path = "/tmp/nc-mkdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
+pub fn mkdir<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall2(SYS_MKDIR, filename_ptr, mode).map(drop)
+}

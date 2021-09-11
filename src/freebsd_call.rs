@@ -345,6 +345,31 @@ pub fn sync() -> Result<(), Errno> {
     syscall0(SYS_SYNC).map(drop)
 }
 
+/// Send signal to a process.
+///
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process.
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/usr/bin/yes", &args, &env);
+///     assert!(ret.is_ok());
+/// } else {
+///     // parent process.
+///     let ret = nc::kill(pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
+pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let signal = signal as usize;
+    syscall2(SYS_KILL, pid, signal).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

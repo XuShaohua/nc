@@ -156,3 +156,27 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 pub fn fork() -> Result<pid_t, Errno> {
     syscall0(SYS_FORK).map(|ret| ret as pid_t)
 }
+
+/// Get current working directory.
+///
+/// Alias of [__getcwd()].
+#[inline]
+pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
+    __getcwd(buf, size)
+}
+
+/// Get current working directory.
+///
+/// ```
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert!(cwd.is_ok());
+/// println!("cwd: {:?}", cwd);
+/// ```
+pub fn __getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
+    syscall2(SYS___GETCWD, buf, size).map(|ret| ret as ssize_t)
+}

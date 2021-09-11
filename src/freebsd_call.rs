@@ -304,3 +304,17 @@ pub fn mkdir<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
     let mode = mode as usize;
     syscall2(SYS_MKDIR, filename_ptr, mode).map(drop)
 }
+
+/// Delete a directory.
+///
+/// ```
+/// let path = "/tmp/nc-rmdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
+pub fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_RMDIR, filename_ptr).map(drop)
+}

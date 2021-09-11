@@ -259,6 +259,20 @@ pub fn read(fd: i32, buf: usize, count: size_t) -> Result<ssize_t, Errno> {
     syscall3(SYS_READ, fd, buf, count).map(|ret| ret as ssize_t)
 }
 
+/// Delete a directory.
+///
+/// ```
+/// let path = "/tmp/nc-rmdir";
+/// let ret = nc::mkdir(path, 0o755);
+/// assert!(ret.is_ok());
+/// assert!(nc::rmdir(path).is_ok());
+/// ```
+pub fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_RMDIR, filename_ptr).map(drop)
+}
+
 /// Delete a name and possibly the file it refers to.
 ///
 /// ```

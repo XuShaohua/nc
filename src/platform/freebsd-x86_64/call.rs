@@ -136,6 +136,17 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
     Ok(strlen(buf, size) as ssize_t + 1)
 }
 
+/// Get the process ID (PID) of the calling process.
+///
+/// ```
+/// let pid = nc::getpid();
+/// assert!(pid > 0);
+/// ```
+pub fn getpid() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
+}
+
 /// Make a new name for a file.
 ///
 /// ```
@@ -155,6 +166,46 @@ pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errn
     let new_filename = CString::new(new_filename.as_ref());
     let new_filename_ptr = new_filename.as_ptr() as usize;
     syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
+}
+
+/// Mount filesystem.
+///
+/// ```
+/// let target_dir = "/tmp/nc-mount";
+/// let ret = nc::mkdir(target_dir, 0o755);
+/// assert!(ret.is_ok());
+///
+/// let src_dir = "/etc";
+/// let fs_type = "";
+/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let data = 0;
+/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+///
+/// assert!(nc::rmdir(target_dir).is_ok());
+pub fn mount<P: AsRef<Path>>(
+    dev_name: P,
+    dir_name: P,
+    fs_type: P,
+    flags: usize,
+    data: usize,
+) -> Result<(), Errno> {
+    let dev_name = CString::new(dev_name.as_ref());
+    let dev_name_ptr = dev_name.as_ptr() as usize;
+    let dir_name = CString::new(dir_name.as_ref());
+    let dir_name_ptr = dir_name.as_ptr() as usize;
+    let fs_type = CString::new(fs_type.as_ref());
+    let fs_type_ptr = fs_type.as_ptr() as usize;
+    syscall5(
+        SYS_MOUNT,
+        dev_name_ptr,
+        dir_name_ptr,
+        fs_type_ptr,
+        flags,
+        data,
+    )
+    .map(drop)
 }
 
 /// Open and possibly create a file.

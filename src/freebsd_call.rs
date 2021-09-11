@@ -290,6 +290,17 @@ pub fn __getcwd(buf: usize, size: size_t) -> Result<(), Errno> {
     syscall2(SYS___GETCWD, buf, size).map(drop)
 }
 
+/// Get the real user ID of the calling process.
+///
+/// ```
+/// let uid = nc::getuid();
+/// assert!(uid > 0);
+/// ```
+pub fn getuid() -> uid_t {
+    // This function is always successful.
+    syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
+}
+
 /// Get the effective user ID of the calling process.
 ///
 /// ```

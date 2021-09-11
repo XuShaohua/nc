@@ -158,6 +158,17 @@ pub fn getpid() -> pid_t {
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
+/// Get the real user ID of the calling process.
+///
+/// ```
+/// let uid = nc::getuid();
+/// assert!(uid > 0);
+/// ```
+pub fn getuid() -> uid_t {
+    // This function is always successful.
+    syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
+}
+
 /// Make a new name for a file.
 ///
 /// ```

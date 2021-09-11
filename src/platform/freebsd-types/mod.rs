@@ -15,9 +15,11 @@ mod fcntl;
 mod limits;
 mod syslimits;
 mod types;
+mod unistd;
 
 pub use _types::*;
 pub use fcntl::*;
 pub use limits::*;
 pub use syslimits::*;
 pub use types::*;
+pub use unistd::*;

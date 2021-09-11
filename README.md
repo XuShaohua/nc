@@ -8,7 +8,7 @@ nc
 ![Minimum rustc version](https://img.shields.io/badge/rustc-1.36+-yellow.svg)
 ![License](https://img.shields.io/crates/l/nc.svg)
 
-Execute system call directly. `nc` do not depend on `std`.
+Execute system call directly without `std` or `libc`.
 
 - [Documentation](https://docs.rs/nc)
 - [Release notes](https://github.com/xushaohua/nc/releases)

@@ -123,6 +123,28 @@ pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_UNLINK, filename_ptr).map(drop)
 }
 
+/// Change working directory.
+///
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let ret = nc::chdir(path);
+/// assert!(ret.is_ok());
+///
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// // Remove null-terminal char.
+/// let path_len = ret.unwrap() as usize - 1;
+/// let new_cwd = std::str::from_utf8(&buf[..path_len]);
+/// assert_eq!(new_cwd, Ok(path));
+/// ```
+pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_CHDIR, filename_ptr).map(drop)
+}
+
 /// Create a child process.
 ///
 /// ```

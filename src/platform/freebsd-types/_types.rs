@@ -84,7 +84,7 @@ pub type off_t = i64;
 /// file offset (alias).
 pub type off64_t = i64;
 
-/// process [group].
+/// process or process group.
 pub type pid_t = i32;
 
 /// resource limit - intentionally.

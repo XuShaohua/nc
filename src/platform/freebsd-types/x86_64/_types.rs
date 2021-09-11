@@ -4,8 +4,6 @@
 
 //! From x86/include/_types.h
 
-//#include <machine/_limits.h>
-
 pub const __NO_STRICT_ALIGNMENT: bool = true;
 
 /// Standard type definitions.

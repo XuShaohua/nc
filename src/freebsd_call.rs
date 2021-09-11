@@ -101,3 +101,24 @@ pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename_ptr = filename.as_ptr() as usize;
     syscall1(SYS_UNLINK, filename_ptr).map(drop)
 }
+
+/// Make a new name for a file.
+///
+/// ```
+/// let old_filename = "/tmp/nc-link-src";
+/// let ret = nc::open(old_filename, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_filename = "/tmp/nc-link-dst";
+/// assert!(nc::link(old_filename, new_filename).is_ok());
+/// assert!(nc::unlink(old_filename).is_ok());
+/// assert!(nc::unlink(new_filename).is_ok());
+/// ```
+pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errno> {
+    let old_filename = CString::new(old_filename.as_ref());
+    let old_filename_ptr = old_filename.as_ptr() as usize;
+    let new_filename = CString::new(new_filename.as_ref());
+    let new_filename_ptr = new_filename.as_ptr() as usize;
+    syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
+}

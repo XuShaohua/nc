@@ -87,4 +87,4 @@ pub const LONG_BIT: usize = 64;
 pub const WORD_BIT: usize = 32;
 
 /// Minimum signal stack size.
-pub const MINSIGSTKSZ: usize = 512 * 4;
+pub const __MINSIGSTKSZ: usize = 512 * 4;

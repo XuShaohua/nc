@@ -4,7 +4,7 @@
 
 //! From sys/sys/_sigset.h
 
-pub const _SIG_WORDS: i32 = 4;
+pub const _SIG_WORDS: usize = 4;
 pub const _SIG_MAXSIG: i32 = 128;
 
 pub const fn _SIG_IDX(sig: i32) -> i32 {
@@ -22,8 +22,8 @@ pub const fn _SIG_VALID(sig: i32) -> bool {
 
 /// sigset_t macros.
 #[repr(C)]
-#[derive(Debug)]
-pub struct __sigset_t {
+#[derive(Debug, Default)]
+pub struct sigset_t {
     pub bits: [u32; _SIG_WORDS],
 }
 

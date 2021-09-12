@@ -1980,3 +1980,17 @@ pub fn swapcontext() {
     //        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(drop)
     //    }
 }
+
+/// Stop swapping to file/device.
+///
+/// ```
+/// let filename = "/dev/sda-no-exist";
+/// let ret = nc::swapoff(filename);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_SWAPOFF, filename_ptr).map(drop)
+}

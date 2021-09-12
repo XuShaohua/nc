@@ -2527,3 +2527,20 @@ pub fn fstatat<P: AsRef<Path>>(
     let flag = flag as usize;
     syscall4(SYS_FSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop)
 }
+
+/// Get filesystem statistics.
+///
+/// ```
+/// let path = "/usr";
+/// let mut statfs = nc::statfs_t::default();
+/// let ret = nc::statfs(path, &mut statfs);
+/// assert!(ret.is_ok());
+/// assert!(statfs.f_bfree > 0);
+/// assert!(statfs.f_bavail > 0);
+/// ```
+pub fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let buf_ptr = buf as *mut statfs_t as usize;
+    syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(drop)
+}

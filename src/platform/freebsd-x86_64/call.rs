@@ -1197,6 +1197,15 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
     syscall2(SYS_SIGALTSTACK, uss_ptr, uoss_ptr).map(drop)
 }
 
+/// Create a pair of connected socket.
+pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Result<(), Errno> {
+    let domain = domain as usize;
+    let type_ = type_ as usize;
+    let protocol = protocol as usize;
+    let sv_ptr = sv.as_ptr() as usize;
+    syscall4(SYS_SOCKETPAIR, domain, type_, protocol, sv_ptr).map(drop)
+}
+
 /// Start swapping to file/device.
 ///
 /// ```

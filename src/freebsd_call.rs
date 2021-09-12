@@ -1939,3 +1939,17 @@ pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result
     let sgid_ptr = sgid as *mut gid_t as usize;
     syscall3(SYS_GETRESGID, rgid_ptr, egid_ptr, sgid_ptr).map(drop)
 }
+
+/// Transfer data between two file descriptors.
+pub fn sendfile(
+    out_fd: i32,
+    in_fd: i32,
+    offset: &mut off_t,
+    count: size_t,
+) -> Result<ssize_t, Errno> {
+    let out_fd = out_fd as usize;
+    let in_fd = in_fd as usize;
+    let offset_ptr = offset as *mut off_t as usize;
+    let count = count as usize;
+    syscall4(SYS_SENDFILE, out_fd, in_fd, offset_ptr, count).map(|ret| ret as ssize_t)
+}

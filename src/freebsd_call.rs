@@ -346,6 +346,21 @@ pub fn geteuid() -> uid_t {
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
 
+/// Receives multile messages on a socket
+pub fn recvmmsg(
+    sockfd: i32,
+    msgvec: &mut [mmsghdr_t],
+    flags: i32,
+    timeout: &mut timespec_t,
+) -> Result<i32, Errno> {
+    let sockfd = sockfd as usize;
+    let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
+    let vlen = msgvec.len();
+    let flags = flags as usize;
+    let timeout_ptr = timeout as *mut timespec_t as usize;
+    syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr).map(|ret| ret as i32)
+}
+
 /// Check user's permission for a file.
 ///
 /// ```

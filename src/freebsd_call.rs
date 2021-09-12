@@ -1889,3 +1889,9 @@ pub fn sigprocmask(how: i32, newset: &mut sigset_t, oldset: &mut sigset_t) -> Re
     let oldset_ptr = oldset as *mut sigset_t as usize;
     syscall3(SYS_SIGPROCMASK, how, newset_ptr, oldset_ptr).map(drop)
 }
+
+/// Wait for a signal.
+pub fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
+    let mask_ptr = mask as *const old_sigset_t as usize;
+    syscall1(SYS_SIGSUSPEND, mask_ptr).map(drop)
+}

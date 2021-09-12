@@ -1695,6 +1695,14 @@ pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
     syscall2(SYS_SHUTDOWN, sockfd, how).map(drop)
 }
 
+/// Examine and change a signal action.
+pub fn sigaction(sig: i32, act: &sigaction_t, old_act: &mut sigaction_t) -> Result<(), Errno> {
+    let sig = sig as usize;
+    let act_ptr = act as *const sigaction_t as usize;
+    let old_act_ptr = old_act as *mut sigaction_t as usize;
+    syscall3(SYS_SIGACTION, sig, act_ptr, old_act_ptr).map(drop)
+}
+
 /// Get/set signal stack context.
 pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
     let uss_ptr = uss as *const sigaltstack_t as usize;

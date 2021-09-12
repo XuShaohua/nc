@@ -487,6 +487,27 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
     Ok(strlen(buf, size) as ssize_t + 1)
 }
 
+/// Get file status about a file descriptor.
+///
+/// ```
+/// let path = "/tmp";
+/// // Open folder directly.
+/// let fd = nc::open(path, nc::O_PATH, 0);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let mut stat = nc::stat_t::default();
+/// let ret = nc::fstat(fd, &mut stat);
+/// assert!(ret.is_ok());
+/// // Check fd is a directory.
+/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let statbuf_ptr = statbuf as *mut stat_t as usize;
+    syscall2(SYS_FSTAT, fd, statbuf_ptr).map(drop)
+}
+
 /// Flush all modified in-core data refered by `fd` to disk.
 ///
 /// ```

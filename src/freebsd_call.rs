@@ -1221,6 +1221,24 @@ pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     syscall3(SYS_WRITEV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
 }
 
+/// Set system time and timezone.
+///
+/// ```
+/// let tv = nc::timeval_t {
+///     tv_sec: 0,
+///     tv_usec: 0,
+/// };
+/// let tz = nc::timezone_t::default();
+/// let ret = nc::settimeofday(&tv, &tz);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
+    let timeval_ptr = timeval as *const timeval_t as usize;
+    let tz_ptr = tz as *const timezone_t as usize;
+    syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

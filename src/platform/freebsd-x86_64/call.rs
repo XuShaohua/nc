@@ -309,6 +309,25 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_FCHDIR, fd).map(drop)
 }
 
+/// Change permissions of a file.
+///
+/// ```
+/// let filename = "/tmp/nc-fchmodat";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::fchmodat(nc::AT_FDCWD, filename, 0o600).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
+pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode).map(drop)
+}
+
 /// Change ownership of a file.
 ///
 /// ```

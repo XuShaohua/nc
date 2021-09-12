@@ -370,6 +370,17 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
+/// Get the process ID of the parent of the calling process.
+///
+/// ```
+/// let ppid = nc::getppid();
+/// assert!(ppid > 0);
+/// ```
+pub fn getppid() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
+}
+
 /// Create a directory.
 ///
 /// ```

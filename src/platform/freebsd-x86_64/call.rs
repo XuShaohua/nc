@@ -182,6 +182,17 @@ pub fn getpid() -> pid_t {
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
+/// Get the process ID of the parent of the calling process.
+///
+/// ```
+/// let ppid = nc::getppid();
+/// assert!(ppid > 0);
+/// ```
+pub fn getppid() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
+}
+
 /// Get the real user ID of the calling process.
 ///
 /// ```

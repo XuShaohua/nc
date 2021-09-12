@@ -604,6 +604,19 @@ pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     syscall2(SYS_GETRUSAGE, who, usage_ptr).map(drop)
 }
 
+/// Get session Id.
+///
+/// ```
+/// let ppid = nc::getppid();
+/// let sid = nc::getsid(ppid);
+/// assert!(sid > 0);
+/// ```
+pub fn getsid(pid: pid_t) -> pid_t {
+    let pid = pid as usize;
+    // This function is always successful.
+    syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
+}
+
 /// Get current address to which the socket `sockfd` is bound.
 pub fn getsockname(
     sockfd: i32,

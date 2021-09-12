@@ -1716,3 +1716,16 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
     let vec_len = vec.len();
     syscall5(SYS_PWRITEV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
 }
+
+/// Get session Id.
+///
+/// ```
+/// let ppid = nc::getppid();
+/// let sid = nc::getsid(ppid);
+/// assert!(sid > 0);
+/// ```
+pub fn getsid(pid: pid_t) -> pid_t {
+    let pid = pid as usize;
+    // This function is always successful.
+    syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
+}

@@ -507,6 +507,19 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
 }
 
+/// Change the root directory.
+///
+/// ```
+/// let ret = nc::chroot("/");
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_CHROOT, filename_ptr).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

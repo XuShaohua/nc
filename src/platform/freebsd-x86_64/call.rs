@@ -84,6 +84,19 @@ pub fn chown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<(
     syscall3(SYS_CHOWN, filename_ptr, user, group).map(drop)
 }
 
+/// Change the root directory.
+///
+/// ```
+/// let ret = nc::chroot("/");
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_CHROOT, filename_ptr).map(drop)
+}
+
 /// Close a file descriptor.
 ///
 /// ```

@@ -1967,3 +1967,16 @@ pub fn sigaction(sig: i32, act: &sigaction_t, old_act: &mut sigaction_t) -> Resu
 pub fn sigreturn() {
     let _ = syscall0(SYS_SIGRETURN);
 }
+
+/// Handle {get,set,swap}_context operations
+pub fn swapcontext() {
+    core::unimplemented!();
+    //pub fn swapcontext(old_ctx: &mut ucontext_t, new_ctx: &mut ucontext_t, ctx_size: isize,) -> Result<(), Errno> {}
+    // syscall0(SYS_SWAPCONTEXT);
+    //
+    //        let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
+    //        let new_ctx_ptr = new_ctx as *mut ucontext_t as usize;
+    //        let ctx_size = ctx_size as usize;
+    //        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(drop)
+    //    }
+}

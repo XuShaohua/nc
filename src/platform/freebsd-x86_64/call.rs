@@ -1745,6 +1745,19 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
     syscall4(SYS_SOCKETPAIR, domain, type_, protocol, sv_ptr).map(drop)
 }
 
+/// Handle {get,set,swap}_context operations
+pub fn swapcontext() {
+    core::unimplemented!();
+    //pub fn swapcontext(old_ctx: &mut ucontext_t, new_ctx: &mut ucontext_t, ctx_size: isize,) -> Result<(), Errno> {}
+    // syscall0(SYS_SWAPCONTEXT);
+    //
+    //        let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
+    //        let new_ctx_ptr = new_ctx as *mut ucontext_t as usize;
+    //        let ctx_size = ctx_size as usize;
+    //        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(drop)
+    //    }
+}
+
 /// Start swapping to file/device.
 ///
 /// ```

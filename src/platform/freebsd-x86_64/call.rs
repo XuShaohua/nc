@@ -259,6 +259,17 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
     syscall2(SYS_GETGROUPS, size, group_ptr).map(|ret| ret as i32)
 }
 
+/// Get the process group ID of the calling process.
+///
+/// ```
+/// let pgroup = nc::getpgrp();
+/// assert!(pgroup > 0);
+/// ```
+pub fn getpgrp() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
+}
+
 /// Get the process ID (PID) of the calling process.
 ///
 /// ```

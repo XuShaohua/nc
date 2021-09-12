@@ -661,6 +661,17 @@ pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
 }
 
+/// Get the process group ID of the calling process.
+///
+/// ```
+/// let pgroup = nc::getpgrp();
+/// assert!(pgroup > 0);
+/// ```
+pub fn getpgrp() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
+}
+
 /// Create a directory.
 ///
 /// ```

@@ -1729,3 +1729,16 @@ pub fn getsid(pid: pid_t) -> pid_t {
     // This function is always successful.
     syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
 }
+
+/// Set real, effective and saved user Ids of the calling process.
+///
+/// ```
+/// let ret = nc::setresuid(0, 0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
+    let ruid = ruid as usize;
+    let euid = euid as usize;
+    let suid = suid as usize;
+    syscall3(SYS_SETRESUID, ruid, euid, suid).map(drop)
+}

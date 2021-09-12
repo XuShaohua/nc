@@ -851,6 +851,30 @@ pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     syscall3(SYS_FCNTL, fd, cmd, arg).map(|ret| ret as i32)
 }
 
+/// Sychronous I/O multiplexing.
+pub fn select(
+    nfds: i32,
+    readfds: &mut fd_set_t,
+    writefds: &mut fd_set_t,
+    exceptfds: &mut fd_set_t,
+    timeout: &mut timeval_t,
+) -> Result<i32, Errno> {
+    let nfds = nfds as usize;
+    let readfds_ptr = readfds as *mut fd_set_t as usize;
+    let writefds_ptr = writefds as *mut fd_set_t as usize;
+    let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
+    let timeout_ptr = timeout as *mut timeval_t as usize;
+    syscall5(
+        SYS_SELECT,
+        nfds,
+        readfds_ptr,
+        writefds_ptr,
+        exceptfds_ptr,
+        timeout_ptr,
+    )
+    .map(|ret| ret as i32)
+}
+
 /// Create a directory.
 ///
 /// ```

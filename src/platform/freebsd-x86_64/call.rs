@@ -127,6 +127,26 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
 
+/// Create a copy of the file descriptor `oldfd`, using the speficified file
+/// descriptor `newfd`.
+///
+/// ```
+/// let path = "/tmp/nc-dup2-file";
+/// let fd = nc::creat(path, 0o644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let newfd = 8;
+/// assert!(nc::dup2(fd, newfd).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(newfd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
+    let oldfd = oldfd as usize;
+    let newfd = newfd as usize;
+    syscall2(SYS_DUP2, oldfd, newfd).map(drop)
+}
+
 /// Execute a new program.
 ///
 /// TODO(Shaohua): type of argv and env will be changed.

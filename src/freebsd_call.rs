@@ -1448,3 +1448,15 @@ pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) ->
     let id = id as usize;
     syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
 }
+
+/// Set the group ID of the calling process to `gid`.
+///
+/// ```
+/// let ret = nc::setgid(0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setgid(gid: gid_t) -> Result<(), Errno> {
+    let gid = gid as usize;
+    syscall1(SYS_SETGID, gid).map(drop)
+}

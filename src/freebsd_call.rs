@@ -1078,6 +1078,21 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
     syscall3(SYS_BIND, sockfd, addr_ptr, addrlen).map(drop)
 }
 
+/// Set options on sockets.
+pub fn setsockopt(
+    sockfd: i32,
+    level: i32,
+    optname: i32,
+    optval: usize,
+    optlen: socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let level = level as usize;
+    let optname = optname as usize;
+    let optlen = optlen as usize;
+    syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

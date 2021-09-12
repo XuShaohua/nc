@@ -944,6 +944,21 @@ pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
     syscall3(SYS_SETPRIORITY, which, who, prio).map(drop)
 }
 
+/// Set options on sockets.
+pub fn setsockopt(
+    sockfd: i32,
+    level: i32,
+    optname: i32,
+    optval: usize,
+    optlen: socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let level = level as usize;
+    let optname = optname as usize;
+    let optlen = optlen as usize;
+    syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen).map(drop)
+}
+
 /// Get/set signal stack context.
 pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
     let uss_ptr = uss as *const sigaltstack_t as usize;

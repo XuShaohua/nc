@@ -2082,3 +2082,21 @@ pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno>
     let length = length as usize;
     syscall2(SYS_TRUNCATE, filename_ptr, length).map(drop)
 }
+
+/// Truncate an opened file to a specified length.
+///
+/// ```
+/// let path = "/tmp/nc-ftruncate";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::ftruncate(fd, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let length = length as usize;
+    syscall2(SYS_FTRUNCATE, fd, length).map(drop)
+}

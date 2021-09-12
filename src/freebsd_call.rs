@@ -647,6 +647,20 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
     syscall2(SYS_GETGROUPS, size, group_ptr).map(|ret| ret as i32)
 }
 
+/// Set list of supplementary group Ids.
+///
+/// ```
+/// let list = [0, 1, 2];
+/// let ret = nc::setgroups(&list);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
+    let group_ptr = group_list.as_ptr() as usize;
+    let group_len = group_list.len();
+    syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

@@ -584,6 +584,20 @@ pub fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_RMDIR, filename_ptr).map(drop)
 }
 
+/// Set list of supplementary group Ids.
+///
+/// ```
+/// let list = [0, 1, 2];
+/// let ret = nc::setgroups(&list);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
+    let group_ptr = group_list.as_ptr() as usize;
+    let group_len = group_list.len();
+    syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
+}
+
 /// Make a new name for a file.
 ///
 /// ```

@@ -1521,3 +1521,15 @@ pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MUNLOCK, addr, len).map(drop)
 }
+
+/// Returns the PGID(process group ID) of the process specified by `pid`.
+///
+/// ```
+/// let ppid = nc::getppid();
+/// let pgid = nc::getpgid(ppid);
+/// assert!(pgid.is_ok());
+/// ```
+pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t)
+}

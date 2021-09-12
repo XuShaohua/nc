@@ -2204,6 +2204,26 @@ pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_UNLINK, filename_ptr).map(drop)
 }
 
+/// Delete a name and possibly the file it refers to.
+///
+/// ```
+/// let path = "/tmp/nc-unlinkat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// // /tmp folder is not empty, so this call always returns error.
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// ```
+pub fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), Errno> {
+    let dfd = dfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let flag = flag as usize;
+    syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag).map(drop)
+}
+
 /// Change file last access and modification time.
 ///
 /// ```

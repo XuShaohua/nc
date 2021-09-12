@@ -526,6 +526,11 @@ pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_UNLINK, filename_ptr).map(drop)
 }
 
+/// Create a child process and wait until it is terminated.
+pub fn vfork() -> Result<pid_t, Errno> {
+    syscall0(SYS_VFORK).map(|ret| ret as pid_t)
+}
+
 /// Write to a file descriptor.
 ///
 /// ```

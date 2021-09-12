@@ -527,6 +527,11 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     syscall3(SYS_MSYNC, addr, len, flags).map(drop)
 }
 
+/// Create a child process and wait until it is terminated.
+pub fn vfork() -> Result<pid_t, Errno> {
+    syscall0(SYS_VFORK).map(|ret| ret as pid_t)
+}
+
 /// Create a directory.
 ///
 /// ```

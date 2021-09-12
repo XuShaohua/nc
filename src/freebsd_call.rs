@@ -2045,3 +2045,21 @@ pub fn mmap(
     let offset = offset as usize;
     syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
 }
+
+/// Reposition file offset.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::lseek(fd, 42, nc::SEEK_SET);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let offset = offset as usize;
+    let whence = whence as usize;
+    syscall3(SYS_LSEEK, fd, offset, whence).map(drop)
+}

@@ -1678,3 +1678,41 @@ pub fn preadv(fd: i32, vec: &mut [iovec_t], pos_l: usize, pos_h: usize) -> Resul
     let vec_len = vec.len();
     syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
 }
+
+/// Write to a file descriptor without changing file offset.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+///
+/// let path_out = "/tmp/nc-pwritev";
+/// let ret = nc::open(path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::pwritev(fd, &iov, 0, iov.len() - 1);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path_out).is_ok());
+/// ```
+pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let vec_ptr = vec.as_ptr() as usize;
+    let vec_len = vec.len();
+    syscall5(SYS_PWRITEV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
+}

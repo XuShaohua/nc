@@ -1742,3 +1742,16 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
     let suid = suid as usize;
     syscall3(SYS_SETRESUID, ruid, euid, suid).map(drop)
 }
+
+/// Set real, effective and saved group Ids of the calling process.
+///
+/// ```
+/// let ret = nc::setresgid(0, 0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
+    let rgid = rgid as usize;
+    let egid = egid as usize;
+    let sgid = sgid as usize;
+    syscall3(SYS_SETRESGID, rgid, egid, sgid).map(drop)
+}

@@ -1881,3 +1881,11 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
     let interval_ptr = interval as *mut timespec_t as usize;
     syscall2(SYS_SCHED_RR_GET_INTERVAL, pid, interval_ptr).map(drop)
 }
+
+/// Examine and change blocked signals.
+pub fn sigprocmask(how: i32, newset: &mut sigset_t, oldset: &mut sigset_t) -> Result<(), Errno> {
+    let how = how as usize;
+    let newset_ptr = newset as *mut sigset_t as usize;
+    let oldset_ptr = oldset as *mut sigset_t as usize;
+    syscall3(SYS_SIGPROCMASK, how, newset_ptr, oldset_ptr).map(drop)
+}

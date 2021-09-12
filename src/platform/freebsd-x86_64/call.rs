@@ -405,6 +405,18 @@ pub fn getppid() -> pid_t {
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
 
+/// Get current address to which the socket `sockfd` is bound.
+pub fn getsockname(
+    sockfd: i32,
+    addr: &mut sockaddr_in_t,
+    addrlen: &mut socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
+}
+
 /// Get the real user ID of the calling process.
 ///
 /// ```

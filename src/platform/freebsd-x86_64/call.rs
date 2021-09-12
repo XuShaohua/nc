@@ -1000,6 +1000,33 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
     syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t)
 }
 
+/// Send a message on a socket.
+pub fn sendto(
+    sockfd: i32,
+    buf: &[u8],
+    len: size_t,
+    flags: i32,
+    dest_addr: &sockaddr_in_t,
+    addrlen: socklen_t,
+) -> Result<ssize_t, Errno> {
+    let sockfd = sockfd as usize;
+    let buf_ptr = buf.as_ptr() as usize;
+    let len = len as usize;
+    let flags = flags as usize;
+    let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
+    let addrlen = addrlen as usize;
+    syscall6(
+        SYS_SENDTO,
+        sockfd,
+        buf_ptr,
+        len,
+        flags,
+        dest_addr_ptr,
+        addrlen,
+    )
+    .map(|ret| ret as ssize_t)
+}
+
 /// Set list of supplementary group Ids.
 ///
 /// ```

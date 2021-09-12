@@ -374,11 +374,79 @@ pub fn mount<P: AsRef<Path>>(
     .map(drop)
 }
 
+/// Set protection on a region of memory.
+///
+/// ```
+/// // Initialize an anonymous mapping with 4 pages.
+/// let map_length = 4 * nc::PAGE_SIZE;
+/// let addr = nc::mmap(
+///     0,
+///     map_length,
+///     nc::PROT_READ | nc::PROT_WRITE,
+///     nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+///     -1,
+///     0,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// // Set the third page readonly. And we will run into SIGSEGV when updating it.
+/// let ret = nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ);
+/// assert!(ret.is_ok());
+///
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// ```
+pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
+    let len = len as usize;
+    let prot = prot as usize;
+    syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
+}
+
 /// Synchronize a file with memory map.
 pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     let len = len as usize;
     let flags = flags as usize;
     syscall3(SYS_MSYNC, addr, len, flags).map(drop)
+}
+
+/// Unmap files or devices from memory.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let mut sb = nc::stat_t::default();
+/// let ret = nc::fstat(fd, &mut sb);
+/// assert!(ret.is_ok());
+///
+/// let offset: usize = 0;
+/// let length: usize = sb.st_size as usize - offset;
+/// // Offset for mmap must be page aligned.
+/// let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
+/// let map_length = length + offset - pa_offset;
+///
+/// let addr = nc::mmap(
+///     0, // 0 as NULL
+///     map_length,
+///     nc::PROT_READ,
+///     nc::MAP_PRIVATE,
+///     fd,
+///     pa_offset as nc::off_t,
+/// );
+/// assert!(addr.is_ok());
+/// let addr = addr.unwrap();
+///
+/// let n_write = nc::write(1, addr + offset - pa_offset, length);
+/// assert!(n_write.is_ok());
+/// assert_eq!(n_write, Ok(length as nc::ssize_t));
+/// assert!(nc::munmap(addr, map_length).is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
+    let len = len as usize;
+    syscall2(SYS_MUNMAP, addr, len).map(drop)
 }
 
 /// Open and possibly create a file.

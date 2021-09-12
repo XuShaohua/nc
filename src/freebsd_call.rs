@@ -467,6 +467,31 @@ pub fn readlink<P: AsRef<Path>>(filename: P, buf: &mut [u8]) -> Result<ssize_t, 
     syscall3(SYS_READLINK, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t)
 }
 
+/// Execute a new program.
+///
+/// TODO(Shaohua): type of argv and env will be changed.
+/// And return value might be changed too.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/bin/ls", &args, &env);
+///     assert!(ret.is_ok());
+/// }
+/// ```
+pub fn execve<P: AsRef<Path>>(filename: P, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let argv_ptr = argv.as_ptr() as usize;
+    let env_ptr = env.as_ptr() as usize;
+    syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

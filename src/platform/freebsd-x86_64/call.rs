@@ -113,6 +113,31 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
     syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
+
+/// Execute a new program.
+///
+/// TODO(Shaohua): type of argv and env will be changed.
+/// And return value might be changed too.
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/bin/ls", &args, &env);
+///     assert!(ret.is_ok());
+/// }
+/// ```
+pub fn execve<P: AsRef<Path>>(filename: P, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let argv_ptr = argv.as_ptr() as usize;
+    let env_ptr = env.as_ptr() as usize;
+    syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr).map(drop)
+}
 pub fn exit(status: i32) {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);

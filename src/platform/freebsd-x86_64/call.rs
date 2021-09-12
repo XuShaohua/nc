@@ -1334,6 +1334,21 @@ pub fn openat<P: AsRef<Path>>(
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
 }
 
+/// Create a pipe.
+///
+/// ```
+/// let mut fds = [-1_i32, 2];
+/// let ret = nc::pipe2(&mut fds, nc::O_CLOEXEC | nc::O_NONBLOCK);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fds[0]).is_ok());
+/// assert!(nc::close(fds[1]).is_ok());
+/// ```
+pub fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
+    let pipefd_ptr = pipefd.as_mut_ptr() as usize;
+    let flags = flags as usize;
+    syscall2(SYS_PIPE2, pipefd_ptr, flags).map(drop)
+}
+
 /// Wait for some event on file descriptors.
 pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     let fds_ptr = fds.as_mut_ptr() as usize;

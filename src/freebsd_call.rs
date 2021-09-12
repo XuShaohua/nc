@@ -2403,3 +2403,27 @@ pub fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
     syscall2(SYS_PIPE2, pipefd_ptr, flags).map(drop)
 }
+
+/// Wait for some event on a file descriptor.
+pub fn ppoll(
+    fds: &mut pollfd_t,
+    nfds: i32,
+    timeout: &timespec_t,
+    sigmask: &sigset_t,
+    sigsetsize: size_t,
+) -> Result<i32, Errno> {
+    let fds_ptr = fds as *mut pollfd_t as usize;
+    let nfds = nfds as usize;
+    let timeout_ptr = timeout as *const timespec_t as usize;
+    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let sigsetsize = sigsetsize as usize;
+    syscall5(
+        SYS_PPOLL,
+        fds_ptr,
+        nfds,
+        timeout_ptr,
+        sigmask_ptr,
+        sigsetsize,
+    )
+    .map(|ret| ret as i32)
+}

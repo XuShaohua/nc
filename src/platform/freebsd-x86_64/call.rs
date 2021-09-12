@@ -934,6 +934,18 @@ pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
     syscall2(SYS_MUNLOCK, addr, len).map(drop)
 }
 
+/// Unlock memory.
+///
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// let ret = nc::munlockall();
+/// assert!(ret.is_ok());
+/// ```
+pub fn munlockall() -> Result<(), Errno> {
+    syscall0(SYS_MUNLOCKALL).map(drop)
+}
+
 /// Unmap files or devices from memory.
 ///
 /// ```

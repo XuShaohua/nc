@@ -1766,3 +1766,15 @@ pub fn mlockall(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
     syscall1(SYS_MLOCKALL, flags).map(drop)
 }
+
+/// Unlock memory.
+///
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// let ret = nc::munlockall();
+/// assert!(ret.is_ok());
+/// ```
+pub fn munlockall() -> Result<(), Errno> {
+    syscall0(SYS_MUNLOCKALL).map(drop)
+}

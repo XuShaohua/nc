@@ -2132,3 +2132,32 @@ pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result
     let mode = mode as usize;
     syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode).map(drop)
 }
+
+/// Change ownership of a file.
+///
+/// ```
+/// let filename = "/tmp/nc-fchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::fchownat(nc::AT_FDCWD, filename, 0, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
+pub fn fchownat<P: AsRef<Path>>(
+    dirfd: i32,
+    filename: P,
+    user: uid_t,
+    group: gid_t,
+    flag: i32,
+) -> Result<(), Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let user = user as usize;
+    let group = group as usize;
+    let flag = flag as usize;
+    syscall5(SYS_FCHOWNAT, dirfd, filename_ptr, user, group, flag).map(drop)
+}

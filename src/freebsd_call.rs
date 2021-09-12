@@ -1649,3 +1649,32 @@ pub fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<
     let group = group as usize;
     syscall3(SYS_LCHOWN, filename_ptr, user, group).map(drop)
 }
+
+/// Read from a file descriptor without changing file offset.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let iov_len = iov.len();
+/// let ret = nc::preadv(fd, &mut iov, 0, iov_len - 1);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn preadv(fd: i32, vec: &mut [iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let vec_ptr = vec.as_mut_ptr() as usize;
+    let vec_len = vec.len();
+    syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
+}

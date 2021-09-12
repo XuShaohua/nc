@@ -1278,6 +1278,35 @@ pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_UNLINK, filename_ptr).map(drop)
 }
 
+/// Change file last access and modification time.
+///
+/// ```
+/// let path = "/tmp/nc-utimes";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timespec_t {
+///         tv_sec: 100,
+///         tv_nsec: 0,
+///     },
+///     nc::timespec_t {
+///         tv_sec: 10,
+///         tv_nsec: 0,
+///     },
+/// ];
+/// let ret = nc::utimens(path, &times);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn utimes<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let times_ptr = times.as_ptr() as usize;
+    syscall2(SYS_UTIMES, filename_ptr, times_ptr).map(drop)
+}
+
 /// Create a child process and wait until it is terminated.
 pub fn vfork() -> Result<pid_t, Errno> {
     syscall0(SYS_VFORK).map(|ret| ret as pid_t)

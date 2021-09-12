@@ -906,6 +906,25 @@ pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     syscall2(SYS_MUNMAP, addr, len).map(drop)
 }
 
+/// High resolution sleep.
+///
+/// ```
+/// let t = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 0,
+/// };
+/// assert!(nc::nanosleep(&t, None).is_ok());
+/// ```
+pub fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
+    let req_ptr = req as *const timespec_t as usize;
+    let rem_ptr = if let Some(rem) = rem {
+        rem as *mut timespec_t as usize
+    } else {
+        0
+    };
+    syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
+}
+
 /// Open and possibly create a file.
 ///
 /// ```

@@ -1239,6 +1239,26 @@ pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
     syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
 }
 
+/// Change ownership of a file.
+///
+/// ```
+/// let filename = "/tmp/nc-fchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::fchown(fd, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
+pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let user = user as usize;
+    let group = group as usize;
+    syscall3(SYS_FCHOWN, fd, user, group).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

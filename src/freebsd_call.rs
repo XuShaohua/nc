@@ -361,6 +361,14 @@ pub fn recvmmsg(
     syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr).map(|ret| ret as i32)
 }
 
+/// Send a message on a socket. Allow sending ancillary data.
+pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
+    let sockfd = sockfd as usize;
+    let msg_ptr = msg as *const msghdr_t as usize;
+    let flags = flags as usize;
+    syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t)
+}
+
 /// Check user's permission for a file.
 ///
 /// ```

@@ -831,6 +831,26 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     syscall2(SYS_DUP2, oldfd, newfd).map(drop)
 }
 
+/// manipulate file descriptor.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+///
+/// let ret = nc::fcntl(fd, nc::F_DUPFD, 0);
+/// assert!(ret.is_ok());
+/// let fd2 = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd2).is_ok());
+/// ```
+pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+    let fd = fd as usize;
+    let cmd = cmd as usize;
+    syscall3(SYS_FCNTL, fd, cmd, arg).map(|ret| ret as i32)
+}
+
 /// Create a directory.
 ///
 /// ```

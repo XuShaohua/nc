@@ -1186,6 +1186,22 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     syscall2(SYS_SETREUID, ruid, euid).map(drop)
 }
 
+/// Set resource limit.
+///
+/// ```
+/// let rlimit = nc::rlimit_t {
+///     rlim_cur: 128,
+///     rlim_max: 128,
+/// };
+/// let ret = nc::setrlimit(nc::RLIMIT_NOFILE, &rlimit);
+/// assert!(ret.is_ok());
+/// ```
+pub fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
+    let resource = resource as usize;
+    let rlimit_ptr = rlimit as *const rlimit_t as usize;
+    syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(drop)
+}
+
 /// Create a new session if the calling process is not a process group leader.
 ///
 /// ```

@@ -1297,6 +1297,29 @@ pub fn open<P: AsRef<Path>>(path: P, flags: i32, mode: mode_t) -> Result<i32, Er
     syscall3(SYS_OPEN, path_ptr, flags, mode).map(|ret| ret as i32)
 }
 
+/// Open and possibly create a file within a directory.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn openat<P: AsRef<Path>>(
+    dirfd: i32,
+    filename: P,
+    flags: i32,
+    mode: mode_t,
+) -> Result<i32, Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let flags = flags as usize;
+    let mode = mode as usize;
+    syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
+}
+
 /// Wait for some event on file descriptors.
 pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     let fds_ptr = fds.as_mut_ptr() as usize;

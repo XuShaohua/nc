@@ -1755,3 +1755,14 @@ pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
     let sgid = sgid as usize;
     syscall3(SYS_SETRESGID, rgid, egid, sgid).map(drop)
 }
+
+/// Lock memory.
+///
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// ```
+pub fn mlockall(flags: i32) -> Result<(), Errno> {
+    let flags = flags as usize;
+    syscall1(SYS_MLOCKALL, flags).map(drop)
+}

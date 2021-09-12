@@ -830,6 +830,17 @@ pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
     syscall2(SYS_MLOCK, addr, len).map(drop)
 }
 
+/// Lock memory.
+///
+/// ```
+/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// assert!(ret.is_ok());
+/// ```
+pub fn mlockall(flags: i32) -> Result<(), Errno> {
+    let flags = flags as usize;
+    syscall1(SYS_MLOCKALL, flags).map(drop)
+}
+
 /// Mount filesystem.
 ///
 /// ```

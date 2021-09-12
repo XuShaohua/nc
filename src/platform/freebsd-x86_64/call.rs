@@ -909,6 +909,27 @@ pub fn recvfrom(
     .map(|ret| ret as ssize_t)
 }
 
+/// Change name or location of a file.
+///
+/// ```
+/// let path = "/tmp/nc-rename";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-rename-new";
+/// let ret = nc::rename(path, new_path);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
+pub fn rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> Result<(), Errno> {
+    let oldfilename = CString::new(oldfilename.as_ref());
+    let oldfilename_ptr = oldfilename.as_ptr() as usize;
+    let newfilename = CString::new(newfilename.as_ref());
+    let newfilename_ptr = newfilename.as_ptr() as usize;
+    syscall2(SYS_RENAME, oldfilename_ptr, newfilename_ptr).map(drop)
+}
+
 /// Delete a directory.
 ///
 /// ```

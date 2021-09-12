@@ -520,6 +520,13 @@ pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_CHROOT, filename_ptr).map(drop)
 }
 
+/// Synchronize a file with memory map.
+pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+    let len = len as usize;
+    let flags = flags as usize;
+    syscall3(SYS_MSYNC, addr, len, flags).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

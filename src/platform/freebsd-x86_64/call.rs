@@ -2277,6 +2277,43 @@ pub fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), 
     syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag).map(drop)
 }
 
+/// Change time timestamps with nanosecond precision.
+///
+/// ```
+/// let path = "/tmp/nc-utimesat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let times = [
+///     nc::timespec_t {
+///         tv_sec: 100,
+///         tv_nsec: 0,
+///     },
+///     nc::timespec_t {
+///         tv_sec: 10,
+///         tv_nsec: 0,
+///     },
+/// ];
+/// let flags = nc::AT_SYMLINK_NOFOLLOW;
+/// let ret = nc::utimensat(nc::AT_FDCWD, path, &times, flags);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn utimensat<P: AsRef<Path>>(
+    dirfd: i32,
+    filename: P,
+    times: &[timespec_t; 2],
+    flags: i32,
+) -> Result<(), Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let times_ptr = times.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall4(SYS_UTIMENSAT, dirfd, filename_ptr, times_ptr, flags).map(drop)
+}
+
 /// Change file last access and modification time.
 ///
 /// ```

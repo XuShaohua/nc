@@ -312,17 +312,6 @@ pub fn geteuid() -> uid_t {
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
 
-/// Get the real group ID of the calling process.
-///
-/// ```
-/// let gid = nc::getgid();
-/// assert!(gid > 0);
-/// ```
-pub fn getgid() -> gid_t {
-    // This function is always successful.
-    syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
-}
-
 /// Check user's permission for a file.
 ///
 /// ```
@@ -410,6 +399,32 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 pub fn getegid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
+}
+
+/// Get the real group ID of the calling process.
+///
+/// ```
+/// let gid = nc::getgid();
+/// assert!(gid > 0);
+/// ```
+pub fn getgid() -> gid_t {
+    // This function is always successful.
+    syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
+}
+
+/// Reboot or enable/disable Ctrl-Alt-Del.
+///
+/// ```
+/// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
+///     nc::LINUX_REBOOT_CMD_RESTART, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
+    let magic = magic as usize;
+    let magic2 = magci2 as usize;
+    let cmd = cmd as usize;
+    syscall4(SYS_REBOOT, magic, magic2, cmd, arg).map(drop)
 }
 
 /// Create a directory.

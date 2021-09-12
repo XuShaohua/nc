@@ -1822,3 +1822,14 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
     let param_ptr = param as *const sched_param_t as usize;
     syscall3(SYS_SCHED_SETSCHEDULER, pid, policy, param_ptr).map(drop)
 }
+
+/// Get scheduling parameter.
+///
+/// ```
+/// let ret = nc::sched_getscheduler(0);
+/// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
+/// ```
+pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
+}

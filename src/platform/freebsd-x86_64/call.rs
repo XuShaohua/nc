@@ -1267,6 +1267,17 @@ pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno
     syscall2(SYS_SCHED_GETPARAM, pid, param_ptr).map(drop)
 }
 
+/// Get scheduling parameter.
+///
+/// ```
+/// let ret = nc::sched_getscheduler(0);
+/// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
+/// ```
+pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
+}
+
 /// Set scheduling paramters.
 ///
 /// ```

@@ -1895,3 +1895,9 @@ pub fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
     let mask_ptr = mask as *const old_sigset_t as usize;
     syscall1(SYS_SIGSUSPEND, mask_ptr).map(drop)
 }
+
+/// Examine pending signals.
+pub fn sigpending(set: &mut sigset_t) -> Result<(), Errno> {
+    let set_ptr = set as *mut sigset_t as usize;
+    syscall1(SYS_SIGPENDING, set_ptr).map(drop)
+}

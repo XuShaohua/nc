@@ -1650,6 +1650,12 @@ pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), 
     syscall2(SYS_SIGALTSTACK, uss_ptr, uoss_ptr).map(drop)
 }
 
+/// Examine pending signals.
+pub fn sigpending(set: &mut sigset_t) -> Result<(), Errno> {
+    let set_ptr = set as *mut sigset_t as usize;
+    syscall1(SYS_SIGPENDING, set_ptr).map(drop)
+}
+
 /// Examine and change blocked signals.
 pub fn sigprocmask(how: i32, newset: &mut sigset_t, oldset: &mut sigset_t) -> Result<(), Errno> {
     let how = how as usize;

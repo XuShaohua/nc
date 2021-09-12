@@ -1541,3 +1541,17 @@ pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
     let timeout = timeout as usize;
     syscall3(SYS_POLL, fds_ptr, nfds, timeout).map(drop)
 }
+
+/// Get time of specific clock.
+///
+/// ```
+/// let mut tp = nc::timespec_t::default();
+/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME_COARSE, &mut tp);
+/// assert!(ret.is_ok());
+/// assert!(tp.tv_sec > 0);
+/// ```
+pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
+    let which_clock = which_clock as usize;
+    let tp_ptr = tp as *mut timespec_t as usize;
+    syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr).map(drop)
+}

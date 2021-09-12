@@ -1833,3 +1833,12 @@ pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
     let pid = pid as usize;
     syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
 }
+
+/// Yield the processor.
+///
+/// ```
+/// assert!(nc::sched_yield().is_ok());
+/// ```
+pub fn sched_yield() -> Result<(), Errno> {
+    syscall0(SYS_SCHED_YIELD).map(drop)
+}

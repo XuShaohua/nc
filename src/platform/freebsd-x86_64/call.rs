@@ -1308,6 +1308,15 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
     syscall3(SYS_SCHED_SETSCHEDULER, pid, policy, param_ptr).map(drop)
 }
 
+/// Yield the processor.
+///
+/// ```
+/// assert!(nc::sched_yield().is_ok());
+/// ```
+pub fn sched_yield() -> Result<(), Errno> {
+    syscall0(SYS_SCHED_YIELD).map(drop)
+}
+
 /// Sychronous I/O multiplexing.
 pub fn select(
     nfds: i32,

@@ -704,6 +704,18 @@ pub fn mkdir<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
     syscall2(SYS_MKDIR, filename_ptr, mode).map(drop)
 }
 
+/// Lock memory.
+///
+/// ```
+/// let mut passwd_buf = [0_u8; 64];
+/// let ret = nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len());
+/// assert!(ret.is_ok());
+/// ```
+pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
+    let len = len as usize;
+    syscall2(SYS_MLOCK, addr, len).map(drop)
+}
+
 /// Mount filesystem.
 ///
 /// ```

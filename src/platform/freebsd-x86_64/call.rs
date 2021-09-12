@@ -713,6 +713,27 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
+/// Change ownership of a file. Does not deference symbolic link.
+///
+/// ```
+/// let filename = "/tmp/nc-lchown";
+/// let ret = nc::creat(filename, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::lchown(filename, 0, 0);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(filename).is_ok());
+/// ```
+pub fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let user = user as usize;
+    let group = group as usize;
+    syscall3(SYS_LCHOWN, filename_ptr, user, group).map(drop)
+}
+
 /// Make a new name for a file.
 ///
 /// ```

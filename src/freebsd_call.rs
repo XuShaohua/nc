@@ -395,6 +395,26 @@ pub fn recvfrom(
     .map(|ret| ret as ssize_t)
 }
 
+/// Accept a connection on a socket.
+pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(drop)
+}
+
+/// Get name of connected peer socket.
+pub fn getpeername(
+    sockfd: i32,
+    addr: &mut sockaddr_in_t,
+    addrlen: &mut socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    syscall3(SYS_GETPEERNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
+}
+
 /// Check user's permission for a file.
 ///
 /// ```

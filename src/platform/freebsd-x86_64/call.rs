@@ -10,6 +10,14 @@ use crate::syscalls::*;
 use crate::sysno::*;
 use crate::types::*;
 
+/// Accept a connection on a socket.
+pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(drop)
+}
+
 /// Check user's permission for a file.
 ///
 /// ```
@@ -350,6 +358,18 @@ pub fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
     let which = which as usize;
     let curr_val_ptr = curr_val as *mut itimerval_t as usize;
     syscall2(SYS_GETITIMER, which, curr_val_ptr).map(drop)
+}
+
+/// Get name of connected peer socket.
+pub fn getpeername(
+    sockfd: i32,
+    addr: &mut sockaddr_in_t,
+    addrlen: &mut socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    syscall3(SYS_GETPEERNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
 }
 
 /// Get the process group ID of the calling process.

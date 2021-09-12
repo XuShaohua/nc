@@ -527,6 +527,24 @@ pub fn getgid() -> gid_t {
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
 }
 
+/// Switch process accounting.
+///
+/// ```
+/// let path = "/tmp/nc-acct";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::acct(path);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    syscall1(SYS_ACCT, filename_ptr).map(drop)
+}
+
 /// Reboot or enable/disable Ctrl-Alt-Del.
 ///
 /// ```

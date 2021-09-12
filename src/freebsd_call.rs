@@ -1304,6 +1304,30 @@ pub fn rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> Result<(), Errn
     syscall2(SYS_RENAME, oldfilename_ptr, newfilename_ptr).map(drop)
 }
 
+/// Apply or remove an advisory lock on an open file.
+///
+/// ```
+/// let path = "/tmp/nc-flock";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = nc::flock(fd, nc::LOCK_EX);
+/// assert!(ret.is_ok());
+/// let msg = "Hello, Rust";
+/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// let ret = nc::flock(fd, nc::LOCK_UN);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let operation = operation as usize;
+    syscall2(SYS_FLOCK, fd, operation).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

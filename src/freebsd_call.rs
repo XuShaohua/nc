@@ -2301,3 +2301,38 @@ pub fn readlinkat<P: AsRef<Path>>(
     let buf_len = buf.len();
     syscall4(SYS_READLINKAT, dirfd, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t)
 }
+
+/// Change name or location of a file.
+///
+/// ```
+/// let path = "/tmp/nc-renameat";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let new_path = "/tmp/nc-renameat-new";
+/// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(new_path).is_ok());
+/// ```
+pub fn renameat<P: AsRef<Path>>(
+    olddfd: i32,
+    oldfilename: P,
+    newdfd: i32,
+    newfilename: P,
+) -> Result<(), Errno> {
+    let olddfd = olddfd as usize;
+    let oldfilename = CString::new(oldfilename.as_ref());
+    let oldfilename_ptr = oldfilename.as_ptr() as usize;
+    let newdfd = newdfd as usize;
+    let newfilename = CString::new(newfilename.as_ref());
+    let newfilename_ptr = newfilename.as_ptr() as usize;
+    syscall4(
+        SYS_RENAMEAT,
+        olddfd,
+        oldfilename_ptr,
+        newdfd,
+        newfilename_ptr,
+    )
+    .map(drop)
+}

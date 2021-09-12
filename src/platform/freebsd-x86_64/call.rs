@@ -922,6 +922,20 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     syscall2(SYS_SETPGID, pid, pgid).map(drop)
 }
 
+/// Set program scheduling priority.
+///
+/// ```
+/// let ret = nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EACCES))
+/// ```
+pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
+    let which = which as usize;
+    let who = who as usize;
+    let prio = prio as usize;
+    syscall3(SYS_SETPRIORITY, which, who, prio).map(drop)
+}
+
 /// Get/set signal stack context.
 pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
     let uss_ptr = uss as *const sigaltstack_t as usize;

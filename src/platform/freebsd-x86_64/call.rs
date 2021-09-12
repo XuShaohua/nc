@@ -1291,6 +1291,19 @@ pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
     syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy).map(|ret| ret as i32)
 }
 
+/// Get static priority min value.
+///
+/// ```
+/// let ret = nc::sched_get_priority_min(nc::SCHED_RR);
+/// assert!(ret.is_ok());
+/// let min_prio = ret.unwrap();
+/// assert_eq!(min_prio, 1);
+/// ```
+pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
+    let policy = policy as usize;
+    syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy).map(|ret| ret as i32)
+}
+
 /// Set scheduling paramters.
 ///
 /// ```

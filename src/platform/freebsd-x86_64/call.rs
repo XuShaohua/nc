@@ -1150,6 +1150,17 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     syscall2(SYS_SETREUID, ruid, euid).map(drop)
 }
 
+/// Create a new session if the calling process is not a process group leader.
+///
+/// ```
+/// let ret = nc::setsid();
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(nc::getpid()));
+/// ```
+pub fn setsid() -> Result<pid_t, Errno> {
+    syscall0(SYS_SETSID).map(|ret| ret as pid_t)
+}
+
 /// Set options on sockets.
 pub fn setsockopt(
     sockfd: i32,

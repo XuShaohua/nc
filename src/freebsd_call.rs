@@ -1533,3 +1533,11 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     let pid = pid as usize;
     syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t)
 }
+
+/// Wait for some event on file descriptors.
+pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
+    let fds_ptr = fds.as_mut_ptr() as usize;
+    let nfds = fds.len() as usize;
+    let timeout = timeout as usize;
+    syscall3(SYS_POLL, fds_ptr, nfds, timeout).map(drop)
+}

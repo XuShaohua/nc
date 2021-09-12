@@ -878,6 +878,14 @@ pub fn open<P: AsRef<Path>>(path: P, flags: i32, mode: mode_t) -> Result<i32, Er
     syscall3(SYS_OPEN, path_ptr, flags, mode).map(|ret| ret as i32)
 }
 
+/// Wait for some event on file descriptors.
+pub fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<(), Errno> {
+    let fds_ptr = fds.as_mut_ptr() as usize;
+    let nfds = fds.len() as usize;
+    let timeout = timeout as usize;
+    syscall3(SYS_POLL, fds_ptr, nfds, timeout).map(drop)
+}
+
 /// Manipulate disk quotes.
 pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) -> Result<(), Errno> {
     let cmd = cmd as usize;

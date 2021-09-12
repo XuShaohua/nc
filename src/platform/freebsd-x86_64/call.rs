@@ -372,6 +372,29 @@ pub fn read(fd: i32, buf: usize, count: size_t) -> Result<ssize_t, Errno> {
     syscall3(SYS_READ, fd, buf, count).map(|ret| ret as ssize_t)
 }
 
+/// Read value of a symbolic link.
+///
+/// ```
+/// let oldname = "/etc/passwd";
+/// let newname = "/tmp/nc-readlink";
+/// let ret = nc::symlink(oldname, newname);
+/// assert!(ret.is_ok());
+/// let mut buf = [0_u8; nc::PATH_MAX as usize];
+/// let ret = nc::readlink(newname, &mut buf);
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap() as usize;
+/// assert_eq!(n_read, oldname.len());
+/// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
+/// assert!(nc::unlink(newname).is_ok());
+/// ```
+pub fn readlink<P: AsRef<Path>>(filename: P, buf: &mut [u8]) -> Result<ssize_t, Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let buf_ptr = buf.as_mut_ptr() as usize;
+    let buf_len = buf.len();
+    syscall3(SYS_READLINK, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t)
+}
+
 /// Reboot or enable/disable Ctrl-Alt-Del.
 ///
 /// ```

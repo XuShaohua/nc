@@ -1183,6 +1183,13 @@ pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
     syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
 }
 
+/// Shutdown part of a full-duplex connection.
+pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let how = how as usize;
+    syscall2(SYS_SHUTDOWN, sockfd, how).map(drop)
+}
+
 /// Get/set signal stack context.
 pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
     let uss_ptr = uss as *const sigaltstack_t as usize;

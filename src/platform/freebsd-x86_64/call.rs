@@ -609,6 +609,19 @@ pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
 }
 
+/// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
+///
+/// ```
+/// let ret = nc::setpgid(nc::getpid(), 1);
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let pgid = pgid as usize;
+    syscall2(SYS_SETPGID, pid, pgid).map(drop)
+}
+
 /// Make a new name for a file.
 ///
 /// ```

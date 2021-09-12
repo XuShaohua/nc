@@ -541,6 +541,13 @@ pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errn
     syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
 }
 
+/// Listen for connections on a socket.
+pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let backlog = backlog as usize;
+    syscall2(SYS_LISTEN, sockfd, backlog).map(drop)
+}
+
 /// Give advice about use of memory.
 ///
 /// ```

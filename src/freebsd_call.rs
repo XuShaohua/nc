@@ -1271,6 +1271,18 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     syscall2(SYS_SETREUID, ruid, euid).map(drop)
 }
 
+/// Set real and effective group IDs of the calling process.
+///
+/// ```
+/// let ret = nc::setregid(0, 0);
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
+    let rgid = rgid as usize;
+    let egid = egid as usize;
+    syscall2(SYS_SETREGID, rgid, egid).map(drop)
+}
+
 /// Create a directory.
 ///
 /// ```

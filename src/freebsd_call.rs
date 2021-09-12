@@ -381,6 +381,26 @@ pub fn getppid() -> pid_t {
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
 
+/// Create a copy of the file descriptor `oldfd`, using the lowest available
+/// file descriptor.
+///
+/// ```
+/// let path = "/tmp/nc-dup-file";
+/// let fd = nc::creat(path, 0o644);
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let fd_dup = nc::dup(fd);
+/// assert!(fd_dup.is_ok());
+/// let fd_dup = fd_dup.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// assert!(nc::close(fd_dup).is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn dup(oldfd: i32) -> Result<i32, Errno> {
+    let oldfd = oldfd as usize;
+    syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
+}
+
 /// Create a directory.
 ///
 /// ```

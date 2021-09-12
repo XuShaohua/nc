@@ -1724,6 +1724,12 @@ pub fn sigprocmask(how: i32, newset: &mut sigset_t, oldset: &mut sigset_t) -> Re
     syscall3(SYS_SIGPROCMASK, how, newset_ptr, oldset_ptr).map(drop)
 }
 
+/// Return from signal handler and cleanup stack frame.
+/// Never returns.
+pub fn sigreturn() {
+    let _ = syscall0(SYS_SIGRETURN);
+}
+
 /// Wait for a signal.
 pub fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
     let mask_ptr = mask as *const old_sigset_t as usize;

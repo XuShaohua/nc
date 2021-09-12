@@ -1842,3 +1842,16 @@ pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
 pub fn sched_yield() -> Result<(), Errno> {
     syscall0(SYS_SCHED_YIELD).map(drop)
 }
+
+/// Get static priority max value.
+///
+/// ```
+/// let ret = nc::sched_get_priority_max(nc::SCHED_RR);
+/// assert!(ret.is_ok());
+/// let max_prio = ret.unwrap();
+/// assert_eq!(max_prio, 99);
+/// ```
+pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
+    let policy = policy as usize;
+    syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy).map(|ret| ret as i32)
+}

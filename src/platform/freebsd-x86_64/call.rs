@@ -169,6 +169,17 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
     Ok(strlen(buf, size) as ssize_t + 1)
 }
 
+/// Get the effective group ID of the calling process.
+///
+/// ```
+/// let egid = nc::getegid();
+/// assert!(egid > 0);
+/// ```
+pub fn getegid() -> gid_t {
+    // This function is always successful.
+    syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
+}
+
 /// Get the effective user ID of the calling process.
 ///
 /// ```

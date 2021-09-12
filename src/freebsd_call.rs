@@ -401,6 +401,17 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
 
+/// Get the effective group ID of the calling process.
+///
+/// ```
+/// let egid = nc::getegid();
+/// assert!(egid > 0);
+/// ```
+pub fn getegid() -> gid_t {
+    // This function is always successful.
+    syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
+}
+
 /// Create a directory.
 ///
 /// ```

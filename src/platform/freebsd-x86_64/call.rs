@@ -821,6 +821,15 @@ pub fn open<P: AsRef<Path>>(path: P, flags: i32, mode: mode_t) -> Result<i32, Er
     syscall3(SYS_OPEN, path_ptr, flags, mode).map(|ret| ret as i32)
 }
 
+/// Manipulate disk quotes.
+pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) -> Result<(), Errno> {
+    let cmd = cmd as usize;
+    let special = CString::new(special.as_ref());
+    let special_ptr = special.as_ptr() as usize;
+    let id = id as usize;
+    syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
+}
+
 /// Read from a file descriptor.
 ///
 /// ```

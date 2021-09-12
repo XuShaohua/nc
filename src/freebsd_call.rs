@@ -1439,3 +1439,12 @@ pub fn utimes<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) -> Result<(),
 pub fn setsid() -> Result<pid_t, Errno> {
     syscall0(SYS_SETSID).map(|ret| ret as pid_t)
 }
+
+/// Manipulate disk quotes.
+pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) -> Result<(), Errno> {
+    let cmd = cmd as usize;
+    let special = CString::new(special.as_ref());
+    let special_ptr = special.as_ptr() as usize;
+    let id = id as usize;
+    syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
+}

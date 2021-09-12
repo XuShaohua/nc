@@ -2565,3 +2565,26 @@ pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     let buf_ptr = buf as *mut statfs_t as usize;
     syscall2(SYS_FSTATFS, fd, buf_ptr).map(drop)
 }
+
+/// Create a special or ordinary file.
+///
+/// ```
+/// let path = "/tmp/nc-mknodat";
+/// // Create a named pipe.
+/// let ret = nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn mknodat<P: AsRef<Path>>(
+    dirfd: i32,
+    filename: P,
+    mode: mode_t,
+    dev: dev_t,
+) -> Result<(), Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    let dev = dev as usize;
+    syscall4(SYS_MKNODAT, dirfd, filename_ptr, mode, dev).map(drop)
+}

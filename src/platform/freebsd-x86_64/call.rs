@@ -1882,6 +1882,25 @@ pub fn sync() -> Result<(), Errno> {
     syscall0(SYS_SYNC).map(drop)
 }
 
+/// Truncate a file to a specified length.
+///
+/// ```
+/// let path = "/tmp/nc-truncate";
+/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// let ret = nc::truncate(path, 64 * 1024);
+/// assert!(ret.is_ok());
+/// assert!(nc::unlink(path).is_ok());
+/// ```
+pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let length = length as usize;
+    syscall2(SYS_TRUNCATE, filename_ptr, length).map(drop)
+}
+
 /// Set file mode creation mask.
 ///
 /// ```

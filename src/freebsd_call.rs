@@ -1154,6 +1154,35 @@ pub fn getsockopt(
     .map(drop)
 }
 
+/// Read from a file descriptor into multiple buffers.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [[0_u8; 64]; 4];
+/// let capacity = 4 * 64;
+/// let mut iov = Vec::with_capacity(buf.len());
+/// for ref mut item in (&mut buf).iter() {
+/// // TODO(Shaohua): Replace with as_mut_ptr()
+///     iov.push(nc::iovec_t {
+///         iov_len: item.len(),
+///         iov_base: item.as_ptr() as usize,
+///     });
+/// }
+/// let ret = nc::readv(fd, &mut iov);
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(capacity as nc::ssize_t));
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let iov_ptr = iov.as_mut_ptr() as usize;
+    let len = iov.len() as usize;
+    syscall3(SYS_READV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
+}
+
 /// Create a directory.
 ///
 /// ```

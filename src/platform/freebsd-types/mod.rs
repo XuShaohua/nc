@@ -10,6 +10,7 @@
 mod arch;
 pub use arch::*;
 
+mod _iovec;
 mod _sigset;
 mod _timespec;
 mod _timeval;
@@ -23,6 +24,7 @@ mod syslimits;
 mod types;
 mod unistd;
 
+pub use _iovec::*;
 pub use _sigset::*;
 pub use _timespec::*;
 pub use _timeval::*;

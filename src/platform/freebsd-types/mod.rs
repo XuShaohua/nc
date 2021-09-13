@@ -11,6 +11,7 @@ mod arch;
 pub use arch::*;
 
 mod _sigset;
+mod _timespec;
 mod _types;
 mod fcntl;
 mod limits;
@@ -20,6 +21,7 @@ mod types;
 mod unistd;
 
 pub use _sigset::*;
+pub use _timespec::*;
 pub use _types::*;
 pub use fcntl::*;
 pub use limits::*;

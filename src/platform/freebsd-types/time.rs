@@ -32,17 +32,16 @@ pub const DST_EET: i32 = 5;
 pub const DST_CAN: i32 = 6;
 
 /// Names of the interval timers, and structure defining a timer setting.
-pub const	ITIMER_REAL: i32 = 	0;
-pub const	ITIMER_VIRTUAL: i32 =	1;
-pub const	ITIMER_PROF: i32 =	2;
+pub const ITIMER_REAL: i32 = 0;
+pub const ITIMER_VIRTUAL: i32 = 1;
+pub const ITIMER_PROF: i32 = 2;
 
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct itimerval_t {
     /// timer interval
-	pub timeval it_interval: timeval_t,
+    pub it_interval: timeval_t,
 
     /// current value
-	pub it_value: timeval_t,
-};
-
+    pub it_value: timeval_t,
+}

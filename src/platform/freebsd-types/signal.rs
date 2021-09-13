@@ -4,6 +4,8 @@
 
 //! from sys/sys/signal.h
 
+use core::fmt;
+
 use crate::{pid_t, sigset_t, uid_t, __MINSIGSTKSZ};
 
 /// System defined signals.

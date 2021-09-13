@@ -4,7 +4,7 @@
 
 //! From sys/sys/socket.h
 
-use crate::{socklen_t, ssize_t};
+use crate::{sa_family_t, socklen_t, ssize_t};
 
 /// stream socket
 pub const SOCK_STREAM: i32 = 1;

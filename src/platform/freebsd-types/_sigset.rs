@@ -28,3 +28,6 @@ pub struct sigset_t {
 }
 
 pub type osigset_t = u32;
+
+/// Alias to [osigset_t]
+pub type old_sigset_t = osigset_t;

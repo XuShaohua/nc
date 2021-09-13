@@ -4,6 +4,8 @@
 
 //! From sys/sys/_timespec.h
 
+use crate::time_t;
+
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct timespec_t {

@@ -104,7 +104,7 @@ pub type sighandler_t = usize;
 
 #[repr(C)]
 #[derive(Debug)]
-pub union sigval_u {
+pub union sigval_u_t {
     /// Members as suggested by Annex C of POSIX 1003.1b.
     pub sival_int: i32,
     pub sival_ptr: usize,
@@ -113,7 +113,7 @@ pub union sigval_u {
     pub sigval_ptr: usize,
 }
 
-impl Default for sigval_u {
+impl Default for sigval_u_t {
     fn default() -> Self {
         Self { sigval_ptr: 0 }
     }
@@ -141,7 +141,7 @@ pub struct sigev_thread_t {
 
 #[repr(C)]
 #[derive(Debug, Default)]
-pub union sigev_un_u {
+pub union sigev_un_t {
     pub _threadid: lwpid_t,
     pub _sigev_thread: sigev_thread_t,
     pub _kevent_flags: u16,
@@ -156,8 +156,8 @@ pub struct sigevent_t {
     /// Signal number
     pub sigev_signo: i32,
     /// Signal value
-    pub sigev_value: sigval_u,
-    pub sigev_un: sigev_un_u,
+    pub sigev_value: sigval_u_t,
+    pub sigev_un: sigev_un_t,
 }
 
 /// No async notification.
@@ -214,7 +214,7 @@ struct siginfo_reason_spare_t {
 
 #[repr(C)]
 #[derive(Debug)]
-pub union siginfo_reason_u {
+pub union siginfo_reason_u_t {
     pub fault: siginfo_reason_fault_t,
     pub timer: siginfo_reason_timer_t,
     pub poll: siginfo_reason_poll_t,
@@ -223,7 +223,7 @@ pub union siginfo_reason_u {
     __spare__: siginfo_reason_spare_t,
 }
 
-impl Default for siginfo_reason_u {
+impl Default for siginfo_reason_u_t {
     fn default() -> Self {
         Self {
             __spare__: siginfo_reason_spare_t::default(),
@@ -253,8 +253,8 @@ pub struct siginfo_t {
     /// faulting instruction
     pub si_addr: usize,
     /// signal value
-    pub si_value: sigval_u,
-    pub reason: siginfo_reason_u,
+    pub si_value: sigval_u_t,
+    pub reason: siginfo_reason_u_t,
 }
 
 /*
@@ -386,17 +386,23 @@ pub const POLL_PRI: i32 = 5;
 pub const POLL_HUP: i32 = 6;
 
 #[repr(C)]
-#[derive(Debug)]
-pub union sigaction_u {
+pub union sigaction_u_t {
     pub sa_handler: sighandler_t,
     pub sa_sigaction: siginfohandler_t,
 }
 
-impl Default for sigaction_u {
+impl Default for sigaction_u_t {
     fn default() -> Self {
         Self {
             sa_handler: SIG_DFL,
         }
+    }
+}
+
+impl fmt::Debug for sigaction_u_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let ptr = unsafe { self.sa_handler };
+        write!(f, "sigaction_u_t: {}", ptr)
     }
 }
 
@@ -405,7 +411,7 @@ impl Default for sigaction_u {
 #[derive(Debug, Default)]
 pub struct sigaction_t {
     /// signal handler
-    pub u: sigaction_u,
+    pub u: sigaction_u_t,
     /// see signal options below
     pub sa_flags: i32,
     /// signal mask to apply

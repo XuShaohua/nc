@@ -21,6 +21,7 @@ mod mount;
 mod resource;
 mod signal;
 mod syslimits;
+mod time;
 mod types;
 mod unistd;
 
@@ -35,5 +36,6 @@ pub use mount::*;
 pub use resource::*;
 pub use signal::*;
 pub use syslimits::*;
+pub use time::*;
 pub use types::*;
 pub use unistd::*;

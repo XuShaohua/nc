@@ -5,6 +5,34 @@
 //! From sys/sys/mount.h
 use crate::uid_t;
 
+/// filesystem id type
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct fsid_t {
+    pub val: [i32; 2],
+}
+
+/// File identifier.
+///
+/// These are unique per filesystem on a single machine.
+///
+/// Note that the offset of fid_data is 4 bytes, so care must be taken to avoid
+/// undefined behavior accessing unaligned fields within an embedded struct.
+pub const MAXFIDSZ: usize = 16;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct fid_t {
+    /// length of data in bytes
+    pub fid_len: u16,
+
+    /// force longword alignment
+    pub fid_data0: u16,
+
+    /// data (variable length)
+    pub fid_data: [u8; MAXFIDSZ],
+}
+
 /// filesystem statistics
 /// length of type name including null
 pub const MFSNAMELEN: usize = 16;
@@ -103,7 +131,7 @@ impl Default for statfs_t {
             f_spare: [0; 10],
             f_namemax: 0,
             f_owner: 0,
-            f_fsid: 0,
+            f_fsid: fsid_t::default(),
             f_charspare: [0; 80],
             f_fstypename: [0; MFSNAMELEN],
             f_mntfromname: [0; MNAMELEN],

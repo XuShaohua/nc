@@ -7264,16 +7264,16 @@ pub fn utimensat_time64() {
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// let times = [
-///     nc::timespec_t {
+///     nc::timeval_t {
 ///         tv_sec: 100,
-///         tv_nsec: 0,
+///         tv_usec: 0,
 ///     },
-///     nc::timespec_t {
+///     nc::timeval_t {
 ///         tv_sec: 10,
-///         tv_nsec: 0,
+///         tv_usec: 0,
 ///     },
 /// ];
-/// let ret = nc::utimens(path, &times);
+/// let ret = nc::utimes(path, &times);
 /// assert!(ret.is_ok());
 /// assert!(nc::unlink(path).is_ok());
 /// ```

@@ -105,7 +105,6 @@ pub const SIG_HOLD: sighandler_t = 3;
 pub type sighandler_t = usize;
 
 #[repr(C)]
-#[derive(Debug)]
 pub union sigval_u_t {
     /// Members as suggested by Annex C of POSIX 1003.1b.
     pub sival_int: i32,
@@ -118,6 +117,13 @@ pub union sigval_u_t {
 impl Default for sigval_u_t {
     fn default() -> Self {
         Self { sigval_ptr: 0 }
+    }
+}
+
+impl fmt::Debug for sigval_u_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let ptr = unsafe { self.sigval_ptr };
+        write!(f, "sigval_ptr: {}", ptr)
     }
 }
 
@@ -142,12 +148,24 @@ pub struct sigev_thread_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
 pub union sigev_un_t {
     pub _threadid: lwpid_t,
     pub _sigev_thread: sigev_thread_t,
     pub _kevent_flags: u16,
     pub __spare__: [isize; 8],
+}
+
+impl Default for sigev_un_t {
+    fn default() -> Self {
+        Self { _kevent_flags: 0 }
+    }
+}
+
+impl fmt::Debug for sigev_un_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let flags = unsafe { self._kevent_flags };
+        write!(f, "_kevent_flags: {}", flags)
+    }
 }
 
 #[repr(C)]
@@ -215,7 +233,6 @@ struct siginfo_reason_spare_t {
 }
 
 #[repr(C)]
-#[derive(Debug)]
 pub union siginfo_reason_u_t {
     pub fault: siginfo_reason_fault_t,
     pub timer: siginfo_reason_timer_t,
@@ -230,6 +247,13 @@ impl Default for siginfo_reason_u_t {
         Self {
             __spare__: siginfo_reason_spare_t::default(),
         }
+    }
+}
+
+impl fmt::Debug for siginfo_reason_u_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let poll = unsafe { self.poll };
+        write!(f, "poll: {:?}", poll)
     }
 }
 

@@ -6,7 +6,7 @@
 
 use core::fmt;
 
-use crate::{lwpid_t, pid_t, sigset_t, uid_t, __MINSIGSTKSZ};
+use crate::{lwpid_t, pid_t, sigset_t, size_t, uid_t, __MINSIGSTKSZ};
 
 /// System defined signals.
 /// hangup
@@ -524,8 +524,6 @@ pub const SV_RESETHAND: i32 = SA_RESETHAND;
 pub const SV_NODEFER: i32 = SA_NODEFER;
 pub const SV_NOCLDSTOP: i32 = SA_NOCLDSTOP;
 pub const SV_SIGINFO: i32 = SA_SIGINFO;
-/// isn't compatibility wonderful!
-pub const sv_onstack: i32 = sv_flags;
 
 /// Structure used in sigstack call.
 #[repr(C)]

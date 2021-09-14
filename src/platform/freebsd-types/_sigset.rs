@@ -11,7 +11,7 @@ pub const fn _SIG_IDX(sig: i32) -> i32 {
     sig - 1
 }
 pub const fn _SIG_WORD(sig: i32) -> i32 {
-    _IG_IDX(sig) >> 5
+    _SIG_IDX(sig) >> 5
 }
 pub const fn _SIG_BIT(sig: i32) -> i32 {
     1 << (_SIG_IDX(sig) & 31)

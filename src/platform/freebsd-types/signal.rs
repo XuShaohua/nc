@@ -6,7 +6,7 @@
 
 use core::fmt;
 
-use crate::{pid_t, sigset_t, uid_t, __MINSIGSTKSZ};
+use crate::{lwpid_t, pid_t, sigset_t, uid_t, __MINSIGSTKSZ};
 
 /// System defined signals.
 /// hangup
@@ -105,6 +105,7 @@ pub const SIG_HOLD: sighandler_t = 3;
 pub type sighandler_t = usize;
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigval_u_t {
     /// Members as suggested by Annex C of POSIX 1003.1b.
     pub sival_int: i32,
@@ -129,6 +130,7 @@ impl fmt::Debug for sigval_u_t {
 
 #[cfg(target_pointer_width = "64")]
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigval32_t {
     pub sival_int: i32,
     pub sival_ptr: u32,
@@ -138,38 +140,39 @@ pub union sigval32_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigev_thread_t {
     /// void (*_function)(union sigval);
-    pub _function: usize,
+    pub function: usize,
 
     /// struct pthread_attr **_attribute;
-    pub _attribute: usize,
+    pub attribute: usize,
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigev_un_t {
-    pub _threadid: lwpid_t,
-    pub _sigev_thread: sigev_thread_t,
-    pub _kevent_flags: u16,
+    pub threadid: lwpid_t,
+    pub sigev_thread: sigev_thread_t,
+    pub kevent_flags: u16,
     pub __spare__: [isize; 8],
 }
 
 impl Default for sigev_un_t {
     fn default() -> Self {
-        Self { _kevent_flags: 0 }
+        Self { kevent_flags: 0 }
     }
 }
 
 impl fmt::Debug for sigev_un_t {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let flags = unsafe { self._kevent_flags };
+        let flags = unsafe { self.kevent_flags };
         write!(f, "_kevent_flags: {}", flags)
     }
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct sigevent_t {
     /// Notification type
     pub sigev_notify: i32,
@@ -192,47 +195,48 @@ pub const SIGEV_KEVENT: i32 = 3;
 pub const SIGEV_THREAD_ID: i32 = 4;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct siginfo_reason_fault_t {
     /// machine specific trap code
     pub trapno: i32,
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct siginfo_reason_timer_t {
     pub timerid: i32,
     pub overrun: i32,
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct siginfo_reason_mesgq_t {
     pub mqd: i32,
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct siginfo_reason_poll_t {
     /// band event for SIGPOLL
-    pub _band: isize,
+    pub band: isize,
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct siginfo_reason_capsicum_t {
     /// Syscall number for signals delivered as a result of system calls denied by Capsicum.
     pub syscall: i32,
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 struct siginfo_reason_spare_t {
     __spare1__: isize,
     __spare2__: [i32; 7],
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union siginfo_reason_u_t {
     pub fault: siginfo_reason_fault_t,
     pub timer: siginfo_reason_timer_t,

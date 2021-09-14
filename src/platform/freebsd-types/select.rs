@@ -15,14 +15,22 @@ pub type fd_mask_t = usize;
 pub const FD_SETSIZE: usize = 1024;
 
 /// bits per mask
-pub const NFDBITS: usize = size_of::<fd_mask_t> * 8;
+pub const NFDBITS: usize = size_of::<fd_mask_t>() * 8;
 
 const fn howmany(x: usize, y: usize) -> usize {
     (x + y - 1) / y
 }
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct fd_set_t {
-    pub _fds_bits: [fd_mask_t; howmany(FD_SETSIZE, _NFDBITS)],
+    pub fds_bits: [fd_mask_t; howmany(FD_SETSIZE, NFDBITS)],
+}
+
+impl Default for fd_set_t {
+    fn default() -> Self {
+        Self {
+            fds_bits: [0; howmany(FD_SETSIZE, NFDBITS)],
+        }
+    }
 }

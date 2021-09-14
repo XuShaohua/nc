@@ -14,7 +14,7 @@ pub const MNAMELEN: usize = 1024;
 pub const STATFS_VERSION: i32 = 0x20140518;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct statfs_t {
     /// structure version number
     pub f_version: u32,
@@ -81,6 +81,35 @@ pub struct statfs_t {
 
     /// directory on which mounted
     pub f_mntonname: [u8; MNAMELEN],
+}
+
+impl Default for statfs_t {
+    fn default() -> Self {
+        Self {
+            f_version: 0,
+            f_type: 0,
+            f_flags: 0,
+            f_bsize: 0,
+            f_iosize: 0,
+            f_blocks: 0,
+            f_bfree: 0,
+            f_bavail: 0,
+            f_files: 0,
+            f_ffree: 0,
+            f_syncwrites: 0,
+            f_asyncwrites: 0,
+            f_syncreads: 0,
+            f_asyncreads: 0,
+            f_spare: [0; 10],
+            f_namemax: 0,
+            f_owner: 0,
+            f_fsid: 0,
+            f_charspare: [0; 80],
+            f_fstypename: [0; MFSNAMELEN],
+            f_mntfromname: [0; MNAMELEN],
+            f_mntonname: [0; MNAMELEN],
+        }
+    }
 }
 
 /// User specifiable flags, stored in mnt_flag.

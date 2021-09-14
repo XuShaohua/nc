@@ -1441,12 +1441,12 @@ pub fn setsid() -> Result<pid_t, Errno> {
 }
 
 /// Manipulate disk quotes.
-pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) -> Result<(), Errno> {
+pub fn quotactl<P: AsRef<Path>>(path: P, cmd: i32, uid: uid_t, addr: usize) -> Result<(), Errno> {
     let cmd = cmd as usize;
-    let special = CString::new(special.as_ref());
-    let special_ptr = special.as_ptr() as usize;
-    let id = id as usize;
-    syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let uid = uid as usize;
+    syscall4(SYS_QUOTACTL, path_ptr, cmd, uid, addr).map(drop)
 }
 
 /// Set the group ID of the calling process to `gid`.

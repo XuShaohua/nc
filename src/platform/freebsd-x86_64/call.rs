@@ -1683,14 +1683,13 @@ pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno
 /// Receive a message from a socket.
 pub fn recvfrom(
     sockfd: i32,
-    buf: &mut [u8],
+    buf_ptr: usize,
+    buf_len: size_t,
     flags: i32,
     src_addr: &mut sockaddr_in_t,
     addrlen: &mut socklen_t,
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
-    let buf_ptr = buf.as_mut_ptr() as usize;
-    let buflen = buf.len();
     let flags = flags as usize;
     let src_addr_ptr = src_addr as *mut sockaddr_in_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
@@ -1698,7 +1697,7 @@ pub fn recvfrom(
         SYS_RECVFROM,
         sockfd,
         buf_ptr,
-        buflen,
+        buf_len,
         flags,
         src_addr_ptr,
         addrlen_ptr,

@@ -1262,35 +1262,21 @@ pub fn mmap(
 ///
 /// let src_dir = "/etc";
 /// let fs_type = "";
-/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
+/// let mount_flags = nc::MNT_RDONLY;
 /// let data = 0;
-/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// let ret = nc::mount(fs_type, target_dir, mount_flags, data);
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
 /// assert!(nc::rmdir(target_dir).is_ok());
-pub fn mount<P: AsRef<Path>>(
-    dev_name: P,
-    dir_name: P,
-    fs_type: P,
-    flags: usize,
-    data: usize,
-) -> Result<(), Errno> {
-    let dev_name = CString::new(dev_name.as_ref());
-    let dev_name_ptr = dev_name.as_ptr() as usize;
-    let dir_name = CString::new(dir_name.as_ref());
-    let dir_name_ptr = dir_name.as_ptr() as usize;
-    let fs_type = CString::new(fs_type.as_ref());
+/// ```
+pub fn mount<P: AsRef<Path>>(fs_type: &str, path: P, flags: i32, data: usize) -> Result<(), Errno> {
+    let fs_type = CString::new(fs_type);
     let fs_type_ptr = fs_type.as_ptr() as usize;
-    syscall5(
-        SYS_MOUNT,
-        dev_name_ptr,
-        dir_name_ptr,
-        fs_type_ptr,
-        flags,
-        data,
-    )
-    .map(drop)
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall5(SYS_MOUNT, fs_type_ptr, path_ptr, flags, data).map(drop)
 }
 
 /// Set protection on a region of memory.
@@ -1718,6 +1704,14 @@ pub fn recvfrom(
         addrlen_ptr,
     )
     .map(|ret| ret as ssize_t)
+}
+
+/// Receives multile messages on a socket
+pub fn recvmsg(sockfd: i32, msgvec: &mut msghdr_t, flags: i32) -> Result<i32, Errno> {
+    let sockfd = sockfd as usize;
+    let msg_ptr = msg as *mut msghdr_t as usize;
+    let flags = flags as usize;
+    syscall3(SYS_RECVMSG, sockfd, msgvec_ptr, flags).map(|ret| ret as i32)
 }
 
 /// Change name or location of a file.
@@ -2415,6 +2409,14 @@ pub fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), 
     let filename_ptr = filename.as_ptr() as usize;
     let flag = flag as usize;
     syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag).map(drop)
+}
+
+/// Dismount a file system.
+pub fn unmount<P: AsRef<Path>>(path: P, flags: i32) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall2(SYS_UNMOUNT, path_ptr, flags).map(drop)
 }
 
 /// Change time timestamps with nanosecond precision.

@@ -269,7 +269,7 @@ pub fn mount<P: AsRef<Path>>(fs_type: &str, path: P, flags: i32, data: usize) ->
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let flags = flags as usize;
-    syscall5(SYS_MOUNT, fs_type_ptr, path_ptr, flags, data).map(drop)
+    syscall4(SYS_MOUNT, fs_type_ptr, path_ptr, flags, data).map(drop)
 }
 
 /// Dismount a file system.
@@ -341,11 +341,11 @@ pub fn geteuid() -> uid_t {
 }
 
 /// Receives multile messages on a socket
-pub fn recvmsg(sockfd: i32, msgvec: &mut msghdr_t, flags: i32) -> Result<i32, Errno> {
+pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let msg_ptr = msg as *mut msghdr_t as usize;
     let flags = flags as usize;
-    syscall3(SYS_RECVMSG, sockfd, msgvec_ptr, flags).map(|ret| ret as i32)
+    syscall3(SYS_RECVMSG, sockfd, msg_ptr, flags).map(|ret| ret as i32)
 }
 
 /// Send a message on a socket. Allow sending ancillary data.
@@ -362,12 +362,12 @@ pub fn recvfrom(
     buf_ptr: usize,
     buf_len: size_t,
     flags: i32,
-    src_addr: &mut sockaddr_in_t,
+    src_addr: &mut sockaddr_t,
     addrlen: &mut socklen_t,
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let flags = flags as usize;
-    let src_addr_ptr = src_addr as *mut sockaddr_in_t as usize;
+    let src_addr_ptr = src_addr as *mut sockaddr_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     syscall6(
         SYS_RECVFROM,
@@ -392,11 +392,11 @@ pub fn accept(sockfd: i32, addr: &mut sockaddr_t, addrlen: &mut socklen_t) -> Re
 /// Get name of connected peer socket.
 pub fn getpeername(
     sockfd: i32,
-    addr: &mut sockaddr_in_t,
+    addr: &mut sockaddr_t,
     addrlen: &mut socklen_t,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addr_ptr = addr as *mut sockaddr_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     syscall3(SYS_GETPEERNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
 }
@@ -404,11 +404,11 @@ pub fn getpeername(
 /// Get current address to which the socket `sockfd` is bound.
 pub fn getsockname(
     sockfd: i32,
-    addr: &mut sockaddr_in_t,
+    addr: &mut sockaddr_t,
     addrlen: &mut socklen_t,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addr_ptr = addr as *mut sockaddr_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
 }
@@ -1057,9 +1057,9 @@ pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
 }
 
 /// Bind a name to a socket.
-pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+pub fn bind(sockfd: i32, addr: &sockaddr_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *const sockaddr_in_t as usize;
+    let addr_ptr = addr as *const sockaddr_t as usize;
     let addrlen = addrlen as usize;
     syscall3(SYS_BIND, sockfd, addr_ptr, addrlen).map(drop)
 }
@@ -1320,14 +1320,14 @@ pub fn sendto(
     buf: &[u8],
     len: size_t,
     flags: i32,
-    dest_addr: &sockaddr_in_t,
+    dest_addr: &sockaddr_t,
     addrlen: socklen_t,
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let buf_ptr = buf.as_ptr() as usize;
     let len = len as usize;
     let flags = flags as usize;
-    let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
+    let dest_addr_ptr = dest_addr as *const sockaddr_t as usize;
     let addrlen = addrlen as usize;
     syscall6(
         SYS_SENDTO,
@@ -2364,12 +2364,12 @@ pub fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), 
 /// Accept a connection on a socket.
 pub fn accept4(
     sockfd: i32,
-    addr: &mut sockaddr_in_t,
+    addr: &mut sockaddr_t,
     addrlen: &mut socklen_t,
     flags: i32,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addr_ptr = addr as *mut sockaddr_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     let flags = flags as usize;
     syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(drop)

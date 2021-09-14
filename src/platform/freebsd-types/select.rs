@@ -1,0 +1,28 @@
+// Copyright (c) 2021 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
+//! From sys/sys/select.h
+
+use core::mem::size_of;
+
+pub type fd_mask_t = usize;
+
+/// Select uses bit masks of file descriptors in longs.  These macros
+/// manipulate such bit fields (the filesystem macros use chars).
+/// FD_SETSIZE may be defined by the user, but the default here should
+/// be enough for most uses.
+pub const FD_SETSIZE: usize = 1024;
+
+/// bits per mask
+pub const NFDBITS: usize = size_of::<fd_mask_t> * 8;
+
+const fn howmany(x: usize, y: usize) -> usize {
+    (x + y - 1) / y
+}
+
+#[repr(C)]
+#[derive(Debug, Default)]
+pub struct fd_set_t {
+    pub _fds_bits: [fd_mask_t; howmany(FD_SETSIZE, _NFDBITS)],
+}

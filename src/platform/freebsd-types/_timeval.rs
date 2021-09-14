@@ -8,7 +8,7 @@ use crate::{suseconds_t, time_t};
 
 /// Structure returned by gettimeofday(2) system call, and used in other calls.
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct timeval_t {
     /// seconds
     pub tv_sec: time_t,

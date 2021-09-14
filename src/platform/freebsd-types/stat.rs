@@ -4,9 +4,9 @@
 
 //! From sys/sys/stat.h
 
-//#if defined(__i386__)
-//pub const __STAT_TIME_T_EXT: i32 = 1;
-//#endif
+use crate::{
+    blkcnt_t, blksize_t, dev_t, fflags_t, gid_t, ino_t, mode_t, nlink_t, off_t, timespec_t, uid_t,
+};
 
 #[cfg(target_arch = "x86")]
 #[repr(C)]
@@ -126,7 +126,7 @@ pub struct stat_t {
     pub st_blksize: blksize_t,
 
     /// user defined flags for file
-    pub st_flags: fflags_,
+    pub st_flags: fflags_t,
 
     /// file generation number
     pub st_gen: u64,

@@ -7,7 +7,7 @@
 use crate::time_t;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct timespec_t {
     /// seconds
     pub tv_sec: time_t,

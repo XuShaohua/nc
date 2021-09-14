@@ -7,7 +7,7 @@
 use crate::timeval_t;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct timezone_t {
     /// minutes west of Greenwich
     pub tz_minuteswest: i32,
@@ -37,7 +37,7 @@ pub const ITIMER_VIRTUAL: i32 = 1;
 pub const ITIMER_PROF: i32 = 2;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct itimerval_t {
     /// timer interval
     pub it_interval: timeval_t,

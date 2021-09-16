@@ -2178,14 +2178,15 @@ pub fn setsockopt(
     sockfd: i32,
     level: i32,
     optname: i32,
-    optval: usize,
+    optval: &sockaddr_t,
     optlen: socklen_t,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let level = level as usize;
     let optname = optname as usize;
+    let optval_ptr = optval as *const sockaddr_t as usize;
     let optlen = optlen as usize;
-    syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen).map(drop)
+    syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval_ptr, optlen).map(drop)
 }
 
 /// Set system time and timezone.

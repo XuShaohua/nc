@@ -247,47 +247,47 @@ pub const S_BLKSIZE: usize = 512;
 ///
 /// Super-user and owner changeable flags.
 /// mask of owner changeable flags
-pub const UF_SETTABLE: i32 = 0x0000ffff;
+pub const UF_SETTABLE: fflags_t = 0x0000ffff;
 /// do not dump file
-pub const UF_NODUMP: i32 = 0x00000001;
+pub const UF_NODUMP: fflags_t = 0x00000001;
 /// file may not be changed
-pub const UF_IMMUTABLE: i32 = 0x00000002;
+pub const UF_IMMUTABLE: fflags_t = 0x00000002;
 /// writes to file may only append
-pub const UF_APPEND: i32 = 0x00000004;
+pub const UF_APPEND: fflags_t = 0x00000004;
 /// directory is opaque wrt. union
-pub const UF_OPAQUE: i32 = 0x00000008;
+pub const UF_OPAQUE: fflags_t = 0x00000008;
 /// file may not be removed or renamed
-pub const UF_NOUNLINK: i32 = 0x00000010;
+pub const UF_NOUNLINK: fflags_t = 0x00000010;
 
 /// Windows system file bit
-pub const UF_SYSTEM: i32 = 0x00000080;
+pub const UF_SYSTEM: fflags_t = 0x00000080;
 /// sparse file
-pub const UF_SPARSE: i32 = 0x00000100;
+pub const UF_SPARSE: fflags_t = 0x00000100;
 /// file is offline
-pub const UF_OFFLINE: i32 = 0x00000200;
+pub const UF_OFFLINE: fflags_t = 0x00000200;
 /// Windows reparse point file bit
-pub const UF_REPARSE: i32 = 0x00000400;
+pub const UF_REPARSE: fflags_t = 0x00000400;
 /// file needs to be archived
-pub const UF_ARCHIVE: i32 = 0x00000800;
+pub const UF_ARCHIVE: fflags_t = 0x00000800;
 /// Windows readonly file bit
-pub const UF_READONLY: i32 = 0x00001000;
+pub const UF_READONLY: fflags_t = 0x00001000;
 /// This is the same as the MacOS X definition of UF_HIDDEN.
 /// file is hidden
-pub const UF_HIDDEN: i32 = 0x00008000;
+pub const UF_HIDDEN: fflags_t = 0x00008000;
 
 /// Super-user changeable flags.
 /// mask of superuser changeable flags
-pub const SF_SETTABLE: i32 = 0xffff0000;
+pub const SF_SETTABLE: fflags_t = 0xffff0000;
 /// file is archived
-pub const SF_ARCHIVED: i32 = 0x00010000;
+pub const SF_ARCHIVED: fflags_t = 0x00010000;
 /// file may not be changed
-pub const SF_IMMUTABLE: i32 = 0x00020000;
+pub const SF_IMMUTABLE: fflags_t = 0x00020000;
 /// writes to file may only append
-pub const SF_APPEND: i32 = 0x00040000;
+pub const SF_APPEND: fflags_t = 0x00040000;
 /// file may not be removed or renamed
-pub const SF_NOUNLINK: i32 = 0x00100000;
+pub const SF_NOUNLINK: fflags_t = 0x00100000;
 /// snapshot inode
-pub const SF_SNAPSHOT: i32 = 0x00200000;
+pub const SF_SNAPSHOT: fflags_t = 0x00200000;
 
 pub const UTIME_NOW: i32 = -1;
 pub const UTIME_OMIT: i32 = -2;

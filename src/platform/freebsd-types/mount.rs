@@ -371,6 +371,7 @@ pub const MNTK_N_NOCACHE: i32 = 0x20000000;
 /// FS supports shared lock lookups
 pub const MNTK_LOOKUP_SHARED: i32 = 0x40000000;
 /// Don't send KNOTEs from VOP hooks
+#[allow(overflowing_literals)]
 pub const MNTK_NOKNOTE: i32 = 0x80000000;
 
 /// Flags for various system call interfaces.

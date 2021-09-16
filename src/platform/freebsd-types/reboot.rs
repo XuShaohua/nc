@@ -59,4 +59,5 @@ pub const RB_PROBE: i32 = 0x10000000;
 pub const RB_MULTIPLE: i32 = 0x20000000;
 
 /// have `struct bootinfo *' arg
+#[allow(overflowing_literals)]
 pub const RB_BOOTINFO: i32 = 0x80000000;

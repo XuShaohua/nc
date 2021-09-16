@@ -139,10 +139,10 @@ pub fn chown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<(
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
-    let filename = CString::new(filename.as_ref());
-    let filename_ptr = filename.as_ptr() as usize;
-    syscall1(SYS_CHROOT, filename_ptr).map(drop)
+pub fn chroot<P: AsRef<Path>>(path: P) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    syscall1(SYS_CHROOT, path_ptr).map(drop)
 }
 
 /// Get resolution(precision) of the specific clock.
@@ -664,7 +664,7 @@ pub fn getgid() -> gid_t {
 /// assert!(ret.is_ok());
 /// let total_num = ret.unwrap();
 /// groups.resize(total_num as usize, 0);
-
+///
 /// let ret = nc::getgroups(total_num, &mut groups);
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(total_num));
@@ -1980,9 +1980,9 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
-    let group_ptr = group_list.as_ptr() as usize;
     let group_len = group_list.len();
-    syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
+    let group_ptr = group_list.as_ptr() as usize;
+    syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop)
 }
 
 /// Set value of an interval timer.
@@ -2369,9 +2369,9 @@ pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno>
 /// let ret = nc::umask(old_mask);
 /// assert_eq!(ret, Ok(new_mask));
 /// ```
-pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
-    let mode = mode as usize;
-    syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
+pub fn umask(new_mask: mode_t) -> Result<mode_t, Errno> {
+    let new_mask = new_mask as usize;
+    syscall1(SYS_UMASK, new_mask).map(|ret| ret as mode_t)
 }
 
 /// Delete a name and possibly the file it refers to.

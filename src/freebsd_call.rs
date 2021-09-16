@@ -650,9 +650,9 @@ pub fn execve<P: AsRef<Path>>(filename: P, argv: &[&str], env: &[&str]) -> Resul
 /// let ret = nc::umask(old_mask);
 /// assert_eq!(ret, Ok(new_mask));
 /// ```
-pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
-    let mode = mode as usize;
-    syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
+pub fn umask(new_mask: mode_t) -> Result<mode_t, Errno> {
+    let new_mask = new_mask as usize;
+    syscall1(SYS_UMASK, new_mask).map(|ret| ret as mode_t)
 }
 
 /// Change the root directory.
@@ -662,10 +662,10 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
-    let filename = CString::new(filename.as_ref());
-    let filename_ptr = filename.as_ptr() as usize;
-    syscall1(SYS_CHROOT, filename_ptr).map(drop)
+pub fn chroot<P: AsRef<Path>>(path: P) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    syscall1(SYS_CHROOT, path_ptr).map(drop)
 }
 
 /// Synchronize a file with memory map.
@@ -784,7 +784,7 @@ pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// let total_num = ret.unwrap();
 /// groups.resize(total_num as usize, 0);
-
+///
 /// let ret = nc::getgroups(total_num, &mut groups);
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(total_num));
@@ -804,9 +804,9 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
-    let group_ptr = group_list.as_ptr() as usize;
     let group_len = group_list.len();
-    syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
+    let group_ptr = group_list.as_ptr() as usize;
+    syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop)
 }
 
 /// Get the process group ID of the calling process.

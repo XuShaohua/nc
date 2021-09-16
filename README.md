@@ -80,11 +80,11 @@ fn main() {
 
 ## Stable version
 For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
-As `asm!` feature is unavailable in stable version.
+As `llvm_asm!` feature is unavailable in stable version.
 
 
 ## Platforms and Architectures
-- Linux
+- linux
   - x86
   - x86-64
   - arm
@@ -95,10 +95,8 @@ As `asm!` feature is unavailable in stable version.
   - mips64el
   - powerpc64
   - s390x
-
-Current work is focused on linux networking.
-FreeBSD and other OS are unavailable yet.
-
+- freebsd
+  - x86-64
 
 ## Related projects
 - [nix][nix]

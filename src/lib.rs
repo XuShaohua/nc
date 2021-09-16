@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! Execute system call directly. `nc` do not depend on `std`.
+//! Execute system call directly without `std` or `libc`.
 //!
 //! - [Documentation](https://docs.rs/nc)
 //! - [Release notes](https://github.com/xushaohua/nc/releases)
@@ -87,7 +87,7 @@
 //! As `asm!` feature is unavailable in stable version.
 //!
 //! ## Platforms and Architectures
-//! - Linux
+//! - linux
 //!   - [x] x86
 //!   - [x] x86-64
 //!   - [x] arm
@@ -98,10 +98,8 @@
 //!   - [x] mips64el
 //!   - [x] powerpc64
 //!   - [x] s390x
-//!
-//! Current work is focused on linux networking.
-//! FreeBSD and other OS are unavailable yet.
-//!
+//! - freebsd
+//!   - x86-64
 //!
 //! ## Related projects
 //! * [nix][nix]

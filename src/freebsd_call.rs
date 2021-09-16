@@ -1430,7 +1430,7 @@ pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
 /// let addr = passwd_buf.as_ptr() as usize;
-/// let ret = nc::mlock2(addr, passwd_buf.len(), nc::MCL_CURRENT);
+/// let ret = nc::mlock(addr, passwd_buf.len());
 /// for i in 0..passwd_buf.len() {
 ///   passwd_buf[i] = i as u8;
 /// }
@@ -1748,7 +1748,7 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
 ///
 /// ```
 /// let ret = nc::sched_getscheduler(0);
-/// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
+/// assert_eq!(ret, Ok(nc::SCHED_OTHER));
 /// ```
 pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
     let pid = pid as usize;

@@ -4,6 +4,10 @@
 
 //! From sys/amd64/include/param.h
 
+use core::mem::size_of;
+
+use crate::{pd_entry_t, pdp_entry_t, pml4_entry_t, pml5_entry_t, pt_entry_t};
+
 /// Machine dependent constants for AMD64.
 pub const MAXCPU: i32 = 256;
 
@@ -14,8 +18,8 @@ pub const MAXMEMDOM: i32 = 8;
 pub const CACHE_LINE_SHIFT: i32 = 6;
 pub const CACHE_LINE_SIZE: usize = 1 << CACHE_LINE_SHIFT;
 
-// Size of the level 1 page table units
-//#define NPTEPG		(PAGE_SIZE/(sizeof (pt_entry_t)))
+/// Size of the level 1 page table units
+pub const NPTEPG: usize = PAGE_SIZE / size_of::<pt_entry_t>();
 
 /// LOG2(NPTEPG)
 pub const NPTEPGSHIFT: i32 = 9;
@@ -24,8 +28,8 @@ pub const PAGE_SHIFT: i32 = 12;
 /// bytes/page
 pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;
 pub const PAGE_MASK: usize = PAGE_SIZE - 1;
-// Size of the level 2 page directory units
-//#define	NPDEPG		(PAGE_SIZE/(sizeof (pd_entry_t)))
+/// Size of the level 2 page directory units
+pub const NPDEPG: usize = PAGE_SIZE / size_of::<pd_entry_t>();
 /// LOG2(NPDEPG)
 pub const NPDEPGSHIFT: i32 = 9;
 /// LOG2(NBPDR)
@@ -35,7 +39,7 @@ pub const NBPDR: usize = 1 << PDRSHIFT;
 pub const PDRMASK: usize = NBPDR - 1;
 
 /// Size of the level 3 page directory pointer table units
-//#define	NPDPEPG		(PAGE_SIZE/(sizeof (pdp_entry_t)))
+pub const NPDPEPG: usize = PAGE_SIZE / size_of::<pdp_entry_t>();
 /// LOG2(NPDPEPG)
 pub const NPDPEPGSHIFT: i32 = 9;
 /// LOG2(NBPDP)
@@ -45,7 +49,7 @@ pub const NBPDP: usize = 1 << PDPSHIFT;
 pub const PDPMASK: usize = NBPDP - 1;
 
 /// Size of the level 4 page-map level-4 table units
-//#define	NPML4EPG	(PAGE_SIZE/(sizeof (pml4_entry_t)))
+pub const NPML4EPG: usize = PAGE_SIZE / size_of::<pml4_entry_t>();
 /// LOG2(NPML4EPG)
 pub const NPML4EPGSHIFT: i32 = 9;
 /// LOG2(NBPML4)
@@ -55,7 +59,7 @@ pub const NBPML4: usize = 1 << PML4SHIFT;
 pub const PML4MASK: usize = NBPML4 - 1;
 
 /// Size of the level 5 page-map level-5 table units
-//#define	NPML5EPG	(PAGE_SIZE/(sizeof (pml5_entry_t)))
+pub const NPML5EPG: usize = PAGE_SIZE / size_of::<pml5_entry_t>();
 /// LOG2(NPML5EPG)
 pub const NPML5EPGSHIFT: i32 = 9;
 /// LOG2(NBPML5)

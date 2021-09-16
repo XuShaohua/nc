@@ -5,7 +5,9 @@
 mod _limits;
 mod _types;
 mod param;
+mod pmap;
 
 pub use _limits::*;
 pub use _types::*;
 pub use param::*;
+pub use pmap::*;

@@ -5418,9 +5418,9 @@ pub fn setgid32() {
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
-    let group_ptr = group_list.as_ptr() as usize;
     let group_len = group_list.len();
-    syscall2(SYS_SETGROUPS, group_ptr, group_len).map(drop)
+    let group_ptr = group_list.as_ptr() as usize;
+    syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop)
 }
 
 pub fn setgroups32() {

@@ -895,15 +895,14 @@ pub fn setitimer(
 ///
 /// ```
 /// let filename = "/dev/sda-no-exist";
-/// let ret = nc::swapon(filename, nc::SWAP_FLAG_PREFER);
+/// let ret = nc::swapon(filename);
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errno> {
-    let filename = CString::new(filename.as_ref());
-    let filename_ptr = filename.as_ptr() as usize;
-    let flags = flags as usize;
-    syscall2(SYS_SWAPON, filename_ptr, flags).map(drop)
+pub fn swapon<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
+    let name = CString::new(name.as_ref());
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS_SWAPON, name_ptr).map(drop)
 }
 
 /// Get value of an interval timer.

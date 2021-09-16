@@ -4575,7 +4575,8 @@ pub fn readdir() {
 /// let ret = nc::symlink(oldname, newname);
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; nc::PATH_MAX as usize];
-/// let ret = nc::readlink(newname, &mut buf, buf.len());
+/// let buf_len = buf.len();
+/// let ret = nc::readlink(newname, &mut buf, buf_len);
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());
@@ -4601,7 +4602,8 @@ pub fn readlink<P: AsRef<Path>>(
 /// let ret = nc::symlink(oldname, newname);
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; nc::PATH_MAX as usize];
-/// let ret = nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf.len());
+/// let buf_len = buf.len();
+/// let ret = nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf_len);
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());

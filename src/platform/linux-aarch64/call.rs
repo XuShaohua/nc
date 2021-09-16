@@ -3771,7 +3771,8 @@ pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
 /// let ret = nc::symlink(oldname, newname);
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; nc::PATH_MAX as usize];
-/// let ret = nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf.len());
+/// let buf_len = buf.len();
+/// let ret = nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf_len);
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());

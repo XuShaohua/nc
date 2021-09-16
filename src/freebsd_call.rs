@@ -1063,6 +1063,24 @@ pub fn connect(sockfd: i32, addr: &sockaddr_t, addrlen: socklen_t) -> Result<(),
     syscall3(SYS_CONNECT, sockfd, addr_ptr, addrlen).map(drop)
 }
 
+/// Get program scheduling priority.
+///
+/// ```
+/// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
+/// assert!(ret.is_ok());
+/// ```
+pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
+    let which = which as usize;
+    let who = who as usize;
+    syscall2(SYS_GETPRIORITY, which, who).map(|ret| {
+        let ret = ret as i32;
+        if ret > PRIO_MAX {
+            return PRIO_MAX - ret;
+        }
+        ret
+    })
+}
+
 /// Bind a name to a socket.
 pub fn bind(sockfd: i32, addr: &sockaddr_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;

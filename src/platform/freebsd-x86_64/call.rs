@@ -793,6 +793,24 @@ pub fn getppid() -> pid_t {
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
 
+/// Get program scheduling priority.
+///
+/// ```
+/// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
+/// assert!(ret.is_ok());
+/// ```
+pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
+    let which = which as usize;
+    let who = who as usize;
+    syscall2(SYS_GETPRIORITY, which, who).map(|ret| {
+        let ret = ret as i32;
+        if ret > PRIO_MAX {
+            return PRIO_MAX - ret;
+        }
+        ret
+    })
+}
+
 /// Obtain a series of random bytes.
 ///
 /// ```

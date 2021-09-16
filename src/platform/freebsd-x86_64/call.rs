@@ -1665,19 +1665,16 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     syscall3(SYS_READV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
 }
 
-/// Reboot or enable/disable Ctrl-Alt-Del.
+/// Reboot system or halt processor.
 ///
 /// ```
-/// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
-///     nc::LINUX_REBOOT_CMD_RESTART, 0);
+/// let ret = nc::reboot(nc::RB_AUTOBOOT);
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
-    let magic = magic as usize;
-    let magic2 = magci2 as usize;
-    let cmd = cmd as usize;
-    syscall4(SYS_REBOOT, magic, magic2, cmd, arg).map(drop)
+pub fn reboot(opt: i32) -> Result<(), Errno> {
+    let opt = opt as usize;
+    syscall1(SYS_REBOOT, opt).map(drop)
 }
 
 /// Receive a message from a socket.

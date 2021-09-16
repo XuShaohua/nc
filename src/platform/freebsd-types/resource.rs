@@ -76,40 +76,40 @@ pub struct rusage_t {
 
 /// Resource limits
 /// maximum cpu time in seconds
-pub const RLIMIT_CPU: rlim_t = 0;
+pub const RLIMIT_CPU: i32 = 0;
 /// maximum file size
-pub const RLIMIT_FSIZE: rlim_t = 1;
+pub const RLIMIT_FSIZE: i32 = 1;
 /// data size
-pub const RLIMIT_DATA: rlim_t = 2;
+pub const RLIMIT_DATA: i32 = 2;
 /// stack size
-pub const RLIMIT_STACK: rlim_t = 3;
+pub const RLIMIT_STACK: i32 = 3;
 /// core file size
-pub const RLIMIT_CORE: rlim_t = 4;
+pub const RLIMIT_CORE: i32 = 4;
 /// resident set size
-pub const RLIMIT_RSS: rlim_t = 5;
+pub const RLIMIT_RSS: i32 = 5;
 /// locked-in-memory address space
-pub const RLIMIT_MEMLOCK: rlim_t = 6;
+pub const RLIMIT_MEMLOCK: i32 = 6;
 /// number of processes
-pub const RLIMIT_NPROC: rlim_t = 7;
+pub const RLIMIT_NPROC: i32 = 7;
 /// number of open files
-pub const RLIMIT_NOFILE: rlim_t = 8;
+pub const RLIMIT_NOFILE: i32 = 8;
 /// maximum size of all socket buffers
-pub const RLIMIT_SBSIZE: rlim_t = 9;
+pub const RLIMIT_SBSIZE: i32 = 9;
 /// virtual process size (incl. mmap)
-pub const RLIMIT_VMEM: rlim_t = 10;
+pub const RLIMIT_VMEM: i32 = 10;
 /// standard name for RLIMIT_VMEM
-pub const RLIMIT_AS: rlim_t = RLIMIT_VMEM;
+pub const RLIMIT_AS: i32 = RLIMIT_VMEM;
 /// pseudo-terminals
-pub const RLIMIT_NPTS: rlim_t = 11;
+pub const RLIMIT_NPTS: i32 = 11;
 /// swap used
-pub const RLIMIT_SWAP: rlim_t = 12;
+pub const RLIMIT_SWAP: i32 = 12;
 /// kqueues allocated
-pub const RLIMIT_KQUEUES: rlim_t = 13;
+pub const RLIMIT_KQUEUES: i32 = 13;
 /// process-shared umtx
-pub const RLIMIT_UMTXP: rlim_t = 14;
+pub const RLIMIT_UMTXP: i32 = 14;
 
 /// number of resource limits
-pub const RLIM_NLIMITS: rlim_t = 15;
+pub const RLIM_NLIMITS: i32 = 15;
 
 pub const RLIM_INFINITY: rlim_t = ((1u64 << 63) - 1) as rlim_t;
 pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;

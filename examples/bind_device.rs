@@ -18,4 +18,5 @@ fn main() {
     } else {
         println!("Now socket is bind to {}", interface_name);
     }
+    assert!(nc::close(socket_fd).is_ok());
 }

@@ -5477,6 +5477,20 @@ pub fn setsid() -> Result<pid_t, Errno> {
 }
 
 /// Set options on sockets.
+/// ```
+/// let socket_fd = nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0);
+/// assert!(socket_fd.is_ok());
+/// let socket_fd = socket_fd.unwrap();
+/// let interface_name = "lo";  // loopback
+/// let ret = nc::setsockopt(
+///     socket_fd,
+///     nc::SOL_SOCKET,
+///     nc::SO_BINDTODEVICE,
+///     interface_name.as_ptr() as usize,
+///     interface_name.len() as u32);
+/// assert!(ret.is_ok());
+/// assert!(nc::close(socket_fd).is_ok());
+/// ```
 pub fn setsockopt(
     sockfd: i32,
     level: i32,

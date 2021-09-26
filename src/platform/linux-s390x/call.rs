@@ -5487,7 +5487,7 @@ pub fn setsid() -> Result<pid_t, Errno> {
 ///     nc::SOL_SOCKET,
 ///     nc::SO_BINDTODEVICE,
 ///     interface_name.as_ptr() as usize,
-///     interface_name.len() as u32);
+///     interface_name.len() as nc::socklen_t);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(socket_fd).is_ok());
 /// ```

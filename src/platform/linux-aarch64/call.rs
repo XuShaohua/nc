@@ -4809,17 +4809,22 @@ pub fn setsid() -> Result<pid_t, Errno> {
 }
 
 /// Set options on sockets.
+///
 /// ```
 /// let socket_fd = nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0);
 /// assert!(socket_fd.is_ok());
 /// let socket_fd = socket_fd.unwrap();
-/// let interface_name = "lo";  // loopback
+///
+/// // Enable tcp fast open.
+/// let queue_len: i32 = 5;
+/// let queue_len_ptr = &queue_len as *const i32 as usize;
 /// let ret = nc::setsockopt(
 ///     socket_fd,
-///     nc::SOL_SOCKET,
-///     nc::SO_BINDTODEVICE,
-///     interface_name.as_ptr() as usize,
-///     interface_name.len() as nc::socklen_t);
+///     nc::IPPROTO_TCP,
+///     nc::TCP_FASTOPEN,
+///     queue_len_ptr,
+///     std::mem::size_of_val(&queue_len) as u32,
+/// );
 /// assert!(ret.is_ok());
 /// assert!(nc::close(socket_fd).is_ok());
 /// ```

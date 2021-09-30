@@ -12,7 +12,7 @@ fn main() {
         nc::SOL_SOCKET,
         nc::SO_BINDTODEVICE,
         interface_name.as_ptr() as usize,
-        interface_name.len() as u32,
+        interface_name.len() as nc::socklen_t,
     ) {
         eprintln!("socket() err: {}", nc::strerror(errno));
     } else {

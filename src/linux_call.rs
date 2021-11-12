@@ -165,7 +165,7 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 ///
 /// ```
 /// let filename = "/tmp/nc-chmod";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -183,7 +183,7 @@ pub fn chmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
 ///
 /// ```
 /// let filename = "/tmp/nc-chown";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -384,7 +384,7 @@ pub fn creat<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<i32, Errno> {
 ///
 /// ```
 /// let path = "/tmp/nc-dup-file";
-/// let fd = nc::creat(path, 0o644);
+/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let fd_dup = nc::dup(fd);
@@ -404,7 +404,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 ///
 /// ```
 /// let path = "/tmp/nc-dup2-file";
-/// let fd = nc::creat(path, 0o644);
+/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
@@ -423,7 +423,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 ///
 /// ```
 /// let path = "/tmp/nc-dup3-file";
-/// let fd = nc::creat(path, 0o644);
+/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
@@ -824,7 +824,7 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
 ///
 /// ```
 /// let filename = "/tmp/nc-fchmod";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::fchmod(fd, 0o600).is_ok());
@@ -860,7 +860,7 @@ pub fn fdatasync(fd: i32) -> Result<(), Errno> {
 ///
 /// ```
 /// let filename = "/tmp/nc-fchmodat";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -879,7 +879,7 @@ pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result
 ///
 /// ```
 /// let filename = "/tmp/nc-fchown";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let ret = nc::fchown(fd, 0, 0);
@@ -1064,7 +1064,7 @@ pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 ///
 /// ```
 /// let filename = "/tmp/nc-fchown";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -1763,7 +1763,7 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 ///
 /// ```
 /// let filename = "/tmp/nc-lchown";
-/// let ret = nc::creat(filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
@@ -1827,7 +1827,7 @@ pub fn lgetxattr<P: AsRef<Path>>(
 ///
 /// ```
 /// let old_filename = "/tmp/nc-link-src";
-/// let ret = nc::creat(old_filename, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());

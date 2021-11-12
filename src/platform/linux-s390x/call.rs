@@ -41,13 +41,13 @@ pub fn access<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errno> {
 ///
 /// ```
 /// let path = "/tmp/nc-acct";
-/// let ret = nc::open(path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// let ret = nc::acct(path);
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
 /// ```
 pub fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());

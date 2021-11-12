@@ -2759,7 +2759,7 @@ pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
 /// let path = "/tmp/nc-mkdir";
 /// let ret = nc::mkdir(path, 0o755);
 /// assert!(ret.is_ok());
-/// assert!(nc::rmdir(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_ok());
 /// ```
 pub fn mkdir<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -2774,7 +2774,7 @@ pub fn mkdir<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
 /// let path = "/tmp/nc-mkdir";
 /// let ret = nc::mkdirat(nc::AT_FDCWD, path, 0o755);
 /// assert!(ret.is_ok());
-/// assert!(nc::rmdir(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_ok());
 /// ```
 pub fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
@@ -2926,7 +2926,7 @@ pub fn mmap(
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
-/// assert!(nc::rmdir(target_dir).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
 /// ```
 pub fn mount<P: AsRef<Path>>(
     dev_name: P,
@@ -6428,7 +6428,7 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
-/// assert!(nc::rmdir(target_dir).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
 /// ```
 pub fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());

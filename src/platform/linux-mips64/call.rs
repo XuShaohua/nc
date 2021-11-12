@@ -54,7 +54,7 @@ pub fn access<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// let ret = nc::acct(path);
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -211,7 +211,7 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::chmod(filename, 0o600).is_ok());
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
 pub fn chmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -231,7 +231,7 @@ pub fn chmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
 /// let ret = nc::chown(filename, 0, 0);
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
 pub fn chown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -401,7 +401,7 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
 /// assert_eq!(ret, Ok(copy_len as nc::ssize_t));
 /// assert!(nc::close(fd_in).is_ok());
 /// assert!(nc::close(fd_out).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
 pub fn copy_file_range(
     fd_in: i32,
@@ -438,7 +438,7 @@ pub fn copy_file_range(
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn creat<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<i32, Errno> {
     let filename = CString::new(filename.as_ref());
@@ -473,7 +473,7 @@ pub fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
 /// let fd_dup = fd_dup.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(fd_dup).is_ok());
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
@@ -492,7 +492,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// assert!(nc::dup2(fd, newfd).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -511,7 +511,7 @@ pub fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
 /// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(newfd).is_ok());
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -842,7 +842,7 @@ pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<()
 /// let ret = nc::fallocate(fd, 0, 0, 64 * 1024);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -910,7 +910,7 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
 /// let fd = ret.unwrap();
 /// assert!(nc::fchmod(fd, 0o600).is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
 pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -927,7 +927,7 @@ pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::fchmodat(nc::AT_FDCWD, filename, 0o600).is_ok());
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
 pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
@@ -948,7 +948,7 @@ pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
 pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -968,7 +968,7 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 /// let ret = nc::fchownat(nc::AT_FDCWD, filename, 0, 0, 0);
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename,0 ).is_ok());
 /// ```
 pub fn fchownat<P: AsRef<Path>>(
     dirfd: i32,
@@ -1018,7 +1018,7 @@ pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn fdatasync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1052,7 +1052,7 @@ pub fn fdatasync(fd: i32) -> Result<(), Errno> {
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn fgetxattr<P: AsRef<Path>>(
     fd: i32,
@@ -1101,7 +1101,7 @@ pub fn finit_module<P: AsRef<Path>>(fd: i32, param_values: P, flags: i32) -> Res
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -1124,7 +1124,7 @@ pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> 
 /// let ret = nc::flock(fd, nc::LOCK_UN);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path,0 ).is_ok());
 /// ```
 pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1165,7 +1165,7 @@ pub fn fork() -> Result<pid_t, Errno> {
 /// let ret = nc::fremovexattr(fd, attr_name);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn fremovexattr<P: AsRef<Path>>(fd: i32, name: P) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1212,7 +1212,7 @@ pub fn fsconfig<P: AsRef<Path>>(
 /// );
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn fsetxattr<P: AsRef<Path>>(
     fd: i32,
@@ -1308,7 +1308,7 @@ pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
 /// assert_eq!(n_write, Ok(buf.len() as isize));
 /// assert!(nc::fsync(fd).is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn fsync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1325,7 +1325,7 @@ pub fn fsync(fd: i32) -> Result<(), Errno> {
 /// let ret = nc::ftruncate(fd, 64 * 1024);
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1380,7 +1380,7 @@ pub fn futex(
 /// ];
 /// let ret = nc::futimesat(nc::AT_FDCWD, path, &times);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn futimesat<P: AsRef<Path>>(
     dirfd: i32,
@@ -1905,7 +1905,7 @@ pub fn getuid() -> uid_t {
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn getxattr<P: AsRef<Path>>(
     filename: P,
@@ -2046,7 +2046,7 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 /// println!("attr: {}", attr);
 ///
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -2327,7 +2327,7 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 /// let ret = nc::lchown(filename, 0, 0);
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlink(filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
 pub fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -2364,7 +2364,7 @@ pub fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> Result<
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn lgetxattr<P: AsRef<Path>>(
     filename: P,
@@ -2390,8 +2390,8 @@ pub fn lgetxattr<P: AsRef<Path>>(
 /// assert!(nc::close(fd).is_ok());
 /// let new_filename = "/tmp/nc-link-dst";
 /// assert!(nc::link(old_filename, new_filename).is_ok());
-/// assert!(nc::unlink(old_filename).is_ok());
-/// assert!(nc::unlink(new_filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, old_filename, 0).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, new_filename, 0).is_ok());
 /// ```
 pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errno> {
     let old_filename = CString::new(old_filename.as_ref());
@@ -2412,8 +2412,8 @@ pub fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(), Errn
 /// let new_filename = "/tmp/nc-linkat-dst";
 /// let flags = nc::AT_SYMLINK_FOLLOW;
 /// assert!(nc::linkat(nc::AT_FDCWD, old_filename, nc::AT_FDCWD,  new_filename, flags).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, old_filename).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_filename).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, old_filename, 0).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, new_filename, 0).is_ok());
 /// ```
 pub fn linkat<P: AsRef<Path>>(
     olddfd: i32,
@@ -2472,7 +2472,7 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 /// let ret = nc::listxattr(path, buf.as_mut_ptr() as usize, buf_len);
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn listxattr<P: AsRef<Path>>(filename: P, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
@@ -2505,7 +2505,7 @@ pub fn listxattr<P: AsRef<Path>>(filename: P, list: usize, size: size_t) -> Resu
 /// let ret = nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len);
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn llistxattr<P: AsRef<Path>>(
     filename: P,
@@ -2547,7 +2547,7 @@ pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// let ret = nc::lremovexattr(path, attr_name);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -2595,7 +2595,7 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 ///     flags,
 /// );
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn lsetxattr<P: AsRef<Path>>(
     filename: P,
@@ -2791,7 +2791,7 @@ pub fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<
 /// // Create a named pipe.
 /// let ret = nc::mknod(path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn mknod<P: AsRef<Path>>(filename: P, mode: mode_t, dev: dev_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -2808,7 +2808,7 @@ pub fn mknod<P: AsRef<Path>>(filename: P, mode: mode_t, dev: dev_t) -> Result<()
 /// // Create a named pipe.
 /// let ret = nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlink(path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn mknodat<P: AsRef<Path>>(
     dirfd: i32,
@@ -4103,7 +4103,7 @@ pub fn putpmsg() {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(buf.len() as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -4140,7 +4140,7 @@ pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssi
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
 pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -4179,7 +4179,7 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
 pub fn pwritev2(
     fd: i32,
@@ -4259,7 +4259,7 @@ pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());
 /// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
-/// assert!(nc::unlink(newname).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
 /// ```
 pub fn readlink<P: AsRef<Path>>(
     filename: P,
@@ -4286,7 +4286,7 @@ pub fn readlink<P: AsRef<Path>>(
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());
 /// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
-/// assert!(nc::unlink(newname).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
 /// ```
 pub fn readlinkat<P: AsRef<Path>>(
     dirfd: i32,
@@ -4431,7 +4431,7 @@ pub fn remap_file_pages(
 /// assert!(ret.is_ok());
 /// let ret = nc::removexattr(path, attr_name);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -4452,7 +4452,7 @@ pub fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
 /// let new_path = "/tmp/nc-rename-new";
 /// let ret = nc::rename(path, new_path);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
 /// ```
 pub fn rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> Result<(), Errno> {
     let oldfilename = CString::new(oldfilename.as_ref());
@@ -4473,7 +4473,7 @@ pub fn rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> Result<(), Errn
 /// let new_path = "/tmp/nc-renameat-new";
 /// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
 /// ```
 pub fn renameat<P: AsRef<Path>>(
     olddfd: i32,
@@ -4509,7 +4509,7 @@ pub fn renameat<P: AsRef<Path>>(
 /// let flags = nc::RENAME_NOREPLACE;
 /// let ret = nc::renameat2(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path, flags);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
 /// ```
 pub fn renameat2<P: AsRef<Path>>(
     olddfd: i32,
@@ -5445,7 +5445,7 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
 ///     flags,
 /// );
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn setxattr<P: AsRef<Path>>(
     filename: P,
@@ -5816,7 +5816,7 @@ pub fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errno> {
 /// let newname = "/tmp/nc-symlink";
 /// let ret = nc::symlink(oldname, newname);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlink(newname).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, newname,0 ).is_ok());
 /// ```
 pub fn symlink<P: AsRef<Path>>(oldname: P, newname: P) -> Result<(), Errno> {
     let oldname = CString::new(oldname.as_ref());
@@ -5833,7 +5833,7 @@ pub fn symlink<P: AsRef<Path>>(oldname: P, newname: P) -> Result<(), Errno> {
 /// let newname = "/tmp/nc-symlinkat";
 /// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlink(newname).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
 /// ```
 pub fn symlinkat<P: AsRef<Path>>(oldname: P, newdirfd: i32, newname: P) -> Result<(), Errno> {
     let oldname = CString::new(oldname.as_ref());
@@ -5894,7 +5894,7 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 ///
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -6384,7 +6384,7 @@ pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// let ret = nc::truncate(path, 64 * 1024);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -6459,7 +6459,7 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn unlink<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -6520,7 +6520,7 @@ pub fn ustat(dev: dev_t, ubuf: &mut ustat_t) -> Result<(), Errno> {
 /// };
 /// let ret = nc::utime(path, &time);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn utime<P: AsRef<Path>>(filename: P, times: &utimbuf_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -6550,7 +6550,7 @@ pub fn utime<P: AsRef<Path>>(filename: P, times: &utimbuf_t) -> Result<(), Errno
 /// let flags = nc::AT_SYMLINK_NOFOLLOW;
 /// let ret = nc::utimensat(nc::AT_FDCWD, path, &times, flags);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn utimensat<P: AsRef<Path>>(
     dirfd: i32,
@@ -6586,7 +6586,7 @@ pub fn utimensat<P: AsRef<Path>>(
 /// ];
 /// let ret = nc::utimes(path, &times);
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn utimes<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -6699,7 +6699,7 @@ pub fn waitid(
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
 pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -6735,7 +6735,7 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out).is_ok());
+/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
 pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;

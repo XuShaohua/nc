@@ -2599,7 +2599,7 @@ pub fn lgetxattr<P: AsRef<Path>>(
 ///
 /// ```
 /// let old_filename = "/tmp/nc-link-src";
-/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
+/// let ret = nc::openat(nc::AT_FDCWD, old_filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());

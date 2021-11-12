@@ -547,7 +547,7 @@ pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
 /// assert!(epfd.is_ok());
 /// let epfd = epfd.unwrap();
 /// let mut fds: [i32; 2] = [0, 0];
-/// let ret = nc::pipe(&mut fds);
+/// let ret = nc::pipe2(&mut fds, 0);
 /// assert!(ret.is_ok());
 /// let mut event = nc::epoll_event_t::default();
 /// event.events = nc::EPOLLIN | nc::EPOLLET;
@@ -579,7 +579,7 @@ pub fn epoll_ctl_old() {
 /// assert!(epfd.is_ok());
 /// let epfd = epfd.unwrap();
 /// let mut fds: [i32; 2] = [0, 0];
-/// let ret = nc::pipe(&mut fds);
+/// let ret = nc::pipe2(&mut fds, 0);
 /// assert!(ret.is_ok());
 /// let mut event = nc::epoll_event_t::default();
 /// event.events = nc::EPOLLIN | nc::EPOLLET;
@@ -657,7 +657,7 @@ pub fn epoll_pwait(
 /// assert!(epfd.is_ok());
 /// let epfd = epfd.unwrap();
 /// let mut fds: [i32; 2] = [0, 0];
-/// let ret = nc::pipe(&mut fds);
+/// let ret = nc::pipe2(&mut fds, 0);
 /// assert!(ret.is_ok());
 /// let mut event = nc::epoll_event_t::default();
 /// event.events = nc::EPOLLIN | nc::EPOLLET;
@@ -5727,11 +5727,11 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
 ///
 /// ```
 /// let mut fds_left = [0, 0];
-/// let ret = nc::pipe(&mut fds_left);
+/// let ret = nc::pipe2(&mut fds_left, 0);
 /// assert!(ret.is_ok());
 ///
 /// let mut fds_right = [0, 0];
-/// let ret = nc::pipe(&mut fds_right);
+/// let ret = nc::pipe2(&mut fds_right, 0);
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
@@ -6017,11 +6017,11 @@ pub fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 ///
 /// ```
 /// let mut fds_left = [0, 0];
-/// let ret = nc::pipe(&mut fds_left);
+/// let ret = nc::pipe2(&mut fds_left, 0);
 /// assert!(ret.is_ok());
 ///
 /// let mut fds_right = [0, 0];
-/// let ret = nc::pipe(&mut fds_right);
+/// let ret = nc::pipe2(&mut fds_right, 0);
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";

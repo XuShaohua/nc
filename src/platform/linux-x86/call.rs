@@ -3278,7 +3278,7 @@ pub fn modify_ldt() {
 ///
 /// ```
 /// let target_dir = "/tmp/nc-mount";
-/// let ret = nc::mkdir(target_dir, 0o755);
+/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";
@@ -4996,7 +4996,7 @@ pub fn restart_syscall() -> Result<i32, Errno> {
 ///
 /// ```
 /// let path = "/tmp/nc-rmdir";
-/// let ret = nc::mkdir(path, 0o755);
+/// let ret = nc::mkdirat(nc::AT_FDCWD, path, 0o755);
 /// assert!(ret.is_ok());
 /// assert!(nc::rmdir(path).is_ok());
 /// ```
@@ -7094,7 +7094,7 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 ///
 /// ```
 /// let target_dir = "/tmp/nc-umount";
-/// let ret = nc::mkdir(target_dir, 0o755);
+/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";
@@ -7120,7 +7120,7 @@ pub fn umount<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///
 /// ```
 /// let target_dir = "/tmp/nc-umount2";
-/// let ret = nc::mkdir(target_dir, 0o755);
+/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";

@@ -2531,7 +2531,7 @@ pub fn mmap(
 ///
 /// ```
 /// let target_dir = "/tmp/nc-mount";
-/// let ret = nc::mkdir(target_dir, 0o755);
+/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";
@@ -5785,7 +5785,7 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 ///
 /// ```
 /// let target_dir = "/tmp/nc-umount2";
-/// let ret = nc::mkdir(target_dir, 0o755);
+/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";

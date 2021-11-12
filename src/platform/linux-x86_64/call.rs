@@ -4310,7 +4310,7 @@ pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-readlink";
-/// let ret = nc::symlink(oldname, newname);
+/// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; nc::PATH_MAX as usize];
 /// let buf_len = buf.len();
@@ -4337,7 +4337,7 @@ pub fn readlink<P: AsRef<Path>>(
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-readlinkat";
-/// let ret = nc::symlink(oldname, newname);
+/// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; nc::PATH_MAX as usize];
 /// let buf_len = buf.len();

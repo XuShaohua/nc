@@ -270,7 +270,7 @@ def gen_errno_and_sysno(os_name, arch_name):
 
 def install_deb(deb_list):
     print("install_deb:", deb_list)
-    cmd = ["apt", "install", "-y"]
+    cmd = ["sudo", "apt", "install", "-y"]
     cmd.extend(deb_list)
     cmd = " ".join(cmd)
     subprocess.run(cmd, shell=True)

@@ -352,9 +352,10 @@ pub fn clone(
     .map(|ret| ret as pid_t)
 }
 
-pub fn clone3() {
-    core::unimplemented!();
-    // syscall0(SYS_CLONE3);
+/// New api to create child process.
+pub fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> {
+    let cl_args_ptr = cl_args as *mut clone_args_t as usize;
+    syscall2(SYS_CLONE3, cl_args_ptr, size).map(|ret| ret as pid_t)
 }
 
 /// Close a file descriptor.

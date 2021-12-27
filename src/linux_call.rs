@@ -5635,6 +5635,12 @@ pub fn clone(
     .map(|ret| ret as pid_t)
 }
 
+/// New api to create child process.
+pub fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> {
+    let cl_args_ptr = cl_args as *mut clone_args_t as usize;
+    syscall2(SYS_CLONE3, cl_args_ptr, size).map(|ret| ret as pid_t)
+}
+
 /// Unlock a kernel module.
 pub fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
@@ -7436,11 +7442,6 @@ pub fn clock_nanosleep_time64() {
 pub fn clock_settime64() {
     core::unimplemented!();
     // syscall0(SYS_CLOCK_SETTIME64);
-}
-
-pub fn clone3() {
-    core::unimplemented!();
-    // syscall0(SYS_CLONE3);
 }
 
 pub fn create_module() {

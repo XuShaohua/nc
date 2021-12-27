@@ -15,6 +15,8 @@ pub const CLONE_FS: i32 = 0x0000_0200;
 pub const CLONE_FILES: i32 = 0x0000_0400;
 /// set if signal handlers and blocked signals shared
 pub const CLONE_SIGHAND: i32 = 0x0000_0800;
+/// set if a pidfd should be placed in parent
+pub const CLONE_PIDFD: i32 = 0x00001000;
 /// set if we want to let tracing continue on the child too
 pub const CLONE_PTRACE: i32 = 0x0000_2000;
 /// set if the parent wants the child to wake it up on mm_release
@@ -52,7 +54,8 @@ pub const CLONE_NEWPID: i32 = 0x2000_0000;
 /// New network namespace
 pub const CLONE_NEWNET: i32 = 0x4000_0000;
 /// Clone io context
-pub const CLONE_IO: u64 = 0x8000_0000;
+#[allow(overflowing_literals)]
+pub const CLONE_IO: i32 = 0x8000_0000;
 
 /// Flags for the clone3() syscall.
 /// Clear any signal handler and reset to SIG_DFL.

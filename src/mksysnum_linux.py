@@ -108,7 +108,8 @@ def read_errno(arch_name):
     ]
 
     for errno in errors:
-        lines.append("/// {0}".format(errno[2]))
+        if type(errno[1]) is int:
+            lines.append("/// {0}".format(errno[2]))
         lines.append("pub const {0}: Errno = {1};".format(errno[0], errno[1]))
 
     lines.append("""

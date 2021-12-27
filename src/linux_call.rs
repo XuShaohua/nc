@@ -7931,3 +7931,73 @@ pub fn vserver() {
     core::unimplemented!();
     // syscall0(SYS_VSERVER);
 }
+
+pub fn close_range() {
+    core::unimplemented!();
+    // syscall0(SYS_CLOSE_RANGE);
+}
+
+pub fn epoll_pwait2() {
+    core::unimplemented!();
+    // syscall0(SYS_EPOLL_PWAIT2);
+}
+
+pub fn faccessat2() {
+    core::unimplemented!();
+    // syscall0(SYS_FACCESSAT2);
+}
+
+pub fn landlock_add_rule() {
+    core::unimplemented!();
+    // syscall0(SYS_LANDLOCK_ADD_RULE);
+}
+
+pub fn landlock_create_ruleset() {
+    core::unimplemented!();
+    // syscall0(SYS_LANDLOCK_CREATE_RULESET);
+}
+
+pub fn landlock_restrict_self() {
+    core::unimplemented!();
+    // syscall0(SYS_LANDLOCK_RESTRICT_SELF);
+}
+
+pub fn memfd_secret() {
+    core::unimplemented!();
+    // syscall0(SYS_MEMFD_SECRET);
+}
+
+pub fn mount_setattr() {
+    core::unimplemented!();
+    // syscall0(SYS_MOUNT_SETATTR);
+}
+
+pub fn openat2() {
+    core::unimplemented!();
+    // syscall0(SYS_OPENAT2);
+}
+
+pub fn pidfd_getfd() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_GETFD);
+}
+
+pub fn process_madvise() {
+    core::unimplemented!();
+    // syscall0(SYS_PROCESS_MADVISE);
+}
+
+pub fn process_mrelease() {
+    core::unimplemented!();
+    // syscall0(SYS_PROCESS_MRELEASE);
+}
+
+pub fn quotactl_fd() {
+    core::unimplemented!();
+    // syscall0(SYS_QUOTACTL_FD);
+}
+
+pub fn syscall_mask() {
+    core::unimplemented!();
+    // syscall0(SYS_SYSCALL_MASK);
+}

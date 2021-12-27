@@ -379,6 +379,11 @@ pub fn close(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
+pub fn close_range() {
+    core::unimplemented!();
+    // syscall0(SYS_CLOSE_RANGE);
+}
+
 /// Initialize a connection on a socket.
 pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -662,6 +667,11 @@ pub fn epoll_pwait(
     .map(|ret| ret as i32)
 }
 
+pub fn epoll_pwait2() {
+    core::unimplemented!();
+    // syscall0(SYS_EPOLL_PWAIT2);
+}
+
 /// Wait for an I/O event on an epoll file descriptor.
 ///
 /// ```
@@ -829,6 +839,11 @@ pub fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Result<(),
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode).map(drop)
+}
+
+pub fn faccessat2() {
+    core::unimplemented!();
+    // syscall0(SYS_FACCESSAT2);
 }
 
 /// Predeclare an access pattern for file data.
@@ -2382,6 +2397,21 @@ pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
+pub fn landlock_add_rule() {
+    core::unimplemented!();
+    // syscall0(SYS_LANDLOCK_ADD_RULE);
+}
+
+pub fn landlock_create_ruleset() {
+    core::unimplemented!();
+    // syscall0(SYS_LANDLOCK_CREATE_RULESET);
+}
+
+pub fn landlock_restrict_self() {
+    core::unimplemented!();
+    // syscall0(SYS_LANDLOCK_RESTRICT_SELF);
+}
+
 /// Change ownership of a file. Does not deference symbolic link.
 ///
 /// ```
@@ -2781,6 +2811,11 @@ pub fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, Errno> {
     syscall2(SYS_MEMFD_CREATE, name_ptr, flags).map(|ret| ret as i32)
 }
 
+pub fn memfd_secret() {
+    core::unimplemented!();
+    // syscall0(SYS_MEMFD_SECRET);
+}
+
 /// Move all pages in a process to another set of nodes
 pub fn migrate_pages(
     pid: pid_t,
@@ -3022,6 +3057,11 @@ pub fn mount<P: AsRef<Path>>(
         data,
     )
     .map(drop)
+}
+
+pub fn mount_setattr() {
+    core::unimplemented!();
+    // syscall0(SYS_MOUNT_SETATTR);
 }
 
 /// Move a mount from one place to another.
@@ -3747,6 +3787,11 @@ pub fn openat<P: AsRef<Path>>(
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
 }
 
+pub fn openat2() {
+    core::unimplemented!();
+    // syscall0(SYS_OPENAT2);
+}
+
 /// Obtain handle for an open file
 pub fn open_by_handle_at(
     mount_fd: i32,
@@ -3812,6 +3857,11 @@ pub fn perf_event_open(
 pub fn personality(persona: u32) -> Result<u32, Errno> {
     let persona = persona as usize;
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
+}
+
+pub fn pidfd_getfd() {
+    core::unimplemented!();
+    // syscall0(SYS_PIDFD_GETFD);
 }
 
 /// Obtain a file descriptor that refers to a process.
@@ -4071,6 +4121,16 @@ pub fn prlimit64(
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
+pub fn process_madvise() {
+    core::unimplemented!();
+    // syscall0(SYS_PROCESS_MADVISE);
+}
+
+pub fn process_mrelease() {
+    core::unimplemented!();
+    // syscall0(SYS_PROCESS_MRELEASE);
+}
+
 /// Transfer data between process address spaces
 pub fn process_vm_readv(
     pid: pid_t,
@@ -4281,6 +4341,11 @@ pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) ->
     let special_ptr = special.as_ptr() as usize;
     let id = id as usize;
     syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
+}
+
+pub fn quotactl_fd() {
+    core::unimplemented!();
+    // syscall0(SYS_QUOTACTL_FD);
 }
 
 /// Read from a file descriptor.

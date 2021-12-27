@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+// From uapi/linux/sched.h
+
 /// cloning flags:
 /// signal mask to be sent at exit
 pub const CSIGNAL: i32 = 0x0000_00ff;
@@ -50,8 +52,83 @@ pub const CLONE_NEWPID: i32 = 0x2000_0000;
 /// New network namespace
 pub const CLONE_NEWNET: i32 = 0x4000_0000;
 /// Clone io context
-#[allow(overflowing_literals)]
-pub const CLONE_IO: i32 = 0x8000_0000;
+pub const CLONE_IO: u64 = 0x8000_0000;
+
+/// Flags for the clone3() syscall.
+/// Clear any signal handler and reset to SIG_DFL.
+pub const CLONE_CLEAR_SIGHAND: u64 = 0x1_0000_0000;
+/// Clone into a specific cgroup given the right permissions.
+pub const CLONE_INTO_CGROUP: u64 = 0x200000000;
+
+/// cloning flags intersect with CSIGNAL so can be used with unshare and clone3()
+/// syscalls only:
+/// New time namespace
+pub const CLONE_NEWTIME: i32 = 0x0000_0080;
+
+/// Arguments for the clone3 syscall.
+///
+/// The structure is versioned by size and thus extensible.
+/// New struct members must go at the end of the struct and
+/// must be properly 64bit aligned.
+#[derive(Debug, Clone, Default)]
+#[repr(C)]
+pub struct clone_args_t {
+    /// Flags for the new process.
+    /// All flags are valid except for CSIGNAL and CLONE_DETACHED.
+    pub flags: u64,
+
+    /// If CLONE_PIDFD is set, a pidfd will be returned in this argument.
+    pub pidfd: u64,
+
+    /// If CLONE_CHILD_SETTID is set, the TID of the child process
+    /// will be returned in the child's memory.
+    pub child_tid: u64,
+
+    /// If CLONE_PARENT_SETTID is set, the TID of the child process
+    /// will be returned in the parent's memory.
+    pub parent_tid: u64,
+
+    /// The exit_signal the parent process will be sent when the child exits.
+    pub exit_signal: u64,
+
+    /// Specify the location of the stack for the child process.
+    ///
+    /// Note, @stack is expected to point to the lowest address.
+    /// The stack direction will be determined by the kernel and
+    /// set up appropriately based on @stack_size.
+    pub stack: u64,
+
+    /// The size of the stack for the child process.
+    pub stack_size: u64,
+
+    /// If CLONE_SETTLS is set, the tls descriptor is set to tls.
+    pub tls: u64,
+
+    /// Pointer to an array of type *pid_t.
+    ///
+    /// The size of the array is defined using set_tid_size.
+    /// This array is used to select PIDs/TIDs for newly created processes.
+    /// The first element in this defines the PID in the most nested PID namespace.
+    /// Each additional element in the array defines the PID
+    /// in the parent PID namespace of the original PID namespace. If the array has less entries
+    /// than the number of currently nested PID namespaces only the PIDs in the corresponding namespaces are set.
+    pub set_tid: u64,
+
+    /// This defines the size of the array referenced in set_tid.
+    ///
+    /// This cannot be larger than the kernel's limit of nested PID namespaces.
+    pub set_tid_size: u64,
+
+    /// If CLONE_INTO_CGROUP is specified set this to a file descriptor for the cgroup.
+    pub cgroup: u64,
+}
+
+/// sizeof first published struct
+pub const CLONE_ARGS_SIZE_VER0: usize = 64;
+/// sizeof second published struct
+pub const CLONE_ARGS_SIZE_VER1: usize = 80;
+/// sizeof third published struct
+pub const CLONE_ARGS_SIZE_VER2: usize = 88;
 
 /// Scheduling policies
 pub const SCHED_NORMAL: i32 = 0;

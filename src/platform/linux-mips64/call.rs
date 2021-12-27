@@ -3794,9 +3794,12 @@ pub fn personality(persona: u32) -> Result<u32, Errno> {
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
 }
 
-pub fn pidfd_getfd() {
-    core::unimplemented!();
-    // syscall0(SYS_PIDFD_GETFD);
+/// Obtain a duplicate of another process's file descriptor.
+pub fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno> {
+    let pidfd = pidfd as usize;
+    let target_fd = target_fd as usize;
+    let flags = flags as usize;
+    syscall3(SYS_PIDFD_GETFD, pidfd, target_fd, flags).map(|ret| ret as i32)
 }
 
 /// Obtain a file descriptor that refers to a process.

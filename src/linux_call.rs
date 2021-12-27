@@ -5198,13 +5198,6 @@ pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 }
 
 /// Create a child process and wait until it is terminated.
-///
-/// ```
-/// let pid = nc::vfork();
-/// assert!(pid.is_ok());
-/// let pid = pid.unwrap();
-/// assert!(pid >= 0);
-/// ```
 pub fn vfork() -> Result<pid_t, Errno> {
     syscall0(SYS_VFORK).map(|ret| ret as pid_t)
 }

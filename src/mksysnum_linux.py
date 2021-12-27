@@ -10,8 +10,8 @@ import sys
 
 DEFINES = {
     "aarch64": {
-        "compiler": "aarch64-linux-gnu-gcc-9",
-        "deb": ["linux-libc-dev-arm64-cross", "gcc-9-aarch64-linux-gnu"],
+        "compiler": "aarch64-linux-gnu-gcc",
+        "deb": ["linux-libc-dev-arm64-cross", "gcc-aarch64-linux-gnu"],
         "include": "/usr/aarch64-linux-gnu/include",
         "errno": [
             "/usr/aarch64-linux-gnu/include/asm-generic/errno-base.h",
@@ -20,8 +20,8 @@ DEFINES = {
         "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",
     },
     "arm": {
-        "compiler": "arm-linux-gnueabihf-gcc-9",
-        "deb": ["linux-libc-dev-armhf-cross", "gcc-9-arm-linux-gnueabihf"],
+        "compiler": "arm-linux-gnueabihf-gcc",
+        "deb": ["linux-libc-dev-armhf-cross", "gcc-arm-linux-gnueabihf"],
         "include": "/usr/arm-linux-gnueabihf/include",
         "errno": [
             "/usr/arm-linux-gnueabihf/include/asm-generic/errno-base.h",
@@ -42,8 +42,8 @@ DEFINES = {
         "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
     },
     "mips64": {
-        "compiler": "mips64-linux-gnuabi64-gcc-9",
-        "deb": ["linux-libc-dev-mips64-cross", "gcc-9-mips64-linux-gnuabi64"],
+        "compiler": "mips64-linux-gnuabi64-gcc",
+        "deb": ["linux-libc-dev-mips64-cross", "gcc-mips64-linux-gnuabi64"],
         "include": "/usr/mips64-linux-gnuabi64/include",
         "errno": [
             "/usr/mips64-linux-gnuabi64/include/asm-generic/errno-base.h",
@@ -52,8 +52,8 @@ DEFINES = {
         "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
     },
     "ppc64": {
-        "compiler": "powerpc64-linux-gnu-gcc-9",
-        "deb": ["linux-libc-dev-ppc64-cross", "gcc-9-powerpc64-linux-gnu"],
+        "compiler": "powerpc64-linux-gnu-gcc",
+        "deb": ["linux-libc-dev-ppc64-cross", "gcc-powerpc64-linux-gnu"],
         "include": "/usr/powerpc64-linux-gnu/include",
         "errno": [
             "/usr/powerpc64-linux-gnu/include/asm-generic/errno-base.h",
@@ -62,8 +62,8 @@ DEFINES = {
         "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
     },
     "s390x": {
-        "compiler": "s390x-linux-gnu-gcc-9",
-        "deb": ["linux-libc-dev-s390x-cross", "gcc-9-s390x-linux-gnu"],
+        "compiler": "s390x-linux-gnu-gcc",
+        "deb": ["linux-libc-dev-s390x-cross", "gcc-s390x-linux-gnu"],
         "include": "/usr/s390x-linux-gnu/include",
         "errno": [
             "/usr/s390x-linux-gnu/include/asm-generic/errno-base.h",
@@ -72,8 +72,8 @@ DEFINES = {
         "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
     },
     "x86": {
-        "compiler": "i686-linux-gnu-gcc-9",
-        "deb": ["linux-libc-dev-i386-cross", "gcc-9-i686-linux-gnu"],
+        "compiler": "i686-linux-gnu-gcc",
+        "deb": ["linux-libc-dev-i386-cross", "gcc-i686-linux-gnu"],
         "include": "/usr/i686-linux-gnu/include",
         "errno": [
             "/usr/i686-linux-gnu/include/asm-generic/errno-base.h",

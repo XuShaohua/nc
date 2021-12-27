@@ -7627,9 +7627,11 @@ pub fn olduname() {
     // syscall0(SYS_OLDUNAME);
 }
 
-pub fn pidfd_open() {
-    core::unimplemented!();
-    // syscall0(SYS_PIDFD_OPEN);
+/// Obtain a file descriptor that refers to a process.
+pub fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
+    let pid = pid as usize;
+    let flags = flags as usize;
+    syscall2(SYS_PIDFD_OPEN, pid, flags).map(|ret| ret as i32)
 }
 
 pub fn ppoll_time64() {

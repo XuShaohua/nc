@@ -4151,9 +4151,11 @@ pub fn personality(persona: u32) -> Result<u32, Errno> {
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
 }
 
-pub fn pidfd_open() {
-    core::unimplemented!();
-    // syscall0(SYS_PIDFD_OPEN);
+/// Obtain a file descriptor that refers to a process.
+pub fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
+    let pid = pid as usize;
+    let flags = flags as usize;
+    syscall2(SYS_PIDFD_OPEN, pid, flags).map(|ret| ret as i32)
 }
 
 /// sys_pidfd_send_signal - Signal a process through a pidfd

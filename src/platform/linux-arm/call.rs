@@ -6921,6 +6921,13 @@ pub fn utimes<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) -> Result<(),
 }
 
 /// Create a child process and wait until it is terminated.
+///
+/// ```
+/// let pid = nc::vfork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// ```
 pub fn vfork() -> Result<pid_t, Errno> {
     syscall0(SYS_VFORK).map(|ret| ret as pid_t)
 }

@@ -2118,8 +2118,7 @@ pub fn iopl(level: i32) -> Result<(), Errno> {
 /// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid());
 /// assert!(ret.is_ok());
 /// let prio = ret.unwrap();
-/// let prio_class = nc::ioprio_prio_class(prio);
-/// assert_eq!(prio_class, nc::IOPRIO_CLASS_NONE);
+/// let _prio_class = nc::ioprio_prio_class(prio);
 /// let _prio_data = nc::ioprio_prio_data(prio);
 /// ```
 pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
@@ -2134,8 +2133,7 @@ pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 /// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0);
 /// assert!(ret.is_ok());
 /// let prio = ret.unwrap();
-/// let prio_class = nc::ioprio_prio_class(prio);
-/// assert_eq!(prio_class, nc::IOPRIO_CLASS_NONE);
+/// let _prio_class = nc::ioprio_prio_class(prio);
 /// let prio_data = nc::ioprio_prio_data(prio);
 ///
 /// // Higher priority

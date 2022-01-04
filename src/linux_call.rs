@@ -7631,6 +7631,7 @@ pub fn olduname() {
 ///
 /// ```
 /// let pid = nc::fork();
+/// const STDOUT_FD: i32 = 1;
 /// assert!(pid.is_ok());
 /// if pid == Ok(0) {
 ///     println!("In child process, pid: {}", nc::getpid());
@@ -8037,6 +8038,7 @@ pub fn openat2() {
 ///
 /// ```
 /// let pid = nc::fork();
+/// const STDOUT_FD: i32 = 1;
 /// assert!(pid.is_ok());
 /// if pid == Ok(0) {
 ///     println!("In child process, pid: {}", nc::getpid());

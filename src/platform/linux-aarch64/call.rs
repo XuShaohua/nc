@@ -3353,6 +3353,7 @@ pub fn personality(persona: u32) -> Result<u32, Errno> {
 ///
 /// ```
 /// let pid = nc::fork();
+/// const STDOUT_FD: i32 = 1;
 /// assert!(pid.is_ok());
 /// if pid == Ok(0) {
 ///     println!("In child process, pid: {}", nc::getpid());
@@ -3417,6 +3418,7 @@ pub fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno>
 ///
 /// ```
 /// let pid = nc::fork();
+/// const STDOUT_FD: i32 = 1;
 /// assert!(pid.is_ok());
 /// if pid == Ok(0) {
 ///     println!("In child process, pid: {}", nc::getpid());

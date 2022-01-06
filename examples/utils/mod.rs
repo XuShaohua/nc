@@ -16,6 +16,7 @@ pub fn pause() -> Result<(), nc::Errno> {
     ret
 }
 
+#[allow(dead_code)]
 pub fn alarm(seconds: u32) -> Result<u32, nc::Errno> {
     #[cfg(any(target_arch = "aarch64", target_arch = "arm"))]
     let remaining = {

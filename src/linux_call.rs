@@ -7665,15 +7665,18 @@ pub fn olduname() {
 /// assert!(nc::nanosleep(&t, None).is_ok());
 ///
 /// let pidfd = nc::pidfd_open(pid, 0);
-/// assert!(pidfd.is_ok());
+/// if pidfd == Err(nc::errno::ENOSYS) {
+///     eprintln!("PIDFD_OPEN syscall not supported in this system");
+///     return;
+/// }
 /// let pidfd = pidfd.unwrap();
 ///
-/// let ret = nc::pidfd_getfd(pidfd, STDOUT_FD, 0);
-/// println!("ret: {:?}", ret);
-/// if let Err(errno) = ret {
-///     eprintln!("pidfd_getfd() failed, err: {}", nc::strerror(errno));
+/// let child_stdout_fd = nc::pidfd_getfd(pidfd, STDOUT_FD, 0);
+/// if child_stdout_fd == Err(nc::errno::ENOSYS) {
+///     eprintln!("PIDFD_OPEN syscall not supported in this system");
+///     return;
 /// }
-/// let child_stdout_fd = ret.unwrap();
+/// let child_stdout_fd = child_stdout_fd.unwrap();
 /// let msg = "Hello, msg from parent process\n";
 /// let ret = nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len());
 /// assert!(ret.is_ok());
@@ -8072,15 +8075,18 @@ pub fn openat2() {
 /// assert!(nc::nanosleep(&t, None).is_ok());
 ///
 /// let pidfd = nc::pidfd_open(pid, 0);
-/// assert!(pidfd.is_ok());
+/// if pidfd == Err(nc::errno::ENOSYS) {
+///     eprintln!("PIDFD_OPEN syscall not supported in this system");
+///     return;
+/// }
 /// let pidfd = pidfd.unwrap();
 ///
-/// let ret = nc::pidfd_getfd(pidfd, STDOUT_FD, 0);
-/// println!("ret: {:?}", ret);
-/// if let Err(errno) = ret {
-///     eprintln!("pidfd_getfd() failed, err: {}", nc::strerror(errno));
+/// let child_stdout_fd = nc::pidfd_getfd(pidfd, STDOUT_FD, 0);
+/// if child_stdout_fd == Err(nc::errno::ENOSYS) {
+///     eprintln!("PIDFD_OPEN syscall not supported in this system");
+///     return;
 /// }
-/// let child_stdout_fd = ret.unwrap();
+/// let child_stdout_fd = child_stdout_fd.unwrap();
 /// let msg = "Hello, msg from parent process\n";
 /// let ret = nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len());
 /// assert!(ret.is_ok());

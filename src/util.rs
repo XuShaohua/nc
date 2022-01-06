@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-pub type Syscalls = Vec<String>;
+use alloc::collections::BTreeSet;
+
+pub type Syscalls = BTreeSet<String>;
 
 pub struct File {
     fd: i32,
@@ -31,19 +33,28 @@ impl Drop for File {
 
 pub fn syscall_exists(name: &str) -> bool {
     let list = read_syscall_list().unwrap();
-    for func_name in &list {
-        if func_name.find(name).is_some() {
-            return true;
+    list.contains(name)
+}
+
+fn parse_syscall_from_sym(s: &str) -> Option<String> {
+    let mut iter = s.split_ascii_whitespace();
+    if iter.next().is_some() && iter.next() == Some("T") {
+        if let Some(func_name) = iter.next() {
+            if let Some(pos) = func_name.find("sys_") {
+                if func_name.len() > pos + 4 && iter.next().is_none() {
+                    return Some(func_name[pos + 4..].to_string());
+                }
+            }
         }
     }
-    false
+    None
 }
 
 pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
     let path = "/proc/kallsyms";
     let file = File::open(path)?;
 
-    let mut list = Vec::new();
+    let mut set = BTreeSet::new();
     const BUF_LEN: usize = 1024;
     let mut buf = [0u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
@@ -55,30 +66,27 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
             Ok(n) => {
                 let n = n as usize;
                 for byte in &buf[0..n] {
-                    if *byte == b'\n' {
-                        // Check this line
-                        let s = alloc::str::from_utf8(&line_str).map_err(|_| crate::EIO)?;
-                        let mut iter = s.split_ascii_whitespace();
-                        if iter.next().is_some() && iter.next() == Some("T") {
-                            if let Some(func_name) = iter.next() {
-                                if func_name.find("sys_").is_some() && iter.next().is_none() {
-                                    println!("{}", func_name);
-                                    list.push(func_name.to_string());
-                                }
-                            }
-                        }
-
-                        // Reset last line
-                        line_str.clear();
-                    } else {
+                    if *byte != b'\n' {
                         line_str.push(*byte);
+                        continue;
                     }
+
+                    // Check this line
+                    let s = alloc::str::from_utf8(&line_str).map_err(|_| crate::EIO)?;
+                    if let Some(func_name) = parse_syscall_from_sym(s) {
+                        if !set.contains(&func_name) {
+                            set.insert(func_name);
+                        }
+                    }
+
+                    // Reset last line
+                    line_str.clear();
                 }
             }
         }
     }
 
-    Ok(list)
+    Ok(set)
 }
 
 #[cfg(test)]

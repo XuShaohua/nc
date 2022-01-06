@@ -31,7 +31,7 @@ impl Drop for File {
 
 pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
     let path = "/proc/kallsyms";
-    let fd: i32 = crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0600)?;
+    let file = File::open(path)?;
 
     let mut list = Vec::new();
     const BUF_LEN: usize = 1024;
@@ -39,7 +39,8 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
         let buf_ptr = buf.as_mut_ptr() as usize;
-        match crate::read(fd, buf_ptr, BUF_LEN) {
+        match crate::read(file.fd(), buf_ptr, BUF_LEN) {
+            Err(errno) => return Err(errno),
             Ok(0) => break,
             Ok(n) => {
                 let n = n as usize;
@@ -64,14 +65,9 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
                     }
                 }
             }
-            Err(errno) => {
-                crate::close(fd)?;
-                return Err(errno);
-            }
         }
     }
 
-    crate::close(fd)?;
     Ok(Syscalls(list))
 }
 

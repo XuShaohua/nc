@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-pub struct Syscalls(Vec<String>);
+pub type Syscalls = Vec<String>;
 
-struct File {
+pub struct File {
     fd: i32,
 }
 
@@ -27,6 +27,16 @@ impl Drop for File {
             self.fd = -1;
         }
     }
+}
+
+pub fn syscall_exists(name: &str) -> bool {
+    let list = read_syscall_list().unwrap();
+    for func_name in &list {
+        if func_name.find(name).is_some() {
+            return true;
+        }
+    }
+    false
 }
 
 pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
@@ -68,18 +78,24 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
         }
     }
 
-    Ok(Syscalls(list))
+    Ok(list)
 }
 
 #[cfg(test)]
 mod tests {
-    use super::read_syscall_list;
+    use super::{read_syscall_list, syscall_exists};
 
     #[test]
     fn test_read_syscall_list() {
         let list = read_syscall_list();
         assert!(list.is_ok());
-        let list = list.unwrap().0;
+        let list = list.unwrap();
         assert!(!list.is_empty());
+    }
+
+    #[test]
+    fn test_syscall_exists() {
+        let openat = "openat";
+        assert!(syscall_exists(openat));
     }
 }

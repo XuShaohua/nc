@@ -190,6 +190,8 @@ mod platform;
 #[path = "platform/netbsd-x86_64/mod.rs"]
 mod platform;
 
+pub mod util;
+
 // Re-export functions
 pub use platform::*;
 pub use types::*;

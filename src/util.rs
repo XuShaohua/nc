@@ -6,11 +6,15 @@ use alloc::collections::BTreeSet;
 
 pub type Syscalls = BTreeSet<String>;
 
+/// A simple wrapper to File IO.
+///
+/// File is closed when drop.
 pub struct File {
     fd: i32,
 }
 
 impl File {
+    /// Open file readonly.
     pub fn open(path: &str) -> Result<File, crate::Errno> {
         let fd: i32 = crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0600)?;
 
@@ -31,6 +35,7 @@ impl Drop for File {
     }
 }
 
+/// Check syscall name exists in current system.
 pub fn syscall_exists(name: &str) -> bool {
     let list = read_syscall_list().unwrap();
     list.contains(name)
@@ -50,6 +55,7 @@ fn parse_syscall_from_sym(s: &str) -> Option<String> {
     None
 }
 
+/// Read syscall list from /proc.
 pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
     let path = "/proc/kallsyms";
     let file = File::open(path)?;

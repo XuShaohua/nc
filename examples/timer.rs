@@ -6,13 +6,6 @@ use core::mem::size_of;
 
 mod utils;
 
-fn handle_restore() {
-    //let msg = "Hello restore\n";
-    //let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
-    // nc::rt_sigreturn();
-    // do nothing.
-}
-
 fn handle_alarm(signum: i32) {
     assert_eq!(signum, nc::SIGALRM);
     //let msg = "Hello alarm\n";

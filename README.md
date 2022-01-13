@@ -36,6 +36,12 @@ match nc::stat("/etc/passwd", &mut statbuf) {
 }
 ```
 
+Get human-readable error string:
+```rust
+let errno = nc::EPERM;
+println!("err: {:?}", nc::strerror(errno);
+```
+
 Fork process:
 ```rust
 let pid = nc::fork();

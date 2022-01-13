@@ -13,6 +13,12 @@ Execute system call directly without `std` or `libc`.
 - [Documentation](https://docs.rs/nc)
 - [Release notes](https://github.com/xushaohua/nc/releases)
 
+Features:
+- No libc required
+- Access syscalls directly, via assembly
+- No global errno variable, every function returns an errno instead
+- Support latest kernel APIs, like io-uring and pidfd introduced in linux 5.0+
+
 ## Usage
 Add this to `Cargo.toml`:
 ```toml
@@ -103,11 +109,13 @@ As `llvm_asm!` feature is unavailable in stable version.
 - [syscall][syscall]
 - [relibc][relibc]
 - [Linux Syscall Support][lss]
+- [syscall pkg in golang][go-syscall]
 
 [syscall]: https://github.com/kmcallister/syscall.rs
 [relibc]: https://gitlab.redox-os.org/redox-os/relibc.git
 [nix]: https://github.com/nix-rust/nix
 [lss]: https://chromium.googlesource.com/linux-syscall-support
+[go-syscall]: https://github.com/golang/go/tree/master/src/syscall
 
 ## License
 This library is release in [Apache License](LICENSE).

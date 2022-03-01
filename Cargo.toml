@@ -1,6 +1,6 @@
 [package]
 name = "nc"
-version = "0.7.15"
+version = "0.7.16"
 authors = ["Xu Shaohua <shaohua@biofan.org>"]
 readme = "README.md"
 homepage = "https://github.com/xushaohua/nc"
@@ -16,7 +16,7 @@ categories = ["os", "no-std", "external-ffi-bindings"]
 exclude = ["/.travis.yml"]
 
 [build-dependencies]
-cc = "1.0.72"
+cc = "1.0.73"
 
 [features]
 default = ["std"]

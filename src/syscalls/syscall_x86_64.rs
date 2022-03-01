@@ -2,19 +2,20 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use core::arch::asm;
+
 use super::types::*;
 
 #[inline(always)]
 pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }
@@ -23,14 +24,13 @@ pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
 pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n),
-           "{rdi}"(a1)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }
@@ -39,15 +39,14 @@ pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
 pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n),
-           "{rdi}"(a1),
-           "{rsi}"(a2)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }
@@ -56,16 +55,15 @@ pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
 pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n),
-           "{rdi}"(a1),
-           "{rsi}"(a2),
-           "{rdx}"(a3)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }
@@ -74,17 +72,16 @@ pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errn
 pub fn syscall4(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n),
-           "{rdi}"(a1),
-           "{rsi}"(a2),
-           "{rdx}"(a3),
-           "{r10}"(a4)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            in("r10") a4,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }
@@ -100,18 +97,17 @@ pub fn syscall5(
 ) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n),
-           "{rdi}"(a1),
-           "{rsi}"(a2),
-           "{rdx}"(a3),
-           "{r10}"(a4),
-           "{r8}"(a5)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            in("r10") a4,
+            in("r8") a5,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }
@@ -128,19 +124,18 @@ pub fn syscall6(
 ) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
-        llvm_asm!("syscall"
-         : "={rax}"(ret)
-         : "{rax}"(n),
-           "{rdi}"(a1),
-           "{rsi}"(a2),
-           "{rdx}"(a3),
-           "{r10}"(a4),
-           "{r8}"(a5),
-           "{r9}"(a6)
-         : "rcx",
-           "r11",
-           "memory"
-         : "volatile");
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            in("r10") a4,
+            in("r8") a5,
+            in("r9") a6,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
     }
     check_errno(ret)
 }

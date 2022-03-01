@@ -17,19 +17,19 @@ mod syscall;
 #[path = "syscall_arm.rs"]
 mod syscall;
 
-#[cfg(all(has_asm, target_arch = "mips"))]
+#[cfg(target_arch = "mips")]
 #[path = "syscall_mips.rs"]
 mod syscall;
 
-#[cfg(all(has_asm, target_arch = "mips64"))]
+#[cfg(target_arch = "mips64")]
 #[path = "syscall_mips64.rs"]
 mod syscall;
 
-#[cfg(all(has_asm, target_arch = "powerpc64"))]
+#[cfg(target_arch = "powerpc64")]
 #[path = "syscall_powerpc64.rs"]
 mod syscall;
 
-#[cfg(all(has_asm, target_arch = "s390x"))]
+#[cfg(target_arch = "s390x")]
 #[path = "syscall_s390x.rs"]
 mod syscall;
 

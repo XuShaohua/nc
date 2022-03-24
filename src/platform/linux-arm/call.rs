@@ -4076,7 +4076,7 @@ pub fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno>
 ///     };
 ///     assert!(nc::nanosleep(&t, None).is_ok());
 ///     let _ = nc::close(fd);
-///     let _ = nc::unlink(path);
+///     let _ = nc::unlinkat(nc::AT_FDCWD, path, 0);
 ///     nc::exit(0);
 /// }
 ///

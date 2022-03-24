@@ -7651,7 +7651,7 @@ pub fn olduname() {
 ///     };
 ///     assert!(nc::nanosleep(&t, None).is_ok());
 ///     let _ = nc::close(fd);
-///     let _ = nc::unlink(path);
+///     let _ = nc::unlinkat(nc::AT_FDCWD, path, 0);
 ///     nc::exit(0);
 /// }
 ///

@@ -121,8 +121,8 @@ pub fn afs_syscall() {
 /// let mut old_sa = nc::sigaction_t::default();
 /// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
-/// let remaining = nc::alarm(1);
-/// let ret = nc::pause();
+/// let remaining = nc::util::alarm(1);
+/// let ret = nc::util::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
@@ -1647,7 +1647,7 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
-/// let ret = nc::pause();
+/// let ret = nc::util::pause();
 /// assert_eq!(ret, Err(nc::EINTR));
 ///
 /// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
@@ -3826,8 +3826,8 @@ pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i3
 /// let mut old_sa = nc::sigaction_t::default();
 /// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
-/// let remaining = nc::alarm(1);
-/// let ret = nc::pause();
+/// let remaining = nc::util::alarm(1);
+/// let ret = nc::util::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
@@ -5511,7 +5511,7 @@ pub fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
-/// let ret = nc::pause();
+/// let ret = nc::util::pause();
 /// assert_eq!(ret, Err(nc::EINTR));
 ///
 /// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
@@ -6264,7 +6264,7 @@ pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, 
 /// let pid = ret.unwrap();
 /// if pid == 0 {
 ///     println!("[child] pid: {}", nc::getpid());
-///     let _ret = nc::pause();
+///     let _ret = nc::util::pause();
 /// } else {
 ///     let ret = nc::tgkill(pid, pid, nc::SIGTERM);
 ///     assert!(ret.is_ok());
@@ -6447,7 +6447,7 @@ pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
-///     let ret = nc::pause();
+///     let ret = nc::util::pause();
 ///     assert_eq!(ret, Err(nc::EINTR));
 ///
 ///     let ret = nc::timer_getoverrun(timer_id);
@@ -6520,7 +6520,7 @@ pub fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
-///     let ret = nc::pause();
+///     let ret = nc::util::pause();
 ///     assert_eq!(ret, Err(nc::EINTR));
 ///
 ///     let ret = nc::timer_delete(timer_id);
@@ -6590,7 +6590,7 @@ pub fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), E
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
-///     let ret = nc::pause();
+///     let ret = nc::util::pause();
 ///     assert_eq!(ret, Err(nc::EINTR));
 ///
 ///     let ret = nc::timer_delete(timer_id);
@@ -6643,7 +6643,7 @@ pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 /// let pid = ret.unwrap();
 /// if pid == 0 {
 ///     println!("[child] pid: {}", nc::getpid());
-///     let _ret = nc::pause();
+///     let _ret = nc::util::pause();
 /// } else {
 ///     let ret = nc::tkill(pid, nc::SIGTERM);
 ///     assert!(ret.is_ok());

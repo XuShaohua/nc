@@ -8052,7 +8052,7 @@ pub fn openat2() {
 ///     );
 ///     assert!(fd.is_ok());
 ///     let fd = fd.unwrap();
-///     assert!(nc::dup2(fd, STDOUT_FD).is_ok());
+///     assert!(nc::dup3(fd, STDOUT_FD, 0).is_ok());
 ///     println!("[child] stdout redirected to file!");
 ///
 ///     let t = nc::timespec_t {
@@ -8061,7 +8061,7 @@ pub fn openat2() {
 ///     };
 ///     assert!(nc::nanosleep(&t, None).is_ok());
 ///     let _ = nc::close(fd);
-///     let _ = nc::unlink(path);
+///     let _ = nc::unlinkat(nc::AT_FDCWD, path, 0);
 ///     nc::exit(0);
 /// }
 ///

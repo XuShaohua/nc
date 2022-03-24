@@ -3877,7 +3877,7 @@ pub fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno>
 ///     );
 ///     assert!(fd.is_ok());
 ///     let fd = fd.unwrap();
-///     assert!(nc::dup2(fd, STDOUT_FD).is_ok());
+///     assert!(nc::dup3(fd, STDOUT_FD, 0).is_ok());
 ///     println!("[child] stdout redirected to file!");
 ///
 ///     let t = nc::timespec_t {

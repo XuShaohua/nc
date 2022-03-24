@@ -22,7 +22,7 @@
 //! #[cfg(not(target_arch = "aarch64"))]
 //! let ret = nc::stat(path, &mut statbuf);
 //! #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
-//! let ret = nc::fstatat(nc::AT_FDWCD, path, &mut statbuf, 0);
+//! let ret = nc::fstatat(nc::AT_FDCWD, path, &mut statbuf, 0);
 //! match ret {
 //!     Ok(_) => println!("s: {:?}", statbuf),
 //!     Err(errno) => eprintln!("Failed to get file status, got errno: {}", errno),

@@ -7642,7 +7642,7 @@ pub fn olduname() {
 ///     );
 ///     assert!(fd.is_ok());
 ///     let fd = fd.unwrap();
-///     assert!(nc::dup2(fd, STDOUT_FD).is_ok());
+///     assert!(nc::dup3(fd, STDOUT_FD, 0).is_ok());
 ///     println!("[child] stdout redirected to file!");
 ///
 ///     let t = nc::timespec_t {

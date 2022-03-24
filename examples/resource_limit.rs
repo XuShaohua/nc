@@ -2,8 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-mod utils;
-
 fn get_file_limit() {
     let pid = nc::getpid();
     let mut res_limit = nc::rlimit64_t::default();
@@ -43,5 +41,5 @@ fn main() {
     get_file_limit();
     set_file_limit();
     get_file_limit();
-    let _ = utils::pause();
+    let _ = nc::util::pause();
 }

@@ -95,6 +95,40 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
     Ok(set)
 }
 
+pub fn pause() -> Result<(), crate::Errno> {
+    // ppoll(0, 0, 0, 0) in C.
+    #[cfg(target_arch = "aarch64")]
+    let ret = crate::ppoll(
+        &mut crate::pollfd_t::default(),
+        0,
+        &crate::timespec_t::default(),
+        &crate::sigset_t::default(),
+        0,
+    )
+    .map(drop);
+
+    #[cfg(not(target_arch = "aarch64"))]
+    let ret = crate::pause();
+
+    ret
+}
+
+pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
+    #[cfg(any(target_arch = "aarch64", target_arch = "arm"))]
+    let remaining = {
+        let mut it = crate::itimerval_t::default();
+        it.it_value.tv_sec = seconds as isize;
+        let mut old = crate::itimerval_t::default();
+        crate::setitimer(crate::ITIMER_REAL, &mut it, &mut old)?;
+        (old.it_value.tv_sec + !!old.it_value.tv_usec) as u32
+    };
+
+    #[cfg(not(any(target_arch = "aarch64", target_arch = "arm")))]
+    let remaining = crate::alarm(seconds);
+
+    Ok(remaining)
+}
+
 #[cfg(test)]
 mod tests {
     use super::{read_syscall_list, syscall_exists};

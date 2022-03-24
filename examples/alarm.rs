@@ -4,8 +4,6 @@
 
 use core::mem::{size_of, size_of_val};
 
-mod utils;
-
 fn handle_alarm(signum: i32) {
     println!("fuck alarm");
     assert_eq!(signum, nc::SIGALRM);
@@ -24,8 +22,8 @@ fn main() {
     assert!(ret.is_ok());
 
     let seconds = 1;
-    let remaining = utils::alarm(seconds);
-    let ret = utils::pause();
+    let remaining = nc::util::alarm(seconds);
+    let ret = nc::util::pause();
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
     assert_eq!(remaining.unwrap(), 0);

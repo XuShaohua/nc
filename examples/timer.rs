@@ -4,8 +4,6 @@
 
 use core::mem::size_of;
 
-mod utils;
-
 fn handle_alarm(signum: i32) {
     assert_eq!(signum, nc::SIGALRM);
     //let msg = "Hello alarm\n";
@@ -42,7 +40,7 @@ fn main() {
     assert!(ret.is_ok());
     assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 
-    let ret = utils::pause();
+    let ret = nc::util::pause();
     assert_eq!(ret, Err(nc::EINTR));
 
     let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);

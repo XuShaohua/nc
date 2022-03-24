@@ -25,16 +25,16 @@ jobs:
         - nightly
         include:
         - build: pinned
-          os: ubuntu-18.04
+          os: ubuntu-20.04
           rust: 1.36.0
         - build: stable
-          os: ubuntu-18.04
+          os: ubuntu-20.04
           rust: stable
         - build: beta
-          os: ubuntu-18.04
+          os: ubuntu-20.04
           rust: beta
         - build: nightly
-          os: ubuntu-18.04
+          os: ubuntu-20.04
           rust: nightly
     steps:
     - uses: actions/checkout@v2

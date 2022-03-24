@@ -5,26 +5,28 @@
 pub const STAT_HAVE_NSEC: i32 = 0;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct stat_t {
-    pub st_dev: usize,
-    pub st_ino: usize,
-    pub st_mode: u16,
-    pub st_nlink: u16,
-    pub st_uid: u16,
-    pub st_gid: u16,
-    pub st_rdev: usize,
-    pub st_size: usize,
-    pub st_blksize: usize,
-    pub st_blocks: usize,
-    pub st_atime: usize,
+    pub st_dev: usize,  // Device.
+    pub st_ino: usize,  // File serial number.
+    pub st_mode: u32,   // File mode.
+    pub st_nlink: i32,  // Link count.
+    pub st_uid: u32,    // User ID of the file's owner.
+    pub st_gid: u32,    // Group ID of the file's group.
+    pub st_rdev: usize, // Device number, if device.
+    pad1: usize,
+    pub st_size: isize,  // Size of file, in bytes.
+    pub st_blksize: i32, // Optimal block size for I/O.
+    pad2: i32,
+    pub st_blocks: isize, // Number 512-byte blocks allocated.
+    pub st_atime: isize,  // Time of last access.
     pub st_atime_nsec: usize,
-    pub st_mtime: usize,
+    pub st_mtime: isize, // Time of last modification.
     pub st_mtime_nsec: usize,
-    pub st_ctime: usize,
+    pub st_ctime: isize, // Time of last status change.
     pub st_ctime_nsec: usize,
-    unused4: usize,
-    unused5: usize,
+    unused4: u32,
+    unused5: u32,
 }
 
 /// This matches struct stat64 in glibc2.1, hence the absolutely

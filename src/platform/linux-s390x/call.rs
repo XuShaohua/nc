@@ -114,8 +114,8 @@ pub fn afs_syscall() {
 /// let mut old_sa = nc::sigaction_t::default();
 /// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
-/// let remaining = nc::util::alarm(1);
-/// let ret = nc::util::pause();
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
@@ -3839,8 +3839,8 @@ pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i3
 /// let mut old_sa = nc::sigaction_t::default();
 /// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
-/// let remaining = nc::util::alarm(1);
-/// let ret = nc::util::pause();
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);

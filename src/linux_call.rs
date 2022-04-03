@@ -92,8 +92,8 @@ pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 /// let mut old_sa = nc::sigaction_t::default();
 /// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
-/// let remaining = nc::util::alarm(1);
-/// let ret = nc::util::pause();
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
@@ -2978,8 +2978,8 @@ pub fn openat<P: AsRef<Path>>(
 /// let mut old_sa = nc::sigaction_t::default();
 /// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
 /// assert!(ret.is_ok());
-/// let remaining = nc::util::alarm(1);
-/// let ret = nc::util::pause();
+/// let remaining = nc::alarm(1);
+/// let ret = nc::pause();
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);

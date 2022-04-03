@@ -1,4 +1,8 @@
 
+## How to update syscall wrappers
+1. Modify functions in `linux_call.rs`.
+2. Run `mkcall_linux.py` to regenerate call.rs files in platform module.
+
 ## How to get syscall asm instructions?
 musl project contains syscall asm instructioins of main architectures,
 We can use this command to generate readable asm code:

@@ -30,32 +30,38 @@ extern "C" {
 }
 
 #[inline(always)]
-pub fn syscall0(n: Sysno) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall0(n)) }
+pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
+    check_errno(__syscall0(n))
 }
 
 #[inline(always)]
-pub fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall1(n, a1)) }
+pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
+    check_errno(__syscall1(n, a1))
 }
 
 #[inline(always)]
-pub fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall2(n, a1, a2)) }
+pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
+    check_errno(__syscall2(n, a1, a2))
 }
 
 #[inline(always)]
-pub fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall3(n, a1, a2, a3)) }
+pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
+    check_errno(__syscall3(n, a1, a2, a3))
 }
 
 #[inline(always)]
-pub fn syscall4(n: Sysno, a1: usize, a2: usize, a3: usize, a4: usize) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall4(n, a1, a2, a3, a4)) }
+pub unsafe fn syscall4(
+    n: Sysno,
+    a1: usize,
+    a2: usize,
+    a3: usize,
+    a4: usize,
+) -> Result<usize, Errno> {
+    check_errno(__syscall4(n, a1, a2, a3, a4))
 }
 
 #[inline(always)]
-pub fn syscall5(
+pub unsafe fn syscall5(
     n: Sysno,
     a1: usize,
     a2: usize,
@@ -63,11 +69,11 @@ pub fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall5(n, a1, a2, a3, a4, a5)) }
+    check_errno(__syscall5(n, a1, a2, a3, a4, a5))
 }
 
 #[inline(always)]
-pub fn syscall6(
+pub unsafe fn syscall6(
     n: Sysno,
     a1: usize,
     a2: usize,
@@ -76,5 +82,5 @@ pub fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    unsafe { check_errno(__syscall6(n, a1, a2, a3, a4, a5, a6)) }
+    check_errno(__syscall6(n, a1, a2, a3, a4, a5, a6))
 }

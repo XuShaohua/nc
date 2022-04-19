@@ -3487,8 +3487,8 @@ pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> 
 ///
 /// ```
 /// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
-/// println!("ret: {:?}", ret);
-/// assert!(ret.is_ok());
+/// // We got out-of-memory error in CI environment.
+/// assert!(ret.is_ok() || ret == Err(nc::ENOMEM));
 /// ```
 pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
@@ -4221,7 +4221,7 @@ pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
 ///
 /// ```
 /// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
-/// assert!(ret.is_ok());
+/// assert!(ret.is_ok() || ret == Err(nc::ENOMEM));
 /// let ret = unsafe { nc::munlockall() };
 /// assert!(ret.is_ok());
 /// ```

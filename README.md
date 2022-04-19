@@ -23,14 +23,14 @@ Features:
 Add this to `Cargo.toml`:
 ```toml
 [dependencies]
-nc = "0.7"
+nc = "0.8"
 ```
 
 ## Examples
 Get file stat:
 ```rust
 let mut statbuf = nc::stat_t::default();
-match nc::stat("/etc/passwd", &mut statbuf) {
+match unsafe { nc::stat("/etc/passwd", &mut statbuf) } {
     Ok(_) => println!("s: {:?}", statbuf),
     Err(errno) => eprintln!("Failed to get file status, got errno: {}", errno),
 }
@@ -44,14 +44,14 @@ println!("err: {:?}", nc::strerror(errno);
 
 Fork process:
 ```rust
-let pid = nc::fork();
+let pid = unsafe { nc::fork() };
 match pid {
     Ok(pid) => {
         if pid == 0 {
             println!("child process: {}", pid);
             let args = [""];
             let env = [""];
-            match nc::execve("/bin/ls", &args, &env) {
+            match unsafe { nc::execve("/bin/ls", &args, &env) } {
                 Ok(_) => {},
                 Err(errno) => eprintln!("`ls` got err: {}", errno),
             }
@@ -67,8 +67,8 @@ match pid {
 
 Kill self:
 ```rust
-let pid = nc::getpid();
-let ret = nc::kill(pid, nc::SIGTERM);
+let pid = unsafe { nc::getpid() };
+let ret = unsafe { nc::kill(pid, nc::SIGTERM) };
 // Never reach here.
 println!("ret: {:?}", ret);
 ```
@@ -80,10 +80,10 @@ fn handle_alarm(signum: i32) {
 }
 
 fn main() {
-    let ret = nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t);
+    let ret = unsafe { nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t) };
     assert!(ret.is_ok());
-    let remaining = nc::alarm(1);
-    let ret = nc::pause();
+    let remaining = unsafe {nc::alarm(1) };
+    let ret = unsafe { nc::pause() };
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
     assert_eq!(remaining, 0);

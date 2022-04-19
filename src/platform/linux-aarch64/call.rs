@@ -10,7 +10,11 @@ use crate::syscalls::*;
 use crate::sysno::*;
 use crate::types::*;
 
-pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) -> Result<(), Errno> {
+pub unsafe fn accept(
+    sockfd: i32,
+    addr: &mut sockaddr_in_t,
+    addrlen: &mut socklen_t,
+) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let addr_ptr = addr as *mut sockaddr_in_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
@@ -18,7 +22,7 @@ pub fn accept(sockfd: i32, addr: &mut sockaddr_in_t, addrlen: &mut socklen_t) ->
 }
 
 /// Accept a connection on a socket.
-pub fn accept4(
+pub unsafe fn accept4(
     sockfd: i32,
     addr: &mut sockaddr_in_t,
     addrlen: &mut socklen_t,
@@ -43,14 +47,14 @@ pub fn accept4(
 /// assert_eq!(ret, Err(nc::EPERM));
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+pub unsafe fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall1(SYS_ACCT, filename_ptr).map(drop)
 }
 
 /// Add a key to the kernel's key management facility.
-pub fn add_key<P: AsRef<Path>>(
+pub unsafe fn add_key<P: AsRef<Path>>(
     type_: P,
     description: P,
     payload: usize,
@@ -82,18 +86,18 @@ pub fn add_key<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// assert!(tm.time.tv_sec > 1611552896);
 /// ```
-pub fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
+pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     let buf_ptr = buf as *mut timex_t as usize;
     syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
 }
 
-pub fn arch_specific_syscall() {
+pub unsafe fn arch_specific_syscall() {
     core::unimplemented!();
     // syscall0(SYS_ARCH_SPECIFIC_SYSCALL);
 }
 
 /// Bind a name to a socket.
-pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let addr_ptr = addr as *const sockaddr_in_t as usize;
     let addrlen = addrlen as usize;
@@ -101,7 +105,7 @@ pub fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(),
 }
 
 /// Perform a command on an extended BPF map or program
-pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
+pub unsafe fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
     let cmd = cmd as usize;
     let attr_ptr = attr as *mut bpf_attr_t as usize;
     let size = size as usize;
@@ -109,19 +113,22 @@ pub fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
 }
 
 /// Change data segment size.
-pub fn brk(addr: usize) -> Result<(), Errno> {
+pub unsafe fn brk(addr: usize) -> Result<(), Errno> {
     syscall1(SYS_BRK, addr).map(drop)
 }
 
 /// Get capabilities of thread.
-pub fn capget(hdrp: &mut cap_user_header_t, data: &mut cap_user_data_t) -> Result<(), Errno> {
+pub unsafe fn capget(
+    hdrp: &mut cap_user_header_t,
+    data: &mut cap_user_data_t,
+) -> Result<(), Errno> {
     let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
     let data_ptr = data as *mut cap_user_data_t as usize;
     syscall2(SYS_CAPGET, hdrp_ptr, data_ptr).map(drop)
 }
 
 /// Set capabilities of thread.
-pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<(), Errno> {
+pub unsafe fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<(), Errno> {
     let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
     let data_ptr = data as *const cap_user_data_t as usize;
     syscall2(SYS_CAPSET, hdrp_ptr, data_ptr).map(drop)
@@ -143,7 +150,7 @@ pub fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<()
 /// let new_cwd = std::str::from_utf8(&buf[..path_len]);
 /// assert_eq!(new_cwd, Ok(path));
 /// ```
-pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+pub unsafe fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall1(SYS_CHDIR, filename_ptr).map(drop)
@@ -156,7 +163,7 @@ pub fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall1(SYS_CHROOT, filename_ptr).map(drop)
@@ -170,7 +177,7 @@ pub fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(tm.time.tv_sec > 1611552896);
 /// ```
-pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
+pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tx_ptr = tx as *mut timex_t as usize;
     syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr).map(drop)
@@ -184,7 +191,7 @@ pub fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Err
 /// assert!(ret.is_ok());
 /// assert!(tp.tv_nsec > 0);
 /// ```
-pub fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
+pub unsafe fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *mut timespec_t as usize;
     syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr).map(drop)
@@ -198,7 +205,7 @@ pub fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), E
 /// assert!(ret.is_ok());
 /// assert!(tp.tv_sec > 0);
 /// ```
-pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
+pub unsafe fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *mut timespec_t as usize;
     syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr).map(drop)
@@ -214,7 +221,7 @@ pub fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), 
 /// let mut rem = nc::timespec_t::default();
 /// assert!(nc::clock_nanosleep(nc::CLOCK_MONOTONIC, 0, &t, &mut rem).is_ok());
 /// ```
-pub fn clock_nanosleep(
+pub unsafe fn clock_nanosleep(
     which_clock: clockid_t,
     flags: i32,
     rqtp: &timespec_t,
@@ -238,14 +245,14 @@ pub fn clock_nanosleep(
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
+pub unsafe fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *const timespec_t as usize;
     syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr).map(drop)
 }
 
 /// Create a child process.
-pub fn clone(
+pub unsafe fn clone(
     clone_flags: i32,
     newsp: usize,
     parent_tid: &mut i32,
@@ -278,7 +285,7 @@ pub fn clone(
 /// println!("ret: {:?}", pid);
 /// assert!(pid.is_ok());
 /// ```
-pub fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> {
+pub unsafe fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> {
     let cl_args_ptr = cl_args as *mut clone_args_t as usize;
     syscall2(SYS_CLONE3, cl_args_ptr, size).map(|ret| ret as pid_t)
 }
@@ -288,18 +295,18 @@ pub fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> 
 /// ```
 /// assert!(nc::close(2).is_ok());
 /// ```
-pub fn close(fd: i32) -> Result<(), Errno> {
+pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
-pub fn close_range() {
+pub unsafe fn close_range() {
     core::unimplemented!();
     // syscall0(SYS_CLOSE_RANGE);
 }
 
 /// Initialize a connection on a socket.
-pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+pub unsafe fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     // TODO(Shaohua): Use sockaddr_t generic type.
     let addr_ptr = addr as *const sockaddr_in_t as usize;
@@ -328,7 +335,7 @@ pub fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<
 /// assert!(nc::close(fd_out).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
-pub fn copy_file_range(
+pub unsafe fn copy_file_range(
     fd_in: i32,
     off_in: &mut loff_t,
     fd_out: i32,
@@ -355,7 +362,7 @@ pub fn copy_file_range(
 }
 
 /// Unlock a kernel module.
-pub fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
+pub unsafe fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
@@ -377,7 +384,7 @@ pub fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd_dup).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn dup(oldfd: i32) -> Result<i32, Errno> {
+pub unsafe fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
     syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
 }
@@ -395,7 +402,7 @@ pub fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// assert!(nc::close(newfd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
+pub unsafe fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;
     let flags = flags as usize;
@@ -410,7 +417,7 @@ pub fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 /// let poll_fd = ret.unwrap();
 /// assert!(nc::close(poll_fd).is_ok());
 /// ```
-pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
+pub unsafe fn epoll_create1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_EPOLL_CREATE1, flags).map(|ret| ret as i32)
 }
@@ -433,7 +440,12 @@ pub fn epoll_create1(flags: i32) -> Result<i32, Errno> {
 /// assert!(nc::close(fds[1]).is_ok());
 /// assert!(nc::close(epfd).is_ok());
 /// ```
-pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Result<(), Errno> {
+pub unsafe fn epoll_ctl(
+    epfd: i32,
+    op: i32,
+    fd: i32,
+    event: &mut epoll_event_t,
+) -> Result<(), Errno> {
     let epfd = epfd as usize;
     let op = op as usize;
     let fd = fd as usize;
@@ -494,7 +506,7 @@ pub fn epoll_ctl(epfd: i32, op: i32, fd: i32, event: &mut epoll_event_t) -> Resu
 /// assert!(nc::close(fds[1]).is_ok());
 /// assert!(nc::close(epfd).is_ok());
 /// ```
-pub fn epoll_pwait(
+pub unsafe fn epoll_pwait(
     epfd: i32,
     events: &mut [epoll_event_t],
     max_events: i32,
@@ -519,13 +531,13 @@ pub fn epoll_pwait(
     .map(|ret| ret as i32)
 }
 
-pub fn epoll_pwait2() {
+pub unsafe fn epoll_pwait2() {
     core::unimplemented!();
     // syscall0(SYS_EPOLL_PWAIT2);
 }
 
 /// Create a file descriptor for event notification.
-pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
+pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
     let count = count as usize;
     let flags = flags as usize;
     syscall2(SYS_EVENTFD2, count, flags).map(|ret| ret as i32)
@@ -548,7 +560,11 @@ pub fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn execve<P: AsRef<Path>>(filename: P, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+pub unsafe fn execve<P: AsRef<Path>>(
+    filename: P,
+    argv: &[&str],
+    env: &[&str],
+) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let argv_ptr = argv.as_ptr() as usize;
@@ -573,7 +589,7 @@ pub fn execve<P: AsRef<Path>>(filename: P, argv: &[&str], env: &[&str]) -> Resul
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn execveat<P: AsRef<Path>>(
+pub unsafe fn execveat<P: AsRef<Path>>(
     fd: i32,
     filename: P,
     argv: &[&str],
@@ -595,7 +611,7 @@ pub fn execveat<P: AsRef<Path>>(
 /// ```
 /// nc::exit(0);
 /// ```
-pub fn exit(status: i32) -> ! {
+pub unsafe fn exit(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);
     unreachable!();
@@ -606,7 +622,7 @@ pub fn exit(status: i32) -> ! {
 /// ```
 /// nc::exit_group(0);
 /// ```
-pub fn exit_group(status: i32) -> ! {
+pub unsafe fn exit_group(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT_GROUP, status);
     unreachable!();
@@ -617,7 +633,7 @@ pub fn exit_group(status: i32) -> ! {
 /// ```
 /// assert!(nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK).is_ok());
 /// ```
-pub fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Result<(), Errno> {
+pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
@@ -625,7 +641,7 @@ pub fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Result<(),
     syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode).map(drop)
 }
 
-pub fn faccessat2() {
+pub unsafe fn faccessat2() {
     core::unimplemented!();
     // syscall0(SYS_FACCESSAT2);
 }
@@ -641,7 +657,7 @@ pub fn faccessat2() {
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
+pub unsafe fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     let len = len as usize;
@@ -661,7 +677,7 @@ pub fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<()
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
+pub unsafe fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let mode = mode as usize;
     let offset = offset as usize;
@@ -670,14 +686,14 @@ pub fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), 
 }
 
 /// Create and initialize fanotify group.
-pub fn fanotify_init(flags: u32, event_f_flags: u32) -> Result<i32, Errno> {
+pub unsafe fn fanotify_init(flags: u32, event_f_flags: u32) -> Result<i32, Errno> {
     let flags = flags as usize;
     let event_f_flags = event_f_flags as usize;
     syscall2(SYS_FANOTIFY_INIT, flags, event_f_flags).map(|ret| ret as i32)
 }
 
 /// Add, remove, or modify an fanotify mark on a filesystem object
-pub fn fanotify_mark<P: AsRef<Path>>(
+pub unsafe fn fanotify_mark<P: AsRef<Path>>(
     fanotify_fd: i32,
     flags: u32,
     mask: u64,
@@ -713,7 +729,7 @@ pub fn fanotify_mark<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn fchdir(fd: i32) -> Result<(), Errno> {
+pub unsafe fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FCHDIR, fd).map(drop)
 }
@@ -729,7 +745,7 @@ pub fn fchdir(fd: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
-pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
+pub unsafe fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let mode = mode as usize;
     syscall2(SYS_FCHMOD, fd, mode).map(drop)
@@ -746,7 +762,7 @@ pub fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 /// assert!(nc::fchmodat(nc::AT_FDCWD, filename, 0o600).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
-pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
+pub unsafe fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
@@ -767,7 +783,7 @@ pub fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
 /// ```
-pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
+pub unsafe fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let user = user as usize;
     let group = group as usize;
@@ -787,7 +803,7 @@ pub fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 /// assert_eq!(ret, Err(nc::EPERM));
 /// assert!(nc::unlinkat(nc::AT_FDCWD, filename,0 ).is_ok());
 /// ```
-pub fn fchownat<P: AsRef<Path>>(
+pub unsafe fn fchownat<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     user: uid_t,
@@ -817,7 +833,7 @@ pub fn fchownat<P: AsRef<Path>>(
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::close(fd2).is_ok());
 /// ```
-pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+pub unsafe fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
     syscall3(SYS_FCNTL, fd, cmd, arg).map(|ret| ret as i32)
@@ -837,7 +853,7 @@ pub fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn fdatasync(fd: i32) -> Result<(), Errno> {
+pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FDATASYNC, fd).map(drop)
 }
@@ -871,7 +887,7 @@ pub fn fdatasync(fd: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn fgetxattr<P: AsRef<Path>>(
+pub unsafe fn fgetxattr<P: AsRef<Path>>(
     fd: i32,
     name: P,
     value: usize,
@@ -885,7 +901,11 @@ pub fn fgetxattr<P: AsRef<Path>>(
 }
 
 /// Load a kernel module.
-pub fn finit_module<P: AsRef<Path>>(fd: i32, param_values: P, flags: i32) -> Result<(), Errno> {
+pub unsafe fn finit_module<P: AsRef<Path>>(
+    fd: i32,
+    param_values: P,
+    flags: i32,
+) -> Result<(), Errno> {
     let fd = fd as usize;
     let param_values = CString::new(param_values.as_ref());
     let param_values_ptr = param_values.as_ptr() as usize;
@@ -920,7 +940,7 @@ pub fn finit_module<P: AsRef<Path>>(fd: i32, param_values: P, flags: i32) -> Res
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_FLISTXATTR, fd, list, size).map(|ret| ret as ssize_t)
 }
@@ -943,7 +963,7 @@ pub fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> 
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path,0 ).is_ok());
 /// ```
-pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
+pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let operation = operation as usize;
     syscall2(SYS_FLOCK, fd, operation).map(drop)
@@ -972,7 +992,7 @@ pub fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn fremovexattr<P: AsRef<Path>>(fd: i32, name: P) -> Result<(), Errno> {
+pub unsafe fn fremovexattr<P: AsRef<Path>>(fd: i32, name: P) -> Result<(), Errno> {
     let fd = fd as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
@@ -980,7 +1000,7 @@ pub fn fremovexattr<P: AsRef<Path>>(fd: i32, name: P) -> Result<(), Errno> {
 }
 
 /// Set parameters and trigger actions on a context.
-pub fn fsconfig<P: AsRef<Path>>(
+pub unsafe fn fsconfig<P: AsRef<Path>>(
     fd: i32,
     cmd: u32,
     key: P,
@@ -1019,7 +1039,7 @@ pub fn fsconfig<P: AsRef<Path>>(
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn fsetxattr<P: AsRef<Path>>(
+pub unsafe fn fsetxattr<P: AsRef<Path>>(
     fd: i32,
     name: P,
     value: usize,
@@ -1035,7 +1055,7 @@ pub fn fsetxattr<P: AsRef<Path>>(
 }
 
 /// Create a kernel mount representation for a new, prepared superblock.
-pub fn fsmount(fs_fd: i32, flags: u32, attr_flags: u32) -> Result<i32, Errno> {
+pub unsafe fn fsmount(fs_fd: i32, flags: u32, attr_flags: u32) -> Result<i32, Errno> {
     let fs_fd = fs_fd as usize;
     let flags = flags as usize;
     let attr_flags = attr_flags as usize;
@@ -1043,7 +1063,7 @@ pub fn fsmount(fs_fd: i32, flags: u32, attr_flags: u32) -> Result<i32, Errno> {
 }
 
 /// Open a filesystem by name so that it can be configured for mounting.
-pub fn fsopen<P: AsRef<Path>>(fs_name: P, flags: u32) -> Result<(), Errno> {
+pub unsafe fn fsopen<P: AsRef<Path>>(fs_name: P, flags: u32) -> Result<(), Errno> {
     let fs_name = CString::new(fs_name.as_ref());
     let fs_name_ptr = fs_name.as_ptr() as usize;
     let flags = flags as usize;
@@ -1051,7 +1071,7 @@ pub fn fsopen<P: AsRef<Path>>(fs_name: P, flags: u32) -> Result<(), Errno> {
 }
 
 /// Pick a superblock into a context for reconfiguration.
-pub fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: i32) -> Result<i32, Errno> {
+pub unsafe fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: i32) -> Result<i32, Errno> {
     let dfd = dfd as usize;
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
@@ -1074,7 +1094,7 @@ pub fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: i32) -> Result<i32, Errn
 /// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
+pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let statbuf_ptr = statbuf as *mut stat_t as usize;
     syscall2(SYS_FSTAT, fd, statbuf_ptr).map(drop)
@@ -1089,7 +1109,7 @@ pub fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
 /// ```
-pub fn fstatat<P: AsRef<Path>>(
+pub unsafe fn fstatat<P: AsRef<Path>>(
     dfd: i32,
     filename: P,
     statbuf: &mut stat_t,
@@ -1118,7 +1138,7 @@ pub fn fstatat<P: AsRef<Path>>(
 /// assert!(statfs.f_bavail > 0);
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
+pub unsafe fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let buf_ptr = buf as *mut statfs_t as usize;
     syscall2(SYS_FSTATFS, fd, buf_ptr).map(drop)
@@ -1138,7 +1158,7 @@ pub fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn fsync(fd: i32) -> Result<(), Errno> {
+pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FSYNC, fd).map(drop)
 }
@@ -1155,14 +1175,14 @@ pub fn fsync(fd: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
+pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let length = length as usize;
     syscall2(SYS_FTRUNCATE, fd, length).map(drop)
 }
 
 /// Fast user-space locking.
-pub fn futex(
+pub unsafe fn futex(
     uaddr: &mut i32,
     futex_op: i32,
     val: u32,
@@ -1197,7 +1217,11 @@ pub fn futex(
 /// let ret = nc::getcpu(&mut cpu, &mut node, &mut cache);
 /// assert!(ret.is_ok());
 /// ```
-pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Result<(), Errno> {
+pub unsafe fn getcpu(
+    cpu: &mut u32,
+    node: &mut u32,
+    cache: &mut getcpu_cache_t,
+) -> Result<(), Errno> {
     let cpu_ptr = cpu as *mut u32 as usize;
     let node_ptr = node as *mut u32 as usize;
     let cache_ptr = cache as *mut getcpu_cache_t as usize;
@@ -1216,7 +1240,7 @@ pub fn getcpu(cpu: &mut u32, node: &mut u32, cache: &mut getcpu_cache_t) -> Resu
 /// assert!(cwd.is_ok());
 /// println!("cwd: {:?}", cwd);
 /// ```
-pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
     syscall2(SYS_GETCWD, buf, size).map(|ret| ret as ssize_t)
 }
 
@@ -1264,7 +1288,7 @@ pub fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 ///
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_GETDENTS64, fd, dirp, count).map(|ret| ret as ssize_t)
 }
@@ -1275,7 +1299,7 @@ pub fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno>
 /// let egid = nc::getegid();
 /// assert!(egid > 0);
 /// ```
-pub fn getegid() -> gid_t {
+pub unsafe fn getegid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
 }
@@ -1286,7 +1310,7 @@ pub fn getegid() -> gid_t {
 /// let euid = nc::geteuid();
 /// assert!(euid > 0);
 /// ```
-pub fn geteuid() -> uid_t {
+pub unsafe fn geteuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
@@ -1297,7 +1321,7 @@ pub fn geteuid() -> uid_t {
 /// let gid = nc::getgid();
 /// assert!(gid > 0);
 /// ```
-pub fn getgid() -> gid_t {
+pub unsafe fn getgid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
 }
@@ -1315,7 +1339,7 @@ pub fn getgid() -> gid_t {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(total_num));
 /// ```
-pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
+pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
     let size = size as usize;
     let group_ptr = group_list.as_mut_ptr() as usize;
     syscall2(SYS_GETGROUPS, size, group_ptr).map(|ret| ret as i32)
@@ -1368,14 +1392,14 @@ pub fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errno> {
 /// assert_eq!(prev_itv.it_value.tv_sec, 0);
 /// assert_eq!(prev_itv.it_value.tv_usec, 0);
 /// ```
-pub fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
+pub unsafe fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
     let which = which as usize;
     let curr_val_ptr = curr_val as *mut itimerval_t as usize;
     syscall2(SYS_GETITIMER, which, curr_val_ptr).map(drop)
 }
 
 /// Get name of connected peer socket.
-pub fn getpeername(
+pub unsafe fn getpeername(
     sockfd: i32,
     addr: &mut sockaddr_in_t,
     addrlen: &mut socklen_t,
@@ -1393,7 +1417,7 @@ pub fn getpeername(
 /// let pgid = nc::getpgid(ppid);
 /// assert!(pgid.is_ok());
 /// ```
-pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
+pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     let pid = pid as usize;
     syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t)
 }
@@ -1404,7 +1428,7 @@ pub fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 /// let pid = nc::getpid();
 /// assert!(pid > 0);
 /// ```
-pub fn getpid() -> pid_t {
+pub unsafe fn getpid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
@@ -1415,7 +1439,7 @@ pub fn getpid() -> pid_t {
 /// let ppid = nc::getppid();
 /// assert!(ppid > 0);
 /// ```
-pub fn getppid() -> pid_t {
+pub unsafe fn getppid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
@@ -1426,7 +1450,7 @@ pub fn getppid() -> pid_t {
 /// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
 /// assert!(ret.is_ok());
 /// ```
-pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
+pub unsafe fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;
     syscall2(SYS_GETPRIORITY, which, who).map(|ret| {
@@ -1448,7 +1472,7 @@ pub fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
 /// let size = ret.unwrap() as usize;
 /// assert!(size <= buf_len);
 /// ```
-pub fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, Errno> {
+pub unsafe fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, Errno> {
     let buf_ptr = buf.as_mut_ptr() as usize;
     let flags = flags as usize;
     syscall3(SYS_GETRANDOM, buf_ptr, buf_len, flags).map(|ret| ret as ssize_t)
@@ -1466,7 +1490,7 @@ pub fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ssize_t, 
 /// assert!(egid > 0);
 /// assert!(sgid > 0);
 /// ```
-pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
+pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
     let rgid_ptr = rgid as *mut gid_t as usize;
     let egid_ptr = egid as *mut gid_t as usize;
     let sgid_ptr = sgid as *mut gid_t as usize;
@@ -1485,7 +1509,7 @@ pub fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result
 /// assert!(euid > 0);
 /// assert!(suid > 0);
 /// ```
-pub fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result<(), Errno> {
+pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result<(), Errno> {
     let ruid_ptr = ruid as *mut uid_t as usize;
     let euid_ptr = euid as *mut uid_t as usize;
     let suid_ptr = suid as *mut uid_t as usize;
@@ -1501,7 +1525,7 @@ pub fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result
 /// assert!(rlimit.rlim_cur > 0);
 /// assert!(rlimit.rlim_max > 0);
 /// ```
-pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
+pub unsafe fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
     let rlim_ptr = rlim as *mut rlimit_t as usize;
     syscall2(SYS_GETRLIMIT, resource, rlim_ptr).map(drop)
@@ -1516,7 +1540,7 @@ pub fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
 /// assert!(usage.ru_maxrss > 0);
 /// assert_eq!(usage.ru_nswap, 0);
 /// ```
-pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
+pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
     let usage_ptr = usage as *mut rusage_t as usize;
     syscall2(SYS_GETRUSAGE, who, usage_ptr).map(drop)
@@ -1529,14 +1553,14 @@ pub fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 /// let sid = nc::getsid(ppid);
 /// assert!(sid > 0);
 /// ```
-pub fn getsid(pid: pid_t) -> pid_t {
+pub unsafe fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     // This function is always successful.
     syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
 }
 
 /// Get current address to which the socket `sockfd` is bound.
-pub fn getsockname(
+pub unsafe fn getsockname(
     sockfd: i32,
     addr: &mut sockaddr_in_t,
     addrlen: &mut socklen_t,
@@ -1548,7 +1572,7 @@ pub fn getsockname(
 }
 
 /// Get options on sockets
-pub fn getsockopt(
+pub unsafe fn getsockopt(
     sockfd: i32,
     level: i32,
     optname: i32,
@@ -1577,7 +1601,7 @@ pub fn getsockopt(
 /// let tid = nc::gettid();
 /// assert!(tid > 0);
 /// ```
-pub fn gettid() -> pid_t {
+pub unsafe fn gettid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
 }
@@ -1591,7 +1615,7 @@ pub fn gettid() -> pid_t {
 /// assert!(ret.is_ok());
 /// assert!(tv.tv_sec > 1611380386);
 /// ```
-pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
+pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
     let timeval_ptr = timeval as *mut timeval_t as usize;
     let tz_ptr = tz as *mut timezone_t as usize;
     syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
@@ -1603,7 +1627,7 @@ pub fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), 
 /// let uid = nc::getuid();
 /// assert!(uid > 0);
 /// ```
-pub fn getuid() -> uid_t {
+pub unsafe fn getuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }
@@ -1637,7 +1661,7 @@ pub fn getuid() -> uid_t {
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn getxattr<P: AsRef<Path>>(
+pub unsafe fn getxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
     value: usize,
@@ -1652,7 +1676,7 @@ pub fn getxattr<P: AsRef<Path>>(
 }
 
 /// Retrieve NUMA memory policy for a thread
-pub fn get_mempolicy(
+pub unsafe fn get_mempolicy(
     mode: &mut i32,
     nmask: &mut usize,
     maxnode: usize,
@@ -1666,7 +1690,7 @@ pub fn get_mempolicy(
 
 /// Get list of robust futexes.
 // TODO(Shaohua): Fix argument type.
-pub fn get_robust_list(
+pub unsafe fn get_robust_list(
     pid: pid_t,
     head_ptr: &mut usize,
     len_ptr: &mut size_t,
@@ -1678,7 +1702,7 @@ pub fn get_robust_list(
 }
 
 /// Load a kernel module.
-pub fn init_module<P: AsRef<Path>>(
+pub unsafe fn init_module<P: AsRef<Path>>(
     module_image: usize,
     len: usize,
     param_values: P,
@@ -1701,7 +1725,11 @@ pub fn init_module<P: AsRef<Path>>(
 /// let _wd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn inotify_add_watch<P: AsRef<Path>>(fd: i32, filename: P, mask: u32) -> Result<i32, Errno> {
+pub unsafe fn inotify_add_watch<P: AsRef<Path>>(
+    fd: i32,
+    filename: P,
+    mask: u32,
+) -> Result<i32, Errno> {
     let fd = fd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
@@ -1717,7 +1745,7 @@ pub fn inotify_add_watch<P: AsRef<Path>>(fd: i32, filename: P, mask: u32) -> Res
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
+pub unsafe fn inotify_init1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_INOTIFY_INIT1, flags).map(|ret| ret as i32)
 }
@@ -1737,7 +1765,7 @@ pub fn inotify_init1(flags: i32) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
+pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let wd = wd as usize;
     syscall2(SYS_INOTIFY_RM_WATCH, fd, wd).map(drop)
@@ -1759,7 +1787,7 @@ pub fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+pub unsafe fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
     syscall3(SYS_IOCTL, fd, cmd, arg).map(drop)
@@ -1774,7 +1802,7 @@ pub fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
 /// let _prio_class = nc::ioprio_prio_class(prio);
 /// let _prio_data = nc::ioprio_prio_data(prio);
 /// ```
-pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
+pub unsafe fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;
     syscall2(SYS_IOPRIO_GET, which, who).map(|ret| ret as i32)
@@ -1795,7 +1823,7 @@ pub fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 /// let ret = nc::ioprio_set(nc::IOPRIO_WHO_PROCESS, 0, new_prio);
 /// assert!(ret.is_ok());
 /// ```
-pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
+pub unsafe fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
     let which = which as usize;
     let who = who as usize;
     let ioprio = ioprio as usize;
@@ -1811,7 +1839,7 @@ pub fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
 /// May fail with -EINVAL if aio_context specified by ctx_id is
 /// invalid.  May fail with -EAGAIN if the iocb specified was not
 /// cancelled.  Will fail with -ENOSYS if not implemented.
-pub fn io_cancel(
+pub unsafe fn io_cancel(
     ctx_id: aio_context_t,
     iocb: &mut iocb_t,
     result: &mut io_event_t,
@@ -1827,7 +1855,7 @@ pub fn io_cancel(
 ///
 /// Will fail with -ENOSYS if not implemented.  May fail with -EINVAL
 /// if the context pointed to is invalid.
-pub fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
+pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
     let ctx_id = ctx_id as usize;
     syscall1(SYS_IO_DESTROY, ctx_id).map(drop)
 }
@@ -1843,7 +1871,7 @@ pub fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
 /// before sufficient events are available, where timeout == NULL
 /// specifies an infinite timeout. Note that the timeout pointed to by
 /// timeout is relative.  Will fail with -ENOSYS if not implemented.
-pub fn io_getevents(
+pub unsafe fn io_getevents(
     ctx_id: aio_context_t,
     min_nr: isize,
     nr: isize,
@@ -1867,7 +1895,7 @@ pub fn io_getevents(
 }
 
 /// read asynchronous I/O events from the completion queue
-pub fn io_pgetevents(
+pub unsafe fn io_pgetevents(
     ctx_id: aio_context_t,
     min_nr: isize,
     nr: isize,
@@ -1905,7 +1933,7 @@ pub fn io_pgetevents(
 /// of available events.  May fail with -ENOMEM if insufficient kernel
 /// resources are available.  May fail with -EFAULT if an invalid
 /// pointer is passed for ctxp.  Will fail with -ENOSYS if not implemented.
-pub fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
+pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
     let nr_events = nr_events as usize;
     let ctx_id_ptr = ctx_id as *mut aio_context_t as usize;
     syscall2(SYS_IO_SETUP, nr_events, ctx_id_ptr).map(drop)
@@ -1923,14 +1951,14 @@ pub fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno>
 /// are available to queue any iocbs.  Will return 0 if nr is 0.  Will
 /// fail with -ENOSYS if not implemented.
 // TODO(Shaohua): type of iocbpp is struct iocb**
-pub fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
+pub unsafe fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
     let ctx_id = ctx_id as usize;
     let nr = nr as usize;
     let iocb_ptr = iocb as *mut iocb_t as usize;
     syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
 }
 
-pub fn io_uring_enter(
+pub unsafe fn io_uring_enter(
     fd: i32,
     to_submit: u32,
     min_complete: u32,
@@ -1956,21 +1984,32 @@ pub fn io_uring_enter(
     .map(|ret| ret as i32)
 }
 
-pub fn io_uring_register(fd: i32, opcode: u32, arg: usize, nr_args: u32) -> Result<i32, Errno> {
+pub unsafe fn io_uring_register(
+    fd: i32,
+    opcode: u32,
+    arg: usize,
+    nr_args: u32,
+) -> Result<i32, Errno> {
     let fd = fd as usize;
     let opcode = opcode as usize;
     let nr_args = nr_args as usize;
     syscall4(SYS_IO_URING_REGISTER, fd, opcode, arg, nr_args).map(|ret| ret as i32)
 }
 
-pub fn io_uring_setup(entries: u32, params: &mut io_uring_params_t) -> Result<i32, Errno> {
+pub unsafe fn io_uring_setup(entries: u32, params: &mut io_uring_params_t) -> Result<i32, Errno> {
     let entries = entries as usize;
     let params_ptr = params as *mut io_uring_params_t as usize;
     syscall2(SYS_IO_URING_SETUP, entries, params_ptr).map(|ret| ret as i32)
 }
 
 /// Compare two processes to determine if they share a kernel resource.
-pub fn kcmp(pid1: pid_t, pid2: pid_t, type_: i32, idx1: usize, idx2: usize) -> Result<i32, Errno> {
+pub unsafe fn kcmp(
+    pid1: pid_t,
+    pid2: pid_t,
+    type_: i32,
+    idx1: usize,
+    idx2: usize,
+) -> Result<i32, Errno> {
     let pid1 = pid1 as usize;
     let pid2 = pid2 as usize;
     let type_ = type_ as usize;
@@ -1978,7 +2017,7 @@ pub fn kcmp(pid1: pid_t, pid2: pid_t, type_: i32, idx1: usize, idx2: usize) -> R
 }
 
 /// Load a new kernel for later execution.
-pub fn kexec_file_load<P: AsRef<Path>>(
+pub unsafe fn kexec_file_load<P: AsRef<Path>>(
     kernel_fd: i32,
     initrd_fd: i32,
     cmdline: P,
@@ -2001,7 +2040,7 @@ pub fn kexec_file_load<P: AsRef<Path>>(
 }
 
 /// Load a new kernel for later execution.
-pub fn kexec_load(
+pub unsafe fn kexec_load(
     entry: usize,
     nr_segments: usize,
     segments: &mut kexec_segment_t,
@@ -2012,7 +2051,7 @@ pub fn kexec_load(
 }
 
 /// Manipulate the kernel's key management facility.
-pub fn keyctl(
+pub unsafe fn keyctl(
     operation: i32,
     arg2: usize,
     arg3: usize,
@@ -2042,23 +2081,23 @@ pub fn keyctl(
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
+pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     let pid = pid as usize;
     let signal = signal as usize;
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
-pub fn landlock_add_rule() {
+pub unsafe fn landlock_add_rule() {
     core::unimplemented!();
     // syscall0(SYS_LANDLOCK_ADD_RULE);
 }
 
-pub fn landlock_create_ruleset() {
+pub unsafe fn landlock_create_ruleset() {
     core::unimplemented!();
     // syscall0(SYS_LANDLOCK_CREATE_RULESET);
 }
 
-pub fn landlock_restrict_self() {
+pub unsafe fn landlock_restrict_self() {
     core::unimplemented!();
     // syscall0(SYS_LANDLOCK_RESTRICT_SELF);
 }
@@ -2092,7 +2131,7 @@ pub fn landlock_restrict_self() {
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn lgetxattr<P: AsRef<Path>>(
+pub unsafe fn lgetxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
     value: usize,
@@ -2120,7 +2159,7 @@ pub fn lgetxattr<P: AsRef<Path>>(
 /// assert!(nc::unlinkat(nc::AT_FDCWD, old_filename, 0).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, new_filename, 0).is_ok());
 /// ```
-pub fn linkat<P: AsRef<Path>>(
+pub unsafe fn linkat<P: AsRef<Path>>(
     olddfd: i32,
     oldfilename: P,
     newdfd: i32,
@@ -2146,7 +2185,7 @@ pub fn linkat<P: AsRef<Path>>(
 }
 
 /// Listen for connections on a socket.
-pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
+pub unsafe fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let backlog = backlog as usize;
     syscall2(SYS_LISTEN, sockfd, backlog).map(drop)
@@ -2179,7 +2218,11 @@ pub fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn listxattr<P: AsRef<Path>>(filename: P, list: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn listxattr<P: AsRef<Path>>(
+    filename: P,
+    list: usize,
+    size: size_t,
+) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall3(SYS_LISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
@@ -2212,7 +2255,7 @@ pub fn listxattr<P: AsRef<Path>>(filename: P, list: usize, size: size_t) -> Resu
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn llistxattr<P: AsRef<Path>>(
+pub unsafe fn llistxattr<P: AsRef<Path>>(
     filename: P,
     list: usize,
     size: size_t,
@@ -2224,7 +2267,7 @@ pub fn llistxattr<P: AsRef<Path>>(
 
 /// Return a directory entry's path.
 // TODO(Shaohua): Returns a string.
-pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
+pub unsafe fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
     let cookie = cookie as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
@@ -2254,7 +2297,7 @@ pub fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
+pub unsafe fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
@@ -2273,7 +2316,7 @@ pub fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
+pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     let whence = whence as usize;
@@ -2302,7 +2345,7 @@ pub fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn lsetxattr<P: AsRef<Path>>(
+pub unsafe fn lsetxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
     value: usize,
@@ -2340,14 +2383,14 @@ pub fn lsetxattr<P: AsRef<Path>>(
 ///
 /// assert!(nc::munmap(addr, map_length).is_ok());
 /// ```
-pub fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
+pub unsafe fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
     let len = len as usize;
     let advice = advice as usize;
     syscall3(SYS_MADVISE, addr, len, advice).map(drop)
 }
 
 /// Set memory policy for a memory range.
-pub fn mbind(
+pub unsafe fn mbind(
     start: usize,
     len: usize,
     mode: i32,
@@ -2389,27 +2432,27 @@ pub fn mbind(
 ///        smp_mb()           X           O            O
 ///        sys_membarrier()   O           O            O
 /// ```
-pub fn membarrier(cmd: i32, flags: i32) -> Result<i32, Errno> {
+pub unsafe fn membarrier(cmd: i32, flags: i32) -> Result<i32, Errno> {
     let cmd = cmd as usize;
     let flags = flags as usize;
     syscall2(SYS_MEMBARRIER, cmd, flags).map(|ret| ret as i32)
 }
 
 /// Create an anonymous file.
-pub fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, Errno> {
+pub unsafe fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
     syscall2(SYS_MEMFD_CREATE, name_ptr, flags).map(|ret| ret as i32)
 }
 
-pub fn memfd_secret() {
+pub unsafe fn memfd_secret() {
     core::unimplemented!();
     // syscall0(SYS_MEMFD_SECRET);
 }
 
 /// Move all pages in a process to another set of nodes
-pub fn migrate_pages(
+pub unsafe fn migrate_pages(
     pid: pid_t,
     maxnode: usize,
     old_nodes: *const usize,
@@ -2440,7 +2483,7 @@ pub fn migrate_pages(
 /// invalid for the address space of this process, or specify one or
 /// more pages which are not currently mapped
 ///  -EAGAIN - A kernel resource was temporarily unavailable.
-pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
+pub unsafe fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
     let len = len as usize;
     let vec_ptr = vec as usize;
     syscall3(SYS_MINCORE, start, len, vec_ptr).map(drop)
@@ -2454,7 +2497,7 @@ pub fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_ok());
 /// ```
-pub fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
+pub unsafe fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
@@ -2471,7 +2514,7 @@ pub fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn mknodat<P: AsRef<Path>>(
+pub unsafe fn mknodat<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     mode: mode_t,
@@ -2492,7 +2535,7 @@ pub fn mknodat<P: AsRef<Path>>(
 /// let ret = nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len());
 /// assert!(ret.is_ok());
 /// ```
-pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
+pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MLOCK, addr, len).map(drop)
 }
@@ -2504,7 +2547,7 @@ pub fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 /// let ret = nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT);
 /// assert!(ret.is_ok());
 /// ```
-pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     let len = len as usize;
     let flags = flags as usize;
     syscall3(SYS_MLOCK2, addr, len, flags).map(drop)
@@ -2516,7 +2559,7 @@ pub fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 /// let ret = nc::mlockall(nc::MCL_CURRENT);
 /// assert!(ret.is_ok());
 /// ```
-pub fn mlockall(flags: i32) -> Result<(), Errno> {
+pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
     syscall1(SYS_MLOCKALL, flags).map(drop)
 }
@@ -2556,7 +2599,7 @@ pub fn mlockall(flags: i32) -> Result<(), Errno> {
 /// assert!(nc::munmap(addr, map_length).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn mmap(
+pub unsafe fn mmap(
     start: usize,
     len: size_t,
     prot: i32,
@@ -2589,7 +2632,7 @@ pub fn mmap(
 ///
 /// assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
 /// ```
-pub fn mount<P: AsRef<Path>>(
+pub unsafe fn mount<P: AsRef<Path>>(
     dev_name: P,
     dir_name: P,
     fs_type: P,
@@ -2613,7 +2656,7 @@ pub fn mount<P: AsRef<Path>>(
     .map(drop)
 }
 
-pub fn mount_setattr() {
+pub unsafe fn mount_setattr() {
     core::unimplemented!();
     // syscall0(SYS_MOUNT_SETATTR);
 }
@@ -2625,7 +2668,7 @@ pub fn mount_setattr() {
 /// it can be used to copy a mount subtree.
 ///
 /// Note the flags value is a combination of MOVE_MOUNT_* flags.
-pub fn move_mount<P: AsRef<Path>>(
+pub unsafe fn move_mount<P: AsRef<Path>>(
     from_dfd: i32,
     from_pathname: P,
     to_dfd: i32,
@@ -2651,7 +2694,7 @@ pub fn move_mount<P: AsRef<Path>>(
 }
 
 /// Move individual pages of a process to another node
-pub fn move_pages(
+pub unsafe fn move_pages(
     pid: pid_t,
     nr_pages: usize,
     pages: usize,
@@ -2697,7 +2740,7 @@ pub fn move_pages(
 ///
 /// assert!(nc::munmap(addr, map_length).is_ok());
 /// ```
-pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
+pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     let len = len as usize;
     let prot = prot as usize;
     syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
@@ -2724,7 +2767,7 @@ pub fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
 /// assert!(nc::close(mq_id).is_ok());
 /// assert!(nc::mq_unlink(name).is_ok());
 /// ```
-pub fn mq_getsetattr(
+pub unsafe fn mq_getsetattr(
     mqdes: mqd_t,
     new_attr: Option<&mut mq_attr_t>,
     old_attr: Option<&mut mq_attr_t>,
@@ -2744,7 +2787,7 @@ pub fn mq_getsetattr(
 }
 
 /// Register for notification when a message is available
-pub fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), Errno> {
+pub unsafe fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
     let notification_ptr = if let Some(notification) = notification {
         notification as *const sigevent_t as usize
@@ -2769,7 +2812,7 @@ pub fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), 
 /// assert!(nc::close(mq_id).is_ok());
 /// assert!(nc::mq_unlink(name).is_ok());
 /// ```
-pub fn mq_open<P: AsRef<Path>>(
+pub unsafe fn mq_open<P: AsRef<Path>>(
     name: P,
     oflag: i32,
     mode: umode_t,
@@ -2836,7 +2879,7 @@ pub fn mq_open<P: AsRef<Path>>(
 /// assert!(nc::close(mq_id).is_ok());
 /// assert!(nc::mq_unlink(name).is_ok());
 /// ```
-pub fn mq_timedreceive(
+pub unsafe fn mq_timedreceive(
     mqdes: mqd_t,
     msg: &mut [u8],
     msg_len: usize,
@@ -2893,7 +2936,7 @@ pub fn mq_timedreceive(
 /// assert!(nc::close(mq_id).is_ok());
 /// assert!(nc::mq_unlink(name).is_ok());
 /// ```
-pub fn mq_timedsend(
+pub unsafe fn mq_timedsend(
     mqdes: mqd_t,
     msg: &[u8],
     msg_len: usize,
@@ -2931,14 +2974,14 @@ pub fn mq_timedsend(
 /// assert!(nc::close(mq_id).is_ok());
 /// assert!(nc::mq_unlink(name).is_ok());
 /// ```
-pub fn mq_unlink<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
+pub unsafe fn mq_unlink<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     syscall1(SYS_MQ_UNLINK, name_ptr).map(drop)
 }
 
 /// Remap a virtual memory address
-pub fn mremap(
+pub unsafe fn mremap(
     addr: usize,
     old_len: size_t,
     new_len: size_t,
@@ -2963,7 +3006,7 @@ pub fn mremap(
 /// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
 /// assert!(ret.is_ok());
 /// ```
-pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
+pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     let msqid = msqid as usize;
     let cmd = cmd as usize;
     let buf_ptr = buf as *mut msqid_ds_t as usize;
@@ -2983,7 +3026,7 @@ pub fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> 
 /// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
 /// assert!(ret.is_ok());
 /// ```
-pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
+pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let msgflg = msgflg as usize;
     syscall2(SYS_MSGGET, key, msgflg).map(|ret| ret as i32)
@@ -3000,8 +3043,8 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///
 /// #[derive(Debug, Clone, Copy)]
 /// struct Message {
-///     pub mtype: isize,
-///     pub mtext: [u8; MAX_MTEXT],
+///     pub unsafe mtype: isize,
+///     pub unsafe mtext: [u8; MAX_MTEXT],
 /// }
 ///
 /// impl Default for Message {
@@ -3059,7 +3102,7 @@ pub fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn msgrcv(
+pub unsafe fn msgrcv(
     msqid: i32,
     msgq: usize,
     msgsz: size_t,
@@ -3084,8 +3127,8 @@ pub fn msgrcv(
 ///
 /// #[derive(Debug, Clone, Copy)]
 /// struct Message {
-///     pub mtype: isize,
-///     pub mtext: [u8; MAX_MTEXT],
+///     pub unsafe mtype: isize,
+///     pub unsafe mtext: [u8; MAX_MTEXT],
 /// }
 ///
 /// impl Default for Message {
@@ -3143,7 +3186,7 @@ pub fn msgrcv(
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
+pub unsafe fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
     let msqid = msqid as usize;
     let msgsz = msgsz as usize;
     let msgflg = msgflg as usize;
@@ -3151,7 +3194,7 @@ pub fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(),
 }
 
 /// Synchronize a file with memory map.
-pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     let len = len as usize;
     let flags = flags as usize;
     syscall3(SYS_MSYNC, addr, len, flags).map(drop)
@@ -3170,7 +3213,7 @@ pub fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 /// let ret = nc::munlock(addr, passwd_buf.len());
 /// assert!(ret.is_ok());
 /// ```
-pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
+pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MUNLOCK, addr, len).map(drop)
 }
@@ -3183,7 +3226,7 @@ pub fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
 /// let ret = nc::munlockall();
 /// assert!(ret.is_ok());
 /// ```
-pub fn munlockall() -> Result<(), Errno> {
+pub unsafe fn munlockall() -> Result<(), Errno> {
     syscall0(SYS_MUNLOCKALL).map(drop)
 }
 
@@ -3222,13 +3265,13 @@ pub fn munlockall() -> Result<(), Errno> {
 /// assert!(nc::munmap(addr, map_length).is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
+pub unsafe fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
     syscall2(SYS_MUNMAP, addr, len).map(drop)
 }
 
 /// Obtain handle for a filename
-pub fn name_to_handle_at<P: AsRef<Path>>(
+pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
     dfd: i32,
     filename: P,
     handle: &mut file_handle_t,
@@ -3261,7 +3304,7 @@ pub fn name_to_handle_at<P: AsRef<Path>>(
 /// };
 /// assert!(nc::nanosleep(&t, None).is_ok());
 /// ```
-pub fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
+pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
     let rem_ptr = if let Some(rem) = rem {
         rem as *mut timespec_t as usize
@@ -3273,7 +3316,7 @@ pub fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), E
 
 /// Syscall interface to kernel nfs daemon.
 /// Deprecated.
-pub fn nfsservctl() {
+pub unsafe fn nfsservctl() {
     core::unimplemented!();
     // syscall0(SYS_NFSSERVCTL);
 }
@@ -3287,7 +3330,7 @@ pub fn nfsservctl() {
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn openat<P: AsRef<Path>>(
+pub unsafe fn openat<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     flags: i32,
@@ -3301,13 +3344,13 @@ pub fn openat<P: AsRef<Path>>(
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
 }
 
-pub fn openat2() {
+pub unsafe fn openat2() {
     core::unimplemented!();
     // syscall0(SYS_OPENAT2);
 }
 
 /// Obtain handle for an open file
-pub fn open_by_handle_at(
+pub unsafe fn open_by_handle_at(
     mount_fd: i32,
     handle: &mut file_handle_t,
     flags: i32,
@@ -3318,7 +3361,7 @@ pub fn open_by_handle_at(
     syscall3(SYS_OPEN_BY_HANDLE_AT, mount_fd, handle_ptr, flags).map(|ret| ret as i32)
 }
 
-pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i32, Errno> {
+pub unsafe fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i32, Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
@@ -3327,7 +3370,7 @@ pub fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Result<i3
 }
 
 /// Set up performance monitoring.
-pub fn perf_event_open(
+pub unsafe fn perf_event_open(
     attr: &mut perf_event_attr_t,
     pid: pid_t,
     cpu: i32,
@@ -3342,7 +3385,7 @@ pub fn perf_event_open(
 }
 
 /// Set the process execution domain.
-pub fn personality(persona: u32) -> Result<u32, Errno> {
+pub unsafe fn personality(persona: u32) -> Result<u32, Errno> {
     let persona = persona as usize;
     syscall1(SYS_PERSONALITY, persona).map(|ret| ret as u32)
 }
@@ -3408,7 +3451,7 @@ pub fn personality(persona: u32) -> Result<u32, Errno> {
 /// let _ = nc::close(pidfd);
 /// let _ = nc::close(child_stdout_fd);
 /// ```
-pub fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno> {
+pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno> {
     let pidfd = pidfd as usize;
     let target_fd = target_fd as usize;
     let flags = flags as usize;
@@ -3476,7 +3519,7 @@ pub fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno>
 /// let _ = nc::close(pidfd);
 /// let _ = nc::close(child_stdout_fd);
 /// ```
-pub fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
+pub unsafe fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
     let pid = pid as usize;
     let flags = flags as usize;
     syscall2(SYS_PIDFD_OPEN, pid, flags).map(|ret| ret as i32)
@@ -3499,7 +3542,7 @@ pub fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
 /// descriptor.
 ///
 /// Return: 0 on success, negative errno on failure
-pub fn pidfd_send_signal(
+pub unsafe fn pidfd_send_signal(
     pidfd: i32,
     sig: i32,
     info: &mut siginfo_t,
@@ -3521,14 +3564,14 @@ pub fn pidfd_send_signal(
 /// assert!(nc::close(fds[0]).is_ok());
 /// assert!(nc::close(fds[1]).is_ok());
 /// ```
-pub fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
+pub unsafe fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
     let flags = flags as usize;
     syscall2(SYS_PIPE2, pipefd_ptr, flags).map(drop)
 }
 
 /// Change the root filesystem.
-pub fn pivot_root<P: AsRef<Path>>(new_root: P, put_old: P) -> Result<(), Errno> {
+pub unsafe fn pivot_root<P: AsRef<Path>>(new_root: P, put_old: P) -> Result<(), Errno> {
     let new_root = CString::new(new_root.as_ref());
     let new_root_ptr = new_root.as_ptr() as usize;
     let put_old = CString::new(put_old.as_ref());
@@ -3537,25 +3580,30 @@ pub fn pivot_root<P: AsRef<Path>>(new_root: P, put_old: P) -> Result<(), Errno> 
 }
 
 /// Create a new protection key.
-pub fn pkey_alloc(flags: usize, init_val: usize) -> Result<i32, Errno> {
+pub unsafe fn pkey_alloc(flags: usize, init_val: usize) -> Result<i32, Errno> {
     syscall2(SYS_PKEY_ALLOC, flags, init_val).map(|ret| ret as i32)
 }
 
 /// Free a protection key.
-pub fn pkey_free(pkey: i32) -> Result<(), Errno> {
+pub unsafe fn pkey_free(pkey: i32) -> Result<(), Errno> {
     let pkey = pkey as usize;
     syscall1(SYS_PKEY_FREE, pkey).map(drop)
 }
 
 /// Set protection on a region of memory.
-pub fn pkey_mprotect(start: usize, len: size_t, prot: usize, pkey: i32) -> Result<(), Errno> {
+pub unsafe fn pkey_mprotect(
+    start: usize,
+    len: size_t,
+    prot: usize,
+    pkey: i32,
+) -> Result<(), Errno> {
     let len = len as usize;
     let pkey = pkey as usize;
     syscall4(SYS_PKEY_MPROTECT, start, len, prot, pkey).map(drop)
 }
 
 /// Wait for some event on a file descriptor.
-pub fn ppoll(
+pub unsafe fn ppoll(
     fds: &mut pollfd_t,
     nfds: i32,
     timeout: &timespec_t,
@@ -3579,7 +3627,7 @@ pub fn ppoll(
 }
 
 /// Operations on a process.
-pub fn prctl(
+pub unsafe fn prctl(
     option: i32,
     arg2: usize,
     arg3: usize,
@@ -3608,7 +3656,7 @@ pub fn prctl(
 /// assert_eq!(ret, Ok(read_count as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize_t, Errno> {
+pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     syscall4(SYS_PREAD64, fd, buf, count, offset).map(|ret| ret as ssize_t)
@@ -3636,7 +3684,12 @@ pub fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn preadv(fd: i32, vec: &mut [iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
+pub unsafe fn preadv(
+    fd: i32,
+    vec: &mut [iovec_t],
+    pos_l: usize,
+    pos_h: usize,
+) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let vec_ptr = vec.as_mut_ptr() as usize;
     let vec_len = vec.len();
@@ -3666,7 +3719,7 @@ pub fn preadv(fd: i32, vec: &mut [iovec_t], pos_l: usize, pos_h: usize) -> Resul
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn preadv2(
+pub unsafe fn preadv2(
     fd: i32,
     vec: &mut [iovec_t],
     pos_l: usize,
@@ -3689,7 +3742,7 @@ pub fn preadv2(
 /// assert!(old_limit.rlim_cur > 0);
 /// assert!(old_limit.rlim_max > 0);
 /// ```
-pub fn prlimit64(
+pub unsafe fn prlimit64(
     pid: pid_t,
     resource: i32,
     new_limit: Option<&rlimit64_t>,
@@ -3710,18 +3763,18 @@ pub fn prlimit64(
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
-pub fn process_madvise() {
+pub unsafe fn process_madvise() {
     core::unimplemented!();
     // syscall0(SYS_PROCESS_MADVISE);
 }
 
-pub fn process_mrelease() {
+pub unsafe fn process_mrelease() {
     core::unimplemented!();
     // syscall0(SYS_PROCESS_MRELEASE);
 }
 
 /// Transfer data between process address spaces
-pub fn process_vm_readv(
+pub unsafe fn process_vm_readv(
     pid: pid_t,
     lvec: &[iovec_t],
     rvec: &[iovec_t],
@@ -3746,7 +3799,7 @@ pub fn process_vm_readv(
 }
 
 /// Transfer data between process address spaces
-pub fn process_vm_writev(
+pub unsafe fn process_vm_writev(
     pid: pid_t,
     lvec: &[iovec_t],
     rvec: &[iovec_t],
@@ -3776,7 +3829,7 @@ pub fn process_vm_writev(
 /// 6-argument version where the sixth argument is a pointer to a structure
 /// which has a pointer to the sigset_t itself followed by a size_t containing
 /// the sigset size.
-pub fn pselect6(
+pub unsafe fn pselect6(
     nfds: i32,
     readfds: &mut fd_set_t,
     writefds: &mut fd_set_t,
@@ -3803,7 +3856,7 @@ pub fn pselect6(
 }
 
 /// Process trace.
-pub fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Result<isize, Errno> {
+pub unsafe fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Result<isize, Errno> {
     let request = request as usize;
     let pid = pid as usize;
     syscall4(SYS_PTRACE, request, pid, addr, data).map(|ret| ret as isize)
@@ -3823,7 +3876,12 @@ pub fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Result<isiz
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+pub unsafe fn pwrite64(
+    fd: i32,
+    buf: usize,
+    count: size_t,
+    offset: off_t,
+) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     syscall4(SYS_PWRITE64, fd, buf, count, offset).map(|ret| ret as ssize_t)
@@ -3860,7 +3918,12 @@ pub fn pwrite64(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssi
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
-pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<ssize_t, Errno> {
+pub unsafe fn pwritev(
+    fd: i32,
+    vec: &[iovec_t],
+    pos_l: usize,
+    pos_h: usize,
+) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let vec_ptr = vec.as_ptr() as usize;
     let vec_len = vec.len();
@@ -3899,7 +3962,7 @@ pub fn pwritev(fd: i32, vec: &[iovec_t], pos_l: usize, pos_h: usize) -> Result<s
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
-pub fn pwritev2(
+pub unsafe fn pwritev2(
     fd: i32,
     vec: &[iovec_t],
     pos_l: usize,
@@ -3914,7 +3977,12 @@ pub fn pwritev2(
 }
 
 /// Manipulate disk quotes.
-pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) -> Result<(), Errno> {
+pub unsafe fn quotactl<P: AsRef<Path>>(
+    cmd: i32,
+    special: P,
+    id: qid_t,
+    addr: usize,
+) -> Result<(), Errno> {
     let cmd = cmd as usize;
     let special = CString::new(special.as_ref());
     let special_ptr = special.as_ptr() as usize;
@@ -3922,7 +3990,7 @@ pub fn quotactl<P: AsRef<Path>>(cmd: i32, special: P, id: qid_t, addr: usize) ->
     syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
 }
 
-pub fn quotactl_fd() {
+pub unsafe fn quotactl_fd() {
     core::unimplemented!();
     // syscall0(SYS_QUOTACTL_FD);
 }
@@ -3941,7 +4009,7 @@ pub fn quotactl_fd() {
 /// assert!(n_read <= buf.len() as nc::ssize_t);
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_READ, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }
@@ -3956,7 +4024,7 @@ pub fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
+pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     let count = count as usize;
@@ -3979,7 +4047,7 @@ pub fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
 /// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
 /// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
 /// ```
-pub fn readlinkat<P: AsRef<Path>>(
+pub unsafe fn readlinkat<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     buf: &mut [u8],
@@ -4014,7 +4082,7 @@ pub fn readlinkat<P: AsRef<Path>>(
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
+pub unsafe fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov.as_mut_ptr() as usize;
     let len = iov.len() as usize;
@@ -4029,7 +4097,7 @@ pub fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
+pub unsafe fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno> {
     let magic = magic as usize;
     let magic2 = magci2 as usize;
     let cmd = cmd as usize;
@@ -4037,7 +4105,7 @@ pub fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<(), Errno
 }
 
 /// Receive a message from a socket.
-pub fn recvfrom(
+pub unsafe fn recvfrom(
     sockfd: i32,
     buf: &mut [u8],
     flags: i32,
@@ -4063,7 +4131,7 @@ pub fn recvfrom(
 }
 
 /// Receives multile messages on a socket
-pub fn recvmmsg(
+pub unsafe fn recvmmsg(
     sockfd: i32,
     msgvec: &mut [mmsghdr_t],
     flags: i32,
@@ -4078,7 +4146,7 @@ pub fn recvmmsg(
 }
 
 /// Receive a msg from a socket.
-pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
+pub unsafe fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let msg_ptr = msg as *mut msghdr_t as usize;
     let flags = flags as usize;
@@ -4087,7 +4155,7 @@ pub fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, E
 
 /// Create a nonlinear file mapping.
 /// Deprecated.
-pub fn remap_file_pages(
+pub unsafe fn remap_file_pages(
     start: usize,
     size: size_t,
     prot: i32,
@@ -4124,7 +4192,7 @@ pub fn remap_file_pages(
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
+pub unsafe fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
@@ -4145,7 +4213,7 @@ pub fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
 /// ```
-pub fn renameat<P: AsRef<Path>>(
+pub unsafe fn renameat<P: AsRef<Path>>(
     olddfd: i32,
     oldfilename: P,
     newdfd: i32,
@@ -4181,7 +4249,7 @@ pub fn renameat<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
 /// ```
-pub fn renameat2<P: AsRef<Path>>(
+pub unsafe fn renameat2<P: AsRef<Path>>(
     olddfd: i32,
     oldfilename: P,
     newdfd: i32,
@@ -4207,7 +4275,7 @@ pub fn renameat2<P: AsRef<Path>>(
 }
 
 /// Request a key from kernel's key management facility.
-pub fn request_key<P: AsRef<Path>>(
+pub unsafe fn request_key<P: AsRef<Path>>(
     type_: P,
     description: P,
     callout_info: P,
@@ -4231,12 +4299,12 @@ pub fn request_key<P: AsRef<Path>>(
 }
 
 /// Restart a system call after interruption by a stop signal.
-pub fn restart_syscall() -> Result<i32, Errno> {
+pub unsafe fn restart_syscall() -> Result<i32, Errno> {
     syscall0(SYS_RESTART_SYSCALL).map(|ret| ret as i32)
 }
 
 /// Setup restartable sequences for caller thread.
-pub fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
+pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
     let rseq_ptr = rseq.as_mut_ptr() as usize;
     let rseq_len = rseq.len();
     let flags = flags as usize;
@@ -4263,7 +4331,7 @@ pub fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Errno> {
 /// let ret = nc::kill(nc::getpid(), nc::SIGTERM);
 /// assert!(ret.is_ok());
 /// ```
-pub fn rt_sigaction(
+pub unsafe fn rt_sigaction(
     sig: i32,
     act: &sigaction_t,
     old_act: &mut sigaction_t,
@@ -4277,13 +4345,13 @@ pub fn rt_sigaction(
 }
 
 /// Examine pending signals.
-pub fn rt_sigpending(set: &mut [sigset_t]) -> Result<(), Errno> {
+pub unsafe fn rt_sigpending(set: &mut [sigset_t]) -> Result<(), Errno> {
     let set_ptr = set.as_mut_ptr() as usize;
     syscall1(SYS_RT_SIGPENDING, set_ptr).map(drop)
 }
 
 /// Change the list of currently blocked signals.
-pub fn rt_sigprocmask(
+pub unsafe fn rt_sigprocmask(
     how: i32,
     set: &sigset_t,
     oldset: &mut sigset_t,
@@ -4296,7 +4364,7 @@ pub fn rt_sigprocmask(
 }
 
 /// Queue a signal and data.
-pub fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Result<(), Errno> {
+pub unsafe fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let sig = sig as usize;
     let uinfo_ptr = uinfo as *mut siginfo_t as usize;
@@ -4306,21 +4374,21 @@ pub fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Result<()
 /// Return from signal handler and cleanup stack frame.
 ///
 /// Never returns.
-pub fn rt_sigreturn() {
+pub unsafe fn rt_sigreturn() {
     let _ = syscall0(SYS_RT_SIGRETURN);
 }
 
 /// Wait for a signal.
 ///
 /// Always returns Errno, normally EINTR.
-pub fn rt_sigsuspend(set: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
+pub unsafe fn rt_sigsuspend(set: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
     let set_ptr = set as *mut sigset_t as usize;
     let sigsetsize = sigsetsize as usize;
     syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigsetsize).map(drop)
 }
 
 /// Synchronously wait for queued signals.
-pub fn rt_sigtimedwait(
+pub unsafe fn rt_sigtimedwait(
     uthese: &sigset_t,
     uinfo: &mut siginfo_t,
     uts: &timespec_t,
@@ -4341,7 +4409,7 @@ pub fn rt_sigtimedwait(
 }
 
 /// Queue a signal and data.
-pub fn rt_tgsigqueueinfo(
+pub unsafe fn rt_tgsigqueueinfo(
     tgid: pid_t,
     tid: pid_t,
     sig: i32,
@@ -4363,7 +4431,7 @@ pub fn rt_tgsigqueueinfo(
 /// #[repr(C)]
 /// #[derive(Debug, Clone, Copy, PartialEq)]
 /// struct CPUSet {
-///     pub bits: [usize; SET_BITS],
+///     pub unsafe bits: [usize; SET_BITS],
 /// }
 ///
 /// impl Default for CPUSet {
@@ -4376,16 +4444,16 @@ pub fn rt_tgsigqueueinfo(
 ///
 /// impl CPUSet {
 ///     #[inline]
-///     pub const fn size() -> usize {
+///     pub unsafe const fn size() -> usize {
 ///         SET_BITS * size_of::<usize>()
 ///     }
 ///
 ///     #[inline]
-///     pub const fn bits_size() -> usize {
+///     pub unsafe const fn bits_size() -> usize {
 ///         CPUSet::size() * 8
 ///     }
 ///
-///     pub fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub unsafe fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4394,7 +4462,7 @@ pub fn rt_tgsigqueueinfo(
 ///         Ok(())
 ///     }
 ///
-///     pub fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub unsafe fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4403,7 +4471,7 @@ pub fn rt_tgsigqueueinfo(
 ///         Ok(())
 ///     }
 ///
-///     pub fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
+///     pub unsafe fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4413,11 +4481,11 @@ pub fn rt_tgsigqueueinfo(
 ///         Ok(ret != 0)
 ///     }
 ///
-///     pub fn as_ptr(&self) -> &[usize] {
+///     pub unsafe fn as_ptr(&self) -> &[usize] {
 ///         &self.bits
 ///     }
 ///
-///     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
+///     pub unsafe fn as_mut_ptr(&mut self) -> &mut [usize] {
 ///         &mut self.bits
 ///     }
 /// }
@@ -4439,14 +4507,18 @@ pub fn rt_tgsigqueueinfo(
 ///     assert_eq!(set, set2);
 /// }
 /// ```
-pub fn sched_getaffinity(pid: pid_t, len: usize, user_mask: &mut [usize]) -> Result<(), Errno> {
+pub unsafe fn sched_getaffinity(
+    pid: pid_t,
+    len: usize,
+    user_mask: &mut [usize],
+) -> Result<(), Errno> {
     let pid = pid as usize;
     let user_mask_ptr = user_mask.as_mut_ptr() as usize;
     syscall3(SYS_SCHED_GETAFFINITY, pid, len, user_mask_ptr).map(drop)
 }
 
 /// Get scheduling policy and attributes
-pub fn sched_getattr(
+pub unsafe fn sched_getattr(
     pid: pid_t,
     attr: &mut sched_attr_t,
     size: u32,
@@ -4467,7 +4539,7 @@ pub fn sched_getattr(
 /// assert!(ret.is_ok());
 /// assert_eq!(param.sched_priority, 0);
 /// ```
-pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
+pub unsafe fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let param_ptr = param as *mut sched_param_t as usize;
     syscall2(SYS_SCHED_GETPARAM, pid, param_ptr).map(drop)
@@ -4479,7 +4551,7 @@ pub fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno
 /// let ret = nc::sched_getscheduler(0);
 /// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
 /// ```
-pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
+pub unsafe fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
     let pid = pid as usize;
     syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
 }
@@ -4492,7 +4564,7 @@ pub fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
 /// let max_prio = ret.unwrap();
 /// assert_eq!(max_prio, 99);
 /// ```
-pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
+pub unsafe fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
     let policy = policy as usize;
     syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy).map(|ret| ret as i32)
 }
@@ -4505,7 +4577,7 @@ pub fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
 /// let min_prio = ret.unwrap();
 /// assert_eq!(min_prio, 1);
 /// ```
-pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
+pub unsafe fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
     let policy = policy as usize;
     syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy).map(|ret| ret as i32)
 }
@@ -4517,7 +4589,7 @@ pub fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
 /// let ret = nc::sched_rr_get_interval(0, &mut ts);
 /// assert!(ret.is_ok());
 /// ```
-pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<(), Errno> {
+pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let interval_ptr = interval as *mut timespec_t as usize;
     syscall2(SYS_SCHED_RR_GET_INTERVAL, pid, interval_ptr).map(drop)
@@ -4532,7 +4604,7 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 /// #[repr(C)]
 /// #[derive(Debug, Clone, Copy, PartialEq)]
 /// struct CPUSet {
-///     pub bits: [usize; SET_BITS],
+///     pub unsafe bits: [usize; SET_BITS],
 /// }
 ///
 /// impl Default for CPUSet {
@@ -4545,16 +4617,16 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 ///
 /// impl CPUSet {
 ///     #[inline]
-///     pub const fn size() -> usize {
+///     pub unsafe const fn size() -> usize {
 ///         SET_BITS * size_of::<usize>()
 ///     }
 ///
 ///     #[inline]
-///     pub const fn bits_size() -> usize {
+///     pub unsafe const fn bits_size() -> usize {
 ///         CPUSet::size() * 8
 ///     }
 ///
-///     pub fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub unsafe fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4563,7 +4635,7 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 ///         Ok(())
 ///     }
 ///
-///     pub fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub unsafe fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4572,7 +4644,7 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 ///         Ok(())
 ///     }
 ///
-///     pub fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
+///     pub unsafe fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4582,11 +4654,11 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 ///         Ok(ret != 0)
 ///     }
 ///
-///     pub fn as_ptr(&self) -> &[usize] {
+///     pub unsafe fn as_ptr(&self) -> &[usize] {
 ///         &self.bits
 ///     }
 ///
-///     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
+///     pub unsafe fn as_mut_ptr(&mut self) -> &mut [usize] {
 ///         &mut self.bits
 ///     }
 /// }
@@ -4608,14 +4680,14 @@ pub fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<()
 ///     assert_eq!(set, set2);
 /// }
 /// ```
-pub fn sched_setaffinity(pid: pid_t, len: usize, user_mask: &[usize]) -> Result<(), Errno> {
+pub unsafe fn sched_setaffinity(pid: pid_t, len: usize, user_mask: &[usize]) -> Result<(), Errno> {
     let pid = pid as usize;
     let user_mask_ptr = user_mask.as_ptr() as usize;
     syscall3(SYS_SCHED_SETAFFINITY, pid, len, user_mask_ptr).map(drop)
 }
 
 /// Set the RT priority of a thread.
-pub fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<(), Errno> {
+pub unsafe fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<(), Errno> {
     let pid = pid as usize;
     let attr_ptr = attr as *mut sched_attr_t as usize;
     let flags = flags as usize;
@@ -4632,7 +4704,7 @@ pub fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<
 /// let ret = nc::sched_setparam(0, &sched_param);
 /// assert_eq!(ret, Err(nc::EINVAL));
 /// ```
-pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
+pub unsafe fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let param_ptr = param as *const sched_param_t as usize;
     syscall2(SYS_SCHED_SETPARAM, pid, param_ptr).map(drop)
@@ -4645,7 +4717,11 @@ pub fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
 /// let ret = nc::sched_setscheduler(0, nc::SCHED_RR, &sched_param);
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Result<(), Errno> {
+pub unsafe fn sched_setscheduler(
+    pid: pid_t,
+    policy: i32,
+    param: &sched_param_t,
+) -> Result<(), Errno> {
     let pid = pid as usize;
     let policy = policy as usize;
     let param_ptr = param as *const sched_param_t as usize;
@@ -4657,19 +4733,19 @@ pub fn sched_setscheduler(pid: pid_t, policy: i32, param: &sched_param_t) -> Res
 /// ```
 /// assert!(nc::sched_yield().is_ok());
 /// ```
-pub fn sched_yield() -> Result<(), Errno> {
+pub unsafe fn sched_yield() -> Result<(), Errno> {
     syscall0(SYS_SCHED_YIELD).map(drop)
 }
 
 /// Operate on Secure Computing state of the process.
-pub fn seccomp(operation: u32, flags: u32, args: usize) -> Result<(), Errno> {
+pub unsafe fn seccomp(operation: u32, flags: u32, args: usize) -> Result<(), Errno> {
     let operation = operation as usize;
     let flags = flags as usize;
     syscall3(SYS_SECCOMP, operation, flags, args).map(drop)
 }
 
 /// System V semaphore control operations
-pub fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+pub unsafe fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let semid = semid as usize;
     let semnum = semnum as usize;
     let cmd = cmd as usize;
@@ -4677,7 +4753,7 @@ pub fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i32, Errn
 }
 
 /// Get a System V semphore set identifier.
-pub fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> {
+pub unsafe fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let nsems = nsems as usize;
     let semflg = semflg as usize;
@@ -4685,7 +4761,7 @@ pub fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> {
 }
 
 /// System V semphore operations.
-pub fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
+pub unsafe fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
     let semid = semid as usize;
     let sops_ptr = sops.as_ptr() as usize;
     let nops = sops.len();
@@ -4693,7 +4769,11 @@ pub fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
 }
 
 /// System V semaphore operations
-pub fn semtimedop(semid: i32, sops: &mut [sembuf_t], timeout: &timespec_t) -> Result<(), Errno> {
+pub unsafe fn semtimedop(
+    semid: i32,
+    sops: &mut [sembuf_t],
+    timeout: &timespec_t,
+) -> Result<(), Errno> {
     let semid = semid as usize;
     let sops_ptr = sops.as_ptr() as usize;
     let nops = sops.len();
@@ -4702,7 +4782,7 @@ pub fn semtimedop(semid: i32, sops: &mut [sembuf_t], timeout: &timespec_t) -> Re
 }
 
 /// Transfer data between two file descriptors.
-pub fn sendfile(
+pub unsafe fn sendfile(
     out_fd: i32,
     in_fd: i32,
     offset: &mut off_t,
@@ -4716,7 +4796,7 @@ pub fn sendfile(
 }
 
 /// Send multiple messages on a socket
-pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32, Errno> {
+pub unsafe fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let msgvec_ptr = msgvec as *mut [mmsghdr_t] as *mut mmsghdr_t as usize;
     let vlen = msgvec.len();
@@ -4725,7 +4805,7 @@ pub fn sendmmsg(sockfd: i32, msgvec: &mut [mmsghdr_t], flags: i32) -> Result<i32
 }
 
 /// Send a message on a socket. Allow sending ancillary data.
-pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
+pub unsafe fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let msg_ptr = msg as *const msghdr_t as usize;
     let flags = flags as usize;
@@ -4733,7 +4813,7 @@ pub fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno
 }
 
 /// Send a message on a socket.
-pub fn sendto(
+pub unsafe fn sendto(
     sockfd: i32,
     buf: &[u8],
     len: size_t,
@@ -4767,7 +4847,7 @@ pub fn sendto(
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
+pub unsafe fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     let name_len = name.len() as usize;
@@ -4781,7 +4861,7 @@ pub fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(nc::getgid()));
 /// ```
-pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
+pub unsafe fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
     let fsgid = fsgid as usize;
     syscall1(SYS_SETFSGID, fsgid).map(|ret| ret as gid_t)
 }
@@ -4793,7 +4873,7 @@ pub fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(nc::getuid()));
 /// ```
-pub fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
+pub unsafe fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
     let fsuid = fsuid as usize;
     syscall1(SYS_SETFSUID, fsuid).map(|ret| ret as uid_t)
 }
@@ -4805,7 +4885,7 @@ pub fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setgid(gid: gid_t) -> Result<(), Errno> {
+pub unsafe fn setgid(gid: gid_t) -> Result<(), Errno> {
     let gid = gid as usize;
     syscall1(SYS_SETGID, gid).map(drop)
 }
@@ -4818,7 +4898,7 @@ pub fn setgid(gid: gid_t) -> Result<(), Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
+pub unsafe fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     let group_len = group_list.len();
     let group_ptr = group_list.as_ptr() as usize;
     syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop)
@@ -4832,7 +4912,7 @@ pub fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
+pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     let name_len = name.len();
@@ -4886,7 +4966,7 @@ pub fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// assert_eq!(prev_itv.it_value.tv_sec, 0);
 /// assert_eq!(prev_itv.it_value.tv_usec, 0);
 /// ```
-pub fn setitimer(
+pub unsafe fn setitimer(
     which: i32,
     new_val: &itimerval_t,
     old_val: &mut itimerval_t,
@@ -4898,7 +4978,7 @@ pub fn setitimer(
 }
 
 /// Reassociate thread with a namespace.
-pub fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
+pub unsafe fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let nstype = nstype as usize;
     syscall2(SYS_SETNS, fd, nstype).map(drop)
@@ -4911,7 +4991,7 @@ pub fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
+pub unsafe fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let pgid = pgid as usize;
     syscall2(SYS_SETPGID, pid, pgid).map(drop)
@@ -4924,7 +5004,7 @@ pub fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EACCES))
 /// ```
-pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
+pub unsafe fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
     let which = which as usize;
     let who = who as usize;
     let prio = prio as usize;
@@ -4937,7 +5017,7 @@ pub fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> {
 /// let ret = nc::setregid(0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
+pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     let rgid = rgid as usize;
     let egid = egid as usize;
     syscall2(SYS_SETREGID, rgid, egid).map(drop)
@@ -4949,7 +5029,7 @@ pub fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
 /// let ret = nc::setresgid(0, 0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
+pub unsafe fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
     let rgid = rgid as usize;
     let egid = egid as usize;
     let sgid = sgid as usize;
@@ -4962,7 +5042,7 @@ pub fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
 /// let ret = nc::setresuid(0, 0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
+pub unsafe fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
     let ruid = ruid as usize;
     let euid = euid as usize;
     let suid = suid as usize;
@@ -4975,7 +5055,7 @@ pub fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
 /// let ret = nc::setreuid(0, 0);
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
+pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     let ruid = ruid as usize;
     let euid = euid as usize;
     syscall2(SYS_SETREUID, ruid, euid).map(drop)
@@ -4991,7 +5071,7 @@ pub fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 /// let ret = nc::setrlimit(nc::RLIMIT_NOFILE, &rlimit);
 /// assert!(ret.is_ok());
 /// ```
-pub fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
+pub unsafe fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
     let rlimit_ptr = rlimit as *const rlimit_t as usize;
     syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(drop)
@@ -5004,7 +5084,7 @@ pub fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(nc::getpid()));
 /// ```
-pub fn setsid() -> Result<pid_t, Errno> {
+pub unsafe fn setsid() -> Result<pid_t, Errno> {
     syscall0(SYS_SETSID).map(|ret| ret as pid_t)
 }
 
@@ -5028,7 +5108,7 @@ pub fn setsid() -> Result<pid_t, Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::close(socket_fd).is_ok());
 /// ```
-pub fn setsockopt(
+pub unsafe fn setsockopt(
     sockfd: i32,
     level: i32,
     optname: i32,
@@ -5054,7 +5134,7 @@ pub fn setsockopt(
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
+pub unsafe fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
     let timeval_ptr = timeval as *const timeval_t as usize;
     let tz_ptr = tz as *const timezone_t as usize;
     syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
@@ -5066,7 +5146,7 @@ pub fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
 /// let ret = nc::setuid(0);
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn setuid(uid: uid_t) -> Result<(), Errno> {
+pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
     let uid = uid as usize;
     syscall1(SYS_SETUID, uid).map(drop)
 }
@@ -5093,7 +5173,7 @@ pub fn setuid(uid: uid_t) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn setxattr<P: AsRef<Path>>(
+pub unsafe fn setxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
     value: usize,
@@ -5110,21 +5190,21 @@ pub fn setxattr<P: AsRef<Path>>(
 }
 
 /// Set default NUMA memory policy for a thread and its children
-pub fn set_mempolicy(mode: i32, nmask: *const usize, maxnode: usize) -> Result<(), Errno> {
+pub unsafe fn set_mempolicy(mode: i32, nmask: *const usize, maxnode: usize) -> Result<(), Errno> {
     let mode = mode as usize;
     let nmask = nmask as usize;
     syscall3(SYS_SET_MEMPOLICY, mode, nmask, maxnode).map(drop)
 }
 
 /// Set the robust-futex list head of a task.
-pub fn set_robust_list(heads: &mut [robust_list_head_t]) -> Result<(), Errno> {
+pub unsafe fn set_robust_list(heads: &mut [robust_list_head_t]) -> Result<(), Errno> {
     let heads_ptr = heads.as_mut_ptr() as usize;
     let len = heads.len();
     syscall2(SYS_SET_ROBUST_LIST, heads_ptr, len).map(drop)
 }
 
 /// Set pointer to thread ID.
-pub fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
+pub unsafe fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
     let tid_ptr = tid as *mut i32 as usize;
     syscall1(SYS_SET_TID_ADDRESS, tid_ptr).map(|ret| ret as isize)
 }
@@ -5153,7 +5233,7 @@ pub fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
 /// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
 /// assert!(ret.is_ok());
 /// ```
-pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
+pub unsafe fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
     let shmid = shmid as usize;
     let shmflg = shmflg as usize;
     syscall3(SYS_SHMAT, shmid, shmaddr, shmflg)
@@ -5171,7 +5251,7 @@ pub fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
 /// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
 /// assert!(ret.is_ok());
 /// ```
-pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
+pub unsafe fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
     let shmid = shmid as usize;
     let cmd = cmd as usize;
     let buf_ptr = buf as *mut shmid_ds_t as usize;
@@ -5202,7 +5282,7 @@ pub fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> 
 /// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
 /// assert!(ret.is_ok());
 /// ```
-pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
+pub unsafe fn shmdt(shmaddr: usize) -> Result<(), Errno> {
     syscall1(SYS_SHMDT, shmaddr).map(drop)
 }
 
@@ -5215,7 +5295,7 @@ pub fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// let _shmid = ret.unwrap();
 /// ```
-pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
+pub unsafe fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let size = size as usize;
     let shmflg = shmflg as usize;
@@ -5223,21 +5303,21 @@ pub fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
 }
 
 /// Shutdown part of a full-duplex connection.
-pub fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
+pub unsafe fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let how = how as usize;
     syscall2(SYS_SHUTDOWN, sockfd, how).map(drop)
 }
 
 /// Get/set signal stack context.
-pub fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
+pub unsafe fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
     let uss_ptr = uss as *const sigaltstack_t as usize;
     let uoss_ptr = uoss as *mut sigaltstack_t as usize;
     syscall2(SYS_SIGALTSTACK, uss_ptr, uoss_ptr).map(drop)
 }
 
 /// Create a file descriptor to accept signals.
-pub fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
+pub unsafe fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
     let fd = fd as usize;
     let mask_ptr = mask.as_ptr() as usize;
     let mask_len = mask.len() as usize;
@@ -5253,7 +5333,7 @@ pub fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
 /// let socket_fd = socket_fd.unwrap();
 /// assert!(nc::close(socket_fd).is_ok());
 /// ```
-pub fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> {
+pub unsafe fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> {
     let domain = domain as usize;
     let sock_type = sock_type as usize;
     let protocol = protocol as usize;
@@ -5261,7 +5341,12 @@ pub fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> 
 }
 
 /// Create a pair of connected socket.
-pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Result<(), Errno> {
+pub unsafe fn socketpair(
+    domain: i32,
+    type_: i32,
+    protocol: i32,
+    sv: [i32; 2],
+) -> Result<(), Errno> {
     let domain = domain as usize;
     let type_ = type_ as usize;
     let protocol = protocol as usize;
@@ -5311,7 +5396,7 @@ pub fn socketpair(domain: i32, type_: i32, protocol: i32, sv: [i32; 2]) -> Resul
 /// assert!(nc::close(fds_right[0]).is_ok());
 /// assert!(nc::close(fds_right[1]).is_ok());
 /// ```
-pub fn splice(
+pub unsafe fn splice(
     fd_in: i32,
     off_in: Option<&mut loff_t>,
     fd_out: i32,
@@ -5355,7 +5440,7 @@ pub fn splice(
 /// assert!(statfs.f_bfree > 0);
 /// assert!(statfs.f_bavail > 0);
 /// ```
-pub fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<(), Errno> {
+pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let buf_ptr = buf as *mut statfs_t as usize;
@@ -5372,7 +5457,7 @@ pub fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<(), Err
 /// // Check fd is a regular file.
 /// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
 /// ```
-pub fn statx<P: AsRef<Path>>(
+pub unsafe fn statx<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     flags: i32,
@@ -5396,7 +5481,7 @@ pub fn statx<P: AsRef<Path>>(
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
+pub unsafe fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall1(SYS_SWAPOFF, filename_ptr).map(drop)
@@ -5410,7 +5495,7 @@ pub fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errno> {
+pub unsafe fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
@@ -5426,7 +5511,11 @@ pub fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
 /// ```
-pub fn symlinkat<P: AsRef<Path>>(oldname: P, newdirfd: i32, newname: P) -> Result<(), Errno> {
+pub unsafe fn symlinkat<P: AsRef<Path>>(
+    oldname: P,
+    newdirfd: i32,
+    newname: P,
+) -> Result<(), Errno> {
     let oldname = CString::new(oldname.as_ref());
     let oldname_ptr = oldname.as_ptr() as usize;
     let newname = CString::new(newname.as_ref());
@@ -5440,7 +5529,7 @@ pub fn symlinkat<P: AsRef<Path>>(oldname: P, newdirfd: i32, newname: P) -> Resul
 /// ```
 /// assert!(nc::sync().is_ok());
 /// ```
-pub fn sync() -> Result<(), Errno> {
+pub unsafe fn sync() -> Result<(), Errno> {
     syscall0(SYS_SYNC).map(drop)
 }
 
@@ -5455,7 +5544,7 @@ pub fn sync() -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn syncfs(fd: i32) -> Result<(), Errno> {
+pub unsafe fn syncfs(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_SYNCFS, fd).map(drop)
 }
@@ -5487,7 +5576,12 @@ pub fn syncfs(fd: i32) -> Result<(), Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Result<(), Errno> {
+pub unsafe fn sync_file_range(
+    fd: i32,
+    offset: off_t,
+    nbytes: off_t,
+    flags: i32,
+) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     let nbytes = nbytes as usize;
@@ -5504,13 +5598,13 @@ pub fn sync_file_range(fd: i32, offset: off_t, nbytes: off_t, flags: i32) -> Res
 /// assert!(info.uptime > 0);
 /// assert!(info.freeram > 0);
 /// ```
-pub fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
+pub unsafe fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
     let info_ptr = info as *mut sysinfo_t as usize;
     syscall1(SYS_SYSINFO, info_ptr).map(drop)
 }
 
 /// Read and/or clear kernel message ring buffer; set console_loglevel
-pub fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
+pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
     let action = action as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
@@ -5552,7 +5646,7 @@ pub fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 /// assert!(nc::close(fds_right[0]).is_ok());
 /// assert!(nc::close(fds_right[1]).is_ok());
 /// ```
-pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, Errno> {
+pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
     let fd_out = fd_out as usize;
     let len = len as usize;
@@ -5574,7 +5668,7 @@ pub fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, 
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
+pub unsafe fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
     let tgid = tgid as usize;
     let tid = tid as usize;
     let sig = sig as usize;
@@ -5589,14 +5683,14 @@ pub fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 /// let fd = ret.unwrap();
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
+pub unsafe fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
     let clockid = clockid as usize;
     let flags = flags as usize;
     syscall2(SYS_TIMERFD_CREATE, clockid, flags).map(|ret| ret as i32)
 }
 
 /// Get current timer via a file descriptor.
-pub fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<(), Errno> {
+pub unsafe fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<(), Errno> {
     let ufd = ufd as usize;
     let cur_value_ptr = cur_value as *mut itimerspec_t as usize;
     syscall2(SYS_TIMERFD_GETTIME, ufd, cur_value_ptr).map(drop)
@@ -5622,7 +5716,7 @@ pub fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<(), Err
 ///
 /// assert!(nc::close(fd).is_ok());
 /// ```
-pub fn timerfd_settime(
+pub unsafe fn timerfd_settime(
     ufd: i32,
     flags: i32,
     new_value: &itimerspec_t,
@@ -5653,7 +5747,7 @@ pub fn timerfd_settime(
 /// let ret = nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timerid);
 /// assert!(ret.is_ok());
 /// ```
-pub fn timer_create(
+pub unsafe fn timer_create(
     clock: clockid_t,
     event: Option<&mut sigevent_t>,
     timer_id: &mut timer_t,
@@ -5677,7 +5771,7 @@ pub fn timer_create(
 /// let ret = nc::timer_delete(timer_id);
 /// assert!(ret.is_ok());
 /// ```
-pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
+pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
     let timer_id = timer_id as usize;
     syscall1(SYS_TIMER_DELETE, timer_id).map(drop)
 }
@@ -5750,7 +5844,7 @@ pub fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
+pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
     let timer_id = timer_id as usize;
     syscall1(SYS_TIMER_GETOVERRUN, timer_id).map(|ret| ret as i32)
 }
@@ -5819,7 +5913,7 @@ pub fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), Errno> {
+pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), Errno> {
     let timer_id = timer_id as usize;
     let curr_ptr = curr as *mut itimerspec_t as usize;
     syscall2(SYS_TIMER_GETTIME, timer_id, curr_ptr).map(drop)
@@ -5889,7 +5983,7 @@ pub fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), E
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn timer_settime(
+pub unsafe fn timer_settime(
     timer_id: timer_t,
     flags: i32,
     new_value: &itimerspec_t,
@@ -5922,7 +6016,7 @@ pub fn timer_settime(
 /// let clock = ret.unwrap();
 /// assert!(clock > 0);
 /// ```
-pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
+pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
     let buf_ptr = buf as *mut tms_t as usize;
     syscall1(SYS_TIMES, buf_ptr).map(|ret| ret as clock_t)
 }
@@ -5941,7 +6035,7 @@ pub fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
+pub unsafe fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
     let tid = tid as usize;
     let sig = sig as usize;
     syscall2(SYS_TKILL, tid, sig).map(drop)
@@ -5959,7 +6053,7 @@ pub fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno> {
+pub unsafe fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let length = length as usize;
@@ -5976,7 +6070,7 @@ pub fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno>
 /// let ret = nc::umask(old_mask);
 /// assert_eq!(ret, Ok(new_mask));
 /// ```
-pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
+pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     let mode = mode as usize;
     syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
 }
@@ -6003,7 +6097,7 @@ pub fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 ///
 /// assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
 /// ```
-pub fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
+pub unsafe fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
@@ -6019,7 +6113,7 @@ pub fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
 /// assert!(!buf.sysname.is_empty());
 /// assert!(!buf.machine.is_empty());
 /// ```
-pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
+pub unsafe fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
     let buf_ptr = buf as *mut utsname_t as usize;
     syscall1(SYS_UNAME, buf_ptr).map(drop)
 }
@@ -6036,7 +6130,7 @@ pub fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), Errno> {
+pub unsafe fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
@@ -6045,13 +6139,13 @@ pub fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), 
 }
 
 /// Disassociate parts of the process execution context
-pub fn unshare(flags: i32) -> Result<(), Errno> {
+pub unsafe fn unshare(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
     syscall1(SYS_UNSHARE, flags).map(drop)
 }
 
 /// Create a file descriptor to handle page faults in user space.
-pub fn userfaultfd(flags: i32) -> Result<i32, Errno> {
+pub unsafe fn userfaultfd(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
     syscall1(SYS_USERFAULTFD, flags).map(|ret| ret as i32)
 }
@@ -6079,7 +6173,7 @@ pub fn userfaultfd(flags: i32) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn utimensat<P: AsRef<Path>>(
+pub unsafe fn utimensat<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     times: &[timespec_t; 2],
@@ -6094,12 +6188,17 @@ pub fn utimensat<P: AsRef<Path>>(
 }
 
 /// Virtually hang up the current terminal.
-pub fn vhangup() -> Result<(), Errno> {
+pub unsafe fn vhangup() -> Result<(), Errno> {
     syscall0(SYS_VHANGUP).map(drop)
 }
 
 /// Splice user page into a pipe.
-pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ssize_t, Errno> {
+pub unsafe fn vmsplice(
+    fd: i32,
+    iov: &iovec_t,
+    nr_segs: usize,
+    flags: u32,
+) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov as *const iovec_t as usize;
     let flags = flags as usize;
@@ -6127,7 +6226,7 @@ pub fn vmsplice(fd: i32, iov: &iovec_t, nr_segs: usize, flags: u32) -> Result<ss
 ///     }
 /// }
 /// ```
-pub fn wait4(
+pub unsafe fn wait4(
     pid: pid_t,
     wstatus: &mut i32,
     options: i32,
@@ -6165,7 +6264,7 @@ pub fn wait4(
 ///     }
 /// }
 /// ```
-pub fn waitid(
+pub unsafe fn waitid(
     which: i32,
     pid: pid_t,
     info: &mut siginfo_t,
@@ -6194,7 +6293,7 @@ pub fn waitid(
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
 /// ```
-pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)
 }
@@ -6230,7 +6329,7 @@ pub fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
 /// assert!(nc::close(fd).is_ok());
 /// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
 /// ```
-pub fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
+pub unsafe fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov.as_ptr() as usize;
     let len = iov.len() as usize;

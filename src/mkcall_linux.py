@@ -26,9 +26,9 @@ def parse_template():
         func_name = ""
         stack = []
         syscall_pattern = re.compile("[^S]*(SYS_\w+)")
-        func_name_pattern = re.compile("pub fn ([a-z0-9_#]+)")
+        func_name_pattern = re.compile("pub unsafe fn ([a-z0-9_#]+)")
         for line in fh:
-            if line.startswith("pub fn"):
+            if line.startswith("pub unsafe fn"):
                 headers_end = True
                 new_func_start = True
 
@@ -44,7 +44,7 @@ def parse_template():
 
             if new_func_start and line == "}\n":
                 for i, line in enumerate(stack):
-                    if line.startswith("pub fn"):
+                    if line.startswith("pub unsafe fn"):
                         m = func_name_pattern.match(line)
                         func_name = m.group(1)
                         # Remove raw identifier
@@ -87,7 +87,7 @@ def rust_fmt(filename):
 
 def print_unimplemented_syscalls(sysnos):
     template = """
-pub fn {0}() {{
+pub unsafe fn {0}() {{
     core::unimplemented!();
     // syscall0({1});
 }}

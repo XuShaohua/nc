@@ -16,7 +16,7 @@ pub struct File {
 impl File {
     /// Open file readonly.
     pub fn open(path: &str) -> Result<File, crate::Errno> {
-        let fd: i32 = crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0600)?;
+        let fd: i32 = unsafe { crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0600)? };
 
         Ok(File { fd })
     }
@@ -29,7 +29,7 @@ impl File {
 impl Drop for File {
     fn drop(&mut self) {
         if self.fd > -1 {
-            let _ = crate::close(self.fd);
+            let _ = unsafe { crate::close(self.fd) };
             self.fd = -1;
         }
     }
@@ -66,7 +66,8 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
         let buf_ptr = buf.as_mut_ptr() as usize;
-        match crate::read(file.fd(), buf_ptr, BUF_LEN) {
+        let n_read = unsafe { crate::read(file.fd(), buf_ptr, BUF_LEN) };
+        match n_read {
             Err(errno) => return Err(errno),
             Ok(0) => break,
             Ok(n) => {
@@ -98,17 +99,19 @@ pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
 pub fn pause() -> Result<(), crate::Errno> {
     // ppoll(0, 0, 0, 0) in C.
     #[cfg(target_arch = "aarch64")]
-    let ret = crate::ppoll(
-        &mut crate::pollfd_t::default(),
-        0,
-        &crate::timespec_t::default(),
-        &crate::sigset_t::default(),
-        0,
-    )
-    .map(drop);
+    let ret = unsafe {
+        crate::ppoll(
+            &mut crate::pollfd_t::default(),
+            0,
+            &crate::timespec_t::default(),
+            &crate::sigset_t::default(),
+            0,
+        )
+        .map(drop)
+    };
 
     #[cfg(not(target_arch = "aarch64"))]
-    let ret = crate::pause();
+    let ret = unsafe { crate::pause() };
 
     ret
 }
@@ -119,12 +122,12 @@ pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
         let mut it = crate::itimerval_t::default();
         it.it_value.tv_sec = seconds as isize;
         let mut old = crate::itimerval_t::default();
-        crate::setitimer(crate::ITIMER_REAL, &mut it, &mut old)?;
+        unsafe { crate::setitimer(crate::ITIMER_REAL, &mut it, &mut old)? };
         (old.it_value.tv_sec + !!old.it_value.tv_usec) as u32
     };
 
     #[cfg(not(any(target_arch = "aarch64", target_arch = "arm")))]
-    let remaining = crate::alarm(seconds);
+    let remaining = unsafe { crate::alarm(seconds) };
 
     Ok(remaining)
 }

@@ -3,8 +3,6 @@
 // in the LICENSE file.
 
 #[allow(non_camel_case_types)]
-extern crate nc;
-
 use std::mem::size_of_val;
 
 const UI_SET_EVBIT: i32 = 1074025828;
@@ -51,7 +49,7 @@ fn sleep(n: isize) {
         tv_sec: n,
         tv_nsec: 0,
     };
-    let _ = nc::nanosleep(&req, None);
+    let _ = unsafe { nc::nanosleep(&req, None) };
 }
 
 fn emit(fd: i32, event_type: u16, code: u16, value: i32) -> Result<isize, nc::Errno> {
@@ -65,27 +63,23 @@ fn emit(fd: i32, event_type: u16, code: u16, value: i32) -> Result<isize, nc::Er
         },
     };
 
-    nc::write(fd, &ie as *const input_event_t as usize, size_of_val(&ie))
+    unsafe { nc::write(fd, &ie as *const input_event_t as usize, size_of_val(&ie)) }
 }
 
 fn run() -> Result<(), nc::Errno> {
-    let fd = {
-        match nc::openat(
+    let fd = unsafe {
+        nc::openat(
             nc::AT_FDCWD,
             "/dev/uinput",
             nc::O_WRONLY | nc::O_NONBLOCK,
             0,
-        ) {
-            Ok(fd) => fd,
-            Err(errno) => {
-                println!("Error to open uinput: {}", errno);
-                return Err(errno);
-            }
-        }
+        )?
     };
 
-    nc::ioctl(fd, UI_SET_EVBIT, EV_KEY)?;
-    nc::ioctl(fd, UI_SET_KEYBIT, KEY_M)?;
+    unsafe {
+        nc::ioctl(fd, UI_SET_EVBIT, EV_KEY)?;
+        nc::ioctl(fd, UI_SET_KEYBIT, KEY_M)?;
+    }
 
     let mut usetup = uinput_setup_t {
         id: input_id_t {
@@ -101,9 +95,11 @@ fn run() -> Result<(), nc::Errno> {
     usetup.name[1] = 120;
     usetup.name[2] = 97;
 
-    nc::ioctl(fd, UI_DEV_SETUP, &usetup as *const uinput_setup_t as usize)
-        .expect("UI_DEV_SETUP failed");
-    nc::ioctl(fd, UI_DEV_CREATE, 0).expect("UI_DEV_CREATE");
+    unsafe {
+        nc::ioctl(fd, UI_DEV_SETUP, &usetup as *const uinput_setup_t as usize)
+            .expect("UI_DEV_SETUP failed");
+        nc::ioctl(fd, UI_DEV_CREATE, 0).expect("UI_DEV_CREATE");
+    }
 
     sleep(1);
 
@@ -114,8 +110,10 @@ fn run() -> Result<(), nc::Errno> {
 
     sleep(1);
 
-    nc::ioctl(fd, UI_DEV_DESTROY, 0).expect("DEV_DESTROY");
-    nc::close(fd).expect("close()");
+    unsafe {
+        nc::ioctl(fd, UI_DEV_DESTROY, 0).expect("DEV_DESTROY");
+        nc::close(fd).expect("close()");
+    }
 
     return Ok(());
 }

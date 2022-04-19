@@ -5,9 +5,9 @@
 fn main() {
     let mut timeval = nc::timeval_t::default();
     let mut timezone = nc::timezone_t::default();
-    if let Err(errno) = nc::gettimeofday(&mut timeval, &mut timezone) {
-        eprintln!("gettimeofday() failed: {}", nc::strerror(errno));
-    } else {
-        println!("time: {:+?}", timeval);
+    let ret = unsafe { nc::gettimeofday(&mut timeval, &mut timezone) };
+    match ret {
+        Err(errno) => eprintln!("gettimeofday() failed: {}", nc::strerror(errno)),
+        Ok(_) => println!("time: {:+?}", timeval),
     }
 }

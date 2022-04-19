@@ -18,7 +18,7 @@ fn main() {
         ..nc::sigaction_t::default()
     };
     let mut old_sa = nc::sigaction_t::default();
-    let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
     assert!(ret.is_ok());
 
     // Single shot timer, active after 1 second.
@@ -33,17 +33,17 @@ fn main() {
         },
     };
     let mut prev_itv = nc::itimerval_t::default();
-    let ret = nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv);
+    let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
     assert!(ret.is_ok());
 
-    let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+    let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
     assert!(ret.is_ok());
     assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 
     let ret = nc::util::pause();
     assert_eq!(ret, Err(nc::EINTR));
 
-    let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+    let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
     assert!(ret.is_ok());
     assert_eq!(prev_itv.it_value.tv_sec, 0);
     assert_eq!(prev_itv.it_value.tv_usec, 0);

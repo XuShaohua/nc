@@ -20,7 +20,8 @@ impl File {
     }
 
     pub fn open(&mut self) -> Result<(), nc::Errno> {
-        match nc::openat(nc::AT_FDCWD, self.path.to_str().unwrap(), nc::O_RDONLY, 0) {
+        let ret = unsafe { nc::openat(nc::AT_FDCWD, self.path.to_str().unwrap(), nc::O_RDONLY, 0) };
+        match ret {
             Ok(fd) => {
                 self.fd = fd;
                 Ok(())
@@ -32,7 +33,8 @@ impl File {
 
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-        match nc::read(self.fd, buf.as_mut_ptr() as usize, buf.len()) {
+        let n_read = unsafe { nc::read(self.fd, buf.as_mut_ptr() as usize, buf.len()) };
+        match n_read {
             Ok(n_read) => Ok(n_read as usize),
             Err(_errno) => Err(io::Error::new(io::ErrorKind::Other, "errno")),
         }
@@ -43,7 +45,7 @@ impl Drop for File {
     fn drop(&mut self) {
         if self.fd > -1 {
             println!("closing fd: {}", self.fd);
-            let _ = nc::close(self.fd);
+            let _ = unsafe { nc::close(self.fd) };
             self.fd = -1;
         }
     }

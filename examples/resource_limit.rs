@@ -3,9 +3,10 @@
 // in the LICENSE file.
 
 fn get_file_limit() {
-    let pid = nc::getpid();
+    let pid = unsafe { nc::getpid() };
     let mut res_limit = nc::rlimit64_t::default();
-    let ret = nc::prlimit64(pid, nc::RLIMIT_NOFILE, None, Some(&mut res_limit));
+    let ret = unsafe { nc::prlimit64(pid, nc::RLIMIT_NOFILE, None, Some(&mut res_limit)) };
+    assert!(ret.is_ok());
     if ret.is_err() {
         eprintln!("Failed to get file resource limitation!");
     } else {
@@ -17,12 +18,12 @@ fn get_file_limit() {
 }
 
 fn set_file_limit() {
-    let pid = nc::getpid();
+    let pid = unsafe { nc::getpid() };
     let res_limit = nc::rlimit64_t {
         rlim_cur: 512,
         rlim_max: 1024,
     };
-    let ret = nc::prlimit64(pid, nc::RLIMIT_NOFILE, Some(&res_limit), None);
+    let ret = unsafe { nc::prlimit64(pid, nc::RLIMIT_NOFILE, Some(&res_limit), None) };
     if ret.is_err() {
         eprintln!("Failed to update file resource limitation!");
     } else {
@@ -34,10 +35,6 @@ fn set_file_limit() {
 }
 
 fn main() {
-    println!(
-        "Open /proc/{}/limits to see limits of current process!",
-        nc::getpid()
-    );
     get_file_limit();
     set_file_limit();
     get_file_limit();

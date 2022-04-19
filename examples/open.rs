@@ -2,49 +2,33 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-extern crate nc;
-
-fn main() {
+fn main() -> Result<(), nc::Errno> {
     let path = "/tmp/hello.rs";
 
     #[cfg(target_os = "freebsd")]
-    let fd = nc::open(
-        path,
-        nc::O_CREAT | nc::O_RDWR,
-        nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH,
-    )
-    .map_err(|err| eprintln!("err: {}", err))
-    .expect("Failed to open file!");
+    let fd = unsafe {
+        nc::open(
+            path,
+            nc::O_CREAT | nc::O_RDWR,
+            nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH,
+        )?
+    };
 
     #[cfg(target_os = "linux")]
-    let fd = nc::openat(
-        nc::AT_FDCWD,
-        path,
-        nc::O_CREAT | nc::O_RDWR,
-        nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH,
-    )
-    .map_err(|err| eprintln!("err: {}", err))
-    .expect("Failed to open file!");
-
-    println!("fd: {:?}", fd);
+    let fd = unsafe {
+        nc::openat(
+            nc::AT_FDCWD,
+            path,
+            nc::O_CREAT | nc::O_RDWR,
+            nc::S_IRUSR | nc::S_IWUSR | nc::S_IRGRP | nc::S_IROTH,
+        )?
+    };
 
     let msg = "fn main() { println!(\"Hello, world\");}";
 
-    match nc::write(fd, msg.as_ptr() as usize, msg.len()) {
-        Ok(n) => {
-            println!("Write {} chars", n);
-        }
-        Err(errno) => {
-            eprintln!("Failed to write, got err: {}", errno);
-        }
-    }
-
-    match nc::close(fd) {
-        Ok(_) => {
-            println!("File closed!");
-        }
-        Err(errno) => {
-            eprintln!("Fail closed with errno: {}", errno);
-        }
-    }
+    let n_write = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+    assert!(n_write.is_ok());
+    let ret = unsafe { nc::close(fd) };
+    assert!(ret.is_ok());
+    Ok(())
 }

@@ -4,7 +4,7 @@
 
 fn main() {
     let path = "/etc";
-    let ret = nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0);
+    let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0) };
     assert!(ret.is_ok());
     let fd = ret.unwrap();
 
@@ -12,7 +12,7 @@ fn main() {
     loop {
         // TODO(Shaohua): Only allocate one buf block.
         let mut buf: Vec<u8> = vec![0; BUF_SIZE];
-        let ret = nc::getdents64(fd, buf.as_mut_ptr() as usize, BUF_SIZE);
+        let ret = unsafe { nc::getdents64(fd, buf.as_mut_ptr() as usize, BUF_SIZE) };
         assert!(ret.is_ok());
 
         let buf_box = buf.into_boxed_slice();
@@ -42,5 +42,6 @@ fn main() {
         }
     }
 
-    assert!(nc::close(fd).is_ok());
+    let ret = unsafe { nc::close(fd) };
+    assert!(ret.is_ok());
 }

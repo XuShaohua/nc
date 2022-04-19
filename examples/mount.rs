@@ -4,17 +4,18 @@
 
 fn main() {
     let target_dir = "/tmp/nc-mount";
-    let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
+    let ret = unsafe { nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755) };
     assert!(ret.is_ok());
 
     let src_dir = "/etc";
     let fs_type = "";
     let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
     let data = 0;
-    let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+    let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
     assert!(ret.is_ok());
     let flags = 0;
-    let ret = nc::umount2(target_dir, flags);
+    let ret = unsafe { nc::umount2(target_dir, flags) };
     assert!(ret.is_ok());
-    assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
+    let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR) };
+    assert!(ret.is_ok());
 }

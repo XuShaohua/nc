@@ -6,7 +6,9 @@ pub fn get_num_cpu() -> Result<u16, nc::Errno> {
     let mut set = [0; 128];
     set[0] = 1;
 
-    nc::sched_getaffinity(0, set.len(), &mut set)?;
+    unsafe {
+        nc::sched_getaffinity(0, set.len(), &mut set)?;
+    }
 
     let mut count = 0;
     for item in set.iter() {

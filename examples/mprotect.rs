@@ -17,39 +17,46 @@ fn main() {
         ..nc::sigaction_t::default()
     };
     let mut old_sa = nc::sigaction_t::default();
-    let ret = nc::rt_sigaction(
-        nc::SIGSEGV,
-        &sa,
-        &mut old_sa,
-        mem::size_of::<nc::sigset_t>(),
-    );
+    let ret = unsafe {
+        nc::rt_sigaction(
+            nc::SIGSEGV,
+            &sa,
+            &mut old_sa,
+            mem::size_of::<nc::sigset_t>(),
+        )
+    };
     assert!(ret.is_ok());
 
     // Initialize an anonymous mapping with 4 pages.
     let map_length = 4 * nc::PAGE_SIZE;
     #[cfg(target_arch = "arm")]
-    let addr = nc::mmap2(
-        0,
-        map_length,
-        nc::PROT_READ | nc::PROT_WRITE,
-        nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
-        -1,
-        0,
-    );
+    let addr = unsafe {
+        nc::mmap2(
+            0,
+            map_length,
+            nc::PROT_READ | nc::PROT_WRITE,
+            nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+            -1,
+            0,
+        )
+    };
+
     #[cfg(not(target_arch = "arm"))]
-    let addr = nc::mmap(
-        0,
-        map_length,
-        nc::PROT_READ | nc::PROT_WRITE,
-        nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
-        -1,
-        0,
-    );
+    let addr = unsafe {
+        nc::mmap(
+            0,
+            map_length,
+            nc::PROT_READ | nc::PROT_WRITE,
+            nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+            -1,
+            0,
+        )
+    };
     assert!(addr.is_ok());
     let addr = addr.unwrap();
 
     // Set the third page readonly. And we will run into SIGSEGV when updating it.
-    let ret = nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ);
+    let ret = unsafe { nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ) };
     assert!(ret.is_ok());
 
     for p in addr..(addr + map_length) {
@@ -58,6 +65,7 @@ fn main() {
         }
     }
 
-    assert!(nc::munmap(addr, map_length).is_ok());
-    nc::exit(0);
+    let ret = unsafe { nc::munmap(addr, map_length) };
+    assert!(ret.is_ok());
+    unsafe { nc::exit(0) };
 }

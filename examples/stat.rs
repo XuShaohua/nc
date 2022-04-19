@@ -2,15 +2,13 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-extern crate nc;
-
 fn main() {
     let mut statbuf = nc::stat_t::default();
     let filepath = "/dev/fd/0";
     #[cfg(not(target_arch = "aarch64"))]
-    let ret = nc::stat(filepath, &mut statbuf);
+    let ret = unsafe { nc::stat(filepath, &mut statbuf) };
     #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
-    let ret = nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0);
+    let ret = unsafe { nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0) };
 
     match ret {
         Ok(_) => {

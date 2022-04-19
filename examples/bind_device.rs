@@ -1,22 +1,24 @@
-fn main() {
-    let socket_fd = match nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) {
-        Ok(socket_fd) => socket_fd,
-        Err(errno) => {
-            eprintln!("socket() err: {}", nc::strerror(errno));
-            return;
-        }
-    };
+// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
+
+fn main() -> Result<(), nc::Errno> {
+    let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0)? };
     let interface_name = "lo";
-    if let Err(errno) = nc::setsockopt(
-        socket_fd,
-        nc::SOL_SOCKET,
-        nc::SO_BINDTODEVICE,
-        interface_name.as_ptr() as usize,
-        interface_name.len() as nc::socklen_t,
-    ) {
-        eprintln!("socket() err: {}", nc::strerror(errno));
-    } else {
-        println!("Now socket is bind to {}", interface_name);
+    let ret = unsafe {
+        nc::setsockopt(
+            socket_fd,
+            nc::SOL_SOCKET,
+            nc::SO_BINDTODEVICE,
+            interface_name.as_ptr() as usize,
+            interface_name.len() as nc::socklen_t,
+        )
+    };
+    match ret {
+        Err(errno) => eprintln!("socket() err: {}", nc::strerror(errno)),
+        Ok(_) => println!("Now socket is bind to {}", interface_name),
     }
-    assert!(nc::close(socket_fd).is_ok());
+    let ret = unsafe { nc::close(socket_fd) };
+    assert!(ret.is_ok());
+    Ok(())
 }

@@ -60,12 +60,14 @@
 /// ```
 fn main() {
     let output_file = "/tmp/nc-splice";
-    let ret = nc::openat(
-        nc::AT_FDCWD,
-        output_file,
-        nc::O_WRONLY | nc::O_CREAT | nc::O_TRUNC,
-        0o644,
-    );
+    let ret = unsafe {
+        nc::openat(
+            nc::AT_FDCWD,
+            output_file,
+            nc::O_WRONLY | nc::O_CREAT | nc::O_TRUNC,
+            0o644,
+        )
+    };
     assert!(ret.is_ok());
     let fd = ret.unwrap();
 
@@ -73,12 +75,14 @@ fn main() {
     loop {
         let stdin_fileno = 0;
         let stdout_fileno = 1;
-        let ret = nc::tee(
-            stdin_fileno,
-            stdout_fileno,
-            usize::MAX,
-            nc::SPLICE_F_NONBLOCK,
-        );
+        let ret = unsafe {
+            nc::tee(
+                stdin_fileno,
+                stdout_fileno,
+                usize::MAX,
+                nc::SPLICE_F_NONBLOCK,
+            )
+        };
         let mut tee_len;
         match ret {
             Ok(0) => break,
@@ -86,20 +90,22 @@ fn main() {
             Ok(len) => tee_len = len,
             Err(errno) => {
                 eprintln!("tee error: {}", nc::strerror(errno));
-                nc::exit(1);
+                unsafe { nc::exit(1) };
             }
         }
 
         // Consume stdin by splicing it to a file.
         while tee_len > 0 {
-            let ret = nc::splice(
-                stdin_fileno,
-                None,
-                fd,
-                None,
-                tee_len as usize,
-                nc::SPLICE_F_MOVE,
-            );
+            let ret = unsafe {
+                nc::splice(
+                    stdin_fileno,
+                    None,
+                    fd,
+                    None,
+                    tee_len as usize,
+                    nc::SPLICE_F_MOVE,
+                )
+            };
             match ret {
                 Err(errno) => {
                     eprintln!("splice error: {}", nc::strerror(errno));
@@ -110,5 +116,6 @@ fn main() {
         }
     }
 
-    assert!(nc::close(fd).is_ok());
+    let ret = unsafe { nc::close(fd) };
+    assert!(ret.is_ok());
 }

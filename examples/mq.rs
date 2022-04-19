@@ -4,17 +4,19 @@
 
 fn main() {
     let name = "nc-mq-notify";
-    let ret = nc::mq_open(
-        name,
-        nc::O_CREAT | nc::O_RDWR | nc::O_EXCL,
-        (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
-        None,
-    );
+    let ret = unsafe {
+        nc::mq_open(
+            name,
+            nc::O_CREAT | nc::O_RDWR | nc::O_EXCL,
+            (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+            None,
+        )
+    };
     assert!(ret.is_ok());
     let mq_id = ret.unwrap();
 
     let mut attr = nc::mq_attr_t::default();
-    let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+    let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
     assert!(ret.is_ok());
     println!("attr: {:?}", attr);
 
@@ -24,10 +26,10 @@ fn main() {
         tv_sec: 1,
         tv_nsec: 0,
     };
-    let ret = nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout);
+    let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
     assert!(ret.is_ok());
 
-    let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+    let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
     assert!(ret.is_ok());
     assert_eq!(attr.mq_curmsgs, 1);
 
@@ -38,7 +40,8 @@ fn main() {
         tv_sec: 1,
         tv_nsec: 0,
     };
-    let ret = nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout);
+    let ret =
+        unsafe { nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout) };
     if let Err(errno) = ret {
         eprintln!("mq_timedreceive() error: {}", nc::strerror(errno));
     }
@@ -46,6 +49,8 @@ fn main() {
     let n_read = ret.unwrap() as usize;
     assert_eq!(n_read, msg.len());
 
-    assert!(nc::close(mq_id).is_ok());
-    assert!(nc::mq_unlink(name).is_ok());
+    let ret = unsafe { nc::close(mq_id) };
+    assert!(ret.is_ok());
+    let ret = unsafe { nc::mq_unlink(name) };
+    assert!(ret.is_ok());
 }

@@ -2854,6 +2854,7 @@ pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> 
 ///
 /// ```
 /// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
+/// println!("ret: {:?}", ret);
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {

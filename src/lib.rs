@@ -20,9 +20,9 @@
 //! let mut statbuf = nc::stat_t::default();
 //! let path = "/etc/passwd";
 //! #[cfg(not(target_arch = "aarch64"))]
-//! let ret = nc::stat(path, &mut statbuf);
+//! let ret = unsafe { nc::stat(path, &mut statbuf) };
 //! #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
-//! let ret = nc::fstatat(nc::AT_FDCWD, path, &mut statbuf, 0);
+//! let ret = unsafe { nc::fstatat(nc::AT_FDCWD, path, &mut statbuf, 0) };
 //! match ret {
 //!     Ok(_) => println!("s: {:?}", statbuf),
 //!     Err(errno) => eprintln!("Failed to get file status, got errno: {}", errno),
@@ -31,14 +31,14 @@
 //!
 //! Fork process:
 //! ```rust
-//! let pid = nc::fork();
+//! let pid = unsafe { nc::fork() };
 //! match pid {
 //!     Ok(pid) => {
 //!         if pid == 0 {
 //!             println!("child process: {}", pid);
 //!             let args = [""];
 //!             let env = [""];
-//!             match nc::execve("/bin/ls", &args, &env) {
+//!             match unsafe { nc::execve("/bin/ls", &args, &env) } {
 //!                 Ok(_) => {},
 //!                 Err(errno) => eprintln!("`ls` got err: {}", errno),
 //!             }
@@ -54,7 +54,7 @@
 //!
 //! Kill init process:
 //! ```rust
-//! let ret = nc::kill(1, nc::SIGTERM);
+//! let ret = unsafe { nc::kill(1, nc::SIGTERM) };
 //! assert_eq!(ret, Err(nc::EPERM));
 //! ```
 //!
@@ -67,7 +67,7 @@
 //!
 //! fn main() {
 //!     let mut uts = nc::utsname_t::default();
-//!     let ret = nc::uname(&mut uts);
+//!     let ret = unsafe { nc::uname(&mut uts) };
 //!     assert!(ret.is_ok());
 //!
 //!     let mut result = Vec::new();

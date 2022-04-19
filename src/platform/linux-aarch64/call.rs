@@ -37,15 +37,19 @@ pub unsafe fn accept4(
 
 /// Switch process accounting.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-acct";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// let ret = nc::acct(path);
+/// let ret = unsafe { nc::acct(path) };
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -80,9 +84,11 @@ pub unsafe fn add_key<P: AsRef<Path>>(
 
 /// Tune kernel clock. Returns clock state on success.
 ///
+/// # Example
+///
 /// ```
 /// let mut tm = nc::timex_t::default();
-/// let ret = nc::adjtimex(&mut tm);
+/// let ret = unsafe { nc::adjtimex(&mut tm) };
 /// assert!(ret.is_ok());
 /// assert!(tm.time.tv_sec > 1611552896);
 /// ```
@@ -136,14 +142,16 @@ pub unsafe fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Re
 
 /// Change working directory.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
-/// let ret = nc::chdir(path);
+/// let ret = unsafe { nc::chdir(path) };
 /// assert!(ret.is_ok());
 ///
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
-/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// let ret = unsafe { nc::getcwd(buf.as_mut_ptr() as usize, buf.len()) };
 /// assert!(ret.is_ok());
 /// // Remove null-terminal char.
 /// let path_len = ret.unwrap() as usize - 1;
@@ -158,9 +166,10 @@ pub unsafe fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 
 /// Change the root directory.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::chroot("/");
-/// assert!(ret.is_err());
+/// let ret = unsafe { nc::chroot("/") };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
@@ -171,9 +180,11 @@ pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 
 /// Tune kernel clock. Returns clock state on success.
 ///
+/// # Example
+///
 /// ```
 /// let mut tm = nc::timex_t::default();
-/// let ret = nc::clock_adjtime(nc::CLOCK_REALTIME, &mut tm);
+/// let ret = unsafe { nc::clock_adjtime(nc::CLOCK_REALTIME, &mut tm) };
 /// assert!(ret.is_ok());
 /// assert!(tm.time.tv_sec > 1611552896);
 /// ```
@@ -185,9 +196,11 @@ pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<
 
 /// Get resolution(precision) of the specific clock.
 ///
+/// # Example
+///
 /// ```
 /// let mut tp = nc::timespec_t::default();
-/// let ret = nc::clock_getres(nc::CLOCK_BOOTTIME, &mut tp);
+/// let ret = unsafe { nc::clock_getres(nc::CLOCK_BOOTTIME, &mut tp) };
 /// assert!(ret.is_ok());
 /// assert!(tp.tv_nsec > 0);
 /// ```
@@ -199,9 +212,11 @@ pub unsafe fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Resul
 
 /// Get time of specific clock.
 ///
+/// # Example
+///
 /// ```
 /// let mut tp = nc::timespec_t::default();
-/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME_COARSE, &mut tp);
+/// let ret = unsafe { nc::clock_gettime(nc::CLOCK_REALTIME_COARSE, &mut tp) };
 /// assert!(ret.is_ok());
 /// assert!(tp.tv_sec > 0);
 /// ```
@@ -213,13 +228,16 @@ pub unsafe fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Resu
 
 /// High resolution sleep with a specific clock.
 ///
+/// # Example
+///
 /// ```
 /// let t = nc::timespec_t {
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
 /// let mut rem = nc::timespec_t::default();
-/// assert!(nc::clock_nanosleep(nc::CLOCK_MONOTONIC, 0, &t, &mut rem).is_ok());
+/// let ret = unsafe { nc::clock_nanosleep(nc::CLOCK_MONOTONIC, 0, &t, &mut rem) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn clock_nanosleep(
     which_clock: clockid_t,
@@ -236,12 +254,14 @@ pub unsafe fn clock_nanosleep(
 
 /// Set time of specific clock.
 ///
+/// # Example
+///
 /// ```
 /// let mut tp = nc::timespec_t::default();
-/// let ret = nc::clock_gettime(nc::CLOCK_REALTIME, &mut tp);
+/// let ret = unsafe { nc::clock_gettime(nc::CLOCK_REALTIME, &mut tp) };
 /// assert!(ret.is_ok());
 /// assert!(tp.tv_sec > 0);
-/// let ret = nc::clock_settime(nc::CLOCK_REALTIME, &tp);
+/// let ret = unsafe { nc::clock_settime(nc::CLOCK_REALTIME, &tp) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -275,14 +295,15 @@ pub unsafe fn clone(
 
 /// New api to create child process.
 ///
+/// # Example
+///
 /// ```
 /// let mut args = nc::clone_args_t::default();
 /// let mut pid_fd: i32 = -1;
 /// args.exit_signal = nc::SIGCHLD as u64;
 /// args.pidfd = &mut pid_fd as *mut i32 as usize as u64;
 /// args.flags = nc::CLONE_PIDFD as u64 | nc::CLONE_PARENT_SETTID as u64;
-/// let pid = nc::clone3(&mut args, core::mem::size_of::<nc::clone_args_t>());
-/// println!("ret: {:?}", pid);
+/// let pid = unsafe { nc::clone3(&mut args, core::mem::size_of::<nc::clone_args_t>()) };
 /// assert!(pid.is_ok());
 /// ```
 pub unsafe fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> {
@@ -292,8 +313,12 @@ pub unsafe fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, 
 
 /// Close a file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// assert!(nc::close(2).is_ok());
+/// const STDERR_FD: i32 = 2;
+/// let ret = unsafe { nc::close(STDERR_FD) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -316,24 +341,29 @@ pub unsafe fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> 
 
 /// Copy a range of data from one file to another.
 ///
+/// # Example
+///
 /// ```
 /// let path_in = "/etc/passwd";
-/// let fd_in = nc::openat(nc::AT_FDCWD, path_in, nc::O_RDONLY, 0);
+/// let fd_in = unsafe { nc::openat(nc::AT_FDCWD, path_in, nc::O_RDONLY, 0) };
 /// assert!(fd_in.is_ok());
 /// let fd_in = fd_in.unwrap();
 /// let path_out = "/tmp/nc-copy-file-range";
-/// let fd_out = nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let fd_out = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(fd_out.is_ok());
 /// let fd_out = fd_out.unwrap();
 /// let mut off_in = 0;
 /// let mut off_out = 0;
 /// let copy_len = 64;
-/// let ret = nc::copy_file_range(fd_in, &mut off_in, fd_out, &mut off_out, copy_len, 0);
+/// let ret = unsafe { nc::copy_file_range(fd_in, &mut off_in, fd_out, &mut off_out, copy_len, 0) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(copy_len as nc::ssize_t));
-/// assert!(nc::close(fd_in).is_ok());
-/// assert!(nc::close(fd_out).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
+/// let ret = unsafe { nc::close(fd_in) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd_out) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_out, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn copy_file_range(
     fd_in: i32,
@@ -372,17 +402,22 @@ pub unsafe fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), E
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-dup-file";
-/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
-/// let fd_dup = nc::dup(fd);
+/// let fd_dup = unsafe { nc::dup(fd) };
 /// assert!(fd_dup.is_ok());
 /// let fd_dup = fd_dup.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::close(fd_dup).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd_dup) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
@@ -391,16 +426,22 @@ pub unsafe fn dup(oldfd: i32) -> Result<i32, Errno> {
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-dup3-file";
-/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let newfd = 8;
-/// assert!(nc::dup3(fd, newfd, nc::O_CLOEXEC).is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::close(newfd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::dup3(fd, newfd, nc::O_CLOEXEC) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(newfd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
@@ -411,11 +452,14 @@ pub unsafe fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 
 /// Open an epoll file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// let poll_fd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };
+/// assert!(poll_fd.is_ok());
+/// let poll_fd = poll_fd.unwrap();
+/// let ret = unsafe { nc::close(poll_fd) };
 /// assert!(ret.is_ok());
-/// let poll_fd = ret.unwrap();
-/// assert!(nc::close(poll_fd).is_ok());
 /// ```
 pub unsafe fn epoll_create1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
@@ -424,21 +468,26 @@ pub unsafe fn epoll_create1(flags: i32) -> Result<i32, Errno> {
 
 /// Control interface for an epoll file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// let epfd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };
 /// assert!(epfd.is_ok());
 /// let epfd = epfd.unwrap();
 /// let mut fds: [i32; 2] = [0, 0];
-/// let ret = nc::pipe2(&mut fds, 0);
+/// let ret = unsafe { nc::pipe2(&mut fds, 0) };
 /// assert!(ret.is_ok());
 /// let mut event = nc::epoll_event_t::default();
 /// event.events = nc::EPOLLIN | nc::EPOLLET;
 /// event.data.fd = fds[0];
-/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// let ctl_ret = unsafe { nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event) };
 /// assert!(ctl_ret.is_ok());
-/// assert!(nc::close(fds[0]).is_ok());
-/// assert!(nc::close(fds[1]).is_ok());
-/// assert!(nc::close(epfd).is_ok());
+/// let ret = unsafe { nc::close(fds[0]) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fds[1]) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(epfd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn epoll_ctl(
     epfd: i32,
@@ -455,21 +504,23 @@ pub unsafe fn epoll_ctl(
 
 /// Wait for an I/O event on an epoll file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// let epfd = nc::epoll_create1(nc::EPOLL_CLOEXEC);
+/// let epfd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };
 /// assert!(epfd.is_ok());
 /// let epfd = epfd.unwrap();
 /// let mut fds: [i32; 2] = [0, 0];
-/// let ret = nc::pipe2(&mut fds, 0);
+/// let ret = unsafe { nc::pipe2(&mut fds, 0) };
 /// assert!(ret.is_ok());
 /// let mut event = nc::epoll_event_t::default();
 /// event.events = nc::EPOLLIN | nc::EPOLLET;
 /// event.data.fd = fds[0];
-/// let ctl_ret = nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event);
+/// let ctl_ret = unsafe { nc::epoll_ctl(epfd, nc::EPOLL_CTL_ADD, fds[0], &mut event) };
 /// assert!(ctl_ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = nc::write(fds[1], msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fds[1], msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 ///
 /// let mut events = vec![nc::epoll_event_t::default(); 4];
@@ -477,14 +528,16 @@ pub unsafe fn epoll_ctl(
 /// let timeout = 0;
 /// let sigmask = nc::sigset_t::default();
 /// let sigmask_size = core::mem::size_of_val(&sigmask);
-/// let ret = nc::epoll_pwait(
-///     epfd,
-///     &mut events,
-///     events_len as i32,
-///     timeout,
-///     &sigmask,
-///     sigmask_size,
-/// );
+/// let ret = unsafe {
+///     nc::epoll_pwait(
+///         epfd,
+///         &mut events,
+///         events_len as i32,
+///         timeout,
+///         &sigmask,
+///         sigmask_size,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(1));
 ///
@@ -495,16 +548,19 @@ pub unsafe fn epoll_ctl(
 ///         assert_eq!(ready_fd, fds[0]);
 ///         let mut buf = vec![0_u8; 64];
 ///         let buf_len = buf.len();
-///         let ret = nc::read(ready_fd, buf.as_mut_ptr() as usize, buf_len);
+///         let ret = unsafe { nc::read(ready_fd, buf.as_mut_ptr() as usize, buf_len) };
 ///         assert!(ret.is_ok());
 ///         let n_read = ret.unwrap() as usize;
 ///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
 ///     }
 /// }
 ///
-/// assert!(nc::close(fds[0]).is_ok());
-/// assert!(nc::close(fds[1]).is_ok());
-/// assert!(nc::close(epfd).is_ok());
+/// let ret = unsafe { nc::close(fds[0]) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fds[1]) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(epfd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn epoll_pwait(
     epfd: i32,
@@ -547,8 +603,11 @@ pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 ///
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
+///
+/// # Example
+///
 /// ```
-/// let pid = nc::fork();
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -556,7 +615,7 @@ pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 ///     // child process
 ///     let args = [""];
 ///     let env = [""];
-///     let ret = nc::execve("/bin/ls", &args, &env);
+///     let ret = unsafe { nc::execve("/bin/ls", &args, &env) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -576,8 +635,11 @@ pub unsafe fn execve<P: AsRef<Path>>(
 ///
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
+///
+/// # Example
+///
 /// ```
-/// let pid = nc::fork();
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -585,7 +647,7 @@ pub unsafe fn execve<P: AsRef<Path>>(
 ///     // child process
 ///     let args = [""];
 ///     let env = [""];
-///     let ret = nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0);
+///     let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -608,8 +670,10 @@ pub unsafe fn execveat<P: AsRef<Path>>(
 
 /// Terminate current process.
 ///
+/// # Example
+///
 /// ```
-/// nc::exit(0);
+/// unsafe { nc::exit(0); }
 /// ```
 pub unsafe fn exit(status: i32) -> ! {
     let status = status as usize;
@@ -619,8 +683,10 @@ pub unsafe fn exit(status: i32) -> ! {
 
 /// Exit all threads in a process's thread group.
 ///
+/// # Example
+///
 /// ```
-/// nc::exit_group(0);
+/// unsafe { nc::exit_group(0); }
 /// ```
 pub unsafe fn exit_group(status: i32) -> ! {
     let status = status as usize;
@@ -630,8 +696,11 @@ pub unsafe fn exit_group(status: i32) -> ! {
 
 /// Check user's permission for a file.
 ///
+/// # Example
+///
 /// ```
-/// assert!(nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK).is_ok());
+/// let ret = unsafe { nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
@@ -648,14 +717,17 @@ pub unsafe fn faccessat2() {
 
 /// Predeclare an access pattern for file data.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::fadvise64(fd, 0, 1024, nc::POSIX_FADV_NORMAL);
+/// let ret = unsafe { nc::fadvise64(fd, 0, 1024, nc::POSIX_FADV_NORMAL) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -667,15 +739,19 @@ pub unsafe fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Re
 
 /// Manipulate file space.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-fallocate";
-/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
-/// let ret = nc::fallocate(fd, 0, 0, 64 * 1024);
+/// let ret = unsafe { nc::fallocate(fd, 0, 0, 64 * 1024) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -719,15 +795,18 @@ pub unsafe fn fanotify_mark<P: AsRef<Path>>(
 
 /// Change working directory.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
-/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
-/// let ret = nc::fchdir(fd);
+/// let ret = unsafe { nc::fchdir(fd) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -736,14 +815,26 @@ pub unsafe fn fchdir(fd: i32) -> Result<(), Errno> {
 
 /// Change permissions of a file.
 ///
+/// # Example
+///
 /// ```
 /// let filename = "/tmp/nc-fchmod";
-/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
+/// let fd = unsafe {
+///     nc::openat(
+///         nc::AT_FDCWD,
+///         filename,
+///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///         0o644
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = unsafe { nc::fchmod(fd, 0o600) };
 /// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
-/// assert!(nc::fchmod(fd, 0o600).is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -753,14 +844,26 @@ pub unsafe fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 
 /// Change permissions of a file.
 ///
+/// # Example
+///
 /// ```
 /// let filename = "/tmp/nc-fchmodat";
-/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
+/// let fd = unsafe {
+///     nc::openat(
+///         nc::AT_FDCWD,
+///         filename,
+///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///         0o644
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::fchmodat(nc::AT_FDCWD, filename, 0o600).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
+/// let ret = unsafe { nc::fchmodat(nc::AT_FDCWD, filename, 0o600) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
@@ -772,16 +875,27 @@ pub unsafe fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) ->
 
 /// Change ownership of a file.
 ///
+/// # Example
+///
 /// ```
 /// let filename = "/tmp/nc-fchown";
-/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
-/// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
-/// let ret = nc::fchown(fd, 0, 0);
+/// let fd = unsafe {
+///     nc::openat(
+///         nc::AT_FDCWD,
+///         filename,
+///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///         0o644
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = unsafe { nc::fchown(fd, 0, 0) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, filename, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -792,16 +906,26 @@ pub unsafe fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 
 /// Change ownership of a file.
 ///
+/// # Example
+///
 /// ```
 /// let filename = "/tmp/nc-fchown";
-/// let ret = nc::openat(nc::AT_FDCWD, filename, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644);
+/// let fd = unsafe {
+///     nc::openat(
+///         nc::AT_FDCWD,
+///         filename,
+///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///         0o644
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// let ret = nc::fchownat(nc::AT_FDCWD, filename, 0, 0, 0);
-/// assert!(ret.is_err());
+/// let ret = unsafe { nc::fchownat(nc::AT_FDCWD, filename, 0, 0, 0) };
 /// assert_eq!(ret, Err(nc::EPERM));
-/// assert!(nc::unlinkat(nc::AT_FDCWD, filename,0 ).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename,0 ) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fchownat<P: AsRef<Path>>(
     dirfd: i32,
@@ -821,17 +945,21 @@ pub unsafe fn fchownat<P: AsRef<Path>>(
 
 /// manipulate file descriptor.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
-/// let ret = nc::fcntl(fd, nc::F_DUPFD, 0);
+/// let ret = unsafe { nc::fcntl(fd, nc::F_DUPFD, 0) };
 /// assert!(ret.is_ok());
 /// let fd2 = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::close(fd2).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd2) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
@@ -841,17 +969,21 @@ pub unsafe fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-fdatasync";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
-/// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
 /// let msg = b"Hello, Rust";
-/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -860,32 +992,38 @@ pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
 
 /// Get extended attribute value.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-fgetxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
-/// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = nc::fgetxattr(fd, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::fgetxattr(fd, attr_name, buf.as_mut_ptr() as usize, buf_len) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fgetxattr<P: AsRef<Path>>(
     fd: i32,
@@ -915,30 +1053,36 @@ pub unsafe fn finit_module<P: AsRef<Path>>(
 
 /// List extended attribute names.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-flistxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
-/// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = nc::flistxattr(fd, buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::flistxattr(fd, buf.as_mut_ptr() as usize, buf_len) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -947,21 +1091,25 @@ pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, 
 
 /// Apply or remove an advisory lock on an open file.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-flock";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::flock(fd, nc::LOCK_EX);
+/// let ret = unsafe { nc::flock(fd, nc::LOCK_EX) };
 /// assert!(ret.is_ok());
 /// let msg = "Hello, Rust";
-/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
-/// let ret = nc::flock(fd, nc::LOCK_UN);
+/// let ret = unsafe { nc::flock(fd, nc::LOCK_UN) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path,0 ).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path,0 ) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -971,26 +1119,32 @@ pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 
 /// Remove an extended attribute.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-fremovexattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// let ret = nc::fremovexattr(fd, attr_name);
+/// let ret = unsafe { nc::fremovexattr(fd, attr_name) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fremovexattr<P: AsRef<Path>>(fd: i32, name: P) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1019,25 +1173,31 @@ pub unsafe fn fsconfig<P: AsRef<Path>>(
 
 /// Set extended attribute value.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-fsetxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::fsetxattr(
-///     fd,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::fsetxattr(
+///         fd,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fsetxattr<P: AsRef<Path>>(
     fd: i32,
@@ -1081,18 +1241,21 @@ pub unsafe fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: i32) -> Result<i3
 
 /// Get file status about a file descriptor.
 ///
+/// # example
+///
 /// ```
 /// let path = "/tmp";
 /// // Open folder directly.
-/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let mut stat = nc::stat_t::default();
-/// let ret = nc::fstat(fd, &mut stat);
+/// let ret = unsafe { nc::fstat(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
 /// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1102,10 +1265,12 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 
 /// Get file status.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut stat = nc::stat_t::default();
-/// let ret = nc::fstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW);
+/// let ret = unsafe { nc::fstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
 /// assert!(ret.is_ok());
 /// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
 /// ```
@@ -1125,18 +1290,21 @@ pub unsafe fn fstatat<P: AsRef<Path>>(
 
 /// Get filesystem statistics.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/usr";
 /// // Open folder directly.
-/// let fd = nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0);
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let mut statfs = nc::statfs_t::default();
-/// let ret = nc::fstatfs(fd, &mut statfs);
+/// let ret = unsafe { nc::fstatfs(fd, &mut statfs) };
 /// assert!(ret.is_ok());
 /// assert!(statfs.f_bfree > 0);
 /// assert!(statfs.f_bavail > 0);
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1146,17 +1314,22 @@ pub unsafe fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
 
 /// Flush all modified in-core data refered by `fd` to disk.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-fsync";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY, 0o644);
-/// assert!(ret.is_ok());
-/// let fd = ret.unwrap();
+/// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY, 0o644) };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
 /// let buf = b"Hello, Rust";
-/// let n_write = nc::write(fd, buf.as_ptr() as usize, buf.len());
+/// let n_write = unsafe { nc::write(fd, buf.as_ptr() as usize, buf.len()) };
 /// assert_eq!(n_write, Ok(buf.len() as isize));
-/// assert!(nc::fsync(fd).is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::fsync(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1165,15 +1338,19 @@ pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
 
 /// Truncate an opened file to a specified length.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-ftruncate";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::ftruncate(fd, 64 * 1024);
+/// let ret = unsafe { nc::ftruncate(fd, 64 * 1024) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1210,11 +1387,13 @@ pub unsafe fn futex(
 
 /// Determine CPU and NUMA node on which the calling thread is running.
 ///
+/// # Example
+///
 /// ```
 /// let mut cpu = 0;
 /// let mut node = 0;
 /// let mut cache = nc::getcpu_cache_t::default();
-/// let ret = nc::getcpu(&mut cpu, &mut node, &mut cache);
+/// let ret = unsafe { nc::getcpu(&mut cpu, &mut node, &mut cache) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn getcpu(
@@ -1230,15 +1409,16 @@ pub unsafe fn getcpu(
 
 /// Get current working directory.
 ///
+/// # Example
+///
 /// ```
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
-/// let ret = nc::getcwd(buf.as_mut_ptr() as usize, buf.len());
+/// let ret = unsafe { nc::getcwd(buf.as_mut_ptr() as usize, buf.len()) };
 /// assert!(ret.is_ok());
 /// // Remove null-terminal char.
 /// let path_len = ret.unwrap() as usize - 1;
 /// let cwd = std::str::from_utf8(&buf[..path_len]);
 /// assert!(cwd.is_ok());
-/// println!("cwd: {:?}", cwd);
 /// ```
 pub unsafe fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
     syscall2(SYS_GETCWD, buf, size).map(|ret| ret as ssize_t)
@@ -1246,9 +1426,11 @@ pub unsafe fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 
 /// Get directory entries.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
@@ -1256,7 +1438,7 @@ pub unsafe fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 /// loop {
 ///     // TODO(Shaohua): Only allocate one buf block.
 ///     let mut buf: Vec<u8> = vec![0; BUF_SIZE];
-///     let ret = nc::getdents64(fd, buf.as_mut_ptr() as usize, BUF_SIZE);
+///     let ret = unsafe { nc::getdents64(fd, buf.as_mut_ptr() as usize, BUF_SIZE) };
 ///     assert!(ret.is_ok());
 ///
 ///     let buf_box = buf.into_boxed_slice();
@@ -1279,14 +1461,14 @@ pub unsafe fn getcwd(buf: usize, size: size_t) -> Result<ssize_t, Errno> {
 ///             }
 ///             name_vec.push(c);
 ///         }
-///         let name = String::from_utf8(name_vec).unwrap();
-///         println!("name: {}", name);
+///         let _name = String::from_utf8(name_vec).unwrap();
 ///
 ///         bpos += d_ref.d_reclen as usize;
 ///     }
 /// }
 ///
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -1295,8 +1477,10 @@ pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t,
 
 /// Get the effective group ID of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let egid = nc::getegid();
+/// let egid = unsafe { nc::getegid() };
 /// assert!(egid > 0);
 /// ```
 pub unsafe fn getegid() -> gid_t {
@@ -1306,8 +1490,10 @@ pub unsafe fn getegid() -> gid_t {
 
 /// Get the effective user ID of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let euid = nc::geteuid();
+/// let euid = unsafe { nc::geteuid() };
 /// assert!(euid > 0);
 /// ```
 pub unsafe fn geteuid() -> uid_t {
@@ -1317,8 +1503,10 @@ pub unsafe fn geteuid() -> uid_t {
 
 /// Get the real group ID of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let gid = nc::getgid();
+/// let gid = unsafe { nc::getgid() };
 /// assert!(gid > 0);
 /// ```
 pub unsafe fn getgid() -> gid_t {
@@ -1328,14 +1516,16 @@ pub unsafe fn getgid() -> gid_t {
 
 /// Get list of supplementary group Ids.
 ///
+/// # Example
+///
 /// ```
 /// let mut groups = vec![];
-/// let ret = nc::getgroups(0, &mut groups);
+/// let ret = unsafe { nc::getgroups(0, &mut groups) };
 /// assert!(ret.is_ok());
 /// let total_num = ret.unwrap();
 /// groups.resize(total_num as usize, 0);
-
-/// let ret = nc::getgroups(total_num, &mut groups);
+///
+/// let ret = unsafe { nc::getgroups(total_num, &mut groups) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(total_num));
 /// ```
@@ -1347,13 +1537,15 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 
 /// Get value of an interval timer.
 ///
+/// # Example
+///
 /// ```
 /// use core::mem::size_of;
 ///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 ///     let msg = "Hello alarm";
-///     let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
+///     let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
 /// }
 ///
 /// let sa = nc::sigaction_t {
@@ -1362,7 +1554,7 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 ///     ..nc::sigaction_t::default()
 /// };
 /// let mut old_sa = nc::sigaction_t::default();
-/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
 /// assert!(ret.is_ok());
 ///
 /// // Single shot timer, actived after 1 second.
@@ -1377,17 +1569,17 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 ///     },
 /// };
 /// let mut prev_itv = nc::itimerval_t::default();
-/// let ret = nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv);
+/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let ret = nc::util::pause();
 /// assert_eq!(ret, Err(nc::EINTR));
 ///
-/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
 /// assert_eq!(prev_itv.it_value.tv_sec, 0);
 /// assert_eq!(prev_itv.it_value.tv_usec, 0);
@@ -1412,9 +1604,11 @@ pub unsafe fn getpeername(
 
 /// Returns the PGID(process group ID) of the process specified by `pid`.
 ///
+/// # Example
+///
 /// ```
-/// let ppid = nc::getppid();
-/// let pgid = nc::getpgid(ppid);
+/// let ppid = unsafe { nc::getppid() };
+/// let pgid = unsafe { nc::getpgid(ppid) };
 /// assert!(pgid.is_ok());
 /// ```
 pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
@@ -1424,8 +1618,10 @@ pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 
 /// Get the process ID (PID) of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let pid = nc::getpid();
+/// let pid = unsafe { nc::getpid() };
 /// assert!(pid > 0);
 /// ```
 pub unsafe fn getpid() -> pid_t {
@@ -1435,8 +1631,10 @@ pub unsafe fn getpid() -> pid_t {
 
 /// Get the process ID of the parent of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let ppid = nc::getppid();
+/// let ppid = unsafe { nc::getppid() };
 /// assert!(ppid > 0);
 /// ```
 pub unsafe fn getppid() -> pid_t {
@@ -1446,8 +1644,10 @@ pub unsafe fn getppid() -> pid_t {
 
 /// Get program scheduling priority.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::getpriority(nc::PRIO_PROCESS, nc::getpid());
+/// let ret = unsafe { nc::getpriority(nc::PRIO_PROCESS, nc::getpid()) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
@@ -1464,10 +1664,12 @@ pub unsafe fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
 
 /// Obtain a series of random bytes.
 ///
+/// # Example
+///
 /// ```
 /// let mut buf = [0_u8; 32];
 /// let buf_len = buf.len();
-/// let ret = nc::getrandom(&mut buf, buf_len, 0);
+/// let ret = unsafe { nc::getrandom(&mut buf, buf_len, 0) };
 /// assert!(ret.is_ok());
 /// let size = ret.unwrap() as usize;
 /// assert!(size <= buf_len);
@@ -1480,11 +1682,13 @@ pub unsafe fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ss
 
 /// Get real, effect and saved group ID.
 ///
+/// # Example
+///
 /// ```
 /// let mut rgid = 0;
 /// let mut egid = 0;
 /// let mut sgid = 0;
-/// let ret = nc::getresgid(&mut rgid, &mut egid, &mut sgid);
+/// let ret = unsafe { nc::getresgid(&mut rgid, &mut egid, &mut sgid) };
 /// assert!(ret.is_ok());
 /// assert!(rgid > 0);
 /// assert!(egid > 0);
@@ -1499,11 +1703,13 @@ pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) ->
 
 /// Get real, effect and saved user ID.
 ///
+/// # Example
+///
 /// ```
 /// let mut ruid = 0;
 /// let mut euid = 0;
 /// let mut suid = 0;
-/// let ret = nc::getresuid(&mut ruid, &mut euid, &mut suid);
+/// let ret = unsafe { nc::getresuid(&mut ruid, &mut euid, &mut suid) };
 /// assert!(ret.is_ok());
 /// assert!(ruid > 0);
 /// assert!(euid > 0);
@@ -1518,9 +1724,11 @@ pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) ->
 
 /// Get resource limit.
 ///
+/// # Example
+///
 /// ```
 /// let mut rlimit = nc::rlimit_t::default();
-/// let ret = nc::getrlimit(nc::RLIMIT_NOFILE, &mut rlimit);
+/// let ret = unsafe { nc::getrlimit(nc::RLIMIT_NOFILE, &mut rlimit) };
 /// assert!(ret.is_ok());
 /// assert!(rlimit.rlim_cur > 0);
 /// assert!(rlimit.rlim_max > 0);
@@ -1533,9 +1741,11 @@ pub unsafe fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno>
 
 /// Get resource usage.
 ///
+/// # Example
+///
 /// ```
 /// let mut usage = nc::rusage_t::default();
-/// let ret = nc::getrusage(nc::RUSAGE_SELF, &mut usage);
+/// let ret = unsafe { nc::getrusage(nc::RUSAGE_SELF, &mut usage) };
 /// assert!(ret.is_ok());
 /// assert!(usage.ru_maxrss > 0);
 /// assert_eq!(usage.ru_nswap, 0);
@@ -1548,9 +1758,11 @@ pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 
 /// Get session Id.
 ///
+/// # Example
+///
 /// ```
-/// let ppid = nc::getppid();
-/// let sid = nc::getsid(ppid);
+/// let ppid = unsafe { nc::getppid() };
+/// let sid = unsafe { nc::getsid(ppid) };
 /// assert!(sid > 0);
 /// ```
 pub unsafe fn getsid(pid: pid_t) -> pid_t {
@@ -1597,8 +1809,10 @@ pub unsafe fn getsockopt(
 
 /// Get the caller's thread ID (TID).
 ///
+/// # Example
+///
 /// ```
-/// let tid = nc::gettid();
+/// let tid = unsafe { nc::gettid() };
 /// assert!(tid > 0);
 /// ```
 pub unsafe fn gettid() -> pid_t {
@@ -1608,10 +1822,12 @@ pub unsafe fn gettid() -> pid_t {
 
 /// Get time.
 ///
+/// # Example
+///
 /// ```
 /// let mut tv = nc::timeval_t::default();
 /// let mut tz = nc::timezone_t::default();
-/// let ret = nc::gettimeofday(&mut tv, &mut tz);
+/// let ret = unsafe { nc::gettimeofday(&mut tv, &mut tz) };
 /// assert!(ret.is_ok());
 /// assert!(tv.tv_sec > 1611380386);
 /// ```
@@ -1623,8 +1839,10 @@ pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Resu
 
 /// Get the real user ID of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let uid = nc::getuid();
+/// let uid = unsafe { nc::getuid() };
 /// assert!(uid > 0);
 /// ```
 pub unsafe fn getuid() -> uid_t {
@@ -1634,32 +1852,38 @@ pub unsafe fn getuid() -> uid_t {
 
 /// Get extended attribute value.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-getxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = nc::getxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::getxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn getxattr<P: AsRef<Path>>(
     filename: P,
@@ -1714,16 +1938,18 @@ pub unsafe fn init_module<P: AsRef<Path>>(
 
 /// Add a watch to an initialized inotify instance.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
 /// let path = "/etc/passwd";
-/// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
+/// let ret = unsafe { nc::inotify_add_watch(fd, path, nc::IN_MODIFY) };
 /// assert!(ret.is_ok());
-/// let _wd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn inotify_add_watch<P: AsRef<Path>>(
     fd: i32,
@@ -1739,11 +1965,14 @@ pub unsafe fn inotify_add_watch<P: AsRef<Path>>(
 
 /// Initialize an inotify instance.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn inotify_init1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
@@ -1752,18 +1981,21 @@ pub unsafe fn inotify_init1(flags: i32) -> Result<i32, Errno> {
 
 /// Remove an existing watch from an inotify instance.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC);
+/// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
 /// let path = "/etc/passwd";
-/// let ret = nc::inotify_add_watch(fd, path, nc::IN_MODIFY);
+/// let ret = unsafe { nc::inotify_add_watch(fd, path, nc::IN_MODIFY) };
 /// assert!(ret.is_ok());
 /// let wd = ret.unwrap();
-/// let ret = nc::inotify_rm_watch(fd, wd);
+/// let ret = unsafe { nc::inotify_rm_watch(fd, wd) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1773,19 +2005,23 @@ pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 
 /// Control device.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-ioctl";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut attr: i32 = 0;
 /// let cmd = -2146933247; // nc::FS_IOC_GETFLAGS
-/// let ret = nc::ioctl(fd, cmd, &mut attr as *mut i32 as usize);
+/// let ret = unsafe { nc::ioctl(fd, cmd, &mut attr as *mut i32 as usize) };
 /// assert!(ret.is_ok());
 /// println!("attr: {}", attr);
 ///
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -1795,12 +2031,14 @@ pub unsafe fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
 
 /// Get I/O scheduling class and priority.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid());
+/// let ret = unsafe { nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid()) };
 /// assert!(ret.is_ok());
 /// let prio = ret.unwrap();
-/// let _prio_class = nc::ioprio_prio_class(prio);
-/// let _prio_data = nc::ioprio_prio_data(prio);
+/// let _prio_class = unsafe { nc::ioprio_prio_class(prio) };
+/// let _prio_data = unsafe { nc::ioprio_prio_data(prio) };
 /// ```
 pub unsafe fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
@@ -1810,17 +2048,19 @@ pub unsafe fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 
 /// Set I/O scheduling class and priority.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0);
+/// let ret = unsafe { nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0) };
 /// assert!(ret.is_ok());
 /// let prio = ret.unwrap();
-/// let _prio_class = nc::ioprio_prio_class(prio);
-/// let prio_data = nc::ioprio_prio_data(prio);
+/// let _prio_class = unsafe { nc::ioprio_prio_class(prio) };
+/// let prio_data = unsafe { nc::ioprio_prio_data(prio) };
 ///
 /// // Higher priority
 /// let new_prio_data = prio_data - 1;
-/// let new_prio = nc::ioprio_prio_value(nc::IOPRIO_CLASS_BE, new_prio_data);
-/// let ret = nc::ioprio_set(nc::IOPRIO_WHO_PROCESS, 0, new_prio);
+/// let new_prio = unsafe { nc::ioprio_prio_value(nc::IOPRIO_CLASS_BE, new_prio_data) };
+/// let ret = unsafe { nc::ioprio_set(nc::IOPRIO_WHO_PROCESS, 0, new_prio) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno> {
@@ -2064,8 +2304,10 @@ pub unsafe fn keyctl(
 
 /// Send signal to a process.
 ///
+/// # Example
+///
 /// ```
-/// let pid = nc::fork();
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -2073,11 +2315,11 @@ pub unsafe fn keyctl(
 ///     // child process.
 ///     let args = [""];
 ///     let env = [""];
-///     let ret = nc::execve("/usr/bin/yes", &args, &env);
+///     let ret = unsafe { nc::execve("/usr/bin/yes", &args, &env) };
 ///     assert!(ret.is_ok());
 /// } else {
 ///     // parent process.
-///     let ret = nc::kill(pid, nc::SIGTERM);
+///     let ret = unsafe { nc::kill(pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -2104,32 +2346,38 @@ pub unsafe fn landlock_restrict_self() {
 
 /// Get extended attribute value.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-lgetxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = nc::lgetxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::lgetxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(attr_value.as_bytes(), &buf[..attr_len]);
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn lgetxattr<P: AsRef<Path>>(
     filename: P,
@@ -2147,17 +2395,23 @@ pub unsafe fn lgetxattr<P: AsRef<Path>>(
 
 /// Make a new name for a file.
 ///
+/// # Example
+///
 /// ```
 /// let old_filename = "/tmp/nc-linkat-src";
-/// let ret = nc::openat(nc::AT_FDCWD, old_filename, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, old_filename, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let new_filename = "/tmp/nc-linkat-dst";
 /// let flags = nc::AT_SYMLINK_FOLLOW;
-/// assert!(nc::linkat(nc::AT_FDCWD, old_filename, nc::AT_FDCWD,  new_filename, flags).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, old_filename, 0).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_filename, 0).is_ok());
+/// let ret = unsafe { nc::linkat(nc::AT_FDCWD, old_filename, nc::AT_FDCWD,  new_filename, flags) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, old_filename, 0) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, new_filename, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn linkat<P: AsRef<Path>>(
     olddfd: i32,
@@ -2193,30 +2447,36 @@ pub unsafe fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 
 /// List extended attribute names.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-listxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = nc::listxattr(path, buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::listxattr(path, buf.as_mut_ptr() as usize, buf_len) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn listxattr<P: AsRef<Path>>(
     filename: P,
@@ -2230,30 +2490,36 @@ pub unsafe fn listxattr<P: AsRef<Path>>(
 
 /// List extended attribute names.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-llistxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn llistxattr<P: AsRef<Path>>(
     filename: P,
@@ -2276,26 +2542,31 @@ pub unsafe fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> 
 
 /// Remove an extended attribute.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-lremovexattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// let ret = nc::lremovexattr(path, attr_name);
+/// let ret = unsafe { nc::lremovexattr(path, attr_name) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// ```
 pub unsafe fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -2307,14 +2578,17 @@ pub unsafe fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), E
 
 /// Reposition file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::lseek(fd, 42, nc::SEEK_SET);
+/// let ret = unsafe { nc::lseek(fd, 42, nc::SEEK_SET) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -2325,25 +2599,31 @@ pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 
 /// Set extended attribute value.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-lsetxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::lsetxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::lsetxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn lsetxattr<P: AsRef<Path>>(
     filename: P,
@@ -2363,25 +2643,30 @@ pub unsafe fn lsetxattr<P: AsRef<Path>>(
 
 /// Give advice about use of memory.
 ///
+/// # Example
+///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
-/// let addr = nc::mmap(
-///     0,
-///     map_length,
-///     nc::PROT_READ | nc::PROT_WRITE,
-///     nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
-///     -1,
-///     0,
-/// );
+/// let addr = unsafe {
+///     nc::mmap(
+///         0,
+///         map_length,
+///         nc::PROT_READ | nc::PROT_WRITE,
+///         nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+///         -1,
+///         0,
+///     )
+/// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
 ///
 /// // Set the third page readonly. And we will run into SIGSEGV when updating it.
-/// let ret = nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_RANDOM);
+/// let ret = unsafe { nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_RANDOM) };
 /// assert!(ret.is_ok());
 ///
-/// assert!(nc::munmap(addr, map_length).is_ok());
+/// let ret = unsafe { nc::munmap(addr, map_length) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
     let len = len as usize;
@@ -2491,11 +2776,14 @@ pub unsafe fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), E
 
 /// Create a directory.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-mkdir";
-/// let ret = nc::mkdirat(nc::AT_FDCWD, path, 0o755);
+/// let ret = unsafe { nc::mkdirat(nc::AT_FDCWD, path, 0o755) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> Result<(), Errno> {
     let dirfd = dirfd as usize;
@@ -2507,12 +2795,15 @@ pub unsafe fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> 
 
 /// Create a special or ordinary file.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-mknodat";
 /// // Create a named pipe.
-/// let ret = nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0);
+/// let ret = unsafe { nc::mknodat(nc::AT_FDCWD, path, nc::S_IFIFO | nc::S_IRUSR | nc::S_IWUSR, 0) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mknodat<P: AsRef<Path>>(
     dirfd: i32,
@@ -2530,9 +2821,11 @@ pub unsafe fn mknodat<P: AsRef<Path>>(
 
 /// Lock memory.
 ///
+/// # Example
+///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
-/// let ret = nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len());
+/// let ret = unsafe { nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len()) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
@@ -2542,9 +2835,11 @@ pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 
 /// Lock memory.
 ///
+/// # Example
+///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
-/// let ret = nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT);
+/// let ret = unsafe { nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
@@ -2555,8 +2850,10 @@ pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> 
 
 /// Lock memory.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
@@ -2566,14 +2863,16 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 
 /// Map files or devices into memory.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
 /// let mut sb = nc::stat_t::default();
-/// let ret = nc::fstat(fd, &mut sb);
+/// let ret = unsafe { nc::fstat(fd, &mut sb) };
 /// assert!(ret.is_ok());
 ///
 /// let offset: usize = 0;
@@ -2582,22 +2881,26 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 /// let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
 /// let map_length = length + offset - pa_offset;
 ///
-/// let addr = nc::mmap(
-///     0, // 0 as NULL
-///     map_length,
-///     nc::PROT_READ,
-///     nc::MAP_PRIVATE,
-///     fd,
-///     pa_offset as nc::off_t,
-/// );
+/// let addr = unsafe {
+///     nc::mmap(
+///         0, // 0 as NULL
+///         map_length,
+///         nc::PROT_READ,
+///         nc::MAP_PRIVATE,
+///         fd,
+///         pa_offset as nc::off_t,
+///     )
+/// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
 ///
-/// let n_write = nc::write(1, addr + offset - pa_offset, length);
+/// let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
-/// assert!(nc::munmap(addr, map_length).is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::munmap(addr, map_length) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mmap(
     start: usize,
@@ -2617,20 +2920,23 @@ pub unsafe fn mmap(
 
 /// Mount filesystem.
 ///
+/// # Example
+///
 /// ```
 /// let target_dir = "/tmp/nc-mount";
-/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
+/// let ret = unsafe { nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755) };
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";
 /// let fs_type = "";
 /// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
 /// let data = 0;
-/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
-/// assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mount<P: AsRef<Path>>(
     dev_name: P,
@@ -2720,25 +3026,30 @@ pub unsafe fn move_pages(
 
 /// Set protection on a region of memory.
 ///
+/// # Example
+///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
-/// let addr = nc::mmap(
-///     0,
-///     map_length,
-///     nc::PROT_READ | nc::PROT_WRITE,
-///     nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
-///     -1,
-///     0,
-/// );
+/// let addr = unsafe {
+///     nc::mmap(
+///         0,
+///         map_length,
+///         nc::PROT_READ | nc::PROT_WRITE,
+///         nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+///         -1,
+///         0,
+///     )
+/// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
 ///
 /// // Set the third page readonly. And we will run into SIGSEGV when updating it.
-/// let ret = nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ);
+/// let ret = unsafe { nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ) };
 /// assert!(ret.is_ok());
 ///
-/// assert!(nc::munmap(addr, map_length).is_ok());
+/// let ret = unsafe { nc::munmap(addr, map_length) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     let len = len as usize;
@@ -2748,24 +3059,30 @@ pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno>
 
 /// Get/set message queue attributes
 ///
+/// # Example
+///
 /// ```
 /// let name = "nc-mq-getsetattr";
-/// let ret = nc::mq_open(
-///     name,
-///     nc::O_CREAT | nc::O_RDWR,
-///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
-///     None,
-/// );
+/// let ret = unsafe {
+///     nc::mq_open(
+///         name,
+///         nc::O_CREAT | nc::O_RDWR,
+///         (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///         None,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mq_id = ret.unwrap();
 ///
 /// let mut attr = nc::mq_attr_t::default();
-/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
 /// assert!(ret.is_ok());
 /// println!("attr: {:?}", attr);
 ///
-/// assert!(nc::close(mq_id).is_ok());
-/// assert!(nc::mq_unlink(name).is_ok());
+/// let ret = unsafe { nc::close(mq_id) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::mq_unlink(name) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mq_getsetattr(
     mqdes: mqd_t,
@@ -2799,18 +3116,24 @@ pub unsafe fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Resu
 
 /// Open a message queue.
 ///
+/// # Example
+///
 /// ```
 /// let name = "nc-posix-mq";
-/// let ret = nc::mq_open(
-///     name,
-///     nc::O_CREAT | nc::O_RDWR,
-///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
-///     None,
-/// );
+/// let ret = unsafe {
+///     nc::mq_open(
+///         name,
+///         nc::O_CREAT | nc::O_RDWR,
+///         (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///         None,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mq_id = ret.unwrap();
-/// assert!(nc::close(mq_id).is_ok());
-/// assert!(nc::mq_unlink(name).is_ok());
+/// let ret = unsafe { nc::close(mq_id) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::mq_unlink(name) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mq_open<P: AsRef<Path>>(
     name: P,
@@ -2832,19 +3155,23 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 
 /// Receive a message from a message queue
 ///
+/// # Example
+///
 /// ```
 /// let name = "nc-mq-timedreceive";
-/// let ret = nc::mq_open(
-///     name,
-///     nc::O_CREAT | nc::O_RDWR | nc::O_EXCL,
-///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
-///     None,
-/// );
+/// let ret = unsafe {
+///     nc::mq_open(
+///         name,
+///         nc::O_CREAT | nc::O_RDWR | nc::O_EXCL,
+///         (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///         None,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mq_id = ret.unwrap();
 ///
 /// let mut attr = nc::mq_attr_t::default();
-/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
 /// assert!(ret.is_ok());
 /// println!("attr: {:?}", attr);
 ///
@@ -2854,10 +3181,10 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout);
+/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
 /// assert!(ret.is_ok());
 /// assert_eq!(attr.mq_curmsgs, 1);
 ///
@@ -2868,7 +3195,7 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout);
+/// let ret = unsafe { nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout) };
 /// if let Err(errno) = ret {
 ///     eprintln!("mq_timedreceive() error: {}", nc::strerror(errno));
 /// }
@@ -2876,8 +3203,10 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, msg.len());
 ///
-/// assert!(nc::close(mq_id).is_ok());
-/// assert!(nc::mq_unlink(name).is_ok());
+/// let ret = unsafe { nc::close(mq_id) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::mq_unlink(name) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mq_timedreceive(
     mqdes: mqd_t,
@@ -2904,21 +3233,24 @@ pub unsafe fn mq_timedreceive(
 
 /// Send message to a message queue.
 ///
+/// # Example
+///
 /// ```
 /// let name = "nc-mq-timedsend";
-/// let ret = nc::mq_open(
-///     name,
-///     nc::O_CREAT | nc::O_RDWR,
-///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
-///     None,
-/// );
+/// let ret = unsafe {
+///     nc::mq_open(
+///         name,
+///         nc::O_CREAT | nc::O_RDWR,
+///         (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///         None,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mq_id = ret.unwrap();
 ///
 /// let mut attr = nc::mq_attr_t::default();
-/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
 /// assert!(ret.is_ok());
-/// println!("attr: {:?}", attr);
 ///
 /// let msg = "Hello, Rust";
 /// let prio = 0;
@@ -2926,15 +3258,17 @@ pub unsafe fn mq_timedreceive(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout);
+/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::mq_getsetattr(mq_id, None, Some(&mut attr));
+/// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
 /// assert!(ret.is_ok());
 /// assert_eq!(attr.mq_curmsgs, 1);
 ///
-/// assert!(nc::close(mq_id).is_ok());
-/// assert!(nc::mq_unlink(name).is_ok());
+/// let ret = unsafe { nc::close(mq_id) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::mq_unlink(name) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mq_timedsend(
     mqdes: mqd_t,
@@ -2961,18 +3295,24 @@ pub unsafe fn mq_timedsend(
 
 /// Remove a message queue.
 ///
+/// # Example
+///
 /// ```
 /// let name = "nc-mq-unlink";
-/// let ret = nc::mq_open(
-///     name,
-///     nc::O_CREAT | nc::O_RDWR,
-///     (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
-///     None,
-/// );
+/// let ret = unsafe {
+///     nc::mq_open(
+///         name,
+///         nc::O_CREAT | nc::O_RDWR,
+///         (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
+///         None,
+///     )
+/// };
 /// assert!(ret.is_ok());
 /// let mq_id = ret.unwrap();
-/// assert!(nc::close(mq_id).is_ok());
-/// assert!(nc::mq_unlink(name).is_ok());
+/// let ret = unsafe { nc::close(mq_id) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::mq_unlink(name) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mq_unlink<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
@@ -2995,15 +3335,17 @@ pub unsafe fn mremap(
 
 /// System V message control operations.
 ///
+/// # Example
+///
 /// ```
 /// let key = nc::IPC_PRIVATE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
-/// let ret = nc::msgget(key, flags);
+/// let ret = unsafe { nc::msgget(key, flags) };
 /// assert!(ret.is_ok());
 /// let msq_id = ret.unwrap();
 
 /// let mut buf = nc::msqid_ds_t::default();
-/// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+/// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
@@ -3015,15 +3357,17 @@ pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, 
 
 /// Get a System V message queue identifier.
 ///
+/// # Example
+///
 /// ```
 /// let key = nc::IPC_PRIVATE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
-/// let ret = nc::msgget(key, flags);
+/// let ret = unsafe { nc::msgget(key, flags) };
 /// assert!(ret.is_ok());
 /// let msq_id = ret.unwrap();
 
 /// let mut buf = nc::msqid_ds_t::default();
-/// let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+/// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
@@ -3034,6 +3378,8 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 
 /// Receive messages from a System V message queue.
 ///
+/// # Example
+///
 /// ```
 /// const MAX_MTEXT: usize = 1024;
 ///
@@ -3043,8 +3389,8 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///
 /// #[derive(Debug, Clone, Copy)]
 /// struct Message {
-///     pub unsafe mtype: isize,
-///     pub unsafe mtext: [u8; MAX_MTEXT],
+///     pub mtype: isize,
+///     pub mtext: [u8; MAX_MTEXT],
 /// }
 ///
 /// impl Default for Message {
@@ -3059,7 +3405,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 /// fn main() {
 ///     let key = nc::IPC_PRIVATE;
 ///     let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
-///     let ret = nc::msgget(key, flags);
+///     let ret = unsafe { nc::msgget(key, flags) };
 ///     assert!(ret.is_ok());
 ///     let msq_id = ret.unwrap();
 ///
@@ -3076,18 +3422,20 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
 ///     }
 ///
-///     let ret = nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0);
+///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0) };
 ///     assert!(ret.is_ok());
 ///
 ///     // Read from message queue.
 ///     let mut recv_msg = Message::default();
-///     let ret = nc::msgrcv(
-///         msq_id,
-///         &mut recv_msg as *mut Message as usize,
-///         MAX_MTEXT,
-///         MTYPE_CLIENT,
-///         0,
-///     );
+///     let ret = unsafe {
+///         nc::msgrcv(
+///             msq_id,
+///             &mut recv_msg as *mut Message as usize,
+///             MAX_MTEXT,
+///             MTYPE_CLIENT,
+///             0,
+///         )
+///     };
 ///     assert!(ret.is_ok());
 ///     let recv_msg_len = ret.unwrap() as usize;
 ///     assert_eq!(recv_msg_len, msg_len);
@@ -3098,7 +3446,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///     println!("recv text: {}", recv_text);
 ///
 ///     let mut buf = nc::msqid_ds_t::default();
-///     let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+///     let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -3118,6 +3466,8 @@ pub unsafe fn msgrcv(
 
 /// Append the message to a System V message queue.
 ///
+/// # Example
+///
 /// ```
 /// const MAX_MTEXT: usize = 1024;
 ///
@@ -3127,8 +3477,8 @@ pub unsafe fn msgrcv(
 ///
 /// #[derive(Debug, Clone, Copy)]
 /// struct Message {
-///     pub unsafe mtype: isize,
-///     pub unsafe mtext: [u8; MAX_MTEXT],
+///     pub mtype: isize,
+///     pub mtext: [u8; MAX_MTEXT],
 /// }
 ///
 /// impl Default for Message {
@@ -3143,7 +3493,7 @@ pub unsafe fn msgrcv(
 /// fn main() {
 ///     let key = nc::IPC_PRIVATE;
 ///     let flags = nc::IPC_CREAT | nc::IPC_EXCL | (nc::S_IRUSR | nc::S_IWUSR) as i32;
-///     let ret = nc::msgget(key, flags);
+///     let ret = unsafe { nc::msgget(key, flags) };
 ///     assert!(ret.is_ok());
 ///     let msq_id = ret.unwrap();
 ///
@@ -3160,18 +3510,20 @@ pub unsafe fn msgrcv(
 ///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
 ///     }
 ///
-///     let ret = nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0);
+///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0) };
 ///     assert!(ret.is_ok());
 ///
 ///     // Read from message queue.
 ///     let mut recv_msg = Message::default();
-///     let ret = nc::msgrcv(
-///         msq_id,
-///         &mut recv_msg as *mut Message as usize,
-///         MAX_MTEXT,
-///         MTYPE_CLIENT,
-///         0,
-///     );
+///     let ret = unsafe {
+///         nc::msgrcv(
+///             msq_id,
+///             &mut recv_msg as *mut Message as usize,
+///             MAX_MTEXT,
+///             MTYPE_CLIENT,
+///             0,
+///         )
+///     };
 ///     assert!(ret.is_ok());
 ///     let recv_msg_len = ret.unwrap() as usize;
 ///     assert_eq!(recv_msg_len, msg_len);
@@ -3179,10 +3531,9 @@ pub unsafe fn msgrcv(
 ///     assert!(recv_text.is_ok());
 ///     let recv_text = recv_text.unwrap();
 ///     assert_eq!(recv_text, msg);
-///     println!("recv text: {}", recv_text);
 ///
 ///     let mut buf = nc::msqid_ds_t::default();
-///     let ret = nc::msgctl(msq_id, nc::IPC_RMID, &mut buf);
+///     let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -3202,15 +3553,17 @@ pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 
 /// Unlock memory.
 ///
+/// # Example
+///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
 /// let addr = passwd_buf.as_ptr() as usize;
-/// let ret = nc::mlock2(addr, passwd_buf.len(), nc::MCL_CURRENT);
+/// let ret = unsafe { nc::mlock2(addr, passwd_buf.len(), nc::MCL_CURRENT) };
 /// for i in 0..passwd_buf.len() {
 ///   passwd_buf[i] = i as u8;
 /// }
 /// assert!(ret.is_ok());
-/// let ret = nc::munlock(addr, passwd_buf.len());
+/// let ret = unsafe { nc::munlock(addr, passwd_buf.len()) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
@@ -3220,10 +3573,12 @@ pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
 
 /// Unlock memory.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::mlockall(nc::MCL_CURRENT);
+/// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
 /// assert!(ret.is_ok());
-/// let ret = nc::munlockall();
+/// let ret = unsafe { nc::munlockall() };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn munlockall() -> Result<(), Errno> {
@@ -3232,14 +3587,16 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 
 /// Unmap files or devices from memory.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
 /// let mut sb = nc::stat_t::default();
-/// let ret = nc::fstat(fd, &mut sb);
+/// let ret = unsafe { nc::fstat(fd, &mut sb) };
 /// assert!(ret.is_ok());
 ///
 /// let offset: usize = 0;
@@ -3248,22 +3605,26 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// let pa_offset: usize = offset & !(nc::PAGE_SIZE - 1);
 /// let map_length = length + offset - pa_offset;
 ///
-/// let addr = nc::mmap(
-///     0, // 0 as NULL
-///     map_length,
-///     nc::PROT_READ,
-///     nc::MAP_PRIVATE,
-///     fd,
-///     pa_offset as nc::off_t,
-/// );
+/// let addr = unsafe {
+///     nc::mmap(
+///         0, // 0 as NULL
+///         map_length,
+///         nc::PROT_READ,
+///         nc::MAP_PRIVATE,
+///         fd,
+///         pa_offset as nc::off_t,
+///     )
+/// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
 ///
-/// let n_write = nc::write(1, addr + offset - pa_offset, length);
+/// let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
-/// assert!(nc::munmap(addr, map_length).is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::munmap(addr, map_length) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     let len = len as usize;
@@ -3297,12 +3658,15 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
 
 /// High resolution sleep.
 ///
+/// # Example
+///
 /// ```
 /// let t = nc::timespec_t {
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// assert!(nc::nanosleep(&t, None).is_ok());
+/// let ret = unsafe { nc::nanosleep(&t, None) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
@@ -3323,12 +3687,15 @@ pub unsafe fn nfsservctl() {
 
 /// Open and possibly create a file within a directory.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn openat<P: AsRef<Path>>(
     dirfd: i32,
@@ -3392,32 +3759,42 @@ pub unsafe fn personality(persona: u32) -> Result<u32, Errno> {
 
 /// Obtain a duplicate of another process's file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// let pid = nc::fork();
+/// let pid = unsafe { nc::fork() };
 /// const STDOUT_FD: i32 = 1;
 /// assert!(pid.is_ok());
 /// if pid == Ok(0) {
-///     println!("In child process, pid: {}", nc::getpid());
+///     println!("In child process, pid: {}", unsafe { nc::getpid() });
 ///     let path = "/tmp/nc-pidfdopen";
-///     let fd = nc::openat(
-///         nc::AT_FDCWD,
-///         path,
-///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
-///         0o644,
-///     );
+///     let fd = unsafe {
+///         nc::openat(
+///             nc::AT_FDCWD,
+///             path,
+///             nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///             0o644,
+///         )
+///     };
 ///     assert!(fd.is_ok());
 ///     let fd = fd.unwrap();
-///     assert!(nc::dup3(fd, STDOUT_FD, 0).is_ok());
+///     let ret = unsafe { nc::dup3(fd, STDOUT_FD, 0) };
+///     assert!(ret.is_ok());
 ///     println!("[child] stdout redirected to file!");
 ///
 ///     let t = nc::timespec_t {
 ///         tv_sec: 2,
 ///         tv_nsec: 0,
 ///     };
-///     assert!(nc::nanosleep(&t, None).is_ok());
-///     let _ = nc::close(fd);
-///     let _ = nc::unlinkat(nc::AT_FDCWD, path, 0);
-///     nc::exit(0);
+///     unsafe {
+///         let ret = nc::nanosleep(&t, None);
+///         assert!(ret.is_ok());
+///         let ret = nc::close(fd);
+///         assert!(ret.is_ok());
+///         let ret = nc::unlinkat(nc::AT_FDCWD, path, 0);
+///         assert!(ret.is_ok());
+///         nc::exit(0);
+///     }
 /// }
 ///
 /// let pid = pid.unwrap();
@@ -3427,29 +3804,32 @@ pub unsafe fn personality(persona: u32) -> Result<u32, Errno> {
 ///     tv_sec: 2,
 ///     tv_nsec: 0,
 /// };
-/// assert!(nc::nanosleep(&t, None).is_ok());
+/// let ret = unsafe { nc::nanosleep(&t, None) };
+/// assert!(ret.is_ok());
 ///
-/// let pidfd = nc::pidfd_open(pid, 0);
+/// let pidfd = unsafe { nc::pidfd_open(pid, 0) };
 /// if pidfd == Err(nc::errno::ENOSYS) {
 ///     eprintln!("PIDFD_OPEN syscall not supported in this system");
 ///     return;
 /// }
 /// let pidfd = pidfd.unwrap();
 ///
-/// let child_stdout_fd = nc::pidfd_getfd(pidfd, STDOUT_FD, 0);
+/// let child_stdout_fd = unsafe { nc::pidfd_getfd(pidfd, STDOUT_FD, 0) };
 /// if child_stdout_fd == Err(nc::errno::ENOSYS) {
 ///     eprintln!("PIDFD_OPEN syscall not supported in this system");
 ///     return;
 /// }
 /// let child_stdout_fd = child_stdout_fd.unwrap();
 /// let msg = "Hello, msg from parent process\n";
-/// let ret = nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// let nwrite = ret.unwrap();
 /// assert_eq!(nwrite as usize, msg.len());
 ///
-/// let _ = nc::close(pidfd);
-/// let _ = nc::close(child_stdout_fd);
+/// let ret = unsafe { nc::close(pidfd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(child_stdout_fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32, Errno> {
     let pidfd = pidfd as usize;
@@ -3460,64 +3840,73 @@ pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32,
 
 /// Obtain a file descriptor that refers to a process.
 ///
+/// # Example
+///
 /// ```
-/// let pid = nc::fork();
+/// let pid = unsafe { nc::fork() };
 /// const STDOUT_FD: i32 = 1;
 /// assert!(pid.is_ok());
 /// if pid == Ok(0) {
-///     println!("In child process, pid: {}", nc::getpid());
+///     println!("In child process, pid: {}", unsafe { nc::getpid() });
 ///     let path = "/tmp/nc-pidfdopen";
-///     let fd = nc::openat(
-///         nc::AT_FDCWD,
-///         path,
-///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
-///         0o644,
-///     );
+///     let fd = unsafe {
+///         nc::openat(
+///             nc::AT_FDCWD,
+///             path,
+///             nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///             0o644,
+///         )
+///     };
 ///     assert!(fd.is_ok());
 ///     let fd = fd.unwrap();
-///     assert!(nc::dup3(fd, STDOUT_FD, 0).is_ok());
-///     println!("[child] stdout redirected to file!");
+///     let ret = unsafe { nc::dup3(fd, STDOUT_FD, 0) };
+///     assert!(ret.is_ok());
 ///
 ///     let t = nc::timespec_t {
 ///         tv_sec: 2,
 ///         tv_nsec: 0,
 ///     };
-///     assert!(nc::nanosleep(&t, None).is_ok());
-///     let _ = nc::close(fd);
-///     let _ = nc::unlinkat(nc::AT_FDCWD, path, 0);
-///     nc::exit(0);
+///     let ret = unsafe { nc::nanosleep(&t, None) };
+///     assert!(ret.is_ok());
+///     let ret = unsafe { nc::close(fd) };
+///     assert!(ret.is_ok());
+///     let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+///     assert!(ret.is_ok());
+///     unsafe { nc::exit(0) };
 /// }
 ///
 /// let pid = pid.unwrap();
-/// println!("[parent] child pid: {}", pid);
 ///
 /// let t = nc::timespec_t {
 ///     tv_sec: 2,
 ///     tv_nsec: 0,
 /// };
-/// assert!(nc::nanosleep(&t, None).is_ok());
+/// let ret = unsafe { nc::nanosleep(&t, None) };
+/// assert!(ret.is_ok());
 ///
-/// let pidfd = nc::pidfd_open(pid, 0);
+/// let pidfd = unsafe { nc::pidfd_open(pid, 0) };
 /// if pidfd == Err(nc::errno::ENOSYS) {
 ///     eprintln!("PIDFD_OPEN syscall not supported in this system");
 ///     return;
 /// }
 /// let pidfd = pidfd.unwrap();
 ///
-/// let child_stdout_fd = nc::pidfd_getfd(pidfd, STDOUT_FD, 0);
+/// let child_stdout_fd = unsafe { nc::pidfd_getfd(pidfd, STDOUT_FD, 0) };
 /// if child_stdout_fd == Err(nc::errno::ENOSYS) {
 ///     eprintln!("PIDFD_OPEN syscall not supported in this system");
 ///     return;
 /// }
 /// let child_stdout_fd = child_stdout_fd.unwrap();
 /// let msg = "Hello, msg from parent process\n";
-/// let ret = nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// let nwrite = ret.unwrap();
 /// assert_eq!(nwrite as usize, msg.len());
 ///
-/// let _ = nc::close(pidfd);
-/// let _ = nc::close(child_stdout_fd);
+/// let ret = unsafe { nc::close(pidfd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(child_stdout_fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
     let pid = pid as usize;
@@ -3557,12 +3946,16 @@ pub unsafe fn pidfd_send_signal(
 
 /// Create a pipe.
 ///
+/// # Example
+///
 /// ```
 /// let mut fds = [-1_i32, 2];
-/// let ret = nc::pipe2(&mut fds, nc::O_CLOEXEC | nc::O_NONBLOCK);
+/// let ret = unsafe {nc::pipe2(&mut fds, nc::O_CLOEXEC | nc::O_NONBLOCK) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fds[0]).is_ok());
-/// assert!(nc::close(fds[1]).is_ok());
+/// let ret = unsafe { nc::close(fds[0]) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fds[1]) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
@@ -3644,17 +4037,20 @@ pub unsafe fn prctl(
 
 /// Read from a file descriptor without changing file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [0_u8; 128];
 /// let read_count = 64;
-/// let ret = nc::pread64(fd, buf.as_mut_ptr() as usize, read_count, 0);
+/// let ret = unsafe { nc::pread64(fd, buf.as_mut_ptr() as usize, read_count, 0) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(read_count as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -3664,9 +4060,11 @@ pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Resul
 
 /// Read from a file descriptor without changing file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [[0_u8; 64]; 4];
@@ -3679,10 +4077,11 @@ pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Resul
 ///     });
 /// }
 /// let iov_len = iov.len();
-/// let ret = nc::preadv(fd, &mut iov, 0, iov_len - 1);
+/// let ret = unsafe { nc::preadv(fd, &mut iov, 0, iov_len - 1) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn preadv(
     fd: i32,
@@ -3698,9 +4097,11 @@ pub unsafe fn preadv(
 
 /// Read from a file descriptor without changing file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [[0_u8; 64]; 4];
@@ -3714,10 +4115,11 @@ pub unsafe fn preadv(
 /// }
 /// let iov_len = iov.len();
 /// let flags = 0;
-/// let ret = nc::preadv2(fd, &mut iov, 0, iov_len - 1, flags);
+/// let ret = unsafe { nc::preadv2(fd, &mut iov, 0, iov_len - 1, flags) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn preadv2(
     fd: i32,
@@ -3735,9 +4137,11 @@ pub unsafe fn preadv2(
 
 /// Get/set the resource limits of an arbitary process.
 ///
+/// # Example
+///
 /// ```
 /// let mut old_limit = nc::rlimit64_t::default();
-/// let ret = nc::prlimit64(nc::getpid(), nc::RLIMIT_NOFILE, None, Some(&mut old_limit));
+/// let ret = unsafe { nc::prlimit64(nc::getpid(), nc::RLIMIT_NOFILE, None, Some(&mut old_limit)) };
 /// assert!(ret.is_ok());
 /// assert!(old_limit.rlim_cur > 0);
 /// assert!(old_limit.rlim_max > 0);
@@ -3864,17 +4268,21 @@ pub unsafe fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Resu
 
 /// Write to a file descriptor without changing file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-pwrite64";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let buf = "Hello, Rust";
-/// let ret = nc::pwrite64(fd, buf.as_ptr() as usize, buf.len(), 0);
+/// let ret = unsafe { nc::pwrite64(fd, buf.as_ptr() as usize, buf.len(), 0) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(buf.len() as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pwrite64(
     fd: i32,
@@ -3889,9 +4297,11 @@ pub unsafe fn pwrite64(
 
 /// Write to a file descriptor without changing file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [[0_u8; 64]; 4];
@@ -3903,20 +4313,23 @@ pub unsafe fn pwrite64(
 ///         iov_base: item.as_ptr() as usize,
 ///     });
 /// }
-/// let ret = nc::readv(fd, &mut iov);
+/// let ret = unsafe { nc::readv(fd, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 ///
 /// let path_out = "/tmp/nc-pwritev";
-/// let ret = nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::pwritev(fd, &iov, 0, iov.len() - 1);
+/// let ret = unsafe { nc::pwritev(fd, &iov, 0, iov.len() - 1) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_out, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pwritev(
     fd: i32,
@@ -3932,9 +4345,11 @@ pub unsafe fn pwritev(
 
 /// Write to a file descriptor without changing file offset.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [[0_u8; 64]; 4];
@@ -3946,21 +4361,24 @@ pub unsafe fn pwritev(
 ///         iov_base: item.as_ptr() as usize,
 ///     });
 /// }
-/// let ret = nc::readv(fd, &mut iov);
+/// let ret = unsafe { nc::readv(fd, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 ///
 /// let path_out = "/tmp/nc-pwritev2";
-/// let ret = nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let flags = nc::RWF_DSYNC | nc::RWF_APPEND;
-/// let ret = nc::pwritev2(fd, &iov, 0, iov.len() - 1, flags);
+/// let ret = unsafe { nc::pwritev2(fd, &iov, 0, iov.len() - 1, flags) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_out, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pwritev2(
     fd: i32,
@@ -3997,17 +4415,20 @@ pub unsafe fn quotactl_fd() {
 
 /// Read from a file descriptor.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [0_u8; 4 * 1024];
-/// let ret = nc::read(fd, buf.as_mut_ptr() as usize, buf.len());
+/// let ret = unsafe { nc::read(fd, buf.as_mut_ptr() as usize, buf.len()) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap();
 /// assert!(n_read <= buf.len() as nc::ssize_t);
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -4016,13 +4437,16 @@ pub unsafe fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Er
 
 /// Initialize file head into page cache.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// let fd = ret.unwrap();
-/// let ret = nc::readahead(fd, 0, 64);
+/// let ret = unsafe { nc::readahead(fd, 0, 64) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -4033,19 +4457,22 @@ pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Err
 
 /// Read value of a symbolic link.
 ///
+/// # Example
+///
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-readlinkat";
-/// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
+/// let ret = unsafe { nc::symlinkat(oldname, nc::AT_FDCWD, newname) };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; nc::PATH_MAX as usize];
 /// let buf_len = buf.len();
-/// let ret = nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf_len);
+/// let ret = unsafe { nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf_len) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());
 /// assert_eq!(oldname.as_bytes(), &buf[0..n_read]);
-/// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, newname, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn readlinkat<P: AsRef<Path>>(
     dirfd: i32,
@@ -4062,9 +4489,11 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 
 /// Read from a file descriptor into multiple buffers.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [[0_u8; 64]; 4];
@@ -4077,10 +4506,11 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 ///         iov_base: item.as_ptr() as usize,
 ///     });
 /// }
-/// let ret = nc::readv(fd, &mut iov);
+/// let ret = unsafe { nc::readv(fd, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -4091,9 +4521,17 @@ pub unsafe fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::reboot(nc::LINUX_REBOOT_MAGIC1, nc::LINUX_REBOOT_MAGIC2,
-///     nc::LINUX_REBOOT_CMD_RESTART, 0);
+/// let ret = unsafe {
+///     nc::reboot(
+///         nc::LINUX_REBOOT_MAGIC1,
+///         nc::LINUX_REBOOT_MAGIC2,
+///         nc::LINUX_REBOOT_CMD_RESTART,
+///         0
+///     )
+/// };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -4171,26 +4609,32 @@ pub unsafe fn remap_file_pages(
 
 /// Remove an extended attribute.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-removexattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// let ret = nc::removexattr(path, attr_name);
+/// let ret = unsafe { nc::removexattr(path, attr_name) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -4202,16 +4646,20 @@ pub unsafe fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Er
 
 /// Change name or location of a file.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-renameat";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// let new_path = "/tmp/nc-renameat-new";
-/// let ret = nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path);
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
+/// let new_path = "/tmp/nc-renameat-new";
+/// let ret = unsafe { nc::renameat(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, new_path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn renameat<P: AsRef<Path>>(
     olddfd: i32,
@@ -4237,17 +4685,21 @@ pub unsafe fn renameat<P: AsRef<Path>>(
 
 /// Change name or location of a file.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-renameat2";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let new_path = "/tmp/nc-renameat2-new";
 /// let flags = nc::RENAME_NOREPLACE;
-/// let ret = nc::renameat2(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path, flags);
+/// let ret = unsafe { nc::renameat2(nc::AT_FDCWD, path, nc::AT_FDCWD, new_path, flags) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, new_path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, new_path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn renameat2<P: AsRef<Path>>(
     olddfd: i32,
@@ -4314,6 +4766,8 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
 
 /// Examine and change a signal action.
 ///
+/// # example
+///
 /// ```
 /// use std::mem::size_of;
 ///
@@ -4327,8 +4781,8 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
 ///     ..nc::sigaction_t::default()
 /// };
 /// let mut old_sa = nc::sigaction_t::default();
-/// let ret = nc::rt_sigaction(nc::SIGTERM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
-/// let ret = nc::kill(nc::getpid(), nc::SIGTERM);
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::kill(nc::getpid(), nc::SIGTERM) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn rt_sigaction(
@@ -4424,6 +4878,8 @@ pub unsafe fn rt_tgsigqueueinfo(
 
 /// Get a thread's CPU affinity mask.
 ///
+/// # Example
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -4431,7 +4887,7 @@ pub unsafe fn rt_tgsigqueueinfo(
 /// #[repr(C)]
 /// #[derive(Debug, Clone, Copy, PartialEq)]
 /// struct CPUSet {
-///     pub unsafe bits: [usize; SET_BITS],
+///     pub bits: [usize; SET_BITS],
 /// }
 ///
 /// impl Default for CPUSet {
@@ -4444,16 +4900,16 @@ pub unsafe fn rt_tgsigqueueinfo(
 ///
 /// impl CPUSet {
 ///     #[inline]
-///     pub unsafe const fn size() -> usize {
+///     pub const fn size() -> usize {
 ///         SET_BITS * size_of::<usize>()
 ///     }
 ///
 ///     #[inline]
-///     pub unsafe const fn bits_size() -> usize {
+///     pub const fn bits_size() -> usize {
 ///         CPUSet::size() * 8
 ///     }
 ///
-///     pub unsafe fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4462,7 +4918,7 @@ pub unsafe fn rt_tgsigqueueinfo(
 ///         Ok(())
 ///     }
 ///
-///     pub unsafe fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4471,7 +4927,7 @@ pub unsafe fn rt_tgsigqueueinfo(
 ///         Ok(())
 ///     }
 ///
-///     pub unsafe fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
+///     pub fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4481,11 +4937,11 @@ pub unsafe fn rt_tgsigqueueinfo(
 ///         Ok(ret != 0)
 ///     }
 ///
-///     pub unsafe fn as_ptr(&self) -> &[usize] {
+///     pub fn as_ptr(&self) -> &[usize] {
 ///         &self.bits
 ///     }
 ///
-///     pub unsafe fn as_mut_ptr(&mut self) -> &mut [usize] {
+///     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
 ///         &mut self.bits
 ///     }
 /// }
@@ -4498,11 +4954,11 @@ pub unsafe fn rt_tgsigqueueinfo(
 ///     assert!(set.clear(2).is_ok());
 ///     println!("set(2): {:?}", set.is_set(2));
 ///
-///     let ret = nc::sched_setaffinity(0, CPUSet::size(), set.as_ptr());
+///     let ret = unsafe { nc::sched_setaffinity(0, CPUSet::size(), set.as_ptr()) };
 ///     assert!(ret.is_ok());
 ///
 ///     let mut set2 = CPUSet::default();
-///     let ret = nc::sched_getaffinity(0, CPUSet::size(), set2.as_mut_ptr());
+///     let ret = unsafe { nc::sched_getaffinity(0, CPUSet::size(), set2.as_mut_ptr()) };
 ///     assert!(ret.is_ok());
 ///     assert_eq!(set, set2);
 /// }
@@ -4533,9 +4989,11 @@ pub unsafe fn sched_getattr(
 
 /// Get scheduling paramters.
 ///
+/// # Example
+///
 /// ```
 /// let mut param = nc::sched_param_t::default();
-/// let ret = nc::sched_getparam(0, &mut param);
+/// let ret = unsafe { nc::sched_getparam(0, &mut param) };
 /// assert!(ret.is_ok());
 /// assert_eq!(param.sched_priority, 0);
 /// ```
@@ -4547,8 +5005,10 @@ pub unsafe fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<()
 
 /// Get scheduling parameter.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::sched_getscheduler(0);
+/// let ret = unsafe { nc::sched_getscheduler(0) };
 /// assert_eq!(ret, Ok(nc::SCHED_NORMAL));
 /// ```
 pub unsafe fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
@@ -4558,8 +5018,10 @@ pub unsafe fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
 
 /// Get static priority max value.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::sched_get_priority_max(nc::SCHED_RR);
+/// let ret = unsafe { nc::sched_get_priority_max(nc::SCHED_RR) };
 /// assert!(ret.is_ok());
 /// let max_prio = ret.unwrap();
 /// assert_eq!(max_prio, 99);
@@ -4571,8 +5033,10 @@ pub unsafe fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
 
 /// Get static priority min value.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::sched_get_priority_min(nc::SCHED_RR);
+/// let ret = unsafe { nc::sched_get_priority_min(nc::SCHED_RR) };
 /// assert!(ret.is_ok());
 /// let min_prio = ret.unwrap();
 /// assert_eq!(min_prio, 1);
@@ -4584,9 +5048,11 @@ pub unsafe fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
 
 /// Get the SCHED_RR interval for the named process.
 ///
+/// # Example
+///
 /// ```
 /// let mut ts = nc::timespec_t::default();
-/// let ret = nc::sched_rr_get_interval(0, &mut ts);
+/// let ret = unsafe { nc::sched_rr_get_interval(0, &mut ts) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<(), Errno> {
@@ -4597,6 +5063,8 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 
 /// Set a thread's CPU affinity mask.
 ///
+/// # Example
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -4604,7 +5072,7 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 /// #[repr(C)]
 /// #[derive(Debug, Clone, Copy, PartialEq)]
 /// struct CPUSet {
-///     pub unsafe bits: [usize; SET_BITS],
+///     pub bits: [usize; SET_BITS],
 /// }
 ///
 /// impl Default for CPUSet {
@@ -4617,16 +5085,16 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 ///
 /// impl CPUSet {
 ///     #[inline]
-///     pub unsafe const fn size() -> usize {
+///     pub const fn size() -> usize {
 ///         SET_BITS * size_of::<usize>()
 ///     }
 ///
 ///     #[inline]
-///     pub unsafe const fn bits_size() -> usize {
+///     pub const fn bits_size() -> usize {
 ///         CPUSet::size() * 8
 ///     }
 ///
-///     pub unsafe fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub fn set(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4635,7 +5103,7 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 ///         Ok(())
 ///     }
 ///
-///     pub unsafe fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
+///     pub fn clear(&mut self, pos: usize) -> Result<(), nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4644,7 +5112,7 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 ///         Ok(())
 ///     }
 ///
-///     pub unsafe fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
+///     pub fn is_set(&self, pos: usize) -> Result<bool, nc::Errno> {
 ///         if pos >= CPUSet::bits_size() {
 ///             return Err(nc::EINVAL);
 ///         }
@@ -4654,11 +5122,11 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 ///         Ok(ret != 0)
 ///     }
 ///
-///     pub unsafe fn as_ptr(&self) -> &[usize] {
+///     pub fn as_ptr(&self) -> &[usize] {
 ///         &self.bits
 ///     }
 ///
-///     pub unsafe fn as_mut_ptr(&mut self) -> &mut [usize] {
+///     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
 ///         &mut self.bits
 ///     }
 /// }
@@ -4671,11 +5139,11 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 ///     assert!(set.clear(2).is_ok());
 ///     println!("set(2): {:?}", set.is_set(2));
 ///
-///     let ret = nc::sched_setaffinity(0, CPUSet::size(), set.as_ptr());
+///     let ret = unsafe { nc::sched_setaffinity(0, CPUSet::size(), set.as_ptr()) };
 ///     assert!(ret.is_ok());
 ///
 ///     let mut set2 = CPUSet::default();
-///     let ret = nc::sched_getaffinity(0, CPUSet::size(), set2.as_mut_ptr());
+///     let ret = unsafe { nc::sched_getaffinity(0, CPUSet::size(), set2.as_mut_ptr()) };
 ///     assert!(ret.is_ok());
 ///     assert_eq!(set, set2);
 /// }
@@ -4696,12 +5164,14 @@ pub unsafe fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> 
 
 /// Set scheduling paramters.
 ///
+/// # Example
+///
 /// ```
 /// // This call always returns error because default scheduler is SCHED_NORMAL.
 /// // We shall call sched_setscheduler() and change to realtime policy
 /// // like SCHED_RR or SCHED_FIFO.
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };
-/// let ret = nc::sched_setparam(0, &sched_param);
+/// let ret = unsafe { nc::sched_setparam(0, &sched_param) };
 /// assert_eq!(ret, Err(nc::EINVAL));
 /// ```
 pub unsafe fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
@@ -4712,9 +5182,11 @@ pub unsafe fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Er
 
 /// Set scheduling parameter.
 ///
+/// # Example
+///
 /// ```
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };
-/// let ret = nc::sched_setscheduler(0, nc::SCHED_RR, &sched_param);
+/// let ret = unsafe { nc::sched_setscheduler(0, nc::SCHED_RR, &sched_param) };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn sched_setscheduler(
@@ -4730,8 +5202,11 @@ pub unsafe fn sched_setscheduler(
 
 /// Yield the processor.
 ///
+/// # Example
+///
 /// ```
-/// assert!(nc::sched_yield().is_ok());
+/// let ret = unsafe { nc::sched_yield() };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn sched_yield() -> Result<(), Errno> {
     syscall0(SYS_SCHED_YIELD).map(drop)
@@ -4841,9 +5316,11 @@ pub unsafe fn sendto(
 
 /// Set NIS domain name.
 ///
+/// # Example
+///
 /// ```
 /// let name = "local-rust-domain";
-/// let ret = nc::setdomainname(name);
+/// let ret = unsafe { nc::setdomainname(name) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -4856,10 +5333,13 @@ pub unsafe fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 
 /// Set group identify used for filesystem checkes.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setfsgid(0);
+/// let ret = unsafe { nc::setfsgid(0) };
 /// assert!(ret.is_ok());
-/// assert_eq!(ret, Ok(nc::getgid()));
+/// let gid = unsafe { nc::getgid() };
+/// assert_eq!(ret, Ok(gid));
 /// ```
 pub unsafe fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
     let fsgid = fsgid as usize;
@@ -4868,10 +5348,13 @@ pub unsafe fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
 
 /// Set user identify used for filesystem checkes.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setfsuid(0);
+/// let ret = unsafe { nc::setfsuid(0) };
 /// assert!(ret.is_ok());
-/// assert_eq!(ret, Ok(nc::getuid()));
+/// let uid = unsafe { nc::getuid() };
+/// assert_eq!(ret, Ok(uid));
 /// ```
 pub unsafe fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
     let fsuid = fsuid as usize;
@@ -4880,8 +5363,10 @@ pub unsafe fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
 
 /// Set the group ID of the calling process to `gid`.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setgid(0);
+/// let ret = unsafe { nc::setgid(0) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -4892,9 +5377,11 @@ pub unsafe fn setgid(gid: gid_t) -> Result<(), Errno> {
 
 /// Set list of supplementary group Ids.
 ///
+/// # Example
+///
 /// ```
 /// let list = [0, 1, 2];
-/// let ret = nc::setgroups(&list);
+/// let ret = unsafe { nc::setgroups(&list) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -4906,9 +5393,11 @@ pub unsafe fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
 
 /// Set hostname.
 ///
+/// # Example
+///
 /// ```
 /// let name = "rust-machine";
-/// let ret = nc::sethostname(name);
+/// let ret = unsafe { nc::sethostname(name) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -4921,13 +5410,15 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 
 /// Set value of an interval timer.
 ///
+/// # Example
+///
 /// ```
 /// use core::mem::size_of;
 ///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 ///     let msg = "Hello alarm";
-///     let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
+///     let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
 /// }
 ///
 /// let sa = nc::sigaction_t {
@@ -4936,7 +5427,7 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///     ..nc::sigaction_t::default()
 /// };
 /// let mut old_sa = nc::sigaction_t::default();
-/// let ret = nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
 /// assert!(ret.is_ok());
 ///
 /// // Single shot timer, actived after 1 second.
@@ -4951,17 +5442,17 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///     },
 /// };
 /// let mut prev_itv = nc::itimerval_t::default();
-/// let ret = nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv);
+/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let ret = nc::util::pause();
 /// assert_eq!(ret, Err(nc::EINTR));
 ///
-/// let ret = nc::getitimer(nc::ITIMER_REAL, &mut prev_itv);
+/// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
 /// assert_eq!(prev_itv.it_value.tv_sec, 0);
 /// assert_eq!(prev_itv.it_value.tv_usec, 0);
@@ -4986,8 +5477,10 @@ pub unsafe fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setpgid(nc::getpid(), 1);
+/// let ret = unsafe { nc::setpgid(nc::getpid(), 1) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -4999,8 +5492,10 @@ pub unsafe fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
 
 /// Set program scheduling priority.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19);
+/// let ret = unsafe { nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EACCES))
 /// ```
@@ -5013,8 +5508,10 @@ pub unsafe fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> 
 
 /// Set real and effective group IDs of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setregid(0, 0);
+/// let ret = unsafe { nc::setregid(0, 0) };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
@@ -5025,8 +5522,10 @@ pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
 
 /// Set real, effective and saved group Ids of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setresgid(0, 0, 0);
+/// let ret = unsafe { nc::setresgid(0, 0, 0) };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Errno> {
@@ -5038,8 +5537,10 @@ pub unsafe fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Err
 
 /// Set real, effective and saved user Ids of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setresuid(0, 0, 0);
+/// let ret = unsafe { nc::setresuid(0, 0, 0) };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Errno> {
@@ -5051,8 +5552,10 @@ pub unsafe fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Err
 
 /// Set real and effective user IDs of the calling process.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setreuid(0, 0);
+/// let ret = unsafe { nc::setreuid(0, 0) };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
@@ -5063,12 +5566,14 @@ pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 
 /// Set resource limit.
 ///
+/// # Example
+///
 /// ```
 /// let rlimit = nc::rlimit_t {
 ///     rlim_cur: 128,
 ///     rlim_max: 128,
 /// };
-/// let ret = nc::setrlimit(nc::RLIMIT_NOFILE, &rlimit);
+/// let ret = unsafe { nc::setrlimit(nc::RLIMIT_NOFILE, &rlimit) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
@@ -5079,10 +5584,13 @@ pub unsafe fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
 
 /// Create a new session if the calling process is not a process group leader.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setsid();
+/// let ret = unsafe { nc::setsid() };
 /// assert!(ret.is_ok());
-/// assert_eq!(ret, Ok(nc::getpid()));
+/// let pid = unsafe { nc::getpid() };
+/// assert_eq!(ret, Ok(pid));
 /// ```
 pub unsafe fn setsid() -> Result<pid_t, Errno> {
     syscall0(SYS_SETSID).map(|ret| ret as pid_t)
@@ -5090,23 +5598,28 @@ pub unsafe fn setsid() -> Result<pid_t, Errno> {
 
 /// Set options on sockets.
 ///
+/// # Example
+///
 /// ```
-/// let socket_fd = nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0);
+/// let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) };
 /// assert!(socket_fd.is_ok());
 /// let socket_fd = socket_fd.unwrap();
 ///
 /// // Enable tcp fast open.
 /// let queue_len: i32 = 5;
 /// let queue_len_ptr = &queue_len as *const i32 as usize;
-/// let ret = nc::setsockopt(
-///     socket_fd,
-///     nc::IPPROTO_TCP,
-///     nc::TCP_FASTOPEN,
-///     queue_len_ptr,
-///     std::mem::size_of_val(&queue_len) as u32,
-/// );
+/// let ret = unsafe {
+///     nc::setsockopt(
+///         socket_fd,
+///         nc::IPPROTO_TCP,
+///         nc::TCP_FASTOPEN,
+///         queue_len_ptr,
+///         std::mem::size_of_val(&queue_len) as u32,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(socket_fd).is_ok());
+/// let ret = unsafe { nc::close(socket_fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn setsockopt(
     sockfd: i32,
@@ -5130,7 +5643,7 @@ pub unsafe fn setsockopt(
 ///     tv_usec: 0,
 /// };
 /// let tz = nc::timezone_t::default();
-/// let ret = nc::settimeofday(&tv, &tz);
+/// let ret = unsafe { nc::settimeofday(&tv, &tz) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -5142,8 +5655,10 @@ pub unsafe fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), E
 
 /// Set the effective user ID of the calling process to `uid`.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::setuid(0);
+/// let ret = unsafe { nc::setuid(0) };
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
@@ -5153,25 +5668,31 @@ pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
 
 /// Set extended attribute value.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-setxattr";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let attr_name = "user.creator";
 /// let attr_value = "nc-0.0.1";
 /// //let flags = 0;
 /// let flags = nc::XATTR_CREATE;
-/// let ret = nc::setxattr(
-///     path,
-///     &attr_name,
-///     attr_value.as_ptr() as usize,
-///     attr_value.len(),
-///     flags,
-/// );
+/// let ret = unsafe {
+///     nc::setxattr(
+///         path,
+///         &attr_name,
+///         attr_value.as_ptr() as usize,
+///         attr_value.len(),
+///         flags,
+///     )
+/// };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn setxattr<P: AsRef<Path>>(
     filename: P,
@@ -5211,26 +5732,28 @@ pub unsafe fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
 
 /// Attach the System V shared memory segment.
 ///
+/// # Example
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
-/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// let ret = unsafe { nc::shmget(nc::IPC_PRIVATE, size, flags) };
 /// assert!(ret.is_ok());
 /// let shmid = ret.unwrap();
 ///
 /// let addr: usize = 0;
-/// let ret = nc::shmat(shmid, addr, 0);
+/// let ret = unsafe { nc::shmat(shmid, addr, 0) };
 /// assert!(ret.is_ok());
 /// let addr = ret.unwrap();
 ///
 /// let mut buf = nc::shmid_ds_t::default();
-/// let ret = nc::shmctl(shmid, nc::IPC_STAT, &mut buf);
+/// let ret = unsafe { nc::shmctl(shmid, nc::IPC_STAT, &mut buf) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::shmdt(addr);
+/// let ret = unsafe { nc::shmdt(addr) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// let ret = unsafe { nc::shmctl(shmid, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Errno> {
@@ -5241,14 +5764,16 @@ pub unsafe fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Er
 
 /// System V shared memory control.
 ///
+/// # Example
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
-/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// let ret = unsafe { nc::shmget(nc::IPC_PRIVATE, size, flags) };
 /// assert!(ret.is_ok());
 /// let shmid = ret.unwrap();
 /// let mut buf = nc::shmid_ds_t::default();
-/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// let ret = unsafe { nc::shmctl(shmid, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
@@ -5260,26 +5785,28 @@ pub unsafe fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, 
 
 /// Detach the System V shared memory segment.
 ///
+/// # Example
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
-/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// let ret = unsafe { nc::shmget(nc::IPC_PRIVATE, size, flags) };
 /// assert!(ret.is_ok());
 /// let shmid = ret.unwrap();
 ///
 /// let addr: usize = 0;
-/// let ret = nc::shmat(shmid, addr, 0);
+/// let ret = unsafe { nc::shmat(shmid, addr, 0) };
 /// assert!(ret.is_ok());
 /// let addr = ret.unwrap();
 ///
 /// let mut buf = nc::shmid_ds_t::default();
-/// let ret = nc::shmctl(shmid, nc::IPC_STAT, &mut buf);
+/// let ret = unsafe { nc::shmctl(shmid, nc::IPC_STAT, &mut buf) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::shmdt(addr);
+/// let ret = unsafe { nc::shmdt(addr) };
 /// assert!(ret.is_ok());
 ///
-/// let ret = nc::shmctl(shmid, nc::IPC_RMID, &mut buf);
+/// let ret = unsafe { nc::shmctl(shmid, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn shmdt(shmaddr: usize) -> Result<(), Errno> {
@@ -5288,10 +5815,12 @@ pub unsafe fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 
 /// Allocates a System V shared memory segment.
 ///
+/// # Example
+///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
 /// let flags = nc::IPC_CREAT | nc::IPC_EXCL | 0o600;
-/// let ret = nc::shmget(nc::IPC_PRIVATE, size, flags);
+/// let ret = unsafe { nc::shmget(nc::IPC_PRIVATE, size, flags) };
 /// assert!(ret.is_ok());
 /// let _shmid = ret.unwrap();
 /// ```
@@ -5327,11 +5856,14 @@ pub unsafe fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, E
 
 /// Create an endpoint for communication.
 ///
+/// # Example
+///
 /// ```
-/// let socket_fd = nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0);
+/// let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) };
 /// assert!(socket_fd.is_ok());
 /// let socket_fd = socket_fd.unwrap();
-/// assert!(nc::close(socket_fd).is_ok());
+/// let ret = unsafe { nc::close(socket_fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn socket(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> {
     let domain = domain as usize;
@@ -5356,34 +5888,38 @@ pub unsafe fn socketpair(
 
 /// Splice data to/from pipe.
 ///
+/// # Example
+///
 /// ```
 /// let mut fds_left = [0, 0];
-/// let ret = nc::pipe2(&mut fds_left, 0);
+/// let ret = unsafe { nc::pipe2(&mut fds_left, 0) };
 /// assert!(ret.is_ok());
 ///
 /// let mut fds_right = [0, 0];
-/// let ret = nc::pipe2(&mut fds_right, 0);
+/// let ret = unsafe { nc::pipe2(&mut fds_right, 0) };
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = nc::write(fds_left[1], msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fds_left[1], msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_write, msg.len());
 ///
-/// let ret = nc::splice(
-///     fds_left[0],
-///     None,
-///     fds_right[1],
-///     None,
-///     n_write,
-///     nc::SPLICE_F_MOVE,
-/// );
+/// let ret = unsafe {
+///     nc::splice(
+///         fds_left[0],
+///         None,
+///         fds_right[1],
+///         None,
+///         n_write,
+///         nc::SPLICE_F_MOVE,
+///     )
+/// };
 /// assert!(ret.is_ok());
 ///
 /// let mut buf = [0u8; 64];
 /// let buf_len = buf.len();
-/// let ret = nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_read, n_write);
@@ -5391,10 +5927,12 @@ pub unsafe fn socketpair(
 /// assert!(read_msg.is_ok());
 /// assert_eq!(Ok(msg), read_msg);
 ///
-/// assert!(nc::close(fds_left[0]).is_ok());
-/// assert!(nc::close(fds_left[1]).is_ok());
-/// assert!(nc::close(fds_right[0]).is_ok());
-/// assert!(nc::close(fds_right[1]).is_ok());
+/// unsafe {
+///     assert!(nc::close(fds_left[0]).is_ok());
+///     assert!(nc::close(fds_left[1]).is_ok());
+///     assert!(nc::close(fds_right[0]).is_ok());
+///     assert!(nc::close(fds_right[1]).is_ok());
+/// }
 /// ```
 pub unsafe fn splice(
     fd_in: i32,
@@ -5432,10 +5970,12 @@ pub unsafe fn splice(
 
 /// Get filesystem statistics.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/usr";
 /// let mut statfs = nc::statfs_t::default();
-/// let ret = nc::statfs(path, &mut statfs);
+/// let ret = unsafe { nc::statfs(path, &mut statfs) };
 /// assert!(ret.is_ok());
 /// assert!(statfs.f_bfree > 0);
 /// assert!(statfs.f_bavail > 0);
@@ -5449,10 +5989,12 @@ pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<
 
 /// Get file status about a file (extended).
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
 /// let mut statx = nc::statx_t::default();
-/// let ret = nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx);
+/// let ret = unsafe { nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
 /// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
@@ -5475,9 +6017,11 @@ pub unsafe fn statx<P: AsRef<Path>>(
 
 /// Stop swapping to file/device.
 ///
+/// # Example
+///
 /// ```
 /// let filename = "/dev/sda-no-exist";
-/// let ret = nc::swapoff(filename);
+/// let ret = unsafe { nc::swapoff(filename) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -5489,9 +6033,11 @@ pub unsafe fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 
 /// Start swapping to file/device.
 ///
+/// # Example
+///
 /// ```
 /// let filename = "/dev/sda-no-exist";
-/// let ret = nc::swapon(filename, nc::SWAP_FLAG_PREFER);
+/// let ret = unsafe { nc::swapon(filename, nc::SWAP_FLAG_PREFER) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
@@ -5504,12 +6050,15 @@ pub unsafe fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errn
 
 /// Make a new name for a file.
 ///
+/// # Example
+///
 /// ```
 /// let oldname = "/etc/passwd";
 /// let newname = "/tmp/nc-symlinkat";
-/// let ret = nc::symlinkat(oldname, nc::AT_FDCWD, newname);
+/// let ret = unsafe { nc::symlinkat(oldname, nc::AT_FDCWD, newname) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, newname, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, newname, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn symlinkat<P: AsRef<Path>>(
     oldname: P,
@@ -5526,8 +6075,11 @@ pub unsafe fn symlinkat<P: AsRef<Path>>(
 
 /// Commit filesystem caches to disk.
 ///
+/// # Example
+///
 /// ```
-/// assert!(nc::sync().is_ok());
+/// let ret = unsafe { nc::sync() };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn sync() -> Result<(), Errno> {
     syscall0(SYS_SYNC).map(drop)
@@ -5535,14 +6087,17 @@ pub unsafe fn sync() -> Result<(), Errno> {
 
 /// Commit filesystem cache related to `fd` to disk.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::syncfs(fd);
+/// let ret = unsafe {nc::syncfs(fd) };
 /// assert!(ret.is_ok());
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn syncfs(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
@@ -5551,30 +6106,36 @@ pub unsafe fn syncfs(fd: i32) -> Result<(), Errno> {
 
 /// Sync a file segment to disk
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-sync-file-range";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
 /// let msg = "Hello, Rust";
-/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap();
 /// assert_eq!(n_write, msg.len() as nc::ssize_t);
 ///
-/// let ret = nc::sync_file_range(
-///     fd,
-///     0,
-///     n_write,
-///     nc::SYNC_FILE_RANGE_WAIT_BEFORE
+/// let ret = unsafe {
+///     nc::sync_file_range(
+///         fd,
+///         0,
+///         n_write,
+///         nc::SYNC_FILE_RANGE_WAIT_BEFORE
 ///         | nc::SYNC_FILE_RANGE_WRITE
 ///         | nc::SYNC_FILE_RANGE_WAIT_AFTER,
-/// );
+///     )
+/// };
 /// assert!(ret.is_ok());
 ///
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn sync_file_range(
     fd: i32,
@@ -5591,9 +6152,11 @@ pub unsafe fn sync_file_range(
 
 /// Return system information.
 ///
+/// # Example
+///
 /// ```
 /// let mut info = nc::sysinfo_t::default();
-/// let ret = nc::sysinfo(&mut info);
+/// let ret = unsafe { nc::sysinfo(&mut info) };
 /// assert!(ret.is_ok());
 /// assert!(info.uptime > 0);
 /// assert!(info.freeram > 0);
@@ -5613,27 +6176,29 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 
 /// Duplicate pipe content.
 ///
+/// # Example
+///
 /// ```
 /// let mut fds_left = [0, 0];
-/// let ret = nc::pipe2(&mut fds_left, 0);
+/// let ret = unsafe { nc::pipe2(&mut fds_left, 0) };
 /// assert!(ret.is_ok());
 ///
 /// let mut fds_right = [0, 0];
-/// let ret = nc::pipe2(&mut fds_right, 0);
+/// let ret = unsafe { nc::pipe2(&mut fds_right, 0) };
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = nc::write(fds_left[1], msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fds_left[1], msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_write, msg.len());
 ///
-/// let ret = nc::tee(fds_left[0], fds_right[1], n_write, nc::SPLICE_F_NONBLOCK);
+/// let ret = unsafe { nc::tee(fds_left[0], fds_right[1], n_write, nc::SPLICE_F_NONBLOCK) };
 /// assert!(ret.is_ok());
 ///
 /// let mut buf = [0u8; 64];
 /// let buf_len = buf.len();
-/// let ret = nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len);
+/// let ret = unsafe { nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_read, n_write);
@@ -5641,10 +6206,12 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 /// assert!(read_msg.is_ok());
 /// assert_eq!(Ok(msg), read_msg);
 ///
-/// assert!(nc::close(fds_left[0]).is_ok());
-/// assert!(nc::close(fds_left[1]).is_ok());
-/// assert!(nc::close(fds_right[0]).is_ok());
-/// assert!(nc::close(fds_right[1]).is_ok());
+/// unsafe {
+///     assert!(nc::close(fds_left[0]).is_ok());
+///     assert!(nc::close(fds_left[1]).is_ok());
+///     assert!(nc::close(fds_right[0]).is_ok());
+///     assert!(nc::close(fds_right[1]).is_ok());
+/// }
 /// ```
 pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
@@ -5656,15 +6223,17 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
 
 /// Send a signal to a thread.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::fork();
+/// let ret = unsafe { nc::fork() };
 /// assert!(ret.is_ok());
 /// let pid = ret.unwrap();
 /// if pid == 0 {
-///     println!("[child] pid: {}", nc::getpid());
+///     println!("[child] pid: {}", unsafe { nc::getpid() });
 ///     let _ret = nc::util::pause();
 /// } else {
-///     let ret = nc::tgkill(pid, pid, nc::SIGTERM);
+///     let ret = unsafe { nc::tgkill(pid, pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -5677,11 +6246,14 @@ pub unsafe fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 
 /// Create a timer that notifies via a file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC);
+/// let ret = unsafe { nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
     let clockid = clockid as usize;
@@ -5698,8 +6270,10 @@ pub unsafe fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<
 
 /// Set current timer via a file descriptor.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC);
+/// let ret = unsafe { nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
@@ -5711,10 +6285,11 @@ pub unsafe fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<
 ///         tv_nsec: 0,
 ///     },
 /// };
-/// let ret = nc::timerfd_settime(fd, flags, &time, None);
+/// let ret = unsafe { nc::timerfd_settime(fd, flags, &time, None) };
 /// assert!(ret.is_ok());
 ///
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn timerfd_settime(
     ufd: i32,
@@ -5742,9 +6317,11 @@ pub unsafe fn timerfd_settime(
 
 /// Create a per-process timer
 ///
+/// # Example
+///
 /// ```
 /// let mut timerid = nc::timer_t::default();
-/// let ret = nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timerid);
+/// let ret = unsafe { nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timerid) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn timer_create(
@@ -5764,11 +6341,13 @@ pub unsafe fn timer_create(
 
 /// Delete a per-process timer
 ///
+/// # Example
+///
 /// ```
 /// let mut timer_id = nc::timer_t::default();
-/// let ret = nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timer_id);
+/// let ret = unsafe { nc::timer_create(nc::CLOCK_MONOTONIC, None, &mut timer_id) };
 /// assert!(ret.is_ok());
-/// let ret = nc::timer_delete(timer_id);
+/// let ret = unsafe { nc::timer_delete(timer_id) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
@@ -5777,6 +6356,8 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 }
 
 /// Get overrun count for a per-process timer.
+///
+/// # Example
 ///
 /// ```
 /// use core::mem::size_of;
@@ -5794,7 +6375,7 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {
@@ -5813,7 +6394,7 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///         sigev_un: nc::sigev_un_t::default(),
 ///     };
 ///     let mut timer_id = nc::timer_t::default();
-///     let ret = nc::timer_create(nc::CLOCK_MONOTONIC, Some(&mut ev), &mut timer_id);
+///     let ret = unsafe { nc::timer_create(nc::CLOCK_MONOTONIC, Some(&mut ev), &mut timer_id) };
 ///     assert!(ret.is_ok());
 ///     println!("timer id: {:?}", timer_id);
 ///
@@ -5825,22 +6406,22 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///             tv_nsec: 0,
 ///         },
 ///     };
-///     let ret = nc::timer_settime(timer_id, flags, &time, None);
+///     let ret = unsafe { nc::timer_settime(timer_id, flags, &time, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let mut cur_time = nc::itimerspec_t::default();
-///     let ret = nc::timer_gettime(timer_id, &mut cur_time);
+///     let ret = unsafe { nc::timer_gettime(timer_id, &mut cur_time) };
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let ret = nc::util::pause();
 ///     assert_eq!(ret, Err(nc::EINTR));
 ///
-///     let ret = nc::timer_getoverrun(timer_id);
+///     let ret = unsafe { nc::timer_getoverrun(timer_id) };
 ///     assert!(ret.is_ok());
 ///     assert_eq!(ret, Ok(0));
 ///
-///     let ret = nc::timer_delete(timer_id);
+///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -5851,6 +6432,8 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 
 /// Fetch state of per-process timer>
 ///
+/// # Example
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -5867,7 +6450,7 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {
@@ -5886,7 +6469,7 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///         sigev_un: nc::sigev_un_t::default(),
 ///     };
 ///     let mut timer_id = nc::timer_t::default();
-///     let ret = nc::timer_create(nc::CLOCK_MONOTONIC, Some(&mut ev), &mut timer_id);
+///     let ret = unsafe { nc::timer_create(nc::CLOCK_MONOTONIC, Some(&mut ev), &mut timer_id) };
 ///     assert!(ret.is_ok());
 ///     println!("timer id: {:?}", timer_id);
 ///
@@ -5898,18 +6481,18 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///             tv_nsec: 0,
 ///         },
 ///     };
-///     let ret = nc::timer_settime(timer_id, flags, &time, None);
+///     let ret = unsafe { nc::timer_settime(timer_id, flags, &time, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let mut cur_time = nc::itimerspec_t::default();
-///     let ret = nc::timer_gettime(timer_id, &mut cur_time);
+///     let ret = unsafe { nc::timer_gettime(timer_id, &mut cur_time) };
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let ret = nc::util::pause();
 ///     assert_eq!(ret, Err(nc::EINTR));
 ///
-///     let ret = nc::timer_delete(timer_id);
+///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -5921,6 +6504,8 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 
 /// Arm/disarm state of per-process timer.
 ///
+/// # Example
+///
 /// ```
 /// use core::mem::size_of;
 ///
@@ -5937,7 +6522,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>());
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {
@@ -5956,7 +6541,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///         sigev_un: nc::sigev_un_t::default(),
 ///     };
 ///     let mut timer_id = nc::timer_t::default();
-///     let ret = nc::timer_create(nc::CLOCK_MONOTONIC, Some(&mut ev), &mut timer_id);
+///     let ret = unsafe { nc::timer_create(nc::CLOCK_MONOTONIC, Some(&mut ev), &mut timer_id) };
 ///     assert!(ret.is_ok());
 ///     println!("timer id: {:?}", timer_id);
 ///
@@ -5968,18 +6553,18 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///             tv_nsec: 0,
 ///         },
 ///     };
-///     let ret = nc::timer_settime(timer_id, flags, &time, None);
+///     let ret = unsafe { nc::timer_settime(timer_id, flags, &time, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let mut cur_time = nc::itimerspec_t::default();
-///     let ret = nc::timer_gettime(timer_id, &mut cur_time);
+///     let ret = unsafe { nc::timer_gettime(timer_id, &mut cur_time) };
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let ret = nc::util::pause();
 ///     assert_eq!(ret, Err(nc::EINTR));
 ///
-///     let ret = nc::timer_delete(timer_id);
+///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -6009,9 +6594,11 @@ pub unsafe fn timer_settime(
 
 /// Get process times.
 ///
+/// # Example
+///
 /// ```
 /// let mut tms = nc::tms_t::default();
-/// let ret = nc::times(&mut tms);
+/// let ret = unsafe { nc::times(&mut tms) };
 /// assert!(ret.is_ok());
 /// let clock = ret.unwrap();
 /// assert!(clock > 0);
@@ -6023,15 +6610,17 @@ pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 
 /// Send a signal to a thread (obsolete).
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::fork();
+/// let ret = unsafe { nc::fork() };
 /// assert!(ret.is_ok());
 /// let pid = ret.unwrap();
 /// if pid == 0 {
-///     println!("[child] pid: {}", nc::getpid());
+///     println!("[child] pid: {}", unsafe { nc::getpid() });
 ///     let _ret = nc::util::pause();
 /// } else {
-///     let ret = nc::tkill(pid, nc::SIGTERM);
+///     let ret = unsafe { nc::tkill(pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }
 /// ```
@@ -6043,15 +6632,19 @@ pub unsafe fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 
 /// Truncate a file to a specified length.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-truncate";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
-/// let ret = nc::truncate(path, 64 * 1024);
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::truncate(path, 64 * 1024) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -6062,12 +6655,14 @@ pub unsafe fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(),
 
 /// Set file mode creation mask.
 ///
+/// # Example
+///
 /// ```
 /// let new_mask = 0o077;
-/// let ret = nc::umask(new_mask);
+/// let ret = unsafe { nc::umask(new_mask) };
 /// assert!(ret.is_ok());
 /// let old_mask = ret.unwrap();
-/// let ret = nc::umask(old_mask);
+/// let ret = unsafe { nc::umask(old_mask) };
 /// assert_eq!(ret, Ok(new_mask));
 /// ```
 pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
@@ -6077,25 +6672,28 @@ pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 
 /// Umount filesystem.
 ///
+/// # Example
+///
 /// ```
 /// let target_dir = "/tmp/nc-umount2";
-/// let ret = nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755);
+/// let ret = unsafe { nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755) };
 /// assert!(ret.is_ok());
 ///
 /// let src_dir = "/etc";
 /// let fs_type = "";
 /// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
 /// let data = 0;
-/// let ret = nc::mount(src_dir, target_dir, fs_type, mount_flags, data);
+/// let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
 /// let flags = 0;
-/// let ret = nc::umount2(target_dir, flags);
+/// let ret = unsafe { nc::umount2(target_dir, flags) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 ///
-/// assert!(nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
@@ -6106,9 +6704,11 @@ pub unsafe fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> 
 
 /// Get name and information about current kernel.
 ///
+/// # Example
+///
 /// ```
 /// let mut buf = nc::utsname_t::default();
-/// let ret = nc::uname(&mut buf);
+/// let ret = unsafe { nc::uname(&mut buf) };
 /// assert!(ret.is_ok());
 /// assert!(!buf.sysname.is_empty());
 /// assert!(!buf.machine.is_empty());
@@ -6120,15 +6720,20 @@ pub unsafe fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 
 /// Delete a name and possibly the file it refers to.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-unlinkat";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// // /tmp folder is not empty, so this call always returns error.
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR).is_err());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, nc::AT_REMOVEDIR) };
+/// assert!(ret.is_err());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Result<(), Errno> {
     let dfd = dfd as usize;
@@ -6152,12 +6757,15 @@ pub unsafe fn userfaultfd(flags: i32) -> Result<i32, Errno> {
 
 /// Change time timestamps with nanosecond precision.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-utimesat";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 /// let times = [
 ///     nc::timespec_t {
 ///         tv_sec: 100,
@@ -6169,9 +6777,10 @@ pub unsafe fn userfaultfd(flags: i32) -> Result<i32, Errno> {
 ///     },
 /// ];
 /// let flags = nc::AT_SYMLINK_NOFOLLOW;
-/// let ret = nc::utimensat(nc::AT_FDCWD, path, &times, flags);
+/// let ret = unsafe { nc::utimensat(nc::AT_FDCWD, path, &times, flags) };
 /// assert!(ret.is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn utimensat<P: AsRef<Path>>(
     dirfd: i32,
@@ -6207,18 +6816,20 @@ pub unsafe fn vmsplice(
 
 /// Wait for process to change state.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::fork();
+/// let ret = unsafe { nc::fork() };
 /// match ret {
 ///     Err(errno) => {
 ///         eprintln!("fork() error: {}", nc::strerror(errno));
-///         nc::exit(1);
+///         unsafe { nc::exit(1) };
 ///     }
-///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(0) => println!("[child] pid is: {}", unsafe { nc::getpid() }),
 ///     Ok(pid) => {
 ///         let mut status = 0;
 ///         let mut usage = nc::rusage_t::default();
-///         let ret = nc::wait4(-1, &mut status, 0, &mut usage);
+///         let ret = unsafe { nc::wait4(-1, &mut status, 0, &mut usage) };
 ///         assert!(ret.is_ok());
 ///         println!("status: {}", status);
 ///         let exited_pid = ret.unwrap();
@@ -6241,19 +6852,21 @@ pub unsafe fn wait4(
 
 /// Wait for process to change state.
 ///
+/// # Example
+///
 /// ```
-/// let ret = nc::fork();
+/// let ret = unsafe { nc::fork() };
 /// match ret {
 ///     Err(errno) => {
 ///         eprintln!("fork() error: {}", nc::strerror(errno));
-///         nc::exit(1);
+///         unsafe { nc::exit(1) };
 ///     }
-///     Ok(0) => println!("[child] pid is: {}", nc::getpid()),
+///     Ok(0) => println!("[child] pid is: {}", unsafe { nc::getpid() }),
 ///     Ok(pid) => {
 ///         let mut info = nc::siginfo_t::default();
 ///         let options = nc::WEXITED;
 ///         let mut usage = nc::rusage_t::default();
-///         let ret = nc::waitid(nc::P_ALL, -1, &mut info, options, &mut usage);
+///         let ret = unsafe { nc::waitid(nc::P_ALL, -1, &mut info, options, &mut usage) };
 ///         match ret {
 ///             Err(errno) => eprintln!("waitid() error: {}", nc::strerror(errno)),
 ///             Ok(()) => {
@@ -6281,17 +6894,21 @@ pub unsafe fn waitid(
 
 /// Write to a file descriptor.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/tmp/nc-write";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let msg = "Hello, Rust!";
-/// let ret = nc::write(fd, msg.as_ptr() as usize, msg.len());
+/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
@@ -6300,9 +6917,11 @@ pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, E
 
 /// Write to a file descriptor from multiple buffers.
 ///
+/// # Example
+///
 /// ```
 /// let path = "/etc/passwd";
-/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut buf = [[0_u8; 64]; 4];
@@ -6314,20 +6933,23 @@ pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, E
 ///         iov_base: item.as_ptr() as usize,
 ///     });
 /// }
-/// let ret = nc::readv(fd, &mut iov);
+/// let ret = unsafe { nc::readv(fd, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
 ///
 /// let path_out = "/tmp/nc-writev";
-/// let ret = nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644);
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = nc::writev(fd, &iov);
+/// let ret = unsafe { nc::writev(fd, &iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
-/// assert!(nc::close(fd).is_ok());
-/// assert!(nc::unlinkat(nc::AT_FDCWD, path_out, 0).is_ok());
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_out, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;

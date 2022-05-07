@@ -10,6 +10,7 @@ use crate::syscalls::*;
 use crate::sysno::*;
 use crate::types::*;
 
+/// Accept a connection on a socket.
 pub unsafe fn accept(
     sockfd: i32,
     addr: &mut sockaddr_in_t,

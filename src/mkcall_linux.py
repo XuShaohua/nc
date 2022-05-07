@@ -31,10 +31,6 @@ def parse_template():
             if line.startswith("pub unsafe fn"):
                 headers_end = True
                 new_func_start = True
-
-                # Remove comment of first syscall.
-                if headers[-1].startswith("///"):
-                    headers.pop()
             if not headers_end:
                 headers.append(line)
                 continue

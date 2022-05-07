@@ -7,8 +7,6 @@ use std::env;
 fn build_syscalls() {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
     let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
-    println!("syscall file: {}", syscall_file);
-
     cc::Build::new().file(syscall_file).compile("syscall");
 }
 

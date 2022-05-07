@@ -14,10 +14,10 @@ Execute system call directly without `std` or `libc`.
 - [Release notes](https://github.com/xushaohua/nc/releases)
 
 Features:
-- No libc required
+- No glibc or musl required
 - Access syscalls directly, via assembly
 - No global errno variable, every function returns an errno instead
-- Support latest kernel APIs, like io-uring and pidfd introduced in linux 5.0+
+- Support latest kernel APIs, like io-uring and pidfd, introduced in linux 5.0+
 
 ## Usage
 Add this to `Cargo.toml`:

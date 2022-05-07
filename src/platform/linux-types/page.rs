@@ -3,12 +3,11 @@
 // in the LICENSE file.
 
 //! From include/asm-generic/page.h
+//!
+//! Generic page.h implementation, for NOMMU architectures.
+//! This provides the dummy definitions for the memory management.
 
-/// Generic page.h implementation, for NOMMU architectures.
-/// This provides the dummy definitions for the memory management.
-
-/// PAGE_SHIFT determines the page size
-pub const PAGE_SHIFT: i32 = 12;
-pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;
+// PAGE_SIZE is defined in temp file.
+include!(concat!(env!("OUT_DIR"), "/page_size.rs"));
 pub const PAGE_MASK: usize = !(PAGE_SIZE - 1);
 pub const PAGE_OFFSET: usize = 0;

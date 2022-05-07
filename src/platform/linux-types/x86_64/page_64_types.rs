@@ -4,7 +4,7 @@
 
 //! From arch/x86/include/asm/page_64_types.h
 
-use super::page_types::PAGE_SIZE;
+use crate::types::page::PAGE_SIZE;
 
 //TODO(Shaohua): handles `#ifdef CONFIG_KASAN`
 pub const KASAN_STACK_ORDER: i32 = 1;

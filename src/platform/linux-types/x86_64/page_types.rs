@@ -5,10 +5,7 @@
 //! From arch/x86/include/asm/page_types.h
 
 use super::{PMD_SHIFT, PUD_SHIFT, __PAGE_OFFSET, __PHYSICAL_MASK_SHIFT};
-
-// PAGE_SIZE is defined in temp file.
-include!(concat!(env!("OUT_DIR"), "/page_size.rs"));
-pub const PAGE_MASK: usize = !(PAGE_SIZE - 1);
+use crate::types::page::PAGE_MASK;
 
 pub const PMD_PAGE_SIZE: usize = 1 << PMD_SHIFT;
 pub const PMD_PAGE_MASK: usize = !(PMD_PAGE_SIZE - 1);

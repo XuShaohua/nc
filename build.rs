@@ -3,11 +3,30 @@
 // in the LICENSE file.
 
 use std::env;
+use std::fs;
+use std::path::Path;
+use std::process::Command;
 
 fn build_syscalls() {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
     let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
     cc::Build::new().file(syscall_file).compile("syscall");
+}
+
+fn get_page_size() {
+    let output = Command::new("getconf")
+        .args(["PAGE_SIZE"])
+        .output()
+        .expect("Failed to run getconf");
+    let page_size_val = std::str::from_utf8(&output.stdout).unwrap();
+    let page_size_val = page_size_val.trim();
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let dest_path = Path::new(&out_dir).join("page_size.rs");
+    fs::write(
+        &dest_path,
+        format!("pub const PAGE_SIZE: usize = {};", page_size_val),
+    )
+    .unwrap();
 }
 
 fn main() {
@@ -17,4 +36,5 @@ fn main() {
     } else {
         build_syscalls();
     }
+    get_page_size();
 }

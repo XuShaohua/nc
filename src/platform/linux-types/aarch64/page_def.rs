@@ -4,10 +4,5 @@
 
 //! From arch/arm64/include/asm/page-def.h
 
-// TODO(Shaohua): Add build env to custom page shift.
-pub const CONFIG_ARM64_PAGE_SHIFT: usize = 12;
-
-/// PAGE_SHIFT determines the page size
-pub const PAGE_SHIFT: usize = CONFIG_ARM64_PAGE_SHIFT;
-pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;
-pub const PAGE_MASK: usize = !(PAGE_SIZE - 1);
+// PAGE_SIZE is defined in temp file.
+include!(concat!(env!("OUT_DIR"), "/page_size.rs"));

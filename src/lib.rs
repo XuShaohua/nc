@@ -11,7 +11,7 @@
 //! Add this to `Cargo.toml`:
 //! ```toml
 //! [dependencies]
-//! nc = "0.7"
+//! nc = "0.8"
 //! ```
 //!
 //! ## Examples

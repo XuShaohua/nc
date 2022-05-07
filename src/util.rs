@@ -4,7 +4,11 @@
 
 use alloc::collections::BTreeSet;
 
+use crate::Errno;
+
 pub type Syscalls = BTreeSet<String>;
+
+const K_ALL_SYMS: &str = "/proc/kallsyms";
 
 /// A simple wrapper to File IO.
 ///
@@ -36,9 +40,50 @@ impl Drop for File {
 }
 
 /// Check syscall name exists in current system.
-pub fn syscall_exists(name: &str) -> bool {
-    let list = read_syscall_list().unwrap();
-    list.contains(name)
+pub fn syscall_exists(name: &str) -> Result<bool, Errno> {
+    let file = File::open(K_ALL_SYMS)?;
+
+    const BUF_LEN: usize = 1024;
+    let mut buf = [0u8; BUF_LEN];
+    let mut line_str = Vec::with_capacity(BUF_LEN);
+    loop {
+        let buf_ptr = buf.as_mut_ptr() as usize;
+        let n_read = unsafe { crate::read(file.fd(), buf_ptr, BUF_LEN) };
+        match n_read {
+            Err(errno) => return Err(errno),
+            Ok(0) => break,
+            Ok(n) => {
+                let n = n as usize;
+                for byte in &buf[0..n] {
+                    if *byte != b'\n' {
+                        line_str.push(*byte);
+                        continue;
+                    }
+
+                    // Check this line
+                    let s = alloc::str::from_utf8(&line_str).map_err(|_| crate::EIO)?;
+                    let mut iter = s.split_ascii_whitespace();
+                    if iter.next().is_some() && iter.next() == Some("T") {
+                        if let Some(func_name) = iter.next() {
+                            if let Some(pos) = func_name.find("sys_") {
+                                if func_name.len() > pos + 4
+                                    && iter.next().is_none()
+                                    && &func_name[pos + 4..] == name
+                                {
+                                    return Ok(true);
+                                }
+                            }
+                        }
+                    }
+
+                    // Reset last line
+                    line_str.clear();
+                }
+            }
+        }
+    }
+
+    Ok(false)
 }
 
 fn parse_syscall_from_sym(s: &str) -> Option<String> {
@@ -56,9 +101,8 @@ fn parse_syscall_from_sym(s: &str) -> Option<String> {
 }
 
 /// Read syscall list from /proc.
-pub fn read_syscall_list() -> Result<Syscalls, crate::Errno> {
-    let path = "/proc/kallsyms";
-    let file = File::open(path)?;
+pub fn read_syscall_list() -> Result<Syscalls, Errno> {
+    let file = File::open(K_ALL_SYMS)?;
 
     let mut set = BTreeSet::new();
     const BUF_LEN: usize = 1024;
@@ -147,6 +191,6 @@ mod tests {
     #[test]
     fn test_syscall_exists() {
         let openat = "openat";
-        assert!(syscall_exists(openat));
+        assert_eq!(syscall_exists(openat), Ok(true));
     }
 }

@@ -527,17 +527,10 @@ pub unsafe fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 /// # Example
 ///
 /// ```
-/// let pid = unsafe { nc::fork() };
-/// assert!(pid.is_ok());
-/// let pid = pid.unwrap();
-/// assert!(pid >= 0);
-/// if pid == 0 {
-///     // child process
-///     let args = [""];
-///     let env = [""];
-///     let ret = unsafe { nc::execve("/bin/ls", &args, &env) };
-///     assert!(ret.is_ok());
-/// }
+/// let args = [""];
+/// let env = [""];
+/// let ret = unsafe { nc::execve("/bin/ls", &args, &env) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execve<P: AsRef<Path>>(
     filename: P,
@@ -553,23 +546,13 @@ pub unsafe fn execve<P: AsRef<Path>>(
 
 /// Execute a new program relative to a directory file descriptor.
 ///
-/// TODO(Shaohua): type of argv and env will be changed.
-/// And return value might be changed too.
-///
 /// # Example
 ///
 /// ```
-/// let pid = unsafe { nc::fork() };
-/// assert!(pid.is_ok());
-/// let pid = pid.unwrap();
-/// assert!(pid >= 0);
-/// if pid == 0 {
-///     // child process
-///     let args = [""];
-///     let env = [""];
-///     let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0) };
-///     assert!(ret.is_ok());
-/// }
+/// let args = [""];
+/// let env = [""];
+/// let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execveat<P: AsRef<Path>>(
     fd: i32,
@@ -578,6 +561,9 @@ pub unsafe fn execveat<P: AsRef<Path>>(
     env: &[&str],
     flags: i32,
 ) -> Result<(), Errno> {
+    // TODO(Shaohua): type of argv and env will be changed.
+    // And return value might be changed too.
+
     // FIXME(Shaohua): Convert into CString first.
     let fd = fd as usize;
     let filename = CString::new(filename.as_ref());

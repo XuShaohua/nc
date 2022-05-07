@@ -901,17 +901,10 @@ pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 /// # Example
 ///
 /// ```
-/// let pid = unsafe { nc::fork() };
-/// assert!(pid.is_ok());
-/// let pid = pid.unwrap();
-/// assert!(pid >= 0);
-/// if pid == 0 {
-///     // child process
-///     let args = [""];
-///     let env = [""];
-///     let ret = unsafe { nc::execve("/bin/ls", &args, &env) };
-///     assert!(ret.is_ok());
-/// }
+/// let args = [""];
+/// let env = [""];
+/// let ret = unsafe { nc::execve("/bin/ls", &args, &env) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execve<P: AsRef<Path>>(
     filename: P,

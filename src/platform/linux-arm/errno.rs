@@ -268,6 +268,7 @@ pub const ERFKILL: Errno = 132;
 pub const EHWPOISON: Errno = 133;
 
 /// Get errno description.
+#[must_use]
 pub fn strerror(errno: Errno) -> &'static str {
     match errno {
         EPERM => "Operation not permitted",

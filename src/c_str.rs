@@ -41,21 +41,21 @@ pub struct CStr {
 }
 
 impl CString {
-    pub fn new<T: Into<Vec<u8>>>(t: T) -> CString {
+    pub fn new<T: Into<Vec<u8>>>(t: T) -> Self {
         let mut v = t.into();
         v.reserve_exact(1);
         v.push(0);
-        CString {
+        Self {
             inner: v.into_boxed_slice(),
         }
     }
 
     #[must_use]
-    pub fn with_capacity(cap: usize) -> CString {
+    pub fn with_capacity(cap: usize) -> Self {
         let mut v: Vec<u8> = vec![0; cap];
         v.reserve_exact(1);
         v.push(0);
-        CString {
+        Self {
             inner: v.into_boxed_slice(),
         }
     }

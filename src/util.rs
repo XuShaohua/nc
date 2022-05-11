@@ -19,13 +19,13 @@ pub struct File {
 
 impl File {
     /// Open file readonly.
-    pub fn open(path: &str) -> Result<File, crate::Errno> {
+    pub fn open(path: &str) -> Result<Self, crate::Errno> {
         let fd: i32 = unsafe { crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0o600)? };
 
-        Ok(File { fd })
+        Ok(Self { fd })
     }
 
-    pub fn fd(&self) -> i32 {
+    pub const fn fd(&self) -> i32 {
         self.fd
     }
 }

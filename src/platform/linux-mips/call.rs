@@ -3872,27 +3872,16 @@ pub unsafe fn mq_getsetattr(
     old_attr: Option<&mut mq_attr_t>,
 ) -> Result<mqd_t, Errno> {
     let mqdes = mqdes as usize;
-    let new_attr_ptr = if let Some(new_attr) = new_attr {
-        new_attr as *mut mq_attr_t as usize
-    } else {
-        0
-    };
-    let old_attr_ptr = if let Some(old_attr) = old_attr {
-        old_attr as *mut mq_attr_t as usize
-    } else {
-        0
-    };
+    let new_attr_ptr = new_attr.map_or(0, |new_attr| new_attr as *mut mq_attr_t as usize);
+    let old_attr_ptr = old_attr.map_or(0, |old_attr| old_attr as *mut mq_attr_t as usize);
     syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)
 }
 
 /// Register for notification when a message is available
 pub unsafe fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
-    let notification_ptr = if let Some(notification) = notification {
-        notification as *const sigevent_t as usize
-    } else {
-        0
-    };
+    let notification_ptr =
+        notification.map_or(0, |notification| notification as *const sigevent_t as usize);
     syscall2(SYS_MQ_NOTIFY, mqdes, notification_ptr).map(drop)
 }
 
@@ -3927,11 +3916,7 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
     let name_ptr = name.as_ptr() as usize;
     let oflag = oflag as usize;
     let mode = mode as usize;
-    let attr_ptr = if let Some(attr) = attr {
-        attr as *mut mq_attr_t as usize
-    } else {
-        0
-    };
+    let attr_ptr = attr.map_or(0, |attr| attr as *mut mq_attr_t as usize);
     syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr).map(|ret| ret as mqd_t)
 }
 
@@ -4462,11 +4447,7 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
 /// ```
 pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
-    let rem_ptr = if let Some(rem) = rem {
-        rem as *mut timespec_t as usize
-    } else {
-        0
-    };
+    let rem_ptr = rem.map_or(0, |rem| rem as *mut timespec_t as usize);
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
@@ -5038,16 +5019,8 @@ pub unsafe fn prlimit64(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let resource = resource as usize;
-    let new_limit_ptr = if let Some(new_limit_ref) = new_limit {
-        new_limit_ref as *const rlimit64_t as usize
-    } else {
-        0
-    };
-    let old_limit_ptr = if let Some(old_limit_ref) = old_limit {
-        old_limit_ref as *mut rlimit64_t as usize
-    } else {
-        0
-    };
+    let new_limit_ptr = new_limit.map_or(0, |new_limit| new_limit as *const rlimit64_t as usize);
+    let old_limit_ptr = old_limit.map_or(0, |old_limit| old_limit as *mut rlimit64_t as usize);
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
@@ -7074,17 +7047,9 @@ pub unsafe fn splice(
     flags: u32,
 ) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
-    let off_in_ptr = if let Some(off_in) = off_in {
-        off_in as *mut loff_t as usize
-    } else {
-        0
-    };
+    let off_in_ptr = off_in.map_or(0, |off_in| off_in as *mut loff_t as usize);
     let fd_out = fd_out as usize;
-    let off_out_ptr = if let Some(off_out) = off_out {
-        off_out as *mut loff_t as usize
-    } else {
-        0
-    };
+    let off_out_ptr = off_out.map_or(0, |off_out| off_out as *mut loff_t as usize);
     let len = len as usize;
     let flags = flags as usize;
     syscall6(
@@ -7577,11 +7542,7 @@ pub unsafe fn timerfd_settime(
     let ufd = ufd as usize;
     let flags = flags as usize;
     let new_value_ptr = new_value as *const itimerspec_t as usize;
-    let old_value_ptr = if let Some(old_value) = old_value {
-        old_value as *mut itimerspec_t as usize
-    } else {
-        0
-    };
+    let old_value_ptr = old_value.map_or(0, |old_value| old_value as *mut itimerspec_t as usize);
     syscall4(
         SYS_TIMERFD_SETTIME,
         ufd,
@@ -7612,11 +7573,7 @@ pub unsafe fn timer_create(
     timer_id: &mut timer_t,
 ) -> Result<(), Errno> {
     let clock = clock as usize;
-    let event_ptr = if let Some(event) = event {
-        event as *mut sigevent_t as usize
-    } else {
-        0
-    };
+    let event_ptr = event.map_or(0, |event| event as *mut sigevent_t as usize);
     let timer_id_ptr = timer_id as *mut timer_t as usize;
     syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr).map(drop)
 }
@@ -7864,11 +7821,7 @@ pub unsafe fn timer_settime(
     let timer_id = timer_id as usize;
     let flags = flags as usize;
     let new_value_ptr = new_value as *const itimerspec_t as usize;
-    let old_value_ptr = if let Some(old_value) = old_value {
-        old_value as *mut itimerspec_t as usize
-    } else {
-        0
-    };
+    let old_value_ptr = old_value.map_or(0, |old_value| old_value as *mut itimerspec_t as usize);
     syscall4(
         SYS_TIMER_SETTIME,
         timer_id,

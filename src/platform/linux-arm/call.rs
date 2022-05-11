@@ -7376,7 +7376,7 @@ pub unsafe fn timer_create(
     let event_ptr = if let Some(event) = event {
         event as *mut sigevent_t as usize
     } else {
-        0 as usize
+        0
     };
     let timer_id_ptr = timer_id as *mut timer_t as usize;
     syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr).map(drop)
@@ -7628,7 +7628,7 @@ pub unsafe fn timer_settime(
     let old_value_ptr = if let Some(old_value) = old_value {
         old_value as *mut itimerspec_t as usize
     } else {
-        0 as usize
+        0
     };
     syscall4(
         SYS_TIMER_SETTIME,

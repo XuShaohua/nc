@@ -20,6 +20,11 @@ impl Path {
     pub fn len(&self) -> usize {
         self.internal.len()
     }
+
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.internal.is_empty()
+    }
 }
 
 impl AsRef<Path> for str {
@@ -36,9 +41,9 @@ impl AsRef<Path> for String {
     }
 }
 
-impl Into<Vec<u8>> for &Path {
-    fn into(self) -> Vec<u8> {
-        self.internal.to_vec()
+impl From<&Path> for Vec<u8> {
+    fn from(path: &Path) -> Vec<u8> {
+        path.internal.to_vec()
     }
 }
 

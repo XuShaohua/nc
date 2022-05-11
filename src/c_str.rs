@@ -28,7 +28,7 @@ pub fn strlen(buf: usize, len: usize) -> usize {
             return i;
         }
     }
-    return len;
+    len
 }
 
 pub struct CString {

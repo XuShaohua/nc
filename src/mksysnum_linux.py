@@ -115,6 +115,7 @@ def read_errno(arch_name):
     lines.append("""
     /// Get errno description.
     #[must_use]
+    #[allow(clippy::too_many_lines)]
     pub const fn strerror(errno: Errno) -> &'static str {
         match errno {
     """)

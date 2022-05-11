@@ -4,6 +4,10 @@
 
 // All the syscalls are treated as unsafe.
 #![allow(clippy::missing_safety_doc)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::cast_possible_wrap)]
+#![allow(clippy::cast_sign_loss)]
 
 extern crate alloc;
 

@@ -2,6 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::cast_sign_loss)]
+
 use alloc::collections::BTreeSet;
 
 use crate::Errno;
@@ -25,6 +28,7 @@ impl File {
         Ok(Self { fd })
     }
 
+    #[must_use]
     pub const fn fd(&self) -> i32 {
         self.fd
     }

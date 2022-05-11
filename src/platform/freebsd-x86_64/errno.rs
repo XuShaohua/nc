@@ -200,6 +200,8 @@ pub const EOWNERDEAD: Errno = 96;
 pub const EINTEGRITY: Errno = 97;
 
 /// Get errno description.
+#[allow(clippy::too_many_lines)]
+#[must_use]
 pub const fn strerror(errno: Errno) -> &'static str {
     match errno {
         EPERM => "Operation not permitted",

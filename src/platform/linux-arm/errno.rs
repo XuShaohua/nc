@@ -268,6 +268,7 @@ pub const ERFKILL: Errno = 132;
 pub const EHWPOISON: Errno = 133;
 
 /// Get errno description.
+#[allow(clippy::too_many_lines)]
 #[must_use]
 pub const fn strerror(errno: Errno) -> &'static str {
     match errno {

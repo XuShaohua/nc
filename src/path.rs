@@ -12,19 +12,19 @@ pub struct Path {
 
 impl Path {
     #[inline]
-    pub fn new<S: AsRef<[u8]> + ?Sized>(s: &S) -> &Path {
-        unsafe { &*(s.as_ref() as *const [u8] as *const Path) }
+    pub fn new<S: AsRef<[u8]> + ?Sized>(s: &S) -> &Self {
+        unsafe { &*(s.as_ref() as *const [u8] as *const Self) }
     }
 
     #[must_use]
     #[inline]
-    pub fn len(&self) -> usize {
+    pub const fn len(&self) -> usize {
         self.internal.len()
     }
 
     #[must_use]
     #[inline]
-    pub fn is_empty(&self) -> bool {
+    pub const fn is_empty(&self) -> bool {
         self.internal.is_empty()
     }
 }
@@ -44,7 +44,7 @@ impl AsRef<Path> for String {
 }
 
 impl From<&Path> for Vec<u8> {
-    fn from(path: &Path) -> Vec<u8> {
+    fn from(path: &Path) -> Self {
         path.internal.to_vec()
     }
 }

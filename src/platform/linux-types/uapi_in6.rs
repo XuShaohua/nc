@@ -30,7 +30,7 @@ impl fmt::Debug for in6_un_t {
 
 impl Default for in6_un_t {
     fn default() -> Self {
-        in6_un_t {
+        Self {
             u6_addr8: [0_u8; 16],
         }
     }

@@ -40,7 +40,7 @@ impl fmt::Debug for utsname_t {
 
 impl Default for utsname_t {
     fn default() -> Self {
-        utsname_t {
+        Self {
             sysname: [0; UTSNAME_LENGTH],
             nodename: [0; UTSNAME_LENGTH],
             release: [0; UTSNAME_LENGTH],

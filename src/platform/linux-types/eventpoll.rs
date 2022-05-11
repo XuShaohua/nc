@@ -74,7 +74,7 @@ impl core::fmt::Debug for epoll_data_t {
 
 impl Default for epoll_data_t {
     fn default() -> Self {
-        epoll_data_t { ptr: 0 }
+        Self { ptr: 0 }
     }
 }
 

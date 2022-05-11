@@ -552,7 +552,7 @@ pub struct perf_event_query_bpf_t {
 }
 
 #[inline]
-pub fn perf_flags(attr: &perf_event_attr_t) -> u64 {
+pub const fn perf_flags(attr: &perf_event_attr_t) -> u64 {
     attr.read_format + 1
 }
 

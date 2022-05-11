@@ -22,7 +22,7 @@ impl fmt::Debug for sigval_t {
 
 impl Default for sigval_t {
     fn default() -> Self {
-        sigval_t { sival_ptr: 0 }
+        Self { sival_ptr: 0 }
     }
 }
 
@@ -122,7 +122,7 @@ pub union sifields_t {
 
 impl Default for sifields_t {
     fn default() -> Self {
-        sifields_t {
+        Self {
             rt: si_rt_t::default(),
         }
     }
@@ -153,7 +153,7 @@ pub union siginfo_t {
 
 impl Default for siginfo_t {
     fn default() -> Self {
-        siginfo_t {
+        Self {
             si_pad: [0; SI_MAX_SIZE / size_of::<i32>()],
         }
     }
@@ -400,7 +400,7 @@ pub union sigev_un_t {
 
 impl Default for sigev_un_t {
     fn default() -> Self {
-        sigev_un_t {
+        Self {
             pad: [0; SIGEV_PAD_SIZE],
         }
     }

@@ -73,7 +73,7 @@ impl CString {
 
     #[must_use]
     #[inline]
-    pub fn as_bytes_with_nul(&self) -> &[u8] {
+    pub const fn as_bytes_with_nul(&self) -> &[u8] {
         &self.inner
     }
 
@@ -96,13 +96,13 @@ impl CString {
 
     #[must_use]
     #[inline]
-    pub fn len(&self) -> usize {
+    pub const fn len(&self) -> usize {
         self.as_bytes_with_nul().len() - 1
     }
 
     #[must_use]
     #[inline]
-    pub fn is_empty(&self) -> bool {
+    pub const fn is_empty(&self) -> bool {
         // TODO(Shaohua): Check null bytes
         self.as_bytes_with_nul().len() == 0
     }
@@ -136,8 +136,9 @@ impl CStr {
     }
 
     #[inline]
-    unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
-        &*(bytes as *const [u8] as *const CStr)
+    #[allow(clippy::missing_const_for_fn)]
+    unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &Self {
+        &*(bytes as *const [u8] as *const Self)
     }
 
     #[must_use]
@@ -147,7 +148,7 @@ impl CStr {
     }
 
     #[must_use]
-    pub fn to_bytes_with_nul(&self) -> &[u8] {
+    pub const fn to_bytes_with_nul(&self) -> &[u8] {
         unsafe { &*(&self.inner as *const [u8]) }
     }
 }
@@ -188,7 +189,7 @@ impl fmt::Debug for CStr {
 
 impl From<CString> for Vec<u8> {
     #[inline]
-    fn from(s: CString) -> Vec<u8> {
+    fn from(s: CString) -> Self {
         s.into_bytes()
     }
 }

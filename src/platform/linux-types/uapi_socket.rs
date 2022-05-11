@@ -25,7 +25,7 @@ pub struct kernel_sockaddr_storage_t {
 //__attribute__ ((aligned(_K_SS_ALIGNSIZE)));	/* force desired alignment */
 impl Default for kernel_sockaddr_storage_t {
     fn default() -> Self {
-        kernel_sockaddr_storage_t {
+        Self {
             ss_family: 0,
             data: [0_u8; (K_SS_MAXSIZE - 2) as usize],
         }

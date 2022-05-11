@@ -11,7 +11,7 @@ pub type Sysno = usize;
 pub const MAX_ERRNO: Errno = 4095;
 
 #[inline]
-pub fn check_errno(ret: usize) -> Result<usize, Errno> {
+pub const fn check_errno(ret: usize) -> Result<usize, Errno> {
     let reti = ret as isize;
     if reti < 0 && reti >= (-MAX_ERRNO) as isize {
         let reti = (-reti) as Errno;

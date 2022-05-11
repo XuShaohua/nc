@@ -12,8 +12,8 @@ pub struct File {
 }
 
 impl File {
-    pub fn new(path: &Path) -> File {
-        File {
+    pub fn new(path: &Path) -> Self {
+        Self {
             fd: -1,
             path: path.to_path_buf(),
         }

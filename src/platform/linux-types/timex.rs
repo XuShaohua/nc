@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::time::*;
-use super::types::*;
+use super::basic_types::*;
 
 /// NTP API version
 pub const NTP_API: i32 = 4;

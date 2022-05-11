@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 #![allow(overflowing_literals)]
-use super::types::*;
+use super::basic_types::*;
 
 /// kexec system call -  It loads the new kernel to boot into.
 /// kexec does not sync, or unmount filesystems so if you need

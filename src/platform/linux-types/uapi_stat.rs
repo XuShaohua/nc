@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 
 pub const S_IFMT: mode_t = 0o0_170_000;
 pub const S_IFSOCK: mode_t = 0o14_0000;

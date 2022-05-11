@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::fs::*;
-use super::types::*;
+use super::basic_types::*;
 
 #[repr(C)]
 #[derive(Copy, Clone)]

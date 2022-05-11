@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 
 /// Extended instruction set based on top of classic BPF
 

@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 use core::mem::size_of;
 
 /// User-level do most of the mapping between kernel and user

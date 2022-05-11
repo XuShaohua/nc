@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 
 /// how many path components do we allow in a call to sysctl
 /// In other words, what is the largest acceptable value for the nlen member

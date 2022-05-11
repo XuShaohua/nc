@@ -4,7 +4,7 @@
 
 //! From include/uapi/asm-generic/statfs.h
 
-use super::types::*;
+use super::basic_types::*;
 
 /// Most 64-bit platforms use 'long', while most 32-bit platforms use '__u32'.
 /// Yes, they differ in signedness as well as size.

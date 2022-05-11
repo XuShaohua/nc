@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::time::*;
-use super::types::*;
+use super::basic_types::*;
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default)]

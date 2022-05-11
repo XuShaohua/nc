@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 use core::fmt;
 
 /// SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note

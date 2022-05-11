@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::fcntl::*;
-use super::types::*;
+use super::basic_types::*;
 
 /// Flags for epoll_create1.
 pub const EPOLL_CLOEXEC: i32 = O_CLOEXEC;

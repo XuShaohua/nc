@@ -4,7 +4,7 @@
 
 use super::hugetlb_encode::*;
 use super::ipc::*;
-use super::types::*;
+use super::basic_types::*;
 
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be
 /// modified by sysctl. The SHMMAX and SHMALL values have been chosen to

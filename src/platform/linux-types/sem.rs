@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::ipc::*;
-use super::types::*;
+use super::basic_types::*;
 
 /// semop flags
 /// undo the operation on exit

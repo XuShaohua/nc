@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::msg::*;
-use super::types::*;
+use super::basic_types::*;
 
 pub const IPC_PRIVATE: key_t = 0;
 

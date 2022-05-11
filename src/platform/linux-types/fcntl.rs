@@ -4,7 +4,7 @@
 
 //! From `include/uapi/asm-generic/fcntl.h`
 
-use super::types::*;
+use super::basic_types::*;
 #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
 use super::O_DIRECTORY;
 

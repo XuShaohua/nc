@@ -2,8 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use core::mem::size_of;
-
 // BEGIN of posix_types.h
 pub type ino_t = usize;
 pub type mode_t = u32;
@@ -57,7 +55,7 @@ pub const FD_SETSIZE: usize = 1024;
 #[repr(C)]
 #[derive(Default, Debug, Clone, Copy)]
 pub struct fd_set_t {
-    pub fds_bits: [usize; FD_SETSIZE / (8 * size_of::<isize>())],
+    pub fds_bits: [usize; FD_SETSIZE / (8 * isize::BITS as usize)],
 }
 
 /// Type of a SYSV IPC key.

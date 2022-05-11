@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 
 /// The generic ipc64_perm structure:
 /// Note extra padding because this structure is passed back and forth
@@ -26,7 +26,7 @@ pub struct ipc64_perm_t {
     pub cgid: gid_t,
     /// pad if mode_t is u16:
     pub mode: mode_t,
-    pad1: [u8; 4 as usize - core::mem::size_of::<mode_t>()],
+    pad1: [u8; 4_usize - core::mem::size_of::<mode_t>()],
     pub seq: u16,
     pad2: u16,
     unused1: usize,

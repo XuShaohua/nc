@@ -4,7 +4,7 @@
 
 #![allow(overflowing_literals)]
 use super::linux_socket::*;
-use super::types::*;
+use super::basic_types::*;
 use core::mem::size_of;
 
 /// INET: An implementation of the TCP/IP protocol suite for the LINUX

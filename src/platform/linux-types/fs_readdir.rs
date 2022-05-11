@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::limits::*;
-use super::types::*;
+use super::basic_types::*;
 
 /// From fs/readir.c
 

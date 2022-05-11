@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+use super::basic_types::*;
 
 /// These are specified by iBCS2
 pub const POLLIN: i32 = 0x0001;

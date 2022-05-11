@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 use super::linux_time64::*;
-use super::types::*;
+use super::basic_types::*;
 use super::uapi_socket::*;
 use super::uio::*;
 

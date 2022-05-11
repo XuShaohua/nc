@@ -19,14 +19,24 @@ fn run_main() {
         let curr_pid = unsafe { nc::getpid() };
         println!("In child process, pid: {}", curr_pid);
         let path = "/tmp/nc-pidfdopen";
-        let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC, 0o644) };
+        let fd = unsafe {
+            nc::openat(
+                nc::AT_FDCWD,
+                path,
+                nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+                0o644,
+            )
+        };
         assert!(fd.is_ok());
         let fd = fd.unwrap();
         let ret = unsafe { nc::dup3(fd, STDOUT_FD, 0) };
         assert!(ret.is_ok());
         println!("[child] stdout redirected to file!");
 
-        let t = nc::timespec_t { tv_sec: 2, tv_nsec: 0 };
+        let t = nc::timespec_t {
+            tv_sec: 2,
+            tv_nsec: 0,
+        };
         unsafe {
             let ret = nc::nanosleep(&t, None);
             assert!(ret.is_ok());
@@ -41,7 +51,10 @@ fn run_main() {
     let pid = pid.unwrap();
     println!("[parent] child pid: {}", pid);
 
-    let t = nc::timespec_t { tv_sec: 2, tv_nsec: 0 };
+    let t = nc::timespec_t {
+        tv_sec: 2,
+        tv_nsec: 0,
+    };
     let ret = unsafe { nc::nanosleep(&t, None) };
     assert!(ret.is_ok());
 

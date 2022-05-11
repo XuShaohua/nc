@@ -25,7 +25,14 @@ fn main() -> Result<(), Errno> {
 
     let mut conn_addr = nc::sockaddr_in_t::default();
     let mut conn_addr_len: nc::socklen_t = 0;
-    let conn_fd = unsafe { nc::accept4(listen_fd, &mut conn_addr, &mut conn_addr_len, nc::SOCK_CLOEXEC)? };
+    let conn_fd = unsafe {
+        nc::accept4(
+            listen_fd,
+            &mut conn_addr,
+            &mut conn_addr_len,
+            nc::SOCK_CLOEXEC,
+        )?
+    };
     println!("conn_fd: {:?}", conn_fd);
 
     Ok(())

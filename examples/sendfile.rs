@@ -7,10 +7,14 @@ fn main() {
     println!("S_IRGRP: {}", nc::S_IRGRP);
 
     #[cfg(target_os = "linux")]
-    let in_fd = unsafe { nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!") };
+    let in_fd = unsafe {
+        nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!")
+    };
 
     #[cfg(target_os = "freebsd")]
-    let in_fd = unsafe { nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!") };
+    let in_fd = unsafe {
+        nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!")
+    };
 
     #[cfg(target_os = "linux")]
     let out_fd = unsafe {
@@ -41,7 +45,9 @@ fn main() {
     let count = stat.st_blksize as usize;
     println!("count: {}", count);
     let mut offset = 0;
-    let nread = unsafe { nc::sendfile(out_fd, in_fd, &mut offset, count).expect("Failed to call sendfile()") };
+    let nread = unsafe {
+        nc::sendfile(out_fd, in_fd, &mut offset, count).expect("Failed to call sendfile()")
+    };
     println!("nbytes: {}", nread);
 
     unsafe {

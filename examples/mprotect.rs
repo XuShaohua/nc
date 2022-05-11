@@ -17,7 +17,14 @@ fn main() {
         ..nc::sigaction_t::default()
     };
     let mut old_sa = nc::sigaction_t::default();
-    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, &sa, &mut old_sa, mem::size_of::<nc::sigset_t>()) };
+    let ret = unsafe {
+        nc::rt_sigaction(
+            nc::SIGSEGV,
+            &sa,
+            &mut old_sa,
+            mem::size_of::<nc::sigset_t>(),
+        )
+    };
     assert!(ret.is_ok());
 
     // Initialize an anonymous mapping with 4 pages.

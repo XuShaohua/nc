@@ -2,8 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::msg::*;
 use super::basic_types::*;
+use super::msg::*;
 
 pub const IPC_PRIVATE: key_t = 0;
 

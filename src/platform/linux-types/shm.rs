@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use super::basic_types::*;
 use super::hugetlb_encode::*;
 use super::ipc::*;
-use super::basic_types::*;
 
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be
 /// modified by sysctl. The SHMMAX and SHMALL values have been chosen to

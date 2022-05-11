@@ -3,8 +3,8 @@
 // in the LICENSE file.
 
 #![allow(overflowing_literals)]
-use super::linux_socket::*;
 use super::basic_types::*;
+use super::linux_socket::*;
 use core::mem::size_of;
 
 /// INET: An implementation of the TCP/IP protocol suite for the LINUX

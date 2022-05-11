@@ -4,8 +4,8 @@
 
 //! From include/uapi/asm-generic/msgbuf.h
 
-use super::ipc::*;
 use super::basic_types::*;
+use super::ipc::*;
 
 /// generic msqid64_ds structure.
 ///

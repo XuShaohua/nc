@@ -4,8 +4,8 @@
 
 //! From uapi/asm-generic/shmbuf.h
 
-use super::ipcbuf::*;
 use super::basic_types::*;
+use super::ipcbuf::*;
 
 /// The shmid64_ds structure for x86 architecture.
 /// Note extra padding because this structure is passed back and forth

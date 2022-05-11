@@ -83,16 +83,15 @@ fn main() {
                 nc::SPLICE_F_NONBLOCK,
             )
         };
-        let mut tee_len;
-        match ret {
+        let mut tee_len = match ret {
             Ok(0) => break,
             Err(nc::EAGAIN) => continue,
-            Ok(len) => tee_len = len,
             Err(errno) => {
                 eprintln!("tee error: {}", nc::strerror(errno));
                 unsafe { nc::exit(1) };
             }
-        }
+            Ok(len) => len,
+        };
 
         // Consume stdin by splicing it to a file.
         while tee_len > 0 {

@@ -15,7 +15,7 @@ impl File {
     pub fn new(path: &Path) -> File {
         File {
             fd: -1,
-            path: path.to_path_buf().clone(),
+            path: path.to_path_buf(),
         }
     }
 
@@ -53,7 +53,7 @@ impl Drop for File {
 
 fn test_fd() {
     let path = Path::new("/etc/issue");
-    let mut fd = File::new(&path);
+    let mut fd = File::new(path);
     let _ = fd.open();
     println!("fd: {:?}", fd);
     let buf = BufReader::new(fd);

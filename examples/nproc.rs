@@ -19,7 +19,7 @@ pub fn get_num_cpu() -> Result<u16, nc::Errno> {
         }
     }
 
-    return Ok(count);
+    Ok(count)
 }
 
 fn main() {

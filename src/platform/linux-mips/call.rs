@@ -8,6 +8,7 @@
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_possible_wrap)]
 #![allow(clippy::cast_sign_loss)]
+#![allow(clippy::wildcard_imports)]
 
 extern crate alloc;
 
@@ -151,6 +152,7 @@ pub unsafe fn afs_syscall() {
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
 /// ```
+#[must_use]
 pub unsafe fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
     // This function is always successful.
@@ -1979,6 +1981,7 @@ pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t,
 /// let egid = unsafe { nc::getegid() };
 /// assert!(egid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getegid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
@@ -1992,6 +1995,7 @@ pub unsafe fn getegid() -> gid_t {
 /// let euid = unsafe { nc::geteuid() };
 /// assert!(euid > 0);
 /// ```
+#[must_use]
 pub unsafe fn geteuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
@@ -2005,6 +2009,7 @@ pub unsafe fn geteuid() -> uid_t {
 /// let gid = unsafe { nc::getgid() };
 /// assert!(gid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getgid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
@@ -2120,6 +2125,7 @@ pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 /// let pgroup = unsafe { nc::getpgrp() };
 /// assert!(pgroup > 0);
 /// ```
+#[must_use]
 pub unsafe fn getpgrp() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
@@ -2133,6 +2139,7 @@ pub unsafe fn getpgrp() -> pid_t {
 /// let pid = unsafe { nc::getpid() };
 /// assert!(pid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getpid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
@@ -2151,6 +2158,7 @@ pub unsafe fn getpmsg() {
 /// let ppid = unsafe { nc::getppid() };
 /// assert!(ppid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getppid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
@@ -2279,6 +2287,7 @@ pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 /// let sid = unsafe { nc::getsid(ppid) };
 /// assert!(sid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     // This function is always successful.
@@ -2329,6 +2338,7 @@ pub unsafe fn getsockopt(
 /// let tid = unsafe { nc::gettid() };
 /// assert!(tid > 0);
 /// ```
+#[must_use]
 pub unsafe fn gettid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
@@ -2359,6 +2369,7 @@ pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Resu
 /// let uid = unsafe { nc::getuid() };
 /// assert!(uid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
@@ -2646,15 +2657,18 @@ pub unsafe fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno>
     syscall3(SYS_IOPRIO_SET, which, who, ioprio).map(drop)
 }
 
-/// Attempts to cancel an iocb previously passed to io_submit.
+/// Attempts to cancel an iocb previously passed to `io_submit`.
 ///
 /// If the operation is successfully cancelled, the resulting event is
 /// copied into the memory pointed to by result without being placed
-/// into the completion queue and 0 is returned.  May fail with
-/// -EFAULT if any of the data structures pointed to are invalid.
-/// May fail with -EINVAL if aio_context specified by ctx_id is
-/// invalid.  May fail with -EAGAIN if the iocb specified was not
-/// cancelled.  Will fail with -ENOSYS if not implemented.
+/// into the completion queue and 0 is returned.
+///
+///
+/// # Errors
+/// - May fail with `-EFAULT` if any of the data structures pointed to are invalid.
+/// - May fail with `-EINVAL` if `aio_context` specified by `ctx_id` is invalid.
+/// - May fail with `-EAGAIN` if the iocb specified was not cancelled.
+/// - Will fail with `-ENOSYS` if not implemented.
 pub unsafe fn io_cancel(
     ctx_id: aio_context_t,
     iocb: &mut iocb_t,
@@ -2666,27 +2680,31 @@ pub unsafe fn io_cancel(
     syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(drop)
 }
 
-/// Destroy the aio_context specified.  May cancel any outstanding
-/// AIOs and block on completion.
+/// Destroy the `aio_context` specified.
 ///
-/// Will fail with -ENOSYS if not implemented.  May fail with -EINVAL
-/// if the context pointed to is invalid.
+/// May cancel any outstanding AIOs and block on completion.
+///
+/// Will fail with `-ENOSYS` if not implemented.
+/// May fail with `-EINVAL` if the context pointed to is invalid.
 pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
     let ctx_id = ctx_id as usize;
     syscall1(SYS_IO_DESTROY, ctx_id).map(drop)
 }
 
-/// Attempts to read at least min_nr events and up to nr events from
-/// the completion queue for the aio_context specified by ctx_id.
+/// Attempts to read at least `min_nr` events and up to nr events from
+/// the completion queue for the `aio_context` specified by `ctx_id`.
 ///
-/// If it succeeds, the number of read events is returned. May fail with
-/// -EINVAL if ctx_id is invalid, if min_nr is out of range, if nr is
-/// out of range, if timeout is out of range.  May fail with -EFAULT
-/// if any of the memory specified is invalid.  May return 0 or
-/// < min_nr if the timeout specified by timeout has elapsed
+/// If it succeeds, the number of read events is returned.
+///
+/// # Errors
+///
+/// - May fail with `-EINVAL` if `ctx_id` is invalid, if `min_nr` is out of range,
+/// if `nr` is out of range, if `timeout` is out of range.
+/// - May fail with `-EFAULT` if any of the memory specified is invalid.
+/// - May return 0 or < `min_nr` if the timeout specified by timeout has elapsed
 /// before sufficient events are available, where timeout == NULL
-/// specifies an infinite timeout. Note that the timeout pointed to by
-/// timeout is relative.  Will fail with -ENOSYS if not implemented.
+/// specifies an infinite timeout. Note that the timeout pointed to by timeout is relative.
+/// - Will fail with `-ENOSYS` if not implemented.
 pub unsafe fn io_getevents(
     ctx_id: aio_context_t,
     min_nr: isize,
@@ -2744,16 +2762,22 @@ pub unsafe fn io_pgetevents_time64() {
 
 /// Create an asynchronous I/O context.
 ///
-/// Create an aio_context capable of receiving at least nr_events.
-/// ctxp must not point to an aio_context that already exists, and
-/// must be initialized to 0 prior to the call.  On successful
-/// creation of the aio_context, *ctxp is filled in with the resulting
-/// handle.  May fail with -EINVAL if *ctxp is not initialized,
-/// if the specified nr_events exceeds internal limits.  May fail
-/// with -EAGAIN if the specified nr_events exceeds the user's limit
-/// of available events.  May fail with -ENOMEM if insufficient kernel
-/// resources are available.  May fail with -EFAULT if an invalid
-/// pointer is passed for ctxp.  Will fail with -ENOSYS if not implemented.
+/// Create an `aio_context` capable of receiving at least `nr_events`.
+/// ctxp must not point to an `aio_context` that already exists, and
+/// must be initialized to 0 prior to the call.
+///
+/// On successful creation of the `aio_context`, `*ctxp` is filled in with the resulting
+/// handle.
+///
+/// # Errors
+///
+/// - May fail with `-EINVAL` if `*ctxp` is not initialized,
+/// if the specified `nr_events` exceeds internal limits.
+/// - May fail with `-EAGAIN` if the specified `nr_events` exceeds the user's limit
+/// of available events.
+/// - May fail with `-ENOMEM` if insufficient kernel resources are available.
+/// - May fail with `-EFAULT` if an invalid pointer is passed for ctxp.
+/// - Will fail with `-ENOSYS` if not implemented.
 pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
     let nr_events = nr_events as usize;
     let ctx_id_ptr = ctx_id as *mut aio_context_t as usize;
@@ -2762,15 +2786,19 @@ pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(),
 
 /// Queue the nr iocbs pointed to by iocbpp for processing.
 ///
-/// Returns the number of iocbs queued.  May return -EINVAL if the aio_context
-/// specified by ctx_id is invalid, if nr is < 0, if the iocb at
-/// `*iocbpp[0]` is not properly initialized, if the operation specified
-/// is invalid for the file descriptor in the iocb.  May fail with
-/// -EFAULT if any of the data structures point to invalid data.  May
-/// fail with -EBADF if the file descriptor specified in the first
-/// iocb is invalid.  May fail with -EAGAIN if insufficient resources
-/// are available to queue any iocbs.  Will return 0 if nr is 0.  Will
-/// fail with -ENOSYS if not implemented.
+/// Returns the number of iocbs queued.
+///
+/// # Errors
+///
+/// - May return `-EINVAL` if the `aio_context` specified by `ctx_id` is invalid,
+/// if `nr` is < 0, if the `iocb` at `*iocbpp[0]` is not properly initialized,
+/// if the operation specified is invalid for the file descriptor in the `iocb`.
+/// - May fail with `-EFAULT` if any of the data structures point to invalid data.
+/// - May fail with `-EBADF` if the file descriptor specified in the first
+/// `iocb` is invalid.
+/// - May fail with `-EAGAIN` if insufficient resources are available to queue any iocbs.
+/// - Will return 0 if nr is 0.
+/// - Will fail with `-ENOSYS` if not implemented.
 // TODO(Shaohua): type of iocbpp is struct iocb**
 pub unsafe fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
     let ctx_id = ctx_id as usize;
@@ -3373,25 +3401,25 @@ pub unsafe fn mbind(
     syscall6(SYS_MBIND, start, len, mode, nmask, maxnode, flags).map(drop)
 }
 
-/// sys_membarrier - issue memory barriers on a set of threads
+/// Issue memory barriers on a set of threads.
 ///
-/// @cmd:   Takes command values defined in enum membarrier_cmd.
+/// @cmd:   Takes command values defined in enum `membarrier_cmd`.
 /// @flags: Currently needs to be 0. For future extensions.
 ///
-/// If this system call is not implemented, -ENOSYS is returned. If the
+/// If this system call is not implemented, `-ENOSYS` is returned. If the
 /// command specified does not exist, not available on the running
 /// kernel, or if the command argument is invalid, this system call
-/// returns -EINVAL. For a given command, with flags argument set to 0,
+/// returns `-EINVAL`. For a given command, with flags argument set to 0,
 /// this system call is guaranteed to always return the same value until
 /// reboot.
 ///
 /// All memory accesses performed in program order from each targeted thread
-/// is guaranteed to be ordered with respect to sys_membarrier(). If we use
-/// the semantic "barrier()" to represent a compiler barrier forcing memory
+/// is guaranteed to be ordered with respect to `sys_membarrier()`. If we use
+/// the semantic `barrier()` to represent a compiler barrier forcing memory
 /// accesses to be performed in program order across the barrier, and
-/// smp_mb() to represent explicit memory barriers forcing full memory
+/// `smp_mb()` to represent explicit memory barriers forcing full memory
 /// ordering across the barrier, we have the following ordering table for
-/// each pair of barrier(), sys_membarrier() and smp_mb():
+/// each pair of `barrier()`, `sys_membarrier()` and `smp_mb()`:
 ///
 /// The pair ordering is detailed as (O: ordered, X: not ordered):
 ///
@@ -3442,7 +3470,7 @@ pub unsafe fn migrate_pages(
 /// return values:
 ///  zero    - success
 ///  -EFAULT - vec points to an illegal address
-///  -EINVAL - addr is not a multiple of PAGE_SIZE
+///  -EINVAL - addr is not a multiple of `PAGE_SIZE`
 ///  -ENOMEM - Addresses in the range [addr, addr + len] are
 /// invalid for the address space of this process, or specify one or
 /// more pages which are not currently mapped
@@ -3751,10 +3779,10 @@ pub unsafe fn mount_setattr() {
 /// Move a mount from one place to another.
 ///
 /// In combination with fsopen()/fsmount() this is used to install a new mount
-/// and in combination with open_tree(OPEN_TREE_CLONE [| AT_RECURSIVE])
+/// and in combination with `open_tree(OPEN_TREE_CLONE [| AT_RECURSIVE])`
 /// it can be used to copy a mount subtree.
 ///
-/// Note the flags value is a combination of MOVE_MOUNT_* flags.
+/// Note the flags value is a combination of `MOVE_MOUNT_*` flags.
 pub unsafe fn move_mount<P: AsRef<Path>>(
     from_dfd: i32,
     from_pathname: P,
@@ -4752,14 +4780,14 @@ pub unsafe fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
     syscall2(SYS_PIDFD_OPEN, pid, flags).map(|ret| ret as i32)
 }
 
-/// sys_pidfd_send_signal - Signal a process through a pidfd
+/// Signal a process through a pidfd.
 ///
 /// @pidfd:  file descriptor of the process
 /// @sig:    signal to send
 /// @info:   signal info
 /// @flags:  future flags
 ///
-/// The syscall currently only signals via PIDTYPE_PID which covers
+/// The syscall currently only signals via `PIDTYPE_PID` which covers
 /// kill(<positive-pid>, <signal>. It does not signal threads or process
 /// groups.
 /// In order to extend the syscall to threads and process groups the @flags
@@ -5102,7 +5130,7 @@ pub unsafe fn profil() {
 ///
 /// Most architectures can't handle 7-argument syscalls. So we provide a
 /// 6-argument version where the sixth argument is a pointer to a structure
-/// which has a pointer to the sigset_t itself followed by a size_t containing
+/// which has a pointer to the `sigset_t` itself followed by a `size_t` containing
 /// the sigset size.
 pub unsafe fn pselect6(
     nfds: i32,
@@ -6038,7 +6066,7 @@ pub unsafe fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
     syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy).map(|ret| ret as i32)
 }
 
-/// Get the SCHED_RR interval for the named process.
+/// Get the `SCHED_RR` interval for the named process.
 ///
 /// # Example
 ///
@@ -7383,7 +7411,7 @@ pub unsafe fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
     syscall1(SYS_SYSINFO, info_ptr).map(drop)
 }
 
-/// Read and/or clear kernel message ring buffer; set console_loglevel
+/// Read and/or clear kernel message ring buffer.
 pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
     let action = action as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;

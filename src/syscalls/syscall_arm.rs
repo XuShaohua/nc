@@ -6,7 +6,7 @@
 
 use super::types::*;
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
@@ -19,7 +19,7 @@ pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     check_errno(ret)
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
     unsafe {
@@ -33,7 +33,7 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     check_errno(ret)
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
     llvm_asm!("swi 0"
@@ -46,7 +46,7 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     check_errno(ret)
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
     llvm_asm!("swi 0"
@@ -60,7 +60,7 @@ pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usiz
     check_errno(ret)
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall4(
     n: Sysno,
     a1: usize,
@@ -81,7 +81,7 @@ pub unsafe fn syscall4(
     check_errno(ret)
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall5(
     n: Sysno,
     a1: usize,
@@ -104,7 +104,7 @@ pub unsafe fn syscall5(
     check_errno(ret)
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall6(
     n: Sysno,
     a1: usize,

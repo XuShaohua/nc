@@ -31,27 +31,27 @@ extern "C" {
     ) -> usize;
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     check_errno(__syscall0(n))
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     check_errno(__syscall1(n, a1))
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     check_errno(__syscall2(n, a1, a2))
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     check_errno(__syscall3(n, a1, a2, a3))
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall4(
     n: Sysno,
     a1: usize,
@@ -62,7 +62,7 @@ pub unsafe fn syscall4(
     check_errno(__syscall4(n, a1, a2, a3, a4))
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall5(
     n: Sysno,
     a1: usize,
@@ -74,7 +74,7 @@ pub unsafe fn syscall5(
     check_errno(__syscall5(n, a1, a2, a3, a4, a5))
 }
 
-#[inline(always)]
+#[inline]
 pub unsafe fn syscall6(
     n: Sysno,
     a1: usize,

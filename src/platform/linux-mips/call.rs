@@ -2,6 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+// All the syscalls are treated as unsafe.
+#![allow(clippy::missing_safety_doc)]
+
 extern crate alloc;
 
 use crate::c_str::CString;
@@ -920,23 +923,13 @@ pub unsafe fn execve<P: AsRef<Path>>(
 
 /// Execute a new program relative to a directory file descriptor.
 ///
-/// TODO(Shaohua): type of argv and env will be changed.
-/// And return value might be changed too.
-///
 /// # Example
 ///
 /// ```
-/// let pid = unsafe { nc::fork() };
-/// assert!(pid.is_ok());
-/// let pid = pid.unwrap();
-/// assert!(pid >= 0);
-/// if pid == 0 {
-///     // child process
-///     let args = [""];
-///     let env = [""];
-///     let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0) };
-///     assert!(ret.is_ok());
-/// }
+/// let args = [""];
+/// let env = [""];
+/// let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0) };
+/// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execveat<P: AsRef<Path>>(
     fd: i32,
@@ -945,6 +938,9 @@ pub unsafe fn execveat<P: AsRef<Path>>(
     env: &[&str],
     flags: i32,
 ) -> Result<(), Errno> {
+    // TODO(Shaohua): type of argv and env will be changed.
+    // And return value might be changed too.
+
     // FIXME(Shaohua): Convert into CString first.
     let fd = fd as usize;
     let filename = CString::new(filename.as_ref());

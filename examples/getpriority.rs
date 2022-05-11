@@ -3,8 +3,7 @@
 // in the LICENSE file.
 
 fn main() {
-    let _ret =
-        unsafe { nc::setpriority(nc::PRIO_PROCESS, 0, -5).expect("Failed to set priority to -5!") };
+    let _ret = unsafe { nc::setpriority(nc::PRIO_PROCESS, 0, -5).expect("Failed to set priority to -5!") };
     let prio = unsafe { nc::getpriority(nc::PRIO_PROCESS, 0) };
     println!("prio: {:?}", prio);
 }

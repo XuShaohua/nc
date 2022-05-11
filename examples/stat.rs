@@ -15,10 +15,7 @@ fn main() {
             println!("s: {:?}", statbuf);
         }
         Err(errno) => {
-            eprintln!(
-                "Failed to get file status, got errno: {}",
-                nc::strerror(errno)
-            );
+            eprintln!("Failed to get file status, got errno: {}", nc::strerror(errno));
         }
     }
 }

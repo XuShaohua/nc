@@ -23,14 +23,8 @@ fn main() {
 
     // Single shot timer, active after 1 second.
     let itv = nc::itimerval_t {
-        it_value: nc::timeval_t {
-            tv_sec: 1,
-            tv_usec: 0,
-        },
-        it_interval: nc::timeval_t {
-            tv_sec: 0,
-            tv_usec: 0,
-        },
+        it_value: nc::timeval_t { tv_sec: 1, tv_usec: 0 },
+        it_interval: nc::timeval_t { tv_sec: 0, tv_usec: 0 },
     };
     let mut prev_itv = nc::itimerval_t::default();
     let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };

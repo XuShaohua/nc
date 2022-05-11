@@ -75,14 +75,7 @@ fn main() {
     loop {
         let stdin_fileno = 0;
         let stdout_fileno = 1;
-        let ret = unsafe {
-            nc::tee(
-                stdin_fileno,
-                stdout_fileno,
-                usize::MAX,
-                nc::SPLICE_F_NONBLOCK,
-            )
-        };
+        let ret = unsafe { nc::tee(stdin_fileno, stdout_fileno, usize::MAX, nc::SPLICE_F_NONBLOCK) };
         let mut tee_len;
         match ret {
             Ok(0) => break,
@@ -96,16 +89,7 @@ fn main() {
 
         // Consume stdin by splicing it to a file.
         while tee_len > 0 {
-            let ret = unsafe {
-                nc::splice(
-                    stdin_fileno,
-                    None,
-                    fd,
-                    None,
-                    tee_len as usize,
-                    nc::SPLICE_F_MOVE,
-                )
-            };
+            let ret = unsafe { nc::splice(stdin_fileno, None, fd, None, tee_len as usize, nc::SPLICE_F_MOVE) };
             match ret {
                 Err(errno) => {
                     eprintln!("splice error: {}", nc::strerror(errno));

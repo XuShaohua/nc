@@ -45,10 +45,7 @@ pub struct uinput_setup_t {
 }
 
 fn sleep(n: isize) {
-    let req = nc::timespec_t {
-        tv_sec: n,
-        tv_nsec: 0,
-    };
+    let req = nc::timespec_t { tv_sec: n, tv_nsec: 0 };
     let _ = unsafe { nc::nanosleep(&req, None) };
 }
 
@@ -57,24 +54,14 @@ fn emit(fd: i32, event_type: u16, code: u16, value: i32) -> Result<isize, nc::Er
         type_: event_type,
         code: code,
         value: value,
-        time: nc::timeval_t {
-            tv_sec: 0,
-            tv_usec: 0,
-        },
+        time: nc::timeval_t { tv_sec: 0, tv_usec: 0 },
     };
 
     unsafe { nc::write(fd, &ie as *const input_event_t as usize, size_of_val(&ie)) }
 }
 
 fn run() -> Result<(), nc::Errno> {
-    let fd = unsafe {
-        nc::openat(
-            nc::AT_FDCWD,
-            "/dev/uinput",
-            nc::O_WRONLY | nc::O_NONBLOCK,
-            0,
-        )?
-    };
+    let fd = unsafe { nc::openat(nc::AT_FDCWD, "/dev/uinput", nc::O_WRONLY | nc::O_NONBLOCK, 0)? };
 
     unsafe {
         nc::ioctl(fd, UI_SET_EVBIT, EV_KEY)?;
@@ -96,8 +83,7 @@ fn run() -> Result<(), nc::Errno> {
     usetup.name[2] = 97;
 
     unsafe {
-        nc::ioctl(fd, UI_DEV_SETUP, &usetup as *const uinput_setup_t as usize)
-            .expect("UI_DEV_SETUP failed");
+        nc::ioctl(fd, UI_DEV_SETUP, &usetup as *const uinput_setup_t as usize).expect("UI_DEV_SETUP failed");
         nc::ioctl(fd, UI_DEV_CREATE, 0).expect("UI_DEV_CREATE");
     }
 

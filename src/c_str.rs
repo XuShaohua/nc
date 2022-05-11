@@ -21,6 +21,7 @@ use core::ptr;
 /// let l = strlen(buf.as_ptr() as usize, buf.len());
 /// assert_eq!(l, 5);
 /// ```
+#[must_use]
 pub fn strlen(buf: usize, len: usize) -> usize {
     for i in 0..len {
         let chr: u8 = unsafe { *((buf + i) as *const u8) };
@@ -49,6 +50,7 @@ impl CString {
         }
     }
 
+    #[must_use]
     pub fn with_capacity(cap: usize) -> CString {
         let mut v: Vec<u8> = vec![0; cap];
         v.reserve_exact(1);
@@ -58,45 +60,54 @@ impl CString {
         }
     }
 
+    #[must_use]
     pub fn into_bytes_with_nul(self) -> Vec<u8> {
         self.into_inner().into_vec()
     }
 
+    #[must_use]
     #[inline]
     pub fn as_bytes(&self) -> &[u8] {
         &self.inner[..self.inner.len() - 1]
     }
 
+    #[must_use]
     #[inline]
     pub fn as_bytes_with_nul(&self) -> &[u8] {
         &self.inner
     }
 
+    #[must_use]
     #[inline]
     pub fn as_c_str(&self) -> &CStr {
         &*self
     }
 
+    #[must_use]
     pub fn into_boxed_c_str(self) -> Box<CStr> {
         unsafe { Box::from_raw(Box::into_raw(self.into_inner()) as *mut CStr) }
     }
 
+    #[must_use]
     fn into_inner(self) -> Box<[u8]> {
         let this = mem::ManuallyDrop::new(self);
         unsafe { ptr::read(&this.inner) }
     }
 
+    #[must_use]
     #[inline]
     pub fn len(&self) -> usize {
         self.as_bytes_with_nul().len() - 1
     }
 
+    #[must_use]
     #[inline]
     pub fn is_empty(&self) -> bool {
         // TODO(Shaohua): Check null bytes
         self.as_bytes_with_nul().len() == 0
     }
 
+    #[must_use]
     pub fn strim_into_bytes(self) -> Vec<u8> {
         let mut vec = self.into_inner().into_vec();
         let mut nul_idx = 0;
@@ -110,6 +121,7 @@ impl CString {
         vec
     }
 
+    #[must_use]
     pub fn into_bytes(self) -> Vec<u8> {
         let mut vec = self.into_inner().into_vec();
         let _nul = vec.pop();
@@ -118,6 +130,7 @@ impl CString {
 }
 
 impl CStr {
+    #[must_use]
     pub const fn as_ptr(&self) -> *const u8 {
         self.inner.as_ptr()
     }
@@ -127,11 +140,13 @@ impl CStr {
         &*(bytes as *const [u8] as *const CStr)
     }
 
+    #[must_use]
     pub fn to_bytes(&self) -> &[u8] {
         let bytes = self.to_bytes_with_nul();
         &bytes[..bytes.len() - 1]
     }
 
+    #[must_use]
     pub fn to_bytes_with_nul(&self) -> &[u8] {
         unsafe { &*(&self.inner as *const [u8]) }
     }

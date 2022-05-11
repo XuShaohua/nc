@@ -16,11 +16,13 @@ impl Path {
         unsafe { &*(s.as_ref() as *const [u8] as *const Path) }
     }
 
+    #[must_use]
     #[inline]
     pub fn len(&self) -> usize {
         self.internal.len()
     }
 
+    #[must_use]
     #[inline]
     pub fn is_empty(&self) -> bool {
         self.internal.is_empty()

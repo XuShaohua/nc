@@ -5,7 +5,7 @@
 // From uapi/linux/wait.h
 
 pub const WNOHANG: i32 = 0x0000_0001;
-pub const WUNTRACED: i32 = 0x000_00002;
+pub const WUNTRACED: i32 = 0x0000_0002;
 pub const WSTOPPED: i32 = WUNTRACED;
 pub const WEXITED: i32 = 0x0000_0004;
 pub const WCONTINUED: i32 = 0x0000_0008;

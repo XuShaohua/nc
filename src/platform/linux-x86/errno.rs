@@ -269,7 +269,7 @@ pub const EHWPOISON: Errno = 133;
 
 /// Get errno description.
 #[must_use]
-pub fn strerror(errno: Errno) -> &'static str {
+pub const fn strerror(errno: Errno) -> &'static str {
     match errno {
         EPERM => "Operation not permitted",
         ENOENT => "No such file or directory",

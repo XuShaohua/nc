@@ -200,7 +200,7 @@ pub const EOWNERDEAD: Errno = 96;
 pub const EINTEGRITY: Errno = 97;
 
 /// Get errno description.
-pub fn strerror(errno: Errno) -> &'static str {
+pub const fn strerror(errno: Errno) -> &'static str {
     match errno {
         EPERM => "Operation not permitted",
         ENOENT => "No such file or directory",

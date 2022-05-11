@@ -115,7 +115,7 @@ def read_errno(arch_name):
     lines.append("""
     /// Get errno description.
     #[must_use]
-    pub fn strerror(errno: Errno) -> &'static str {
+    pub const fn strerror(errno: Errno) -> &'static str {
         match errno {
     """)
 

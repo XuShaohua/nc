@@ -30,7 +30,7 @@ fn get_page_size() {
 }
 
 fn main() {
-    let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or("stable".to_string());
+    let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_string());
     if rustc_toolchain.starts_with("nightly") {
         println!("cargo:rustc-cfg=has_asm");
     } else {

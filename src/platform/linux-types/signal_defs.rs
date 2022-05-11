@@ -24,9 +24,9 @@
 ///
 /// - SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
 /// Unix names RESETHAND and NODEFER respectively.
-pub const SA_NOCLDSTOP: usize = 0x00000001;
-pub const SA_NOCLDWAIT: usize = 0x00000002;
-pub const SA_SIGINFO: usize = 0x00000004;
+pub const SA_NOCLDSTOP: usize = 0x0000_0001;
+pub const SA_NOCLDWAIT: usize = 0x0000_0002;
+pub const SA_SIGINFO: usize = 0x0000_0004;
 /* 0x00000008 used on alpha, mips, parisc */
 /* 0x00000010 used on alpha, parisc */
 /* 0x00000020 used on alpha, parisc, sparc */
@@ -34,17 +34,17 @@ pub const SA_SIGINFO: usize = 0x00000004;
 /* 0x00000080 used on parisc */
 /* 0x00000100 used on sparc */
 /* 0x00000200 used on sparc */
-pub const SA_UNSUPPORTED: usize = 0x00000400;
-pub const SA_EXPOSE_TAGBITS: usize = 0x00000800;
+pub const SA_UNSUPPORTED: usize = 0x0000_0400;
+pub const SA_EXPOSE_TAGBITS: usize = 0x0000_0800;
 /* 0x00010000 used on mips */
 /* 0x01000000 used on x86 */
 /* 0x02000000 used on x86 */
 /// New architectures should not define the obsolete
-/// SA_RESTORER	0x04000000
-pub const SA_ONSTACK: usize = 0x08000000;
-pub const SA_RESTART: usize = 0x10000000;
-pub const SA_NODEFER: usize = 0x40000000;
-pub const SA_RESETHAND: usize = 0x80000000;
+/// SA_RESTORER 0x04000000
+pub const SA_ONSTACK: usize = 0x0800_0000;
+pub const SA_RESTART: usize = 0x1000_0000;
+pub const SA_NODEFER: usize = 0x4000_0000;
+pub const SA_RESETHAND: usize = 0x8000_0000;
 
 pub const SA_NOMASK: usize = SA_NODEFER;
 pub const SA_ONESHOT: usize = SA_RESETHAND;

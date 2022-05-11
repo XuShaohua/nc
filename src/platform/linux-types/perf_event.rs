@@ -291,7 +291,7 @@ pub const PERF_TXN_CAPACITY_READ: i32 = 1 << 7;
 pub const PERF_TXN_MAX: i32 = 1 << 8;
 
 /// bits 32..63 are reserved for the abort code
-pub const PERF_TXN_ABORT_MASK: u64 = 0xfff_fffff << 32;
+pub const PERF_TXN_ABORT_MASK: u64 = 0xffff_ffff << 32;
 
 pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 
@@ -1082,13 +1082,13 @@ pub enum perf_event_type_t {
     ///
     /// ```c
     /// struct {
-    ///   struct perf_event_header	header;
-    ///   u64				addr;
-    ///   u32				len;
-    ///   u16				ksym_type;
-    ///   u16				flags;
-    ///   char				name[];
-    ///   struct sample_id		sample_id;
+    ///   struct perf_event_header header;
+    ///   u64 addr;
+    ///   u32 len;
+    ///   u16 ksym_type;
+    ///   u16 flags;
+    ///   char name[];
+    ///   struct sample_id sample_id;
     /// };
     /// ```
     PERF_RECORD_KSYMBOL = 17,
@@ -1096,28 +1096,28 @@ pub enum perf_event_type_t {
     /// Record bpf events:
     /// ```c
     /// enum perf_bpf_event_type {
-    ///   PERF_BPF_EVENT_UNKNOWN		= 0,
-    ///   PERF_BPF_EVENT_PROG_LOAD	= 1,
-    ///   PERF_BPF_EVENT_PROG_UNLOAD	= 2,
+    ///   PERF_BPF_EVENT_UNKNOWN     = 0,
+    ///   PERF_BPF_EVENT_PROG_LOAD   = 1,
+    ///   PERF_BPF_EVENT_PROG_UNLOAD = 2,
     /// };
     ///
     /// struct {
-    ///   struct perf_event_header	header;
-    ///   u16				type;
-    ///   u16				flags;
-    ///   u32				id;
-    ///   u8				tag[BPF_TAG_SIZE];
-    ///   struct sample_id		sample_id;
+    ///   struct perf_event_header header;
+    ///   u16 type;
+    ///   u16 flags;
+    ///   u32 id;
+    ///   u8 tag[BPF_TAG_SIZE];
+    ///   struct sample_id sample_id;
     /// };
     /// ```
     PERF_RECORD_BPF_EVENT = 18,
 
     /// ```c
     /// struct {
-    ///   struct perf_event_header	header;
-    ///   u64				id;
-    ///   char				path[];
-    ///   struct sample_id		sample_id;
+    ///   struct perf_event_header header;
+    ///   u64 id;
+    ///   char path[];
+    ///   struct sample_id sample_id;
     /// };
     /// ```
     PERF_RECORD_CGROUP = 19,
@@ -1130,12 +1130,12 @@ pub enum perf_event_type_t {
     ///
     /// ```c
     /// struct {
-    /// struct perf_event_header	header;
-    ///   u64				addr;
-    ///   u16				old_len;
-    ///   u16				new_len;
-    ///   u8				bytes[];
-    ///   struct sample_id		sample_id;
+    ///   struct perf_event_header header;
+    ///   u64 addr;
+    ///   u16 old_len;
+    ///   u16 new_len;
+    ///   u8 bytes[];
+    ///   struct sample_id sample_id;
     /// };
     /// ```
     PERF_RECORD_TEXT_POKE = 20,

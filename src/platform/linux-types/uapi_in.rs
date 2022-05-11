@@ -268,7 +268,7 @@ pub const IN_CLASSA_MAX: i32 = 128;
 
 #[inline]
 pub const fn IN_CLASSB(a: i32) -> bool {
-    ((a as u32) & 0xc000_0000) == 0x800_00000
+    ((a as u32) & 0xc000_0000) == 0x8000_0000
 }
 
 pub const IN_CLASSB_NET: i32 = 0xffff_0000;

@@ -20,7 +20,7 @@ pub struct File {
 impl File {
     /// Open file readonly.
     pub fn open(path: &str) -> Result<File, crate::Errno> {
-        let fd: i32 = unsafe { crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0600)? };
+        let fd: i32 = unsafe { crate::openat(crate::AT_FDCWD, path, crate::O_RDONLY, 0o600)? };
 
         Ok(File { fd })
     }

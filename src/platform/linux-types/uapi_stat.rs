@@ -158,7 +158,7 @@ pub const STATX_TYPE: u32 = 0x0000_0001;
 /// Want/got stx_mode & ~S_IFMT
 pub const STATX_MODE: u32 = 0x0000_0002;
 /// Want/got stx_nlink
-pub const STATX_NLINK: u32 = 0x000_00004;
+pub const STATX_NLINK: u32 = 0x0000_0004;
 /// Want/got stx_uid
 pub const STATX_UID: u32 = 0x0000_0008;
 /// Want/got stx_gid
@@ -176,7 +176,7 @@ pub const STATX_SIZE: u32 = 0x0000_0200;
 /// Want/got stx_blocks
 pub const STATX_BLOCKS: u32 = 0x0000_0400;
 /// The stuff in the normal stat struct
-pub const STATX_BASIC_STATS: u32 = 0x000_007ff;
+pub const STATX_BASIC_STATS: u32 = 0x0000_07ff;
 /// Want/got stx_btime
 pub const STATX_BTIME: u32 = 0x0000_0800;
 /// All currently supported flags

@@ -31,14 +31,14 @@ pub const IST_INDEX_VC: i32 = 4;
 /// The gap is to allow a space for LDT remap for PTI (1 pgd slot) and space for
 /// a hypervisor (16 slots). Choosing 16 slots for a hypervisor is arbitrary,
 /// but it's what Xen requires.
-pub const __PAGE_OFFSET_BASE_L5: usize = 0xff11000000000000;
-pub const __PAGE_OFFSET_BASE_L4: usize = 0xffff888000000000;
+pub const __PAGE_OFFSET_BASE_L5: usize = 0xff11_0000_0000_0000;
+pub const __PAGE_OFFSET_BASE_L4: usize = 0xffff_8880_0000_0000;
 
 // TODO(Shaohua): Handles #ifdef CONFIG_DYNAMIC_MEMORY_LAYOUT
 pub const __PAGE_OFFSET: usize = __PAGE_OFFSET_BASE_L4;
 //pub const __PAGE_OFFSET: usize = page_offset_base;
 
-pub const __START_KERNEL_MAP: usize = 0xf_fff_fff_f80_000_000;
+pub const __START_KERNEL_MAP: usize = 0xffff_ffff_8000_0000;
 
 /// See Documentation/x86/x86_64/mm.rst for a description of the memory map.
 pub const __PHYSICAL_MASK_SHIFT: i32 = 52;

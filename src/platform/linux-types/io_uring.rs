@@ -206,8 +206,8 @@ pub const IORING_CQE_BUFFER_SHIFT: i32 = 16;
 
 /// Magic offsets for the application to mmap the data it needs
 pub const IORING_OFF_SQ_RING: off_t = 0;
-pub const IORING_OFF_CQ_RING: off_t = 0x8_000_000;
-pub const IORING_OFF_SQES: off_t = 0x10_000_000;
+pub const IORING_OFF_CQ_RING: off_t = 0x0800_0000;
+pub const IORING_OFF_SQES: off_t = 0x1000_0000;
 
 /// Filled with the offset for mmap(2)
 #[repr(C)]

@@ -317,21 +317,21 @@ pub const MSG_NOSIGNAL: i32 = 0x4000;
 /// Sender will send more
 pub const MSG_MORE: i32 = 0x8000;
 /// recvmmsg(): block until 1+ packets avail
-pub const MSG_WAITFORONE: i32 = 0x10_000;
+pub const MSG_WAITFORONE: i32 = 0x10000;
 /// sendpage() internal : do no apply policy
-pub const MSG_SENDPAGE_NOPOLICY: i32 = 0x10_000;
+pub const MSG_SENDPAGE_NOPOLICY: i32 = 0x10000;
 /// sendpage() internal : not the last page
-pub const MSG_SENDPAGE_NOTLAST: i32 = 0x20_000;
+pub const MSG_SENDPAGE_NOTLAST: i32 = 0x20000;
 /// sendmmsg(): more messages coming
-pub const MSG_BATCH: i32 = 0x40_000;
+pub const MSG_BATCH: i32 = 0x40000;
 pub const MSG_EOF: i32 = MSG_FIN;
 /// sendpage() internal : page frags are not shared
-pub const MSG_NO_SHARED_FRAGS: i32 = 0x80_000;
+pub const MSG_NO_SHARED_FRAGS: i32 = 0x80000;
 /// sendpage() internal : page may carry plain text and require encryption
-pub const MSG_SENDPAGE_DECRYPTED: i32 = 0x100_000;
+pub const MSG_SENDPAGE_DECRYPTED: i32 = 0x100000;
 
 /// Use user data in kernel path
-pub const MSG_ZEROCOPY: i32 = 0x400_0000;
+pub const MSG_ZEROCOPY: i32 = 0x0400_0000;
 /// Send data in TCP SYN
 pub const MSG_FASTOPEN: i32 = 0x2000_0000;
 /// Set close_on_exec for file descriptor received through SCM_RIGHTS

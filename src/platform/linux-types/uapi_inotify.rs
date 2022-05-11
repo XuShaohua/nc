@@ -62,20 +62,20 @@ pub const IN_CREATE: u32 = 0x0000_0100;
 pub const IN_DELETE: u32 = 0x0000_0200;
 
 /// Self was deleted
-pub const IN_DELETE_SELF: u32 = 0x000_00400;
+pub const IN_DELETE_SELF: u32 = 0x0000_0400;
 
 /// Self was moved
 pub const IN_MOVE_SELF: u32 = 0x0000_0800;
 
 /// the following are legal events.  they are sent as needed to any watch
 /// Backing fs was unmounted
-pub const IN_UNMOUNT: u32 = 0x000_02000;
+pub const IN_UNMOUNT: u32 = 0x0000_2000;
 
 /// Event queued overflowed
-pub const IN_Q_OVERFLOW: u32 = 0x000_04000;
+pub const IN_Q_OVERFLOW: u32 = 0x0000_4000;
 
 /// File was ignored
-pub const IN_IGNORED: u32 = 0x000_08000;
+pub const IN_IGNORED: u32 = 0x0000_8000;
 
 // helper events
 /// close

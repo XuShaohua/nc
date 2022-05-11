@@ -328,7 +328,7 @@ pub const MSG_EOF: i32 = MSG_FIN;
 /// sendpage() internal : page frags are not shared
 pub const MSG_NO_SHARED_FRAGS: i32 = 0x80000;
 /// sendpage() internal : page may carry plain text and require encryption
-pub const MSG_SENDPAGE_DECRYPTED: i32 = 0x100000;
+pub const MSG_SENDPAGE_DECRYPTED: i32 = 0x0010_0000;
 
 /// Use user data in kernel path
 pub const MSG_ZEROCOPY: i32 = 0x0400_0000;

@@ -4,21 +4,21 @@
 
 // From uapi/linux/wait.h
 
-pub const WNOHANG: i32 = 0x00000001;
-pub const WUNTRACED: i32 = 0x00000002;
+pub const WNOHANG: i32 = 0x0000_0001;
+pub const WUNTRACED: i32 = 0x000_00002;
 pub const WSTOPPED: i32 = WUNTRACED;
-pub const WEXITED: i32 = 0x00000004;
-pub const WCONTINUED: i32 = 0x00000008;
+pub const WEXITED: i32 = 0x0000_0004;
+pub const WCONTINUED: i32 = 0x0000_0008;
 /// Don't reap, just poll status.
-pub const WNOWAIT: i32 = 0x01000000;
+pub const WNOWAIT: i32 = 0x0100_0000;
 
 /// Don't wait on children of other threads in this group
-pub const __WNOTHREAD: i32 = 0x20000000;
+pub const __WNOTHREAD: i32 = 0x2000_0000;
 /// Wait on all children, regardless of type
-pub const __WALL: i32 = 0x40000000;
+pub const __WALL: i32 = 0x4000_0000;
 /// Wait only on non-SIGCHLD children
 #[allow(overflowing_literals)]
-pub const __WCLONE: i32 = 0x80000000;
+pub const __WCLONE: i32 = 0x8000_0000;
 
 /// First argument to waitid:
 pub const P_ALL: i32 = 0;

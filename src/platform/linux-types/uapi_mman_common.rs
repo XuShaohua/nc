@@ -17,9 +17,9 @@ pub const PROT_SEM: i32 = 0x8;
 /// page can not be accessed
 pub const PROT_NONE: i32 = 0x0;
 /// mprotect flag: extend change to start of growsdown vma
-pub const PROT_GROWSDOWN: i32 = 0x01000000;
+pub const PROT_GROWSDOWN: i32 = 0x0100_0000;
 /// mprotect flag: extend change to end of growsup vma
-pub const PROT_GROWSUP: i32 = 0x02000000;
+pub const PROT_GROWSUP: i32 = 0x0200_0000;
 
 /// 0x01 - 0x03 are defined in linux/mman.h
 /// Mask for type of mapping
@@ -31,20 +31,20 @@ pub const MAP_ANONYMOUS: i32 = 0x20;
 
 /// 0x0100 - 0x4000 flags are defined in asm-generic/mman.h
 /// populate (prefault) pagetables
-pub const MAP_POPULATE: i32 = 0x008000;
+pub const MAP_POPULATE: i32 = 0x0000_8000;
 /// do not block on IO
-pub const MAP_NONBLOCK: i32 = 0x010000;
+pub const MAP_NONBLOCK: i32 = 0x0001_0000;
 /// give out an address that is best suited for process/thread stacks
-pub const MAP_STACK: i32 = 0x020000;
+pub const MAP_STACK: i32 = 0x0002_0000;
 /// create a huge page mapping
-pub const MAP_HUGETLB: i32 = 0x040000;
+pub const MAP_HUGETLB: i32 = 0x0004_0000;
 /// perform synchronous page faults for the mapping
-pub const MAP_SYNC: i32 = 0x080000;
+pub const MAP_SYNC: i32 = 0x0008_0000;
 /// MAP_FIXED which doesn't unmap underlying mapping
-pub const MAP_FIXED_NOREPLACE: i32 = 0x100000;
+pub const MAP_FIXED_NOREPLACE: i32 = 0x0010_0000;
 
 /// For anonymous mmap, memory could be uninitialized
-pub const MAP_UNINITIALIZED: i32 = 0x4000000;
+pub const MAP_UNINITIALIZED: i32 = 0x0400_0000;
 
 /// Flags for mlock
 /// Lock pages in range after they are faulted in, do not prefault

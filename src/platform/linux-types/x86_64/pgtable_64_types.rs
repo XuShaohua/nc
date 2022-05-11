@@ -59,14 +59,14 @@ pub const LDT_PGD_ENTRY: usize = -240isize as usize;
 pub const LDT_BASE_ADDR: usize = LDT_PGD_ENTRY << PGDIR_SHIFT;
 pub const LDT_END_ADDR: usize = LDT_BASE_ADDR + PGDIR_SIZE;
 
-pub const __VMALLOC_BASE_L4: usize = 0xffffc90000000000;
-pub const __VMALLOC_BASE_L5: usize = 0xffa0000000000000;
+pub const __VMALLOC_BASE_L4: usize = 0xffff_c900_0000_0000;
+pub const __VMALLOC_BASE_L5: usize = 0xffa0_0000_0000_0000;
 
 pub const VMALLOC_SIZE_TB_L4: usize = 32;
 pub const VMALLOC_SIZE_TB_L5: usize = 12800;
 
-pub const __VMEMMAP_BASE_L4: usize = 0xffffea0000000000;
-pub const __VMEMMAP_BASE_L5: usize = 0xffd4000000000000;
+pub const __VMEMMAP_BASE_L4: usize = 0xffff_ea00_0000_0000;
+pub const __VMEMMAP_BASE_L5: usize = 0xffd4_0000_0000_0000;
 
 // #ifdef CONFIG_DYNAMIC_MEMORY_LAYOUT
 // # define VMALLOC_START		vmalloc_base

@@ -44,15 +44,15 @@ pub const PR_SET_FPEXC: i32 = 12;
 /// Use FPEXC for FP exception enables
 pub const PR_FP_EXC_SW_ENABLE: i32 = 0x80;
 /// floating point divide by zero
-pub const PR_FP_EXC_DIV: i32 = 0x010000;
+pub const PR_FP_EXC_DIV: i32 = 0x0001_0000;
 /// floating point overflow
-pub const PR_FP_EXC_OVF: i32 = 0x020000;
+pub const PR_FP_EXC_OVF: i32 = 0x0002_0000;
 /// floating point underflow
-pub const PR_FP_EXC_UND: i32 = 0x040000;
+pub const PR_FP_EXC_UND: i32 = 0x0004_0000;
 /// floating point inexact result
-pub const PR_FP_EXC_RES: i32 = 0x080000;
+pub const PR_FP_EXC_RES: i32 = 0x0008_0000;
 /// floating point invalid operation
-pub const PR_FP_EXC_INV: i32 = 0x100000;
+pub const PR_FP_EXC_INV: i32 = 0x0010_0000;
 /// FP exceptions disabled
 pub const PR_FP_EXC_DISABLED: i32 = 0;
 /// async non-recoverable exc. mode
@@ -177,7 +177,7 @@ pub struct prctl_mm_map_t {
 
 /// Set specific pid that is allowed to ptrace the current task.
 /// A value of 0 mean "no process".
-pub const PR_SET_PTRACER: i32 = 0x59616d61;
+pub const PR_SET_PTRACER: i32 = 0x5961_6d61;
 pub const PR_SET_PTRACER_ANY: u64 = u64::MAX; // ((unsigned long)-1);
 
 pub const PR_SET_CHILD_SUBREAPER: i32 = 36;

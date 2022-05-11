@@ -94,7 +94,7 @@ pub struct compat_statfs_t {
     pub f_spare: [i32; 4],
 }
 
-pub const COMPAT_RLIM_INFINITY: u32 = 0xffffffff;
+pub const COMPAT_RLIM_INFINITY: u32 = 0xffff_ffff;
 
 /// at least 32 bits
 pub type compat_old_sigset_t = u32;
@@ -104,7 +104,7 @@ pub const _COMPAT_NSIG_BPW: i32 = 32;
 
 pub type compat_sigset_word = u32;
 
-pub const COMPAT_OFF_T_MAX: u32 = 0x7fffffff;
+pub const COMPAT_OFF_T_MAX: u32 = 0x7fff_ffff;
 
 #[repr(C)]
 #[derive(Debug)]

@@ -21,7 +21,7 @@ pub struct sigset_t {
 }
 
 /// non-uapi in-kernel SA_FLAGS for those indicates ABI for a signal frame.
-pub const SA_IA32_ABI: u32 = 0x02000000;
-pub const SA_X32_ABI: u32 = 0x01000000;
+pub const SA_IA32_ABI: u32 = 0x0200_0000;
+pub const SA_X32_ABI: u32 = 0x0100_0000;
 
 pub type compat_sigset_t = sigset_t;

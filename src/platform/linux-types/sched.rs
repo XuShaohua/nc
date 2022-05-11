@@ -16,7 +16,7 @@ pub const CLONE_FILES: i32 = 0x0000_0400;
 /// set if signal handlers and blocked signals shared
 pub const CLONE_SIGHAND: i32 = 0x0000_0800;
 /// set if a pidfd should be placed in parent
-pub const CLONE_PIDFD: i32 = 0x00001000;
+pub const CLONE_PIDFD: i32 = 0x0000_1000;
 /// set if we want to let tracing continue on the child too
 pub const CLONE_PTRACE: i32 = 0x0000_2000;
 /// set if the parent wants the child to wake it up on mm_release
@@ -59,9 +59,9 @@ pub const CLONE_IO: i32 = 0x8000_0000;
 
 /// Flags for the clone3() syscall.
 /// Clear any signal handler and reset to SIG_DFL.
-pub const CLONE_CLEAR_SIGHAND: u64 = 0x1_0000_0000;
+pub const CLONE_CLEAR_SIGHAND: u64 = 0x0001_0000_0000;
 /// Clone into a specific cgroup given the right permissions.
-pub const CLONE_INTO_CGROUP: u64 = 0x200000000;
+pub const CLONE_INTO_CGROUP: u64 = 0x0002_0000_0000;
 
 /// cloning flags intersect with CSIGNAL so can be used with unshare and clone3()
 /// syscalls only:

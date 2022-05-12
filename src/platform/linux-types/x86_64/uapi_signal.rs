@@ -47,6 +47,8 @@ pub const SIGUNUSED: i32 = 31;
 
 /// These should not be considered constants from userland.
 pub const SIGRTMIN: i32 = 32;
+#[allow(clippy::cast_possible_truncation)]
+#[allow(clippy::cast_possible_wrap)]
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
 pub const SA_RESTORER: usize = 0x0400_0000;

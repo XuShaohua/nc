@@ -5,7 +5,7 @@
 //! From arch/x86/include/uapi/asm/ptrace-abi.h
 
 /// C ABI says these regs are callee-preserved. They aren't saved on kernel entry
-/// unless syscall needs a complete, fully filled "struct pt_regs".
+/// unless syscall needs a complete, fully filled `struct pt_regs`.
 pub const R15: i32 = 0;
 pub const R14: i32 = 8;
 pub const R13: i32 = 16;

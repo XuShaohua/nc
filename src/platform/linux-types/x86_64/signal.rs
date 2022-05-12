@@ -20,7 +20,7 @@ pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS],
 }
 
-/// non-uapi in-kernel SA_FLAGS for those indicates ABI for a signal frame.
+/// non-uapi in-kernel `SA_FLAGS` for those indicates ABI for a signal frame.
 pub const SA_IA32_ABI: u32 = 0x0200_0000;
 pub const SA_X32_ABI: u32 = 0x0100_0000;
 

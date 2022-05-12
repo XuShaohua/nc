@@ -4,6 +4,7 @@
 
 //! From arch/x86/include/uapi/asm/stat.h
 
+#[allow(clippy::module_name_repetitions)]
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct stat_t {

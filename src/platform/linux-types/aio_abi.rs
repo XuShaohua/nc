@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::fs::*;
+use super::fs::rwf_t;
 
 pub type aio_context_t = usize;
 
@@ -16,13 +16,13 @@ pub const IOCB_CMD_NOOP: i32 = 6;
 pub const IOCB_CMD_PREADV: i32 = 7;
 pub const IOCB_CMD_PWRITEV: i32 = 8;
 
-/// Valid flags for the "aio_flags" member of the "struct iocb".
-/// IOCB_FLAG_RESFD - Set if the "aio_resfd" member of the "struct iocb" is valid.
-/// IOCB_FLAG_IOPRIO - Set if the "aio_reqprio" member of the "struct iocb" is valid.
+/// Valid flags for the `aio_flags` member of the `struct iocb`.
+/// `IOCB_FLAG_RESFD` - Set if the `aio_resfd` member of the `struct iocb` is valid.
+/// `IOCB_FLAG_IOPRIO` - Set if the `aio_reqprio` member of the `struct iocb` is valid.
 pub const IOCB_FLAG_RESFD: i32 = 1;
 pub const IOCB_FLAG_IOPRIO: i32 = 1 << 1;
 
-/// read() from /dev/aio returns these structures.
+/// read() from `/dev/aio` returns these structures.
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct io_event_t {
@@ -39,9 +39,9 @@ pub struct io_event_t {
     pub res2: i64,
 }
 
-/// we always use a 64bit off_t when communicating
+/// we always use a 64bit `off_t` when communicating
 /// with userland.  its up to libraries to do the
-/// proper padding and aio_error abstraction
+/// proper padding and `aio_error` abstraction
 // TODO(Shaohua): Check int types to pre-defined types
 #[repr(C)]
 #[derive(Debug, Default)]
@@ -49,10 +49,10 @@ pub struct iocb_t {
     /// these are internal to the kernel/libc.
     /// data to be returned in event's data */
     pub aio_data: u64,
-    /// the kernel sets aio_key to the req #
+    /// the kernel sets `aio_key` to the req #
     pub aio_key: u32,
 
-    /// RWF_* flags
+    /// `RWF_*` flags
     pub aio_rw_flags: rwf_t,
 
     /// common fields
@@ -68,10 +68,10 @@ pub struct iocb_t {
     // TODO: use this for a (struct sigevent *)
     pub aio_reserved2: u64,
 
-    /// flags for the "struct iocb"
+    /// flags for the `struct iocb`
     pub aio_flags: u32,
 
-    /// If the IOCB_FLAG_RESFD flag of "aio_flags" is set, this is an eventfd
+    /// If the IOCB_FLAG_RESFD` flag of `aio_flags` is set, this is an eventfd
     /// to signal AIO readiness to
     pub aio_resfd: u32,
 }

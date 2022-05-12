@@ -5,6 +5,7 @@
 use super::{sigset_t, size_t};
 
 // FROM fs/aio.c
+#[allow(clippy::module_name_repetitions)]
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct aio_sigset_t {

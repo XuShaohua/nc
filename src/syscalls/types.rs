@@ -10,10 +10,17 @@ pub type Sysno = usize;
 
 pub const MAX_ERRNO: Errno = 4095;
 
+/// Check return value is error or not.
+///
+/// # Errors
+///
+/// Returns errno if system call fails.
 #[inline]
 pub const fn check_errno(ret: usize) -> Result<usize, Errno> {
+    #[allow(clippy::cast_possible_wrap)]
     let reti = ret as isize;
     if reti < 0 && reti >= (-MAX_ERRNO) as isize {
+        #[allow(clippy::cast_possible_truncation)]
         let reti = (-reti) as Errno;
         Err(reti)
     } else {

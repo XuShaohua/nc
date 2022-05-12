@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+use super::basic_types::mode_t;
 
 pub const S_IFMT: mode_t = 0o0_170_000;
 pub const S_IFSOCK: mode_t = 0o14_0000;
@@ -42,17 +42,16 @@ pub const S_IXOTH: mode_t = 0o0001;
 
 /// Timestamp structure for the timestamps in struct statx.
 ///
-/// tv_sec holds the number of seconds before (negative) or after (positive)
+/// `tv_sec` holds the number of seconds before (negative) or after (positive)
 /// 00:00:00 1st January 1970 UTC.
 ///
-/// tv_nsec holds a number of nanoseconds (0..999,999,999) after the tv_sec time.
-///
-/// reserved is held in case we need a yet finer resolution.
+/// `tv_nsec` holds a number of nanoseconds (0..999,999,999) after the `tv_sec` time.
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct statx_timestamp_t {
     pub tv_sec: i64,
     pub tv_nsec: u32,
+    // `reserved` is held in case we need a yet finer resolution.
     reserved: i32,
 }
 
@@ -60,8 +59,8 @@ pub struct statx_timestamp_t {
 /// (statx()).
 ///
 /// The caller passes a mask of what they're specifically interested in as a
-/// parameter to statx().  What statx() actually got will be indicated in
-/// st_mask upon return.
+/// parameter to `statx()`.  What `statx()` actually got will be indicated in
+/// `st_mask` upon return.
 ///
 /// For each bit in the mask argument:
 ///
@@ -76,7 +75,7 @@ pub struct statx_timestamp_t {
 ///
 /// - otherwise, if explicitly requested:
 ///
-/// - the datum will be synchronised to the server if AT_STATX_FORCE_SYNC is
+/// - the datum will be synchronised to the server if `AT_STATX_FORCE_SYNC` is
 ///   set or if the datum is considered out of date, and
 ///
 /// - the field will be filled in and the bit will be set;
@@ -88,7 +87,7 @@ pub struct statx_timestamp_t {
 ///
 /// - otherwise the field and the bit will be cleared before returning.
 ///
-/// Items in STATX_BASIC_STATS may be marked unavailable on return, but they
+/// Items in `STATX_BASIC_STATS` may be marked unavailable on return, but they
 /// will have values installed for compatibility purposes so that stat() and
 /// co. can be emulated in userspace.
 #[repr(C)]
@@ -147,44 +146,44 @@ pub struct statx_t {
     // 0x100
 }
 
-/// Flags to be stx_mask
+/// Flags to be `stx_mask`
 ///
-/// Query request/result mask for statx() and struct statx::stx_mask.
+/// Query request/result mask for `statx()` and struct `statx::stx_mask`.
 ///
-/// These bits should be set in the mask argument of statx() to request
-/// particular items when calling statx().
-/// Want/got stx_mode & S_IFMT
+/// These bits should be set in the mask argument of `statx()` to request
+/// particular items when calling `statx()`.
+/// Want/got `stx_mode & S_IFMT`
 pub const STATX_TYPE: u32 = 0x0000_0001;
-/// Want/got stx_mode & ~S_IFMT
+/// Want/got `stx_mode & ~S_IFMT`
 pub const STATX_MODE: u32 = 0x0000_0002;
-/// Want/got stx_nlink
+/// Want/got `stx_nlink`
 pub const STATX_NLINK: u32 = 0x0000_0004;
-/// Want/got stx_uid
+/// Want/got `stx_uid`
 pub const STATX_UID: u32 = 0x0000_0008;
-/// Want/got stx_gid
+/// Want/got `stx_gid`
 pub const STATX_GID: u32 = 0x0000_0010;
-/// Want/got stx_atime
+/// Want/got `stx_atime`
 pub const STATX_ATIME: u32 = 0x0000_0020;
-/// Want/got stx_mtime
+/// Want/got `stx_mtime`
 pub const STATX_MTIME: u32 = 0x0000_0040;
-/// Want/got stx_ctime
+/// Want/got `stx_ctime`
 pub const STATX_CTIME: u32 = 0x0000_0080;
-/// Want/got stx_ino
+/// Want/got `stx_ino`
 pub const STATX_INO: u32 = 0x0000_0100;
-/// Want/got stx_size
+/// Want/got `stx_size`
 pub const STATX_SIZE: u32 = 0x0000_0200;
-/// Want/got stx_blocks
+/// Want/got `stx_blocks`
 pub const STATX_BLOCKS: u32 = 0x0000_0400;
 /// The stuff in the normal stat struct
 pub const STATX_BASIC_STATS: u32 = 0x0000_07ff;
-/// Want/got stx_btime
+/// Want/got `stx_btime`
 pub const STATX_BTIME: u32 = 0x0000_0800;
 /// All currently supported flags
 pub const STATX_ALL: u32 = 0x0000_0fff;
 /// Reserved for future struct statx expansion
 pub const STATX__RESERVED: u32 = 0x8000_0000;
 
-/// Attributes to be found in stx_attributes and masked in stx_attributes_mask.
+/// Attributes to be found in `stx_attributes` and masked in stx_attributes_mask.
 ///
 /// These give information about the features or the state of a file that might
 /// be of use to ordinary userspace programs such as GUIs or ls rather than

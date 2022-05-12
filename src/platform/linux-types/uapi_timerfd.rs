@@ -2,18 +2,16 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::fcntl::*;
+use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
 
 // From uapi/linux/timerfd.h
 
 /// CAREFUL: Check include/asm-generic/fcntl.h when defining
-/// new flags, since they might collide with O_* ones. We want
-/// to re-use O_* flags that couldn't possibly have a meaning
-/// from eventfd, in order to leave a free define-space for
-/// shared O_* flags.
+/// new flags, since they might collide with `O_*` ones.
 ///
-/// Also make sure to update the masks in include/linux/timerfd.h
-/// when adding new flags.
+/// We want to re-use `O_*` flags that couldn't possibly have a meaning
+/// from eventfd, in order to leave a free define-space for
+/// shared `O_*` flags.
 pub const TFD_TIMER_ABSTIME: i32 = 1 << 0;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 pub const TFD_CLOEXEC: i32 = O_CLOEXEC;

@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+use super::basic_types::size_t;
 
 /// Berkeley style UIO structures
 #[repr(C)]
@@ -14,6 +14,6 @@ pub struct iovec_t {
     pub iov_len: size_t,
 }
 
-/// UIO_MAXIOV shall be at least 16 1003.1g (5.4.1.1)
+/// `UIO_MAXIOV` shall be at least 16 1003.1g (5.4.1.1)
 pub const UIO_FASTIOV: i32 = 8;
 pub const UIO_MAXIOV: i32 = 1024;

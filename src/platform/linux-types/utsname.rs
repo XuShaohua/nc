@@ -18,6 +18,7 @@ pub struct new_utsname_t {
     pub domainname: [u8; UTSNAME_LENGTH],
 }
 
+#[allow(clippy::module_name_repetitions)]
 pub type utsname_t = new_utsname_t;
 
 impl fmt::Debug for utsname_t {

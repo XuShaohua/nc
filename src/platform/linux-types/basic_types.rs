@@ -14,8 +14,8 @@ pub type daddr_t = i32;
 pub type uid32_t = u32;
 pub type gid32_t = u32;
 
-/// Most 32 bit architectures use "unsigned int" size_t,
-/// and all 64 bit architectures use "unsigned long" size_t.
+/// Most 32 bit architectures use `unsigned int` `size_t`,
+/// and all 64 bit architectures use `unsigned long` `size_t`.
 pub type size_t = usize;
 pub type ssize_t = isize;
 pub type ptrdiff_t = isize;
@@ -26,7 +26,7 @@ pub struct fsid_t {
     pub val: [i32; 2],
 }
 
-/// anything below here should be completely generic
+/// Anything below here should be completely generic.
 pub type off_t = isize;
 pub type loff_t = i64;
 pub type time_t = isize;
@@ -39,12 +39,12 @@ pub type gid16_t = u16;
 // END of posix_types.h
 
 // BEGIN of uapi/posix_types.h
-/// This allows for 1024 file descriptors: if NR_OPEN is ever grown
+/// This allows for 1024 file descriptors: if `NR_OPEN` is ever grown
 /// beyond that you'll have to change this too. But 1024 fd's seem to be
 /// enough even for such "real" unices like OSF/1, so hopefully this is
 /// one limit that doesn't have to be changed again.
 ///
-/// Note that POSIX wants the FD_CLEAR(fd,fdsetp) defines to be in
+/// Note that POSIX wants the `FD_CLEAR(fd,fdsetp)` defines to be in
 /// <sys/time.h> (and thus <linux/time.h>) - but this is a more logical
 /// place for them. Solved by having dummy defines in <sys/time.h>.
 
@@ -85,7 +85,7 @@ pub type nlink_t = u32;
 /// Linux always considers sectors to be 512 bytes long independently
 /// of the devices real block size.
 ///
-/// blkcnt_t is the type of the inode's block count.
+/// `blkcnt_t` is the type of the inode's block count.
 pub type sector_t = u64;
 pub type blkcnt_t = u64;
 

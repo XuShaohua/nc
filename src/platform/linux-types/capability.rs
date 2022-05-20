@@ -187,7 +187,7 @@ pub const CAP_SYS_PACCT: i32 = 20;
 /// Allow `mount()` and `umount()`, setting up new smb connection
 /// Allow some autofs root ioctls
 /// Allow nfsservctl
-/// Allow VM86_REQUEST_IRQ
+/// Allow `VM86_REQUEST_IRQ`
 /// Allow to read/write pci config on alpha
 /// Allow `irix_prctl` on mips (setstacksize)
 /// Allow flushing all cache on m68k (`sys_cacheflush`)

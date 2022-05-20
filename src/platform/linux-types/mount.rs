@@ -5,7 +5,7 @@
 /// These are the fs-independent mount-flags: up to 32 flags are supported
 ///
 /// Usage of these is restricted within the kernel to core mount(2) code and
-/// callers of sys_mount() only.  Filesystems should be using the SB_*
+/// callers of `sys_mount()` only.  Filesystems should be using the `SB_*`
 /// equivalent instead.
 
 /// Mount read-only
@@ -31,7 +31,7 @@ pub const MS_NODIRATIME: usize = 2048;
 pub const MS_BIND: usize = 4096;
 pub const MS_MOVE: usize = 8192;
 pub const MS_REC: usize = 16384;
-/// MS_VERBOSE is deprecated.
+/// `MS_VERBOSE` is deprecated.
 pub const MS_VERBOSE: usize = 32768;
 pub const MS_SILENT: usize = 32768;
 /// VFS does not apply the umask
@@ -46,9 +46,9 @@ pub const MS_SLAVE: usize = 1 << 19;
 pub const MS_SHARED: usize = 1 << 20;
 /// Update atime relative to mtime/ctime.
 pub const MS_RELATIME: usize = 1 << 21;
-/// this is a kern_mount call
+/// this is a `kern_mount` call
 pub const MS_KERNMOUNT: usize = 1 << 22;
-/// Update inode I_version field
+/// Update inode `I_version` field
 pub const MS_I_VERSION: usize = 1 << 23;
 /// Always perform atime updates
 pub const MS_STRICTATIME: usize = 1 << 24;
@@ -63,7 +63,7 @@ pub const MS_BORN: usize = 1 << 29;
 pub const MS_ACTIVE: usize = 1 << 30;
 pub const MS_NOUSER: usize = 1 << 31;
 
-///  Superblock flags that can be altered by MS_REMOUNT
+///  Superblock flags that can be altered by `MS_REMOUNT`
 pub const MS_RMT_MASK: usize =
     MS_RDONLY | MS_SYNCHRONOUS | MS_MANDLOCK | MS_I_VERSION | MS_LAZYTIME;
 

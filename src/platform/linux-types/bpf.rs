@@ -287,7 +287,7 @@ pub const BPF_ANY: i32 = 0;
 pub const BPF_NOEXIST: i32 = 1;
 /// update existing element
 pub const BPF_EXIST: i32 = 2;
-/// spin_lock-ed map_lookup/map_update
+/// spin_lock-ed `map_lookup/map_update`
 pub const BPF_F_LOCK: i32 = 4;
 
 /// flags for `BPF_MAP_CREATE` command
@@ -309,7 +309,7 @@ pub const BPF_OBJ_NAME_LEN: usize = 16;
 pub const BPF_F_RDONLY: i32 = 1 << 3;
 pub const BPF_F_WRONLY: i32 = 1 << 4;
 
-/// Flag for stack_map, store `build_id+offset` instead of pointer
+/// Flag for `stack_map`, store `build_id+offset` instead of pointer
 pub const BPF_F_STACK_BUILD_ID: i32 = 1 << 5;
 
 /// Zero-initialize hash function seed. This should only be used for testing.
@@ -1016,10 +1016,10 @@ pub union bpf_sock_ops_reply_t {
     pub replylong: [u32; 4],
 }
 
-/// User bpf_sock_ops struct to access socket values and specify request ops
+/// User `bpf_sock_ops` struct to access socket values and specify request ops
 /// and their replies.
 /// Some of this fields are in network (bigendian) byte order and may need
-/// to be converted before use (`bpf_ntohl()` defined in samples/bpf/bpf_endian.h).
+/// to be converted before use (`bpf_ntohl()` defined in `samples/bpf/bpf_endian.h`).
 /// New fields can only be added at the end of this structure
 #[repr(C)]
 pub struct bpf_sock_ops_t {
@@ -1089,7 +1089,7 @@ pub const BPF_SOCK_OPS_STATE_CB_FLAG: i32 = 1 << 2;
 /// Mask of all currently supported cb flags
 pub const BPF_SOCK_OPS_ALL_CB_FLAGS: i32 = 0x7;
 
-/// List of known BPF sock_ops operators.
+/// List of known BPF `sock_ops` operators.
 /// New entries can only be added at the end
 pub const BPF_SOCK_OPS_VOID: i32 = 0;
 
@@ -1126,12 +1126,12 @@ pub const BPF_SOCK_OPS_RTO_CB: i32 = 8;
 /// Called when skb is retransmitted.
 /// Arg1: sequence number of 1st byte
 /// Arg2: # segments
-/// Arg3: return value of tcp_transmit_skb (0 => success)
+/// Arg3: return value of `tcp_transmit_skb` (0 => success)
 pub const BPF_SOCK_OPS_RETRANS_CB: i32 = 9;
 
 /// Called when TCP changes state.
-/// Arg1: old_state
-/// Arg2: new_state
+/// Arg1: `old_state`
+/// Arg2: `new_state`
 pub const BPF_SOCK_OPS_STATE_CB: i32 = 10;
 
 /// Called on listen(2), right after socket transition to LISTEN state.
@@ -1140,7 +1140,7 @@ pub const BPF_SOCK_OPS_TCP_LISTEN_CB: i32 = 11;
 /// List of TCP states. There is a build check in net/ipv4/tcp.c to detect
 /// changes between the TCP and BPF versions. Ideally this should never happen.
 /// If it does, we need to add code to convert them before calling
-/// the BPF sock_ops function.
+/// the BPF `sock_ops` function.
 pub const BPF_TCP_ESTABLISHED: i32 = 1;
 pub const BPF_TCP_SYN_SENT: i32 = 2;
 pub const BPF_TCP_SYN_RECV: i32 = 3;
@@ -1159,7 +1159,7 @@ pub const BPF_TCP_MAX_STATES: i32 = 13;
 
 /// Set TCP initial congestion window
 pub const TCP_BPF_IW: i32 = 1001;
-/// Set sndcwnd_clamp
+/// Set `sndcwnd_clamp`
 pub const TCP_BPF_SNDCWND_CLAMP: i32 = 1002;
 
 #[repr(C)]

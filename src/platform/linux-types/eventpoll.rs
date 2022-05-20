@@ -2,13 +2,13 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::fcntl::*;
+use super::basic_types::poll_t;
+use super::fcntl::O_CLOEXEC;
 
-/// Flags for epoll_create1.
+/// Flags for `epoll_create1()`.
 pub const EPOLL_CLOEXEC: i32 = O_CLOEXEC;
 
-/// Valid opcodes to issue to sys_epoll_ctl()
+/// Valid opcodes to issue to `sys_epoll_ctl()`
 pub const EPOLL_CTL_ADD: i32 = 1;
 pub const EPOLL_CTL_DEL: i32 = 2;
 pub const EPOLL_CTL_MOD: i32 = 3;
@@ -33,11 +33,11 @@ pub const EPOLLEXCLUSIVE: poll_t = 1 << 28;
 /// Request the handling of system wakeup events so as to prevent system suspends
 /// from happening while those events are being processed.
 ///
-/// Assuming neither EPOLLET nor EPOLLONESHOT is set, system suspends will not be
-/// re-allowed until epoll_wait is called again after consuming the wakeup
+/// Assuming neither `EPOLLET` nor `EPOLLONESHOT` is set, system suspends will not be
+/// re-allowed until `epoll_wait` is called again after consuming the wakeup
 /// event(s).
 ///
-/// Requires CAP_BLOCK_SUSPEND
+/// Requires `CAP_BLOCK_SUSPEND`
 pub const EPOLLWAKEUP: poll_t = 1 << 29;
 
 /// Set the One Shot behaviour for the target file descriptor

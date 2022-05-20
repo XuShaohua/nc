@@ -8,14 +8,14 @@
 /// sending patches for review to linux-fsdevel@vger.kernel.org and
 /// linux-api@vger.kernel.org.
 
-/// Use of MS_* flags within the kernel is restricted to core mount(2) code.
+/// Use of MS_* flags within the kernel is restricted to core `mount(2)` code.
 
-/// It's silly to have NR_OPEN bigger than NR_FILE, but you can change
+/// It's silly to have `NR_OPEN` bigger than `NR_FILE`, but you can change
 /// the file limit at runtime and only root can increase the per-process
-/// nr_file rlimit, so it's safe to set up a ridiculously high absolute
+/// `nr_file` rlimit, so it's safe to set up a ridiculously high absolute
 /// upper limit on files-per-process.
 ///
-/// Some programs (notably those using select()) may have to be
+/// Some programs (notably those using `select()`) may have to be
 /// ecompiled to take full advantage of the new limits..  
 
 /// Fixed constants first:
@@ -67,7 +67,7 @@ pub struct fstrim_range_t {
 pub const FILE_DEDUPE_RANGE_SAME: i32 = 0;
 pub const FILE_DEDUPE_RANGE_DIFFERS: i32 = 1;
 
-/// from struct btrfs_ioctl_file_extent_same_info
+/// from struct `btrfs_ioctl_file_extent_same_info`
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct file_dedupe_range_info_t {
@@ -78,16 +78,16 @@ pub struct file_dedupe_range_info_t {
     /// out - total # of bytes we were able to dedupe from this file.
     pub bytes_deduped: u64,
     /// status of this dedupe operation:
-    /// < 0 for error
-    /// == FILE_DEDUPE_RANGE_SAME if dedupe succeeds
-    /// == FILE_DEDUPE_RANGE_DIFFERS if data differs
+    /// - `< 0` for error
+    /// - `== FILE_DEDUPE_RANGE_SAME` if dedupe succeeds
+    /// - `== FILE_DEDUPE_RANGE_DIFFERS` if data differs
     /// out - see above description
     pub status: i32,
     /// must be zero
     pub reserved: u32,
 }
 
-/// from struct btrfs_ioctl_file_extent_same_args
+/// from struct `btrfs_ioctl_file_extent_same_args`
 #[repr(C)]
 #[derive(Debug)]
 pub struct file_dedupe_range_t {
@@ -144,7 +144,7 @@ pub struct fsxattr_t {
     fsx_pad: [u8; 8],
 }
 
-/// Flags for the fsx_xflags field
+/// Flags for the `fsx_xflags` field
 /// data in realtime volume
 pub const FS_XFLAG_REALTIME: i32 = 0x0000_0001;
 /// preallocated file extents
@@ -301,7 +301,7 @@ pub struct fscrypt_key_t {
     pub size: u32,
 }
 
-/// Inode flags (FS_IOC_GETFLAGS / FS_IOC_SETFLAGS)
+/// Inode flags (`FS_IOC_GETFLAGS` / `FS_IOC_SETFLAGS`)
 ///
 /// Note: for historical reasons, these flags were originally used and
 /// defined for use by ext2/ext3, and then other file systems started
@@ -312,14 +312,10 @@ pub struct fscrypt_key_t {
 /// as the UAPI and the on-disk encoding for ext2/3/4.  Also, we are
 /// almost out of 32-bit flags.  :-)
 ///
-/// We have recently hoisted FS_IOC_FSGETXATTR / FS_IOC_FSSETXATTR from
+/// We have recently hoisted `FS_IOC_FSGETXATTR` / `FS_IOC_FSSETXATTR` from
 /// XFS to the generic FS level interface.  This uses a structure that
 /// has padding and hence has more room to grow, so it may be more
 /// appropriate for many new use cases.
-///
-/// Please do not change these flags or interfaces before checking with
-/// linux-fsdevel@vger.kernel.org and linux-api@vger.kernel.org.
-/// Secure deletion
 pub const FS_SECRM_FL: i32 = 0x0000_0001;
 /// Undelete
 pub const FS_UNRM_FL: i32 = 0x0000_0002;
@@ -385,7 +381,7 @@ pub const SYNC_FILE_RANGE_WAIT_BEFORE: i32 = 1;
 pub const SYNC_FILE_RANGE_WRITE: i32 = 2;
 pub const SYNC_FILE_RANGE_WAIT_AFTER: i32 = 4;
 
-/// Flags for preadv2/pwritev2:
+/// Flags for `preadv2/pwritev2`:
 pub type rwf_t = i32;
 
 /// high priority request, poll if possible
@@ -397,10 +393,10 @@ pub const RWF_DSYNC: rwf_t = 0x0000_0002;
 /// per-IO O_SYNC
 pub const RWF_SYNC: rwf_t = 0x0000_0004;
 
-/// per-IO, return -EAGAIN if operation would block
+/// per-IO, return `-EAGAIN` if operation would block
 pub const RWF_NOWAIT: rwf_t = 0x0000_0008;
 
-/// per-IO O_APPEND
+/// per-IO `O_APPEND`
 pub const RWF_APPEND: rwf_t = 0x0000_0010;
 
 /// mask of flags supported by the kernel

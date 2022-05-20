@@ -22,7 +22,7 @@ pub const O_NOCTTY: i32 = 0o000_0400;
 pub const O_TRUNC: i32 = 0o000_1000;
 pub const O_APPEND: i32 = 0o000_2000;
 pub const O_NONBLOCK: i32 = 0o000_4000;
-/// used to be O_SYNC, see below
+/// used to be `O_SYNC`, see below
 pub const O_DSYNC: i32 = 0o001_0000;
 /// fcntl, for BSD compatibility
 pub const FASYNC: i32 = 0o002_0000;
@@ -46,17 +46,17 @@ pub const O_NOATIME: i32 = 0o100_0000;
 /// set close_on_exec
 pub const O_CLOEXEC: i32 = 0o200_0000;
 
-///  Before Linux 2.6.33 only O_DSYNC semantics were implemented, but using
-/// the O_SYNC flag.  We continue to use the existing numerical value
-/// for O_DSYNC semantics now, but using the correct symbolic name for it.
-/// This new value is used to request true Posix O_SYNC semantics.  It is
+/// Before Linux 2.6.33 only O_DSYNC semantics were implemented, but using
+/// the `O_SYNC` flag. We continue to use the existing numerical value
+/// for `O_DSYNC` semantics now, but using the correct symbolic name for it.
+/// This new value is used to request true Posix `O_SYNC` semantics.  It is
 /// defined in this strange way to make sure applications compiled against
-/// new headers get at least O_DSYNC semantics on older kernels.
+/// new headers get at least `O_DSYNC` semantics on older kernels.
 ///
-/// This has the nice side-effect that we can simply test for O_DSYNC
-/// wherever we do not care if O_DSYNC or O_SYNC is used.
+/// This has the nice side-effect that we can simply test for `O_DSYNC`
+/// wherever we do not care if `O_DSYNC` or `O_SYNC` is used.
 ///
-/// Note: __O_SYNC must never be used directly.
+/// Note: `__O_SYNC` must never be used directly.
 pub const __O_SYNC: i32 = 0o400_0000;
 pub const O_SYNC: i32 = __O_SYNC | O_DSYNC;
 
@@ -95,12 +95,12 @@ pub const F_GETOWNER_UIDS: i32 = 17;
 
 /// Open File Description Locks
 ///
-/// Usually record locks held by a process are released on *any* close and are
-/// not inherited across a fork().
+/// Usually record locks held by a process are released on <b>any</b> close and are
+/// not inherited across a `fork()`.
 ///
 /// These cmd values will set locks that conflict with process-associated
 /// record  locks, but are "owned" by the open file description, not the
-/// process. This means that they are inherited across fork() like BSD (flock)
+/// process. This means that they are inherited across `fork()` like BSD (flock)
 /// locks, and they are only released automatically when the last reference to
 /// the the open file against which they were acquired is put.
 pub const F_OFD_GETLK: i32 = 36;
@@ -118,21 +118,21 @@ pub struct f_owner_ex_t {
     pub pid: pid_t,
 }
 
-/// for F_[GET|SET]FL
+/// For `F_[GET|SET]FL`
+///
 /// actually anything with low bit set goes
 pub const FD_CLOEXEC: i32 = 1;
 
-/// for posix fcntl() and lockf()
+/// for posix `fcntl()` and `lockf()`
 pub const F_RDLCK: i32 = 0;
 pub const F_WRLCK: i32 = 1;
 pub const F_UNLCK: i32 = 2;
 
-/// for old implementation of bsd flock ()
+/// for old implementation of bsd `flock()`
 pub const F_EXLCK: i32 = 4; // or 3
 pub const F_SHLCK: i32 = 8; // or 4
 
-/// operations for bsd flock(), also used by the kernel implementation
-/// shared lock
+/// operations for bsd `flock()`, also used by the kernel implementation shared lock
 pub const LOCK_SH: i32 = 1;
 /// exclusive lock
 pub const LOCK_EX: i32 = 2;

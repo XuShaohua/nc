@@ -2,11 +2,12 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::super::types::*;
+use super::super::basic_types::{gid_t, ino_t, mode_t, off_t, uid_t};
 
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct stat_t {
     pub st_dev: usize,
     pub st_ino: ino_t,

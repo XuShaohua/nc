@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use crate::types::types::be32_t;
+use super::super::basic_types::be32_t;
 
 /// Definitions for talking to the RTAS on CHRP machines.
 

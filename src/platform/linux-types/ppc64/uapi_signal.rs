@@ -4,9 +4,7 @@
 
 //! From `arch/powerpc/include/uapi/asm/signal.h`
 
-use core::fmt;
-
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
+use crate::{sighandler_t, sigrestore_t, size_t};
 
 pub const _NSIG: usize = 64;
 pub const _NSIG_BPW: usize = 64;

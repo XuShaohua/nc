@@ -12,6 +12,9 @@ pub const MAX_ERRNO: Errno = 4095;
 
 /// Check return value is error or not.
 ///
+/// Returning from the syscall, a value in the range between -4095 and -1 indicates an error,
+/// it is -errno.
+///
 /// # Errors
 ///
 /// Returns errno if system call fails.

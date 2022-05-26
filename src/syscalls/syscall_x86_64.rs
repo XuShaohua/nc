@@ -26,8 +26,8 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     asm!("syscall",
         in("rax") n,
         in("rdi") a1,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
+        out("rcx") _,
+        out("r11") _,
         lateout("rax") ret,
     );
     check_errno(ret)
@@ -40,8 +40,8 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
         in("rax") n,
         in("rdi") a1,
         in("rsi") a2,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
+        out("rcx") _,
+        out("r11") _,
         lateout("rax") ret,
     );
     check_errno(ret)
@@ -55,8 +55,8 @@ pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usiz
         in("rdi") a1,
         in("rsi") a2,
         in("rdx") a3,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
+        out("rcx") _,
+        out("r11") _,
         lateout("rax") ret,
     );
     check_errno(ret)
@@ -77,8 +77,8 @@ pub unsafe fn syscall4(
         in("rsi") a2,
         in("rdx") a3,
         in("r10") a4,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
+        out("rcx") _,
+        out("r11") _,
         lateout("rax") ret,
     );
     check_errno(ret)
@@ -101,8 +101,8 @@ pub unsafe fn syscall5(
         in("rdx") a3,
         in("r10") a4,
         in("r8") a5,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
+        out("rcx") _,
+        out("r11") _,
         lateout("rax") ret,
     );
     check_errno(ret)
@@ -127,8 +127,8 @@ pub unsafe fn syscall6(
         in("r10") a4,
         in("r8") a5,
         in("r9") a6,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
+        out("rcx") _,
+        out("r11") _,
         lateout("rax") ret,
     );
     check_errno(ret)

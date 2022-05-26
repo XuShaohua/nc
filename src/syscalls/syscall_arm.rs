@@ -4,59 +4,53 @@
 
 #![allow(clippy::missing_safety_doc)]
 
+use core::arch::asm;
+
 use super::types::*;
 
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    unsafe {
-        llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n)
-         : "memory" "cc"
-         : "volatile");
-    }
+    asm!("swi 0",
+         in("r7") n,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    unsafe {
-        llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n),
-           "{r0}"(a1)
-         : "memory" "cc"
-         : "volatile");
-    }
+    asm!("swi 0",
+         in("r7") n,
+         in("r0") a1,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n),
-           "{r0}"(a1),
-           "{r1}"(a2)
-         : "memory" "cc"
-         : "volatile");
+    asm!("swi 0",
+         in("r7") n,
+         in("r0") a1,
+         in("r1") a2,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n),
-           "{r0}"(a1),
-           "{r1}"(a2),
-           "{r2}"(a3)
-         : "memory" "cc"
-         : "volatile");
+    asm!("swi 0",
+         in("r7") n,
+         in("r0") a1,
+         in("r1") a2,
+         in("r2") a3,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }
 
@@ -69,15 +63,14 @@ pub unsafe fn syscall4(
     a4: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n),
-           "{r0}"(a1),
-           "{r1}"(a2),
-           "{r2}"(a3),
-           "{r3}"(a4)
-         : "memory" "cc"
-         : "volatile");
+    asm!("swi 0",
+         in("r7") n,
+         in("r0") a1,
+         in("r1") a2,
+         in("r2") a3,
+         in("r3") a4,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }
 
@@ -91,16 +84,15 @@ pub unsafe fn syscall5(
     a5: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n),
-           "{r0}"(a1),
-           "{r1}"(a2),
-           "{r2}"(a3),
-           "{r3}"(a4),
-           "{r4}"(a5)
-         : "memory" "cc"
-         : "volatile");
+    asm!("swi 0",
+         in("r7") n,
+         in("r0") a1,
+         in("r1") a2,
+         in("r2") a3,
+         in("r3") a4,
+         in("r4") a5,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }
 
@@ -115,16 +107,15 @@ pub unsafe fn syscall6(
     a6: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("swi 0"
-         : "={r0}"(ret)
-         : "{r7}"(n),
-           "{r0}"(a1),
-           "{r1}"(a2),
-           "{r2}"(a3),
-           "{r3}"(a4),
-           "{r4}"(a5),
-           "{r5}"(a6)
-         : "memory" "cc"
-         : "volatile");
+    asm!("swi 0",
+         in("r7") n,
+         in("r0") a1,
+         in("r1") a2,
+         in("r2") a3,
+         in("r3") a4,
+         in("r4") a5,
+         in("r5") a6,
+         lateout("r0") ret,
+    );
     check_errno(ret)
 }

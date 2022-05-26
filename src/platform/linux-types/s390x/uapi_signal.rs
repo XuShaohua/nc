@@ -8,11 +8,12 @@
 
 use core::fmt;
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
+use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL};
 
 // TODO(Shaohua): Replace sigset_t with signal.rs
 pub const NSIG: usize = 32;
 pub type sigset_t = usize;
+pub type old_sigset_t = usize;
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
@@ -52,7 +53,7 @@ pub const SIGUNUSED: i32 = 31;
 
 /// These should not be considered constants from userland.
 pub const SIGRTMIN: i32 = 32;
-pub const SIGRTMAX: i32 = _NSIG as i32;
+pub const SIGRTMAX: i32 = NSIG as i32;
 
 pub const SA_RESTORER: usize = 0x04000000;
 
@@ -108,7 +109,7 @@ pub struct sigaction_t {
     /// Keep synched with rust-lang/libc.
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
-    pub sa_restorer: sigrestore_r,
+    pub sa_restorer: sigrestore_t,
     pub sa_mask: sigset_t,
 }
 

@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 #[repr(C)]
+#[derive(Debug, Default)]
 pub struct stat_t {
     pub st_dev: usize,
     pub st_ino: usize,

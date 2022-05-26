@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::super::types::*;
+use super::super::basic_types::{gid_t, ino_t, mode_t, off_t, time_t, uid_t};
 
 #[repr(C)]
 #[derive(Debug, Default)]

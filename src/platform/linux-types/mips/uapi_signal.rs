@@ -6,7 +6,7 @@
 
 use core::mem::size_of;
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL};
+use crate::{sighandler_t, size_t};
 
 pub const _NSIG: usize = 128;
 pub const _NSIG_BPW: usize = size_of::<usize>() * 8;

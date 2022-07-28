@@ -146,7 +146,7 @@ pub fn read_syscall_list() -> Result<Syscalls, Errno> {
 
 pub fn pause() -> Result<(), crate::Errno> {
     // ppoll(0, 0, 0, 0) in C.
-    #[cfg(target_arch = "aarch64")]
+    #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
     let ret = unsafe {
         crate::ppoll(
             &mut crate::pollfd_t::default(),
@@ -158,14 +158,18 @@ pub fn pause() -> Result<(), crate::Errno> {
         .map(drop)
     };
 
-    #[cfg(not(target_arch = "aarch64"))]
+    #[cfg(not(any(target_arch = "aarch64", target_arch = "loongarch64")))]
     let ret = unsafe { crate::pause() };
 
     ret
 }
 
 pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
-    #[cfg(any(target_arch = "aarch64", target_arch = "arm"))]
+    #[cfg(any(
+        target_arch = "aarch64",
+        target_arch = "arm",
+        target_arch = "loongarch64"
+    ))]
     let remaining = {
         let mut it = crate::itimerval_t::default();
         it.it_value.tv_sec = seconds as isize;
@@ -174,7 +178,11 @@ pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
         (old.it_value.tv_sec + !!old.it_value.tv_usec) as u32
     };
 
-    #[cfg(not(any(target_arch = "aarch64", target_arch = "arm")))]
+    #[cfg(not(any(
+        target_arch = "aarch64",
+        target_arch = "arm",
+        target_arch = "loongarch64"
+    )))]
     let remaining = unsafe { crate::alarm(seconds) };
 
     Ok(remaining)

@@ -101,6 +101,7 @@ As `llvm_asm!` feature is unavailable in stable version.
   - x86-64
   - arm
   - aarch64
+  - loongarch64
   - mips
   - mipsel
   - mips64

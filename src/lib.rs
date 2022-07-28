@@ -156,6 +156,10 @@ mod platform;
 #[path = "platform/linux-arm/mod.rs"]
 mod platform;
 
+#[cfg(all(target_os = "linux", target_arch = "loongarch64"))]
+#[path = "platform/linux-loongarch64/mod.rs"]
+mod platform;
+
 #[cfg(all(target_os = "linux", target_arch = "mips"))]
 #[path = "platform/linux-mips/mod.rs"]
 mod platform;

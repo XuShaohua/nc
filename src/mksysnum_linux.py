@@ -91,6 +91,16 @@ DEFINES = {
         ],
         "sysno": "/usr/x86_64-linux-gnu/include/asm/unistd.h",
     },
+    "loongarch64": {
+        "compiler": "gcc",
+        "deb": ["linux-libc-dev", "gcc"],
+        "include": "/usr/include",
+        "errno": [
+            "/usr/include/asm-generic/errno-base.h",
+            "/usr/include/asm-generic/errno.h",
+        ],
+        "sysno": "/usr/include/loongarch64-linux-gnu/asm/unistd.h",
+    },
 }
 
 def read_errno(arch_name):

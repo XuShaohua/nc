@@ -18,6 +18,11 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
+#[cfg(target_arch = "loongarch64")]
+#[path = "loongarch64/mod.rs"]
+mod arch;
+pub use arch::*;
+
 #[cfg(target_arch = "mips")]
 #[path = "mips/mod.rs"]
 mod arch;

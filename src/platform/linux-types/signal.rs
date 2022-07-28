@@ -50,9 +50,7 @@ pub const SIGUNUSED: i32 = 31;
 pub const SIGRTMIN: i32 = 32;
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
-#[cfg(not(target_arch = "aarch64"))]
 pub const MINSIGSTKSZ: usize = 2048;
-#[cfg(not(target_arch = "aarch64"))]
 pub const SIGSTKSZ: usize = 8192;
 
 #[repr(C)]
@@ -65,7 +63,6 @@ pub struct sigset_t {
 pub type old_sigset_t = usize;
 
 // No SA_RESTORER
-#[cfg(any(target_arch = "aarch64"))]
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct sigaction_t {

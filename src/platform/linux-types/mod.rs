@@ -56,10 +56,15 @@ pub use arch::*;
 mod page;
 pub use page::*;
 
-#[cfg(target_arch = "aarch64")]
+#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
 mod signal;
-#[cfg(target_arch = "aarch64")]
+#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
 pub use signal::*;
+
+#[cfg(target_arch = "loongarch64")]
+mod stat;
+#[cfg(target_arch = "loongarch64")]
+pub use stat::*;
 
 mod aio;
 mod aio_abi;

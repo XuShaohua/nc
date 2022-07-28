@@ -4,6 +4,10 @@
 
 use core::mem::size_of;
 
+fn main() {
+    run_main();
+}
+
 fn handle_alarm(signum: i32) {
     assert_eq!(signum, nc::SIGALRM);
     //let msg = "Hello alarm\n";
@@ -11,7 +15,11 @@ fn handle_alarm(signum: i32) {
     //nc::exit(1);
 }
 
-fn main() {
+#[cfg(target_arch = "loongarch64")]
+fn run_main() {}
+
+#[cfg(not(target_arch = "loongarch64"))]
+fn run_main() {
     let sa = nc::sigaction_t {
         sa_handler: handle_alarm as nc::sighandler_t,
         sa_flags: nc::SA_RESTORER,

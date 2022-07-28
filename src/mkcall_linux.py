@@ -10,6 +10,18 @@ import subprocess
 import sys
 
 
+SUPPORTED_ARCHES = (
+    "aarch64",
+    "arm",
+    "loongarch64",
+    "mips",
+    "mips64",
+    "ppc64",
+    "s390x",
+    "x86",
+    "x86_64",
+)
+
 def parse_template():
     """Parse syscall template file.
 
@@ -121,8 +133,7 @@ def print_call(arch_name):
 
 def main():
     def handle_all_arch():
-        for arch_name in ["aarch64", "arm", "mips", "mips64","ppc64",
-                          "s390x", "x86", "x86_64"]:
+        for arch_name in SUPPORTED_ARCHES:
             print_call(arch_name)
 
     if len(sys.argv) == 1:

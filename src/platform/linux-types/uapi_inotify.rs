@@ -2,15 +2,13 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! Inode based directory notification for Linux
-//! Copyright (C) 2005 John McCutchan
-
 use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
 
-/// struct inotify_event - structure read from the inotify device for each event
+/// struct `inotify_event` - structure read from the inotify device for each event
 ///
 /// When you are watching a directory, you will receive the filename for events
-/// such as IN_CREATE, IN_DELETE, IN_OPEN, IN_CLOSE, ..., relative to the wd.
+/// such as `IN_CREATE`, `IN_DELETE`, `IN_OPEN`, `IN_CLOSE`, ...,
+/// relative to the wd.
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct inotify_event_t {
@@ -123,7 +121,7 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
     | IN_DELETE_SELF
     | IN_MOVE_SELF;
 
-/// Flags for sys_inotify_init1.
+/// Flags for `sys_inotify_init1`.
 pub const IN_CLOEXEC: i32 = O_CLOEXEC;
 pub const IN_NONBLOCK: i32 = O_NONBLOCK;
 

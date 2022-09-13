@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 #![allow(overflowing_literals)]
-use super::basic_types::*;
+use super::basic_types::size_t;
 
 /// kexec system call -  It loads the new kernel to boot into.
 /// kexec does not sync, or unmount filesystems so if you need
@@ -15,9 +15,10 @@ pub const KEXEC_PRESERVE_CONTEXT: i32 = 0x0000_0002;
 pub const KEXEC_ARCH_MASK: i32 = 0xffff_0000;
 
 /// Kexec file load interface flags.
-/// KEXEC_FILE_UNLOAD : Unload already loaded kexec/kdump image.
-/// KEXEC_FILE_ON_CRASH : Load/unload operation belongs to kdump image.
-/// KEXEC_FILE_NO_INITRAMFS : No initramfs is being loaded. Ignore the initrd
+///
+/// - `KEXEC_FILE_UNLOAD` : Unload already loaded kexec/kdump image.
+/// - `KEXEC_FILE_ON_CRASH` : Load/unload operation belongs to kdump image.
+/// - `KEXEC_FILE_NO_INITRAMFS` : No initramfs is being loaded. Ignore the initrd
 /// fd field.
 pub const KEXEC_FILE_UNLOAD: i32 = 0x0000_0001;
 pub const KEXEC_FILE_ON_CRASH: i32 = 0x0000_0002;
@@ -39,7 +40,7 @@ pub const KEXEC_ARCH_MIPS_LE: i32 = 10 << 16;
 pub const KEXEC_ARCH_MIPS: i32 = 8 << 16;
 pub const KEXEC_ARCH_AARCH64: i32 = 183 << 16;
 
-/// The artificial cap on the number of segments passed to kexec_load.
+/// The artificial cap on the number of segments passed to `kexec_load`.
 pub const KEXEC_SEGMENT_MAX: i32 = 16;
 
 /// This structure is used to hold the arguments that are used when

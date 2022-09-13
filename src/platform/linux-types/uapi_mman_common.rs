@@ -40,7 +40,7 @@ pub const MAP_STACK: i32 = 0x0002_0000;
 pub const MAP_HUGETLB: i32 = 0x0004_0000;
 /// perform synchronous page faults for the mapping
 pub const MAP_SYNC: i32 = 0x0008_0000;
-/// MAP_FIXED which doesn't unmap underlying mapping
+/// `MAP_FIXED` which doesn't unmap underlying mapping
 pub const MAP_FIXED_NOREPLACE: i32 = 0x0010_0000;
 
 /// For anonymous mmap, memory could be uninitialized
@@ -94,12 +94,12 @@ pub const MADV_NOHUGEPAGE: i32 = 15;
 
 /// Explicity exclude from the core dump, overrides the coredump filter bits
 pub const MADV_DONTDUMP: i32 = 16;
-/// Clear the MADV_DONTDUMP flag
+/// Clear the `MADV_DONTDUMP` flag
 pub const MADV_DODUMP: i32 = 17;
 
 /// Zero memory on fork, child only
 pub const MADV_WIPEONFORK: i32 = 18;
-/// Undo MADV_WIPEONFORK
+/// Undo `MADV_WIPEONFORK`
 pub const MADV_KEEPONFORK: i32 = 19;
 
 /// deactivate these pages

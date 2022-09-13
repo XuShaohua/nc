@@ -40,6 +40,7 @@ jobs:
     - uses: actions/checkout@v2
     - run: env
     - run: ls -l
+    - run: cargo clippy
     - run: cargo build --verbose
     - run: cargo doc --verbose
     - run: cargo test --verbose

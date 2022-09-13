@@ -165,6 +165,7 @@ pub const SER_ISO7816_ENABLED: i32 = 1;
 pub const SER_ISO7816_T_PARAM: i32 = 0x0f << 4;
 
 #[inline]
+#[must_use]
 pub const fn SER_ISO7816_T(t: i32) -> i32 {
     (t & 0x0f) << 4
 }

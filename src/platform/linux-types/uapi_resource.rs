@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::time::*;
+use super::time::timeval_t;
 
 /// Resource control/accounting header file for linux
 
@@ -13,7 +13,7 @@ use super::time::*;
 /// structure will lose.  This reduces the chances of that happening.
 pub const RUSAGE_SELF: i32 = 0;
 pub const RUSAGE_CHILDREN: i32 = -1;
-/// sys_wait4() uses this
+/// `sys_wait4()` uses this
 pub const RUSAGE_BOTH: i32 = -2;
 /// only the calling thread
 pub const RUSAGE_THREAD: i32 = 1;

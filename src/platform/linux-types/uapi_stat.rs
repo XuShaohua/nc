@@ -183,7 +183,7 @@ pub const STATX_ALL: u32 = 0x0000_0fff;
 /// Reserved for future struct statx expansion
 pub const STATX__RESERVED: u32 = 0x8000_0000;
 
-/// Attributes to be found in `stx_attributes` and masked in stx_attributes_mask.
+/// Attributes to be found in `stx_attributes` and masked in `stx_attributes_mask`.
 ///
 /// These give information about the features or the state of a file that might
 /// be of use to ordinary userspace programs such as GUIs or ls rather than

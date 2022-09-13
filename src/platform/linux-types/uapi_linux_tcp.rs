@@ -50,7 +50,7 @@ pub const TCP_REPAIR: i32 = 19;
 pub const TCP_REPAIR_QUEUE: i32 = 20;
 pub const TCP_QUEUE_SEQ: i32 = 21;
 pub const TCP_REPAIR_OPTIONS: i32 = 22;
-/// Enable FastOpen on listeners
+/// Enable `FastOpen` on listeners
 pub const TCP_FASTOPEN: i32 = 23;
 pub const TCP_TIMESTAMP: i32 = 24;
 /// limit number of unsent bytes in write queue
@@ -63,7 +63,7 @@ pub const TCP_SAVE_SYN: i32 = 27;
 pub const TCP_SAVED_SYN: i32 = 28;
 /// Get/set window parameters
 pub const TCP_REPAIR_WINDOW: i32 = 29;
-/// Attempt FastOpen with connect
+/// Attempt `FastOpen` with connect
 pub const TCP_FASTOPEN_CONNECT: i32 = 30;
 /// Attach a ULP to a TCP connection
 pub const TCP_ULP: i32 = 31;
@@ -87,7 +87,7 @@ pub const TCP_REPAIR_OFF: i32 = 0;
 /// Turn off without window probes
 pub const TCP_REPAIR_OFF_NO_WP: i32 = -1;
 
-/// for TCP_INFO socket option
+/// for `TCP_INFO` socket option
 pub const TCPI_OPT_TIMESTAMPS: i32 = 1;
 pub const TCPI_OPT_SACK: i32 = 2;
 pub const TCPI_OPT_WSCALE: i32 = 4;
@@ -98,10 +98,10 @@ pub const TCPI_OPT_ECN_SEEN: i32 = 16;
 /// SYN-ACK acked data in SYN sent or rcvd
 pub const TCPI_OPT_SYN_DATA: i32 = 32;
 
-/// for TCP_MD5SIG socket option
+/// for `TCP_MD5SIG` socket option
 pub const TCP_MD5SIG_MAXKEYLEN: i32 = 80;
 
-/// tcp_md5sig extension flags for TCP_MD5SIG_EXT
+/// `tcp_md5sig` extension flags for `TCP_MD5SIG_EXT`
 /// address prefix length
 pub const TCP_MD5SIG_FLAG_PREFIX: i32 = 0x1;
 /// ifindex set

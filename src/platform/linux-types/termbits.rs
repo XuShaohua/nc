@@ -8,6 +8,7 @@ pub type tcflag_t = u32;
 
 pub const NCCS: usize = 19;
 
+#[allow(clippy::module_name_repetitions)]
 #[repr(C)]
 #[derive(Default, Debug, Clone, Copy)]
 pub struct termios_t {
@@ -86,7 +87,7 @@ pub struct ktermios_t {
     pub c_ospeed: speed_t,
 }
 
-/// c_cc characters
+/// `c_cc` characters
 pub const VINTR: i32 = 0;
 pub const VQUIT: i32 = 1;
 pub const VERASE: i32 = 2;
@@ -105,7 +106,7 @@ pub const VWERASE: i32 = 14;
 pub const VLNEXT: i32 = 15;
 pub const VEOL2: i32 = 16;
 
-/// c_iflag bits
+/// `c_iflag` bits
 pub const IGNBRK: i32 = 0o000_001;
 pub const BRKINT: i32 = 0o000_002;
 pub const IGNPAR: i32 = 0o000_004;
@@ -122,7 +123,7 @@ pub const IXOFF: i32 = 0o010_000;
 pub const IMAXBEL: i32 = 0o020_000;
 pub const IUTF8: i32 = 0o040_000;
 
-/// c_oflag bits
+/// `c_oflag` bits
 pub const OPOST: i32 = 0o000_001;
 pub const OLCUC: i32 = 0o000_002;
 pub const ONLCR: i32 = 0o000_004;
@@ -155,8 +156,9 @@ pub const FFDLY: i32 = 0o100_000;
 pub const FF0: i32 = 0o000_000;
 pub const FF1: i32 = 0o100_000;
 
-/// c_cflag bit meaning
+/// `c_cflag` bit meaning
 pub const CBAUD: i32 = 0o010_017;
+
 /// hang up
 pub const B0: i32 = 0o000_000;
 pub const B50: i32 = 0o000_001;
@@ -216,7 +218,7 @@ pub const CRTSCTS: i32 = 0o20_000_000_000;
 /// Shift from CBAUD to CIBAUD
 pub const IBSHIFT: i32 = 16;
 
-/// c_lflag bits
+/// `c_lflag` bits
 pub const ISIG: i32 = 0o000_001;
 pub const ICANON: i32 = 0o000_002;
 pub const XCASE: i32 = 0o000_004;

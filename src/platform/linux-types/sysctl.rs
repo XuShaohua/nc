@@ -2,13 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+use super::basic_types::size_t;
 
 /// how many path components do we allow in a call to sysctl
 /// In other words, what is the largest acceptable value for the nlen member
-/// of a struct __sysctl_args to have?
+/// of a struct `sysctl_args_t` to have?
 pub const CTL_MAXNAME: i32 = 10;
 
+#[allow(clippy::module_name_repetitions)]
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct sysctl_args_t {
@@ -21,9 +22,8 @@ pub struct sysctl_args_t {
     unused: [usize; 4],
 }
 
-/// Define sysctl names first
-
 /// Top-level names:
+///
 /// General kernel info and control
 pub const CTL_KERN: i32 = 1;
 /// VM management
@@ -55,7 +55,7 @@ pub const CTL_PM: i32 = 9899;
 /// frv specific sysctls
 pub const CTL_FRV: i32 = 9898;
 
-/// CTL_BUS names:
+/// `CTL_BUS` names:
 pub const CTL_BUS_ISA: i32 = 1;
 
 /// /proc/sys/fs/inotify/
@@ -65,7 +65,8 @@ pub const INOTIFY_MAX_USER_INSTANCES: i32 = 1;
 pub const INOTIFY_MAX_USER_WATCHES: i32 = 2;
 pub const INOTIFY_MAX_QUEUED_EVENTS: i32 = 3;
 
-/// CTL_KERN names:
+/// `CTL_KERN` names:
+///
 /// string: system version
 pub const KERN_OSTYPE: i32 = 1;
 /// string: system release
@@ -174,7 +175,7 @@ pub const KERN_PRINTK_RATELIMIT: i32 = 60;
 pub const KERN_PRINTK_RATELIMIT_BURST: i32 = 61;
 /// dir: pty driver
 pub const KERN_PTY: i32 = 62;
-/// int: NGROUPS_MAX
+/// int: `NGROUPS_MAX`
 pub const KERN_NGROUPS_MAX: i32 = 63;
 /// int: serial console power-off halt
 pub const KERN_SPARC_SCONS_PWROFF: i32 = 64;
@@ -207,7 +208,8 @@ pub const KERN_PANIC_ON_WARN: i32 = 77;
 /// ulong: bitmask to print system info on panic
 pub const KERN_PANIC_PRINT: i32 = 78;
 
-/// CTL_VM names:
+/// `CTL_VM` names:
+///
 /// was: struct: Set vm swapping control
 pub const VM_UNUSED1: i32 = 1;
 /// was; int: Linear or sqrt() swapout for hogs
@@ -228,15 +230,15 @@ pub const VM_UNUSED8: i32 = 8;
 pub const VM_UNUSED9: i32 = 9;
 /// int: set number of pages to swap together
 pub const VM_PAGE_CLUSTER: i32 = 10;
-/// dirty_background_ratio
+/// `dirty_background_ratio`
 pub const VM_DIRTY_BACKGROUND: i32 = 11;
-/// dirty_ratio
+/// `dirty_ratio`
 pub const VM_DIRTY_RATIO: i32 = 12;
-/// dirty_writeback_centisecs
+/// `dirty_writeback_centisecs`
 pub const VM_DIRTY_WB_CS: i32 = 13;
-/// dirty_expire_centisecs
+/// `dirty_expire_centisecs`
 pub const VM_DIRTY_EXPIRE_CS: i32 = 14;
-/// nr_pdflush_threads
+/// `nr_pdflush_threads`
 pub const VM_NR_PDFLUSH_THREADS: i32 = 15;
 /// percent of RAM to allow overcommit in
 pub const VM_OVERCOMMIT_RATIO: i32 = 16;
@@ -266,7 +268,7 @@ pub const VM_LEGACY_VA_LAYOUT: i32 = 27;
 pub const VM_SWAP_TOKEN_TIMEOUT: i32 = 28;
 /// int: nuke lots of pagecache
 pub const VM_DROP_PAGECACHE: i32 = 29;
-/// int: fraction of pages in each percpu_pagelist
+/// int: fraction of pages in each `percpu_pagelist`
 pub const VM_PERCPU_PAGELIST_FRACTION: i32 = 30;
 /// reclaim local zone memory before going off node
 pub const VM_ZONE_RECLAIM_MODE: i32 = 31;
@@ -279,7 +281,7 @@ pub const VM_VDSO_ENABLED: i32 = 34;
 /// Percent pages ignored by zone reclaim
 pub const VM_MIN_SLAB: i32 = 35;
 
-/// CTL_NET names:
+/// `CTL_NET` names:
 pub const NET_CORE: i32 = 1;
 pub const NET_ETHER: i32 = 2;
 pub const NET_802: i32 = 3;
@@ -324,7 +326,7 @@ pub const NET_CORE_WMEM_MAX: i32 = 1;
 pub const NET_CORE_RMEM_MAX: i32 = 2;
 pub const NET_CORE_WMEM_DEFAULT: i32 = 3;
 pub const NET_CORE_RMEM_DEFAULT: i32 = 4;
-/// was NET_CORE_DESTROY_DELAY
+/// was `NET_CORE_DESTROY_DELAY`
 pub const NET_CORE_MAX_BACKLOG: i32 = 6;
 pub const NET_CORE_FASTROUTE: i32 = 7;
 pub const NET_CORE_MSG_COST: i32 = 8;
@@ -780,7 +782,8 @@ pub const NET_BRIDGE_NF_CALL_IP6TABLES: i32 = 3;
 pub const NET_BRIDGE_NF_FILTER_VLAN_TAGGED: i32 = 4;
 pub const NET_BRIDGE_NF_FILTER_PPPOE_TAGGED: i32 = 5;
 
-/// CTL_FS names:
+/// `CTL_FS` names:
+///
 /// int:current number of allocated inodes
 pub const FS_NRINODE: i32 = 1;
 pub const FS_STATINODE: i32 = 2;
@@ -795,9 +798,9 @@ pub const FS_NRFILE: i32 = 6;
 /// int:maximum number of filedescriptors that can be allocated
 pub const FS_MAXFILE: i32 = 7;
 pub const FS_DENTRY: i32 = 8;
-/// int:current number of allocated super_blocks
+/// int:current number of allocated `super_blocks`
 pub const FS_NRSUPER: i32 = 9;
-/// int:maximum number of super_blocks that can be allocated
+/// int:maximum number of `super_blocks` that can be allocated
 pub const FS_MAXSUPER: i32 = 10;
 /// int: overflow UID
 pub const FS_OVERFLOWUID: i32 = 11;
@@ -833,8 +836,7 @@ pub const FS_DQ_FREE: i32 = 7;
 pub const FS_DQ_SYNCS: i32 = 8;
 pub const FS_DQ_WARNINGS: i32 = 9;
 
-/// CTL_DEBUG names:
-/// CTL_DEV names:
+/// `CTL_DEV` names:
 pub const DEV_CDROM: i32 = 1;
 pub const DEV_HWMON: i32 = 2;
 pub const DEV_PARPORT: i32 = 3;
@@ -877,7 +879,7 @@ pub const DEV_PARPORT_DEVICES_ACTIVE: i32 = -3;
 /// /proc/sys/dev/parport/parport n/devices/device n
 pub const DEV_PARPORT_DEVICE_TIMESLICE: i32 = 1;
 
-/// /proc/sys/dev/mac_hid
+/// `/proc/sys/dev/mac_hid`
 pub const DEV_MAC_HID_KEYBOARD_SENDS_LINUX_KEYCODES: i32 = 1;
 pub const DEV_MAC_HID_KEYBOARD_LOCK_KEYCODES: i32 = 2;
 pub const DEV_MAC_HID_MOUSE_BUTTON_EMULATION: i32 = 3;

@@ -3,9 +3,12 @@
 // in the LICENSE file.
 
 #![allow(overflowing_literals)]
-use super::basic_types::*;
-use super::linux_socket::*;
+#![allow(clippy::cast_sign_loss)]
+
 use core::mem::size_of;
+
+use super::basic_types::{be16_t, be32_t};
+use super::linux_socket::{sa_family_t, sockaddr_storage_t};
 
 /// INET: An implementation of the TCP/IP protocol suite for the LINUX
 /// operating system. INET is implemented using the  BSD Socket
@@ -96,7 +99,7 @@ pub const IP_TRANSPARENT: i32 = 19;
 /// BSD compatibility
 pub const IP_RECVRETOPTS: i32 = IP_RETOPTS;
 
-/// TProxy original addresses
+/// Proxy original addresses
 pub const IP_ORIGDSTADDR: i32 = 20;
 pub const IP_RECVORIGDSTADDR: i32 = IP_ORIGDSTADDR;
 
@@ -106,7 +109,7 @@ pub const IP_CHECKSUM: i32 = 23;
 pub const IP_BIND_ADDRESS_NO_PORT: i32 = 24;
 pub const IP_RECVFRAGSIZE: i32 = 25;
 
-/// IP_MTU_DISCOVER values
+/// `IP_MTU_DISCOVER` values
 /// Never send DF frames
 pub const IP_PMTUDISC_DONT: i32 = 0;
 /// Use per route hints
@@ -116,7 +119,7 @@ pub const IP_PMTUDISC_DO: i32 = 2;
 /// Ignore dst pmtu
 pub const IP_PMTUDISC_PROBE: i32 = 3;
 /// Always use interface mtu (ignores dst pmtu) but don't set DF flag.
-/// Also incoming ICMP frag_needed notifications will be ignored on
+/// Also incoming ICMP `frag_needed` notifications will be ignored on
 /// this socket to prevent accepting spoofed ones.
 pub const IP_PMTUDISC_INTERFACE: i32 = 4;
 // weaker version of IP_PMTUDISC_INTERFACE, which allos packets to get
@@ -258,7 +261,9 @@ pub struct sockaddr_in_t {
 /// Definitions of the bits in an Internet address integer.
 /// On subnets, host and network parts are found according
 /// to the subnet mask, not these masks.
-pub const fn IN_CLASSA(a: i32) -> bool {
+#[inline]
+#[must_use]
+pub const fn in_class_a(a: i32) -> bool {
     ((a as u32) & 0x8000_0000) == 0
 }
 pub const IN_CLASSA_NET: i32 = 0xff00_0000;
@@ -267,7 +272,8 @@ pub const IN_CLASSA_HOST: i32 = !IN_CLASSA_NET;
 pub const IN_CLASSA_MAX: i32 = 128;
 
 #[inline]
-pub const fn IN_CLASSB(a: i32) -> bool {
+#[must_use]
+pub const fn in_class_b(a: i32) -> bool {
     ((a as u32) & 0xc000_0000) == 0x8000_0000
 }
 
@@ -277,7 +283,8 @@ pub const IN_CLASSB_HOST: i32 = !IN_CLASSB_NET;
 pub const IN_CLASSB_MAX: i32 = 65536;
 
 #[inline]
-pub const fn IN_CLASSC(a: i32) -> bool {
+#[must_use]
+pub const fn in_class_c(a: i32) -> bool {
     ((a as u32) & 0xe000_0000) == 0xc000_0000
 }
 
@@ -286,29 +293,34 @@ pub const IN_CLASSC_NSHIFT: i32 = 8;
 pub const IN_CLASSC_HOST: i32 = !IN_CLASSC_NET;
 
 #[inline]
-pub const fn IN_CLASSD(a: i32) -> bool {
+#[must_use]
+pub const fn in_class_d(a: i32) -> bool {
     ((a as u32) & 0xf000_0000) == 0xe000_0000
 }
 
 #[inline]
-pub const fn IN_MULTICAST(a: i32) -> bool {
-    IN_CLASSD(a)
+#[must_use]
+pub const fn in_multicast(a: i32) -> bool {
+    in_class_d(a)
 }
 
 pub const IN_MULTICAST_NET: i32 = 0xe000_0000;
 
 #[inline]
-pub const fn IN_BADCLASS(a: i32) -> bool {
+#[must_use]
+pub const fn in_badclass(a: i32) -> bool {
     (a as u32) == 0xffff_ffff
 }
 
 #[inline]
-pub const fn IN_EXPERIMENTAL(a: i32) -> bool {
-    IN_BADCLASS(a)
+#[must_use]
+pub const fn in_experimental(a: i32) -> bool {
+    in_badclass(a)
 }
 
 #[inline]
-pub const fn IN_CLASSE(a: i32) -> bool {
+#[must_use]
+pub const fn in_class_e(a: i32) -> bool {
     ((a as u32) & 0xf000_0000) == 0xf000_0000
 }
 
@@ -332,7 +344,8 @@ pub const IN_LOOPBACKNET: i32 = 127;
 pub const INADDR_LOOPBACK: i32 = 0x7f00_0001;
 
 #[inline]
-pub const fn IN_LOOPBACK(a: i32) -> bool {
+#[must_use]
+pub const fn in_loopback(a: i32) -> bool {
     (a & 0xff00_0000) == 0x7f00_0000
 }
 

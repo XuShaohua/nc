@@ -4,7 +4,7 @@
 
 //! From `include/uapi/linux/fcntl.h`
 
-use super::fcntl::*;
+use super::fcntl::F_LINUX_SPECIFIC_BASE;
 
 pub const F_SETLEASE: i32 = F_LINUX_SPECIFIC_BASE;
 pub const F_GETLEASE: i32 = F_LINUX_SPECIFIC_BASE + 1;
@@ -17,7 +17,7 @@ pub const F_NOTIFY: i32 = F_LINUX_SPECIFIC_BASE + 2;
 /// asynchronous lock api to userspace:
 pub const F_CANCELLK: i32 = F_LINUX_SPECIFIC_BASE + 5;
 
-/// Create a file descriptor with FD_CLOEXEC set.
+/// Create a file descriptor with `FD_CLOEXEC` set.
 pub const F_DUPFD_CLOEXEC: i32 = F_LINUX_SPECIFIC_BASE + 6;
 
 /// Set and get of pipe page size array
@@ -28,8 +28,8 @@ pub const F_GETPIPE_SZ: i32 = F_LINUX_SPECIFIC_BASE + 8;
 pub const F_ADD_SEALS: i32 = F_LINUX_SPECIFIC_BASE + 9;
 pub const F_GET_SEALS: i32 = F_LINUX_SPECIFIC_BASE + 10;
 
-/// Set/Get write life time hints. {GET,SET}_RW_HINT operate on the
-/// underlying inode, while {GET,SET}_FILE_RW_HINT operate only on
+/// Set/Get write life time hints. `{GET,SET}_RW_HINT` operate on the
+/// underlying inode, while `{GET,SET}_FILE_RW_HINT` operate only on
 /// the specific file.
 pub const F_GET_RW_HINT: i32 = F_LINUX_SPECIFIC_BASE + 11;
 pub const F_SET_RW_HINT: i32 = F_LINUX_SPECIFIC_BASE + 12;

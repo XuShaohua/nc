@@ -2,14 +2,15 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::time::*;
+use super::basic_types::time64_t;
+use super::time::timeval_t;
 
 /// NTP API version
 pub const NTP_API: i32 = 4;
 
 /// syscall interface - used (mainly by NTP daemon)
 /// to discipline kernel clock oscillator
+#[allow(clippy::module_name_repetitions)]
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default)]
 pub struct timex_t {
@@ -209,7 +210,7 @@ pub const STA_RONLY: i32 = STA_PPSSIGNAL
     | STA_MODE
     | STA_CLK;
 
-/// Clock states (time_state)
+/// Clock states (`time_state`)
 /// clock synchronized, no leap second
 pub const TIME_OK: i32 = 0;
 /// insert leap second

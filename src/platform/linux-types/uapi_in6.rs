@@ -2,17 +2,12 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+//! Types and definitions for `AF_INET6`
+
+use super::basic_types::{be16_t, be32_t};
 use core::fmt;
 
-/// SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note
-/// Types and definitions for AF_INET6
-/// Linux INET6 implementation
-
-/*
- *	IPv6 address structure
- */
-
+/// IPv6 address structure
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub union in6_un_t {
@@ -48,11 +43,16 @@ pub struct in6_addr_t {
 #[repr(C)]
 #[derive(Default, Debug, Clone, Copy)]
 pub struct sockaddr_in6_t {
-    pub sin6_family: u16,      /* AF_INET6 */
-    pub sin6_port: be16_t,     /* Transport layer port # */
-    pub sin6_flowinfo: be32_t, /* IPv6 flow information */
-    pub sin6_addr: in6_addr_t, /* IPv6 address */
-    pub sin6_scope_id: u32,    /* scope id (new in RFC2553) */
+    /// AF_INET6
+    pub sin6_family: u16,
+    /// Transport layer port
+    pub sin6_port: be16_t,
+    /// IPv6 flow information
+    pub sin6_flowinfo: be32_t,
+    /// IPv6 address
+    pub sin6_addr: in6_addr_t,
+    /// scope id (new in RFC2553)
+    pub sin6_scope_id: u32,
 }
 
 #[repr(C)]
@@ -98,7 +98,7 @@ pub const IPV6_FL_S_ANY: i32 = 255;
 /// flow label and priority fields.
 ///
 /// Note that this are in host byte order while the flowinfo field of
-/// sockaddr_in6 is in network byte order.
+/// `sockaddr_in6` is in network byte order.
 pub const IPV6_FLOWINFO_FLOWLABEL: i32 = 0x000f_ffff;
 pub const IPV6_FLOWINFO_PRIORITY: i32 = 0x0ff0_0000;
 
@@ -127,7 +127,7 @@ pub const IPPROTO_HOPOPTS: i32 = 0;
 pub const IPPROTO_ROUTING: i32 = 43;
 /// IPv6 fragmentation header
 pub const IPPROTO_FRAGMENT: i32 = 44;
-/// ICMPv6
+/// `ICMPv6`
 pub const IPPROTO_ICMPV6: i32 = 58;
 /// IPv6 no next header
 pub const IPPROTO_NONE: i32 = 59;
@@ -176,15 +176,15 @@ pub const IPV6_LEAVE_ANYCAST: i32 = 28;
 pub const IPV6_MULTICAST_ALL: i32 = 29;
 pub const IPV6_ROUTER_ALERT_ISOLATE: i32 = 30;
 
-/// IPV6_MTU_DISCOVER values
+/// `IPV6_MTU_DISCOVER` values
 pub const IPV6_PMTUDISC_DONT: i32 = 0;
 pub const IPV6_PMTUDISC_WANT: i32 = 1;
 pub const IPV6_PMTUDISC_DO: i32 = 2;
 pub const IPV6_PMTUDISC_PROBE: i32 = 3;
-/// same as IPV6_PMTUDISC_PROBE, provided for symetry with IPv4
-/// also see comments on IP_PMTUDISC_INTERFACE
+/// same as `IPV6_PMTUDISC_PROBE`, provided for symetry with IPv4
+/// also see comments on `IP_PMTUDISC_INTERFACE`
 pub const IPV6_PMTUDISC_INTERFACE: i32 = 4;
-/// weaker version of IPV6_PMTUDISC_INTERFACE, which allows packets to
+/// weaker version of `IPV6_PMTUDISC_INTERFACE`, which allows packets to
 /// get fragmented if they exceed the interface mtu
 pub const IPV6_PMTUDISC_OMIT: i32 = 5;
 
@@ -210,7 +210,7 @@ pub const IPV6_HDRINCL: i32 = 36;
  */
 
 /// Advanced API (RFC3542) (1)
-/// Note: IPV6_RECVRTHDRDSTOPTS does not exist. see net/ipv6/datagram.c.
+/// Note: `IPV6_RECVRTHDRDSTOPTS` does not exist.
 pub const IPV6_RECVPKTINFO: i32 = 49;
 pub const IPV6_PKTINFO: i32 = 50;
 pub const IPV6_RECVHOPLIMIT: i32 = 51;

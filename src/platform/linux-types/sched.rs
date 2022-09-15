@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-// From uapi/linux/sched.h
+//! From uapi/linux/sched.h
 
 /// cloning flags:
 /// signal mask to be sent at exit
@@ -19,7 +19,7 @@ pub const CLONE_SIGHAND: i32 = 0x0000_0800;
 pub const CLONE_PIDFD: i32 = 0x0000_1000;
 /// set if we want to let tracing continue on the child too
 pub const CLONE_PTRACE: i32 = 0x0000_2000;
-/// set if the parent wants the child to wake it up on mm_release
+/// set if the parent wants the child to wake it up on `mm_release`
 pub const CLONE_VFORK: i32 = 0x0000_4000;
 /// set if we want to have the same parent as the cloner
 pub const CLONE_PARENT: i32 = 0x0000_8000;
@@ -27,7 +27,7 @@ pub const CLONE_PARENT: i32 = 0x0000_8000;
 pub const CLONE_THREAD: i32 = 0x0001_0000;
 /// New mount namespace group
 pub const CLONE_NEWNS: i32 = 0x0002_0000;
-/// share system V SEM_UNDO semantics
+/// share system V `SEM_UNDO` semantics
 pub const CLONE_SYSVSEM: i32 = 0x0004_0000;
 /// create a new TLS for the child
 pub const CLONE_SETTLS: i32 = 0x0008_0000;
@@ -37,7 +37,7 @@ pub const CLONE_PARENT_SETTID: i32 = 0x0010_0000;
 pub const CLONE_CHILD_CLEARTID: i32 = 0x0020_0000;
 /// Unused, ignored
 pub const CLONE_DETACHED: i32 = 0x0040_0000;
-/// set if the tracing process can't force CLONE_PTRACE on this clone
+/// set if the tracing process can't force `CLONE_PTRACE` on this clone
 pub const CLONE_UNTRACED: i32 = 0x0080_0000;
 /// set the TID in the child
 pub const CLONE_CHILD_SETTID: i32 = 0x0100_0000;
@@ -57,8 +57,8 @@ pub const CLONE_NEWNET: i32 = 0x4000_0000;
 #[allow(overflowing_literals)]
 pub const CLONE_IO: i32 = 0x8000_0000;
 
-/// Flags for the clone3() syscall.
-/// Clear any signal handler and reset to SIG_DFL.
+/// Flags for the `clone3()` syscall.
+/// Clear any signal handler and reset to `SIG_DFL`.
 pub const CLONE_CLEAR_SIGHAND: u64 = 0x0001_0000_0000;
 /// Clone into a specific cgroup given the right permissions.
 pub const CLONE_INTO_CGROUP: u64 = 0x0002_0000_0000;
@@ -77,17 +77,17 @@ pub const CLONE_NEWTIME: i32 = 0x0000_0080;
 #[repr(C)]
 pub struct clone_args_t {
     /// Flags for the new process.
-    /// All flags are valid except for CSIGNAL and CLONE_DETACHED.
+    /// All flags are valid except for CSIGNAL and `CLONE_DETACHED`.
     pub flags: u64,
 
-    /// If CLONE_PIDFD is set, a pidfd will be returned in this argument.
+    /// If `CLONE_PIDFD` is set, a pidfd will be returned in this argument.
     pub pidfd: u64,
 
-    /// If CLONE_CHILD_SETTID is set, the TID of the child process
+    /// If `CLONE_CHILD_SETTID` is set, the TID of the child process
     /// will be returned in the child's memory.
     pub child_tid: u64,
 
-    /// If CLONE_PARENT_SETTID is set, the TID of the child process
+    /// If `CLONE_PARENT_SETTID` is set, the TID of the child process
     /// will be returned in the parent's memory.
     pub parent_tid: u64,
 
@@ -98,18 +98,18 @@ pub struct clone_args_t {
     ///
     /// Note, @stack is expected to point to the lowest address.
     /// The stack direction will be determined by the kernel and
-    /// set up appropriately based on @stack_size.
+    /// set up appropriately based on `@stack_size`.
     pub stack: u64,
 
     /// The size of the stack for the child process.
     pub stack_size: u64,
 
-    /// If CLONE_SETTLS is set, the tls descriptor is set to tls.
+    /// If `CLONE_SETTLS` is set, the tls descriptor is set to tls.
     pub tls: u64,
 
     /// Pointer to an array of type *pid_t.
     ///
-    /// The size of the array is defined using set_tid_size.
+    /// The size of the array is defined using `set_tid_size`.
     /// This array is used to select PIDs/TIDs for newly created processes.
     /// The first element in this defines the PID in the most nested PID namespace.
     /// Each additional element in the array defines the PID
@@ -117,12 +117,12 @@ pub struct clone_args_t {
     /// than the number of currently nested PID namespaces only the PIDs in the corresponding namespaces are set.
     pub set_tid: u64,
 
-    /// This defines the size of the array referenced in set_tid.
+    /// This defines the size of the array referenced in `set_tid`.
     ///
     /// This cannot be larger than the kernel's limit of nested PID namespaces.
     pub set_tid_size: u64,
 
-    /// If CLONE_INTO_CGROUP is specified set this to a file descriptor for the cgroup.
+    /// If `CLONE_INTO_CGROUP` is specified set this to a file descriptor for the cgroup.
     pub cgroup: u64,
 }
 
@@ -138,14 +138,14 @@ pub const SCHED_NORMAL: i32 = 0;
 pub const SCHED_FIFO: i32 = 1;
 pub const SCHED_RR: i32 = 2;
 pub const SCHED_BATCH: i32 = 3;
-/// SCHED_ISO: reserved but not implemented yet
+/// `SCHED_ISO`: reserved but not implemented yet
 pub const SCHED_IDLE: i32 = 5;
 pub const SCHED_DEADLINE: i32 = 6;
 
-/// Can be ORed in to make sure the process is reverted back to SCHED_NORMAL on fork
+/// Can be `ORed` in to make sure the process is reverted back to `SCHED_NORMAL` on fork
 pub const SCHED_RESET_ON_FORK: i32 = 0x4000_0000;
 
-/// For the sched_{set,get}attr() calls
+/// For the `sched_{set,get}attr()` calls
 pub const SCHED_FLAG_RESET_ON_FORK: i32 = 0x01;
 pub const SCHED_FLAG_RECLAIM: i32 = 0x02;
 pub const SCHED_FLAG_DL_OVERRUN: i32 = 0x04;

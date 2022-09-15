@@ -4,9 +4,11 @@
 
 //! From include/uapi/linux/seccomp.h
 
-use super::ioctl::*;
+#![allow(clippy::module_name_repetitions)]
 
-/// Valid values for seccomp.mode and prctl(PR_SET_SECCOMP, <mode>)
+use super::ioctl::IO;
+
+/// Valid values for seccomp.mode and prctl(`PR_SET_SECCOMP`, <mode>)
 /// seccomp is not in use.
 pub const SECCOMP_MODE_DISABLED: i32 = 0;
 /// uses hard-coded filter.
@@ -20,7 +22,7 @@ pub const SECCOMP_SET_MODE_FILTER: i32 = 1;
 pub const SECCOMP_GET_ACTION_AVAIL: i32 = 2;
 pub const SECCOMP_GET_NOTIF_SIZES: i32 = 3;
 
-/// Valid flags for SECCOMP_SET_MODE_FILTER
+/// Valid flags for `SECCOMP_SET_MODE_FILTER`
 pub const SECCOMP_FILTER_FLAG_TSYNC: usize = 1;
 pub const SECCOMP_FILTER_FLAG_LOG: usize = 1 << 1;
 pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: usize = 1 << 2;
@@ -31,7 +33,7 @@ pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: usize = 1 << 3;
 /// The upper 16-bits are ordered from least permissive values to most,
 /// as a signed value (so 0x8000000 is negative).
 ///
-/// The ordering ensures that a min_t() over composed return values always
+/// The ordering ensures that a `min_t()` over composed return values always
 /// selects the least permissive choice.
 /// kill the process
 pub const SECCOMP_RET_KILL_PROCESS: u32 = 0x8000_0000;
@@ -56,11 +58,11 @@ pub const SECCOMP_RET_ACTION_FULL: u32 = 0xffff_0000;
 pub const SECCOMP_RET_ACTION: u32 = 0x7fff_0000;
 pub const SECCOMP_RET_DATA: u32 = 0x0000_ffff;
 
-/// struct seccomp_data - the format the BPF program executes over.
+/// struct `seccomp_data` - the format the BPF program executes over.
 /// @nr: the system call number
-/// @arch: indicates system call convention as an AUDIT_ARCH_* value
-///        as defined in <linux/audit.h>.
-/// @instruction_pointer: at the time of the system call.
+/// @arch: indicates system call convention as an `AUDIT_ARCH_*` value
+///        as defined in `<linux/audit.h>`.
+/// `@instruction_pointer`: at the time of the system call.
 /// @args: up to 6 system call arguments always stored as 64-bit values
 ///        regardless of the architecture.
 #[repr(C)]
@@ -101,6 +103,7 @@ pub struct seccomp_notif_resp_t {
 pub const SECCOMP_IOC_MAGIC: char = '!';
 
 #[inline]
+#[must_use]
 pub const fn SECCOMP_IO(nr: i32) -> i32 {
     IO(SECCOMP_IOC_MAGIC, nr)
 }

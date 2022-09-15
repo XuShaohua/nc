@@ -2,27 +2,27 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-// From: uapi/asm-generic/signal-defs.h
+//! From: uapi/asm-generic/signal-defs.h
 
-/// SA_FLAGS values:
+/// `SA_FLAGS` values:
 ///
-/// - SA_NOCLDSTOP flag to turn off SIGCHLD when children stop.
-/// - SA_NOCLDWAIT flag on SIGCHLD to inhibit zombies.
-/// - SA_SIGINFO delivers the signal with SIGINFO structs.
-/// - SA_ONSTACK indicates that a registered stack_t will be used.
-/// - SA_RESTART flag to get restarting signals (which were the default long ago)
-/// - SA_NODEFER prevents the current signal from being masked in the handler.
-/// - SA_RESETHAND clears the handler when the signal is delivered.
-/// - SA_UNSUPPORTED is a flag bit that will never be supported. Kernels from
-/// before the introduction of SA_UNSUPPORTED did not clear unknown bits from
-/// sa_flags when read using the oldact argument to sigaction and rt_sigaction,
+/// - `SA_NOCLDSTOP` flag to turn off SIGCHLD when children stop.
+/// - `SA_NOCLDWAIT` flag on SIGCHLD to inhibit zombies.
+/// - `SA_SIGINFO` delivers the signal with SIGINFO structs.
+/// - `SA_ONSTACK` indicates that a registered `stack_t` will be used.
+/// - `SA_RESTART` flag to get restarting signals (which were the default long ago)
+/// - `SA_NODEFER` prevents the current signal from being masked in the handler.
+/// - `SA_RESETHAND` clears the handler when the signal is delivered.
+/// - `SA_UNSUPPORTED` is a flag bit that will never be supported. Kernels from
+/// before the introduction of `SA_UNSUPPORTED` did not clear unknown bits from
+/// `sa_flags` when read using the oldact argument to sigaction and `rt_sigaction`,
 /// so this bit allows flag bit support to be detected from userspace while
 /// allowing an old kernel to be distinguished from a kernel that supports every
 /// flag bit.
-/// - SA_EXPOSE_TAGBITS exposes an architecture-defined set of tag bits in
-/// siginfo.si_addr.
+/// - `SA_EXPOSE_TAGBITS` exposes an architecture-defined set of tag bits in
+/// `siginfo.si_addr`.
 ///
-/// - SA_ONESHOT and SA_NOMASK are the historical Linux names for the Single
+/// - `SA_ONESHOT` and `SA_NOMASK` are the historical Linux names for the Single
 /// Unix names RESETHAND and NODEFER respectively.
 pub const SA_NOCLDSTOP: usize = 0x0000_0001;
 pub const SA_NOCLDWAIT: usize = 0x0000_0002;
@@ -40,7 +40,7 @@ pub const SA_EXPOSE_TAGBITS: usize = 0x0000_0800;
 /* 0x01000000 used on x86 */
 /* 0x02000000 used on x86 */
 /// New architectures should not define the obsolete
-/// SA_RESTORER 0x04000000
+/// `SA_RESTORER` 0x04000000
 pub const SA_ONSTACK: usize = 0x0800_0000;
 pub const SA_RESTART: usize = 0x1000_0000;
 pub const SA_NODEFER: usize = 0x4000_0000;
@@ -59,12 +59,12 @@ pub const SIG_SETMASK: i32 = 2;
 pub type signalfn_t = fn(i32);
 
 /// Type of a signal handler.
-/// signalfn_t as usize
+/// `signalfn_t` as usize
 pub type sighandler_t = usize;
 
 pub type restorefn_t = fn();
 
-/// restorefn_t as usize
+/// `restorefn_t` as usize
 pub type sigrestore_t = usize;
 
 /// default signal handling

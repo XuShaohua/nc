@@ -2,9 +2,17 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::hugetlb_encode::*;
-use super::ipc::*;
+#![allow(clippy::module_name_repetitions)]
+
+use super::basic_types::{ipc_pid_t, time_t};
+use super::hugetlb_encode::{
+    HUGETLB_FLAG_ENCODE_16GB, HUGETLB_FLAG_ENCODE_16MB, HUGETLB_FLAG_ENCODE_1GB,
+    HUGETLB_FLAG_ENCODE_1MB, HUGETLB_FLAG_ENCODE_256MB, HUGETLB_FLAG_ENCODE_2GB,
+    HUGETLB_FLAG_ENCODE_2MB, HUGETLB_FLAG_ENCODE_32MB, HUGETLB_FLAG_ENCODE_512KB,
+    HUGETLB_FLAG_ENCODE_512MB, HUGETLB_FLAG_ENCODE_64KB, HUGETLB_FLAG_ENCODE_8MB,
+    HUGETLB_FLAG_ENCODE_MASK, HUGETLB_FLAG_ENCODE_SHIFT,
+};
+use super::ipc::ipc_perm_t;
 
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be
 /// modified by sysctl. The SHMMAX and SHMALL values have been chosen to
@@ -51,20 +59,20 @@ pub struct shmid_ds_t {
     shm_unused3: usize,
 }
 
-/// shmget() shmflg values.
-/// The bottom nine bits are the same as open(2) mode flags
-/// or S_IRUGO from <linux/stat.h>
+/// `shmget()` shmflg values.
+/// The bottom nine bits are the same as `open(2)` mode flags
+/// or `S_IRUGO` from `<linux/stat.h>`
 pub const SHM_R: i32 = 0o400;
-/// or S_IWUGO from <linux/stat.h>
+/// or `S_IWUGO` from `<linux/stat.h>`
 pub const SHM_W: i32 = 0o200;
-/// Bits 9 & 10 are IPC_CREAT and IPC_EXCL
+/// Bits 9 & 10 are `IPC_CREAT` and `IPC_EXCL`
 /// segment will use huge TLB pages
 pub const SHM_HUGETLB: i32 = 0o4000;
 /// don't check for reservations
 pub const SHM_NORESERVE: i32 = 0o10_000;
 
-/// Huge page size encoding when SHM_HUGETLB is specified, and a huge page
-/// size other than the default is desired.  See hugetlb_encode.h
+/// Huge page size encoding when `SHM_HUGETLB` is specified, and a huge page
+/// size other than the default is desired.  See `hugetlb_encode.h`
 pub const SHM_HUGE_SHIFT: i32 = HUGETLB_FLAG_ENCODE_SHIFT;
 pub const SHM_HUGE_MASK: i32 = HUGETLB_FLAG_ENCODE_MASK;
 
@@ -81,7 +89,7 @@ pub const SHM_HUGE_1GB: usize = HUGETLB_FLAG_ENCODE_1GB;
 pub const SHM_HUGE_2GB: usize = HUGETLB_FLAG_ENCODE_2GB;
 pub const SHM_HUGE_16GB: usize = HUGETLB_FLAG_ENCODE_16GB;
 
-/// shmat() shmflg values
+/// `shmat()` shmflg values
 /// read-only access
 pub const SHM_RDONLY: i32 = 0o10_000;
 /// round attach address to SHMLBA boundary

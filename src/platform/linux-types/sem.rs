@@ -2,8 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::ipc::*;
+use super::basic_types::time_t;
+use super::ipc::ipc_perm_t;
 
 /// semop flags
 /// undo the operation on exit
@@ -111,13 +111,13 @@ pub struct seminfo_t {
 /// known configuration.
 ///
 /// SEMOPM should not be increased beyond 1000, otherwise there is the
-/// risk that semop()/semtimedop() fails due to kernel memory fragmentation when
-/// allocating the sop array.
+/// risk that `semop()/semtimedop()` fails due to kernel memory fragmentation
+/// when allocating the sop array.
 /// <= IPCMNI  max # of semaphore identifiers
 pub const SEMMNI: i32 = 32000;
-/// <= INT_MAX max num of semaphores per id
+/// <= `INT_MAX` max num of semaphores per id
 pub const SEMMSL: i32 = 32000;
-/// <= INT_MAX max # of semaphores in system
+/// <= `INT_MAX` max # of semaphores in system
 pub const SEMMNS: i32 = SEMMNI * SEMMSL;
 /// <= 1 000 max num of ops per semop call
 pub const SEMOPM: i32 = 500;
@@ -133,5 +133,5 @@ pub const SEMUME: i32 = SEMOPM;
 pub const SEMMNU: i32 = SEMMNS;
 /// # of entries in semaphore map
 pub const SEMMAP: i32 = SEMMNS;
-/// sizeof struct sem_undo
+/// sizeof struct `sem_undo`
 pub const SEMUSZ: i32 = 20;

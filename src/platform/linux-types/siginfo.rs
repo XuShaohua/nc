@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+#![allow(clippy::module_name_repetitions)]
+
+use super::basic_types::{clock_t, pid_t, timer_t, uid_t};
 use core::fmt;
 use core::mem::size_of;
 
@@ -28,7 +30,7 @@ impl Default for sigval_t {
 
 pub const SI_MAX_SIZE: usize = 128;
 
-/// The default "si_band" type is "long", as specified by POSIX.
+/// The default `si_band` type is "long", as specified by POSIX.
 /// However, some architectures want to override this to "int"
 /// for historical compatibility reasons, so we allow that.
 pub type arch_si_band_t = isize;
@@ -185,7 +187,7 @@ impl Default for siginfo_t {
 //#define si_syscall	_sifields._sigsys._syscall
 //#define si_arch		_sifields._sigsys._arch
 
-/// si_code values
+/// `si_code` values
 /// Digital reserves positive values for kernel-generated signals.
 /// sent by kill, sigsend, raise
 pub const SI_USER: i32 = 0;
@@ -203,7 +205,7 @@ pub const SI_ASYNCIO: i32 = -4;
 pub const SI_SIGIO: i32 = -5;
 /// sent by tkill system call
 pub const SI_TKILL: i32 = -6;
-/// sent by execve() killing subsidiary threads
+/// sent by `execve()` killing subsidiary threads
 pub const SI_DETHREAD: i32 = -7;
 /// sent by glibc async name lookup completion
 pub const SI_ASYNCNL: i32 = -60;
@@ -211,7 +213,7 @@ pub const SI_ASYNCNL: i32 = -60;
 //#define SI_FROMUSER(siptr)	((siptr)->si_code <= 0)
 //#define SI_FROMKERNEL(siptr)	((siptr)->si_code > 0)
 
-/// SIGILL si_codes
+/// SIGILL `si_codes`
 /// illegal opcode
 pub const ILL_ILLOPC: i32 = 1;
 /// illegal operand
@@ -236,7 +238,7 @@ pub const __ILL_BREAK: i32 = 10;
 pub const __ILL_BNDMOD: i32 = 11;
 pub const NSIGILL: i32 = 11;
 
-/// SIGFPE si_codes
+/// SIGFPE `si_codes`
 /// integer divide by zero
 pub const FPE_INTDIV: i32 = 1;
 /// integer overflow
@@ -269,7 +271,7 @@ pub const FPE_FLTUNK: i32 = 14;
 pub const FPE_CONDTRAP: i32 = 15;
 pub const NSIGFPE: i32 = 15;
 
-/// SIGSEGV si_codes
+/// SIGSEGV `si_codes`
 /// address not mapped to object
 pub const SEGV_MAPERR: i32 = 1;
 /// invalid permissions for mapped object
@@ -288,7 +290,7 @@ pub const SEGV_ADIDERR: i32 = 6;
 pub const SEGV_ADIPERR: i32 = 7;
 pub const NSIGSEGV: i32 = 7;
 
-/// SIGBUS si_codes
+/// SIGBUS `si_codes`
 /// invalid address alignment
 pub const BUS_ADRALN: i32 = 1;
 /// non-existent physical address
@@ -301,7 +303,7 @@ pub const BUS_MCEERR_AR: i32 = 4;
 pub const BUS_MCEERR_AO: i32 = 5;
 pub const NSIGBUS: i32 = 5;
 
-/// SIGTRAP si_codes
+/// SIGTRAP `si_codes`
 /// process breakpoint
 pub const TRAP_BRKPT: i32 = 1;
 /// process trace trap
@@ -314,10 +316,10 @@ pub const TRAP_HWBKPT: i32 = 4;
 pub const TRAP_UNK: i32 = 5;
 pub const NSIGTRAP: i32 = 5;
 
-/// There is an additional set of SIGTRAP si_codes used by ptrace
-/// that are of the form: ((PTRACE_EVENT_XXX << 8) | SIGTRAP)
+/// There is an additional set of SIGTRAP `si_codes` used by ptrace
+/// that are of the form: `((PTRACE_EVENT_XXX << 8) | SIGTRAP)`
 
-/// SIGCHLD si_codes
+/// SIGCHLD `si_codes`
 /// child has exited
 pub const CLD_EXITED: i32 = 1;
 /// child was killed
@@ -332,7 +334,7 @@ pub const CLD_STOPPED: i32 = 5;
 pub const CLD_CONTINUED: i32 = 6;
 pub const NSIGCHLD: i32 = 6;
 
-/// SIGPOLL (or any other signal without signal specific si_codes) si_codes
+/// SIGPOLL (or any other signal without signal specific `si_codes`) `si_codes`
 /// data input available
 pub const POLL_IN: i32 = 1;
 /// output buffers available
@@ -347,22 +349,21 @@ pub const POLL_PRI: i32 = 5;
 pub const POLL_HUP: i32 = 6;
 pub const NSIGPOLL: i32 = 6;
 
-/// SIGSYS si_codes
-
+/// SIGSYS `si_codes`
 /// seccomp triggered
-// Return from SYS_SECCOMP as it is already used by an syscall num.
+/// Return from `SYS_SECCOMP` as it is already used by an syscall num.
 pub const SYS_SECCOMP_: i32 = 1;
 pub const NSIGSYS: i32 = 1;
 
-/// SIGEMT si_codes
+/// SIGEMT `si_codes`
 /// tag overflow
 pub const EMT_TAGOVF: i32 = 1;
 pub const NSIGEMT: i32 = 1;
 
 /// sigevent definitions
 ///
-/// It seems likely that SIGEV_THREAD will have to be handled from
-/// userspace, libpthread transmuting it to SIGEV_SIGNAL, which the
+/// It seems likely that `SIGEV_THREAD` will have to be handled from
+/// userspace, libpthread transmuting it to `SIGEV_SIGNAL`, which the
 /// thread manager then catches and does the appropriate nonsense.
 /// However, everything is written out here so as to not get lost.
 

@@ -9,33 +9,33 @@ pub const ADJ_OFFSET_SINGLESHOT: i32 = 0x0001;
 /// read-only adjtime
 pub const ADJ_OFFSET_READONLY: i32 = 0x2000;
 
-/// SHIFT_PLL is used as a dampening factor to define how much we
+/// `SHIFT_PLL` is used as a dampening factor to define how much we
 /// adjust the frequency correction for a given offset in PLL mode.
 /// It also used in dampening the offset correction, to define how
-/// much of the current value in time_offset we correct for each
+/// much of the current value in `time_offset` we correct for each
 /// second. Changing this value changes the stiffness of the ntp
 /// adjustment code. A lower value makes it more flexible, reducing
 /// NTP convergence time. A higher value makes it stiffer, increasing
 /// convergence time, but making the clock more stable.
 ///
-/// In David Mills' nanokernel reference implementation SHIFT_PLL is 4.
+/// In David Mills' nanokernel reference implementation `SHIFT_PLL` is 4.
 /// However this seems to increase convergence time much too long.
 ///
-/// <https://lists.ntp.org/pipermail/hackers/2008-January/003487.html>
+/// `https://lists.ntp.org/pipermail/hackers/2008-January/003487.html`
 ///
 /// In the above mailing list discussion, it seems the value of 4
 /// was appropriate for other Unix systems with HZ=100, and that
-/// SHIFT_PLL should be decreased as HZ increases. However, Linux's
+/// `SHIFT_PLL` should be decreased as HZ increases. However, Linux's
 /// clock steering implementation is HZ independent.
 ///
-/// Through experimentation, a SHIFT_PLL value of 2 was found to allow
-/// for fast convergence (very similar to the NTPv3 code used prior to
+/// Through experimentation, a `SHIFT_PLL` value of 2 was found to allow
+/// for fast convergence (very similar to the `NTPv3` code used prior to
 /// v2.6.19), with good clock stability.
 ///
 ///
-/// SHIFT_FLL is used as a dampening factor to define how much we
+/// `SHIFT_FLL` is used as a dampening factor to define how much we
 /// adjust the frequency correction for a given offset in FLL mode.
-/// In David Mills' nanokernel reference implementation SHIFT_FLL is 2.
+/// In David Mills' nanokernel reference implementation `SHIFT_FLL` is 2.
 ///
 /// MAXTC establishes the maximum time constant of the PLL.
 
@@ -46,8 +46,8 @@ pub const SHIFT_FLL: i32 = 2;
 /// maximum time constant (shift)
 pub const MAXTC: i32 = 10;
 
-/// SHIFT_USEC defines the scaling (shift) of the time_freq and
-/// time_tolerance variables, which represent the current frequency
+/// `SHIFT_USEC` defines the scaling (shift) of the `time_freq` and
+/// `time_tolerance` variables, which represent the current frequency
 /// offset and maximum frequency tolerance.
 /// frequency offset scale (shift)
 pub const SHIFT_USEC: i32 = 16;

@@ -4,16 +4,18 @@
 
 //! From uapi/linux/prctl.h
 
+#![allow(clippy::module_name_repetitions)]
+
 use core::u64;
 
-/// Values to pass as first argument to prctl()
+/// Values to pass as first argument to `prctl()`
 
 /// Second arg is a signal
 pub const PR_SET_PDEATHSIG: i32 = 1;
 /// Second arg is a ptr to return the signal
 pub const PR_GET_PDEATHSIG: i32 = 2;
 
-/// Get/set current->mm->dumpable
+/// Get/set `current->mm->dumpable`
 pub const PR_GET_DUMPABLE: i32 = 3;
 pub const PR_SET_DUMPABLE: i32 = 4;
 
@@ -25,8 +27,8 @@ pub const PR_UNALIGN_NOPRINT: i32 = 1;
 /// generate SIGBUS on unaligned user access
 pub const PR_UNALIGN_SIGBUS: i32 = 2;
 
-/// Get/set whether or not to drop capabilities on setuid() away from
-/// uid 0 (as per security/commoncap.c)
+/// Get/set whether or not to drop capabilities on `setuid()` away from
+/// uid 0 (as per `security/commoncap.c`)
 pub const PR_GET_KEEPCAPS: i32 = 7;
 pub const PR_SET_KEEPCAPS: i32 = 8;
 
@@ -35,7 +37,7 @@ pub const PR_GET_FPEMU: i32 = 9;
 pub const PR_SET_FPEMU: i32 = 10;
 /// silently emulate fp operations accesses
 pub const PR_FPEMU_NOPRINT: i32 = 1;
-/// don't emulate fp operations, send SIGFPE instead
+/// don't emulate fp operations, send `SIGFPE` instead
 pub const PR_FPEMU_SIGFPE: i32 = 2;
 
 /// Get/set floating-point exception mode (if meaningful)
@@ -82,14 +84,14 @@ pub const PR_SET_ENDIAN: i32 = 20;
 pub const PR_ENDIAN_BIG: i32 = 0;
 /// True little endian mode
 pub const PR_ENDIAN_LITTLE: i32 = 1;
-/// "PowerPC" pseudo little endian
+/// `PowerPC` pseudo little endian
 pub const PR_ENDIAN_PPC_LITTLE: i32 = 2;
 
 /// Get/set process seccomp mode
 pub const PR_GET_SECCOMP: i32 = 21;
 pub const PR_SET_SECCOMP: i32 = 22;
 
-/// Get/set the capability bounding set (as per security/commoncap.c)
+/// Get/set the capability bounding set (as per `security/commoncap.c`)
 pub const PR_CAPBSET_READ: i32 = 23;
 pub const PR_CAPBSET_DROP: i32 = 24;
 
@@ -101,11 +103,11 @@ pub const PR_TSC_ENABLE: i32 = 1;
 /// throw a SIGSEGV instead of reading the TSC
 pub const PR_TSC_SIGSEGV: i32 = 2;
 
-/// Get/set securebits (as per security/commoncap.c)
+/// Get/set securebits (as per `security/commoncap.c`)
 pub const PR_GET_SECUREBITS: i32 = 27;
 pub const PR_SET_SECUREBITS: i32 = 28;
 
-/// Get/set the timerslack as used by poll/select/nanosleep
+/// Get/set the timerslack as used by `poll/select/nanosleep`
 /// A value of 0 means "use default"
 pub const PR_SET_TIMERSLACK: i32 = 29;
 pub const PR_GET_TIMERSLACK: i32 = 30;
@@ -183,15 +185,16 @@ pub const PR_SET_PTRACER_ANY: u64 = u64::MAX; // ((unsigned long)-1);
 pub const PR_SET_CHILD_SUBREAPER: i32 = 36;
 pub const PR_GET_CHILD_SUBREAPER: i32 = 37;
 
-/// If no_new_privs is set, then operations that grant new privileges (i.e.
+/// If `no_new_privs` is set, then operations that grant new privileges (i.e.
 /// execve) will either fail or not grant them.  This affects suid/sgid,
 /// file capabilities, and LSMs.
+///
 /// Operations that merely manipulate or drop existing privileges (setresuid,
 /// capset, etc.) will still work.  Drop those privileges if you want them gone.
 /// Changing LSM security domain is considered a new privilege.  So, for example,
 /// asking selinux for a specific new context (e.g. with runcon) will result
-/// in execve returning -EPERM.
-/// See Documentation/userspace-api/no_new_privs.rst for more details.
+/// in execve returning `-EPERM`.
+/// See `Documentation/userspace-api/no_new_privs.rst` for more details.
 pub const PR_SET_NO_NEW_PRIVS: i32 = 38;
 pub const PR_GET_NO_NEW_PRIVS: i32 = 39;
 
@@ -219,14 +222,14 @@ pub const PR_CAP_AMBIENT_LOWER: i32 = 3;
 pub const PR_CAP_AMBIENT_CLEAR_ALL: i32 = 4;
 
 /// arm64 Scalable Vector Extension controls
-/// Flag values must be kept in sync with ptrace NT_ARM_SVE interface
+/// Flag values must be kept in sync with ptrace `NT_ARM_SVE` interface
 /// set task vector length
 pub const PR_SVE_SET_VL: i32 = 50;
 /// defer effect until exec
 pub const PR_SVE_SET_VL_ONEXEC: i32 = 1 << 18;
 /// get task vector length
 pub const PR_SVE_GET_VL: i32 = 51;
-/// Bits common to PR_SVE_SET_VL and PR_SVE_GET_VL
+/// Bits common to `PR_SVE_SET_VL` and `PR_SVE_GET_VL`
 pub const PR_SVE_VL_LEN_MASK: i32 = 0xffff;
 /// inherit across exec
 pub const PR_SVE_VL_INHERIT: i32 = 1 << 17;
@@ -237,7 +240,7 @@ pub const PR_SET_SPECULATION_CTRL: i32 = 53;
 /// Speculation control variants
 pub const PR_SPEC_STORE_BYPASS: i32 = 0;
 pub const PR_SPEC_INDIRECT_BRANCH: i32 = 1;
-/// Return and control values for PR_SET/GET_SPECULATION_CTRL
+/// Return and control values for `PR_SET/GET_SPECULATION_CTRL`
 pub const PR_SPEC_NOT_AFFECTED: i32 = 0;
 pub const PR_SPEC_PRCTL: u64 = 1 << 0;
 pub const PR_SPEC_ENABLE: u64 = 1 << 1;

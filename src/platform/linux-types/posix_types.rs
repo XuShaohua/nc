@@ -3,12 +3,12 @@
 // in the LICENSE file.
 
 //! From `include/uapi/asm-generic/posix_types.h`
-
-/// This file is generally used by user-level software, so you need to
-/// be a little careful about namespace pollution etc.
-///
-/// First the types that are often defined in different ways across
-/// architectures, so that you can override them.
+//!
+//! This file is generally used by user-level software, so you need to
+//! be a little careful about namespace pollution etc.
+//!
+//! First the types that are often defined in different ways across
+//! architectures, so that you can override them.
 
 pub type __kernel_long_t = isize;
 pub type __kernel_ulong_t = usize;
@@ -41,8 +41,8 @@ pub type __kernel_gid32_t = u32;
 //#[cfg(not(target_arch = "arm"))]
 //pub type __kernel_old_dev_t = u32;
 
-/// Most 32 bit architectures use "unsigned int" size_t,
-/// and all 64 bit architectures use "unsigned long" size_t.
+/// Most 32 bit architectures use `unsigned int` `size_t`,
+/// and all 64 bit architectures use `unsigned long` `size_t`.
 #[cfg(target_pointer_width = "64")]
 pub type __kernel_size_t = u32;
 #[cfg(target_pointer_width = "64")]

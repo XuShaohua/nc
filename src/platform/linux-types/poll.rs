@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+use super::basic_types::poll_t;
 
-/// These are specified by iBCS2
+/// These are specified by `iBCS2`
 pub const POLLIN: i32 = 0x0001;
 pub const POLLPRI: i32 = 0x0002;
 pub const POLLOUT: i32 = 0x0004;

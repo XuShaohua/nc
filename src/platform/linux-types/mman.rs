@@ -2,9 +2,15 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::hugetlb_encode::*;
+//! From `include/uapi/linux/mman.h`
 
-/// From `include/uapi/linux/mman.h`
+use super::hugetlb_encode::{
+    HUGETLB_FLAG_ENCODE_16GB, HUGETLB_FLAG_ENCODE_16MB, HUGETLB_FLAG_ENCODE_1GB,
+    HUGETLB_FLAG_ENCODE_1MB, HUGETLB_FLAG_ENCODE_256MB, HUGETLB_FLAG_ENCODE_2GB,
+    HUGETLB_FLAG_ENCODE_2MB, HUGETLB_FLAG_ENCODE_32MB, HUGETLB_FLAG_ENCODE_512KB,
+    HUGETLB_FLAG_ENCODE_512MB, HUGETLB_FLAG_ENCODE_64KB, HUGETLB_FLAG_ENCODE_8MB,
+    HUGETLB_FLAG_ENCODE_MASK, HUGETLB_FLAG_ENCODE_SHIFT,
+};
 
 pub const MREMAP_MAYMOVE: i32 = 1;
 pub const MREMAP_FIXED: i32 = 2;
@@ -21,11 +27,11 @@ pub const MAP_PRIVATE: i32 = 0x02;
 /// share + validate extension flags
 pub const MAP_SHARED_VALIDATE: i32 = 0x03;
 
-/// Huge page size encoding when MAP_HUGETLB is specified, and a huge page
-/// size other than the default is desired.  See hugetlb_encode.h.
+/// Huge page size encoding when `MAP_HUGETLB` is specified, and a huge page
+/// size other than the default is desired.  See `hugetlb_encode.h`.
 /// All known huge page size encodings are provided here.  It is the
 /// responsibility of the application to know which sizes are supported on
-/// the running system.  See mmap(2) man page for details.
+/// the running system.  See `mmap(2)` man page for details.
 pub const MAP_HUGE_SHIFT: i32 = HUGETLB_FLAG_ENCODE_SHIFT;
 pub const MAP_HUGE_MASK: i32 = HUGETLB_FLAG_ENCODE_MASK;
 

@@ -2,11 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// NUMA memory policies for Linux.
-
-/// Both the MPOL_* mempolicy mode and the MPOL_F_* optional mode flags are
-/// passed by the user to either set_mempolicy() or mbind() in an 'int' actual.
-/// The MPOL_MODE_FLAGS macro determines the legal set of optional mode flags.
+//! NUMA memory policies for Linux.
+//!
+//! Both the `MPOL_*` mempolicy mode and the `MPOL_F_*` optional mode flags are
+//! passed by the user to either `set_mempolicy()` or `mbind()` in an 'int' actual.
+//! The `MPOL_MODE_FLAGS` macro determines the legal set of optional mode flags.
 
 /// Policies
 pub const MPOL_DEFAULT: i32 = 0;
@@ -17,15 +17,15 @@ pub const MPOL_LOCAL: i32 = 4;
 /// always last member of enum
 pub const MPOL_MAX: i32 = 5;
 
-/// Flags for set_mempolicy
+/// Flags for `set_mempolicy`
 pub const MPOL_F_STATIC_NODES: i32 = 1 << 15;
 pub const MPOL_F_RELATIVE_NODES: i32 = 1 << 14;
 
-/// MPOL_MODE_FLAGS is the union of all possible optional mode flags passed to
-/// either set_mempolicy() or mbind().
+/// `MPOL_MODE_FLAGS` is the union of all possible optional mode flags passed to
+/// either `set_mempolicy()` or `mbind()`.
 pub const MPOL_MODE_FLAGS: i32 = MPOL_F_STATIC_NODES | MPOL_F_RELATIVE_NODES;
 
-/// Flags for get_mempolicy
+/// Flags for `get_mempolicy`
 /// return next IL mode instead of node mask
 pub const MPOL_F_NODE: i32 = 1;
 /// look up vma using address

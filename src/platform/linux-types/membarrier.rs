@@ -2,10 +2,10 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// enum membarrier_cmd - membarrier system call command
-/// @MEMBARRIER_CMD_QUERY:   Query the set of supported commands. It returns
+/// enum `membarrier_cmd` - membarrier system call command
+/// @`MEMBARRIER_CMD_QUERY`:   Query the set of supported commands. It returns
 ///                          a bitmask of valid commands.
-/// @MEMBARRIER_CMD_GLOBAL:  Execute a memory barrier on all running threads.
+/// @`MEMBARRIER_CMD_GLOBAL`:  Execute a memory barrier on all running threads.
 ///                          Upon return from system call, the caller thread
 ///                          is ensured that all running threads have passed
 ///                          through a state where all memory accesses to
@@ -14,10 +14,10 @@
 ///                          (non-running threads are de facto in such a
 ///                          state). This covers threads from all processes
 ///                          running on the system. This command returns 0.
-/// @MEMBARRIER_CMD_GLOBAL_EXPEDITED:
+/// @`MEMBARRIER_CMD_GLOBAL_EXPEDITED`:
 ///                          Execute a memory barrier on all running threads
 ///                          of all processes which previously registered
-///                          with MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED.
+///                          with `MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED`.
 ///                          Upon return from system call, the caller thread
 ///                          is ensured that all running threads have passed
 ///                          through a state where all memory accesses to
@@ -26,17 +26,17 @@
 ///                          (non-running threads are de facto in such a
 ///                          state). This only covers threads from processes
 ///                          which registered with
-///                          MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED.
+///                          `MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED`.
 ///                          This command returns 0. Given that
 ///                          registration is about the intent to receive
 ///                          the barriers, it is valid to invoke
-///                          MEMBARRIER_CMD_GLOBAL_EXPEDITED from a
+///                          `MEMBARRIER_CMD_GLOBAL_EXPEDITED` from a
 ///                          non-registered process.
-/// @MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
+/// @`MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED`:
 ///                          Register the process intent to receive
-///                          MEMBARRIER_CMD_GLOBAL_EXPEDITED memory
+///                          `MEMBARRIER_CMD_GLOBAL_EXPEDITED` memory
 ///                          barriers. Always returns 0.
-/// @MEMBARRIER_CMD_PRIVATE_EXPEDITED:
+/// @`MEMBARRIER_CMD_PRIVATE_EXPEDITED`:
 ///                          Execute a memory barrier on each running
 ///                          thread belonging to the same process as the current
 ///                          thread. Upon return from system call, the
@@ -56,14 +56,14 @@
 ///                          intent to use the private expedited command
 ///                          prior to using it, otherwise this command
 ///                          returns -EPERM.
-/// @MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
+/// @`MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED`:
 ///                          Register the process intent to use
-///                          MEMBARRIER_CMD_PRIVATE_EXPEDITED. Always
+///                          `MEMBARRIER_CMD_PRIVATE_EXPEDITED`. Always
 ///                          returns 0.
-/// @MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
+/// @`MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE`:
 ///                          In addition to provide memory ordering
 ///                          guarantees described in
-///                          MEMBARRIER_CMD_PRIVATE_EXPEDITED, ensure
+///                          `MEMBARRIER_CMD_PRIVATE_EXPEDITED`, ensure
 ///                          the caller thread, upon return from system
 ///                          call, that all its running threads siblings
 ///                          have executed a core serializing
@@ -82,18 +82,18 @@
 ///                          intent to use the private expedited sync
 ///                          core command prior to using it, otherwise
 ///                          this command returns -EPERM.
-/// @MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+/// @`MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE`:
 ///                          Register the process intent to use
-///                          MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE.
+///                          `MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE`.
 ///                          If this command is not implemented by an
 ///                          architecture, -EINVAL is returned.
 ///                          Returns 0 on success.
-/// @MEMBARRIER_CMD_SHARED:
-///                          Alias to MEMBARRIER_CMD_GLOBAL. Provided for
+/// @`MEMBARRIER_CMD_SHARED`:
+///                          Alias to `MEMBARRIER_CMD_GLOBAL`. Provided for
 ///                          header backward compatibility.
 ///
 /// Command to be passed to the membarrier system call. The commands need to
-/// be a single bit each, except for MEMBARRIER_CMD_QUERY which is assigned to
+/// be a single bit each, except for `MEMBARRIER_CMD_QUERY` which is assigned to
 /// the value 0.
 pub const MEMBARRIER_CMD_QUERY: i32 = 0;
 pub const MEMBARRIER_CMD_GLOBAL: i32 = 1;

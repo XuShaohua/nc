@@ -3,9 +3,11 @@
 // in the LICENSE file.
 
 //! uapi/linux/ptrace.h
+//!
+//! structs and defines to help the user use the ptrace system call.
+//! has the defines to get at the registers.
 
-/// structs and defines to help the user use the ptrace system call.
-/// has the defines to get at the registers.
+#![allow(clippy::module_name_repetitions)]
 
 pub const PTRACE_TRACEME: i32 = 0;
 pub const PTRACE_PEEKTEXT: i32 = 1;
@@ -30,17 +32,18 @@ pub const PTRACE_GETSIGINFO: i32 = 0x4202;
 pub const PTRACE_SETSIGINFO: i32 = 0x4203;
 
 /// Generic ptrace interface that exports the architecture specific regsets
-/// using the corresponding NT_* types (which are also used in the core dump).
-/// Please note that the NT_PRSTATUS note type in a core dump contains a full
-/// 'struct elf_prstatus'. But the user_regset for NT_PRSTATUS contains just the
-/// elf_gregset_t that is the pr_reg field of 'struct elf_prstatus'. For all the
-/// other user_regset flavors, the user_regset layout and the ELF core dump note
+/// using the corresponding `NT_*` types (which are also used in the core dump).
+/// Please note that the `NT_PRSTATUS` note type in a core dump contains a full
+/// `struct elf_prstatus`. But the `user_regset` for `NT_PRSTATUS` contains just the
+/// `elf_gregset_t` that is the `pr_reg` field of `struct elf_prstatus`. For all the
+/// other `user_regset` flavors, the `user_regset` layout and the ELF core dump note
 /// payload are exactly the same layout.
 ///
 /// This interface usage is as follows:
+///  ```c
 ///  struct iovec iov = { buf, len};
-///
 ///  ret = ptrace(PTRACE_GETREGSET/PTRACE_SETREGSET, pid, NT_XXX_TYPE, &iov);
+///  ```
 ///
 /// On the successful completion, iov.len will be updated by the kernel,
 /// specifying how much the kernel has written/read to/from the user's iov.buf.
@@ -134,8 +137,8 @@ pub struct ptrace_syscall_info_t {
     pub seccomp: ptrace_syscall_info_seccomp_t,
 }
 
-/// These values are stored in task->ptrace_message
-/// by tracehook_report_syscall_* to describe the current syscall-stop.
+/// These values are stored in `task->ptrace_message`
+/// by `tracehook_report_syscall_*` to describe the current syscall-stop.
 pub const PTRACE_EVENTMSG_SYSCALL_ENTRY: i32 = 1;
 pub const PTRACE_EVENTMSG_SYSCALL_EXIT: i32 = 2;
 
@@ -153,7 +156,7 @@ pub const PTRACE_EVENT_SECCOMP: i32 = 7;
 /// Extended result codes which enabled by means other than options.
 pub const PTRACE_EVENT_STOP: i32 = 128;
 
-/// Options set using PTRACE_SETOPTIONS or using PTRACE_SEIZE @data param
+/// Options set using `PTRACE_SETOPTIONS` or using `PTRACE_SEIZE` @data param
 pub const PTRACE_O_TRACESYSGOOD: i32 = 1;
 pub const PTRACE_O_TRACEFORK: i32 = 1 << PTRACE_EVENT_FORK;
 pub const PTRACE_O_TRACEVFORK: i32 = 1 << PTRACE_EVENT_VFORK;

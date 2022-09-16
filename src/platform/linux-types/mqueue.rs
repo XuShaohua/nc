@@ -21,18 +21,19 @@ pub struct mq_attr_t {
     reserved: [isize; 4],
 }
 
-/// SIGEV_THREAD implementation:
-/// SIGEV_THREAD must be implemented in user space. If SIGEV_THREAD is passed
-/// to mq_notify, then
-/// - sigev_signo must be the file descriptor of an AF_NETLINK socket. It's not
+/// `SIGEV_THREAD` implementation:
+///
+/// `SIGEV_THREAD` must be implemented in user space. If `SIGEV_THREAD` is passed
+/// to `mq_notify`, then
+/// - `sigev_signo` must be the file descriptor of an `AF_NETLINK` socket. It's not
 /// necessary that the socket is bound.
-/// - sigev_value.sival_ptr must point to a cookie that is NOTIFY_COOKIE_LEN
+/// - `sigev_value.sival_ptr` must point to a cookie that is `NOTIFY_COOKIE_LEN`
 /// bytes long.
 /// If the notification is triggered, then the cookie is sent to the netlink
-/// socket. The last byte of the cookie is replaced with the NOTIFY_?? codes:
-/// NOTIFY_WOKENUP if the notification got triggered, NOTIFY_REMOVED if it was
-/// removed, either due to a close() on the message queue fd or due to a
-/// mq_notify() that removed the notification.
+/// socket. The last byte of the cookie is replaced with the `NOTIFY_??` codes:
+/// `NOTIFY_WOKENUP` if the notification got triggered, `NOTIFY_REMOVED` if it was
+/// removed, either due to a `close()` on the message queue fd or due to a
+/// `mq_notify()` that removed the notification.
 pub const NOTIFY_NONE: i32 = 0;
 pub const NOTIFY_WOKENUP: i32 = 1;
 pub const NOTIFY_REMOVED: i32 = 2;

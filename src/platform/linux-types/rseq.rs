@@ -2,10 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// linux/rseq.h
-///
-/// Restartable sequences system call API
-///
+//! From `linux/rseq.h`
+//!
+//! Restartable sequences system call API
+
+#![allow(clippy::module_name_repetitions)]
 
 pub const RSEQ_CPU_ID_UNINITIALIZED: i32 = -1;
 pub const RSEQ_CPU_ID_REGISTRATION_FAILED: i32 = -2;
@@ -20,7 +21,7 @@ pub const RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT: u32 = 1 << RSEQ_CS_FLAG_NO_RESTART
 pub const RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL: u32 = 1 << RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL_BIT;
 pub const RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE: u32 = 1 << RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE_BIT;
 
-/// struct rseq_cs is aligned on 4 * 8 bytes to ensure it is always
+/// struct `rseq_cs` is aligned on 4 * 8 bytes to ensure it is always
 /// contained within a single cache-line. It is usually declared as
 /// link-time constant data.
 // TODO(Shaohua): alignment __attribute__((aligned(4 * sizeof(__u64))));

@@ -55,7 +55,7 @@ pub const RLIMIT_RTPRIO: i32 = 14;
 pub const RLIMIT_RTTIME: i32 = 15;
 pub const RLIM_NLIMITS: i32 = 16;
 
-/// SuS says limits have to be unsigned.
+/// `SuS` says limits have to be unsigned.
 /// Which makes a ton more sense anyway.
 ///
 /// Some architectures override this (for compatibility reasons):

@@ -26,6 +26,7 @@ pub const SUBCMDMASK: i32 = 0x00ff;
 pub const SUBCMDSHIFT: i32 = 8;
 
 #[inline]
+#[must_use]
 pub const fn QCMD(cmd: i32, type_: i32) -> i32 {
     (cmd << SUBCMDSHIFT) | (type_ & SUBCMDMASK)
 }

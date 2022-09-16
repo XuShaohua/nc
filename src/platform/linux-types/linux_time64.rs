@@ -34,6 +34,7 @@ pub const FSEC_PER_SEC: i64 = 1_000_000_000_000_000;
 /// ```rust
 /// assert_eq!(nc::TIME64_MAX, 9223372036854775807_i64);
 /// ```
+#[allow(clippy::cast_possible_wrap)]
 pub const TIME64_MAX: i64 = (!(1_u64 << 63)) as i64;
 
 /// ```rust
@@ -44,6 +45,7 @@ pub const TIME64_MIN: i64 = -TIME64_MAX - 1;
 /// ```rust
 /// assert_eq!(nc::KTIME_MAX, 9223372036854775807_i64);
 /// ```
+#[allow(clippy::cast_possible_wrap)]
 pub const KTIME_MAX: i64 = (!(1_u64 << 63)) as i64;
 
 /// ```rust

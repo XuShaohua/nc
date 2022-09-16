@@ -2,14 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::linux_time64::*;
-use super::uapi_socket::*;
-use super::uio::*;
+use super::basic_types::size_t;
+use super::linux_time64::timespec64_t;
+use super::uapi_socket::{kernel_sa_family_t, kernel_sockaddr_storage_t};
+use super::uio::iovec_t;
 
 pub type sa_family_t = kernel_sa_family_t;
 
-/// 1003.1g requires sa_family_t and that sa_data is char.
+/// 1003.1g requires `sa_family_t` and that `sa_data` is char.
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sockaddr_t {
@@ -31,7 +31,7 @@ pub struct linger_t {
 pub type sockaddr_storage_t = kernel_sockaddr_storage_t;
 
 /// As we do 4.4BSD message passing we use a 4.4BSD message passing
-/// system, not 4.3. Thus msg_accrights(len) are now missing. They
+/// system, not 4.3. Thus `msg_accrights(len)` are now missing. They
 /// belong in an obscure libc emulation or the bin.
 
 // Comment kernel msg header
@@ -85,7 +85,7 @@ pub struct mmsghdr_t {
 
 /// POSIX 1003.1g - ancillary data object information
 /// Ancillary data consits of a sequence of pairs of
-/// (cmsghdr, cmsg_data[])
+/// (`cmsghdr, cmsg_data[]`)
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct cmsghdr_t {
@@ -140,7 +140,7 @@ pub struct ucred_t {
 pub const AF_UNSPEC: i32 = 0;
 /// Unix domain sockets
 pub const AF_UNIX: i32 = 1;
-/// POSIX name for AF_UNIX
+/// POSIX name for `AF_UNIX`
 pub const AF_LOCAL: i32 = 1;
 /// Internet IP Protocol
 pub const AF_INET: i32 = 2;
@@ -148,7 +148,7 @@ pub const AF_INET: i32 = 2;
 pub const AF_AX25: i32 = 3;
 /// Novell IPX
 pub const AF_IPX: i32 = 4;
-/// AppleTalk DDP
+/// `AppleTalk` DDP
 pub const AF_APPLETALK: i32 = 5;
 /// Amateur Radio NET/ROM
 pub const AF_NETROM: i32 = 6;
@@ -162,13 +162,13 @@ pub const AF_X25: i32 = 9;
 pub const AF_INET6: i32 = 10;
 /// Amateur Radio X.25 PLP
 pub const AF_ROSE: i32 = 11;
-/// Reserved for DECnet project
+/// Reserved for `DECnet` project
 pub const AF_DECNET: i32 = 12;
 /// Reserved for 802.2LLC project
 pub const AF_NETBEUI: i32 = 13;
 /// Security callback pseudo AF
 pub const AF_SECURITY: i32 = 14;
-/// PF_KEY key management API
+/// `PF_KEY` key management API
 pub const AF_KEY: i32 = 15;
 pub const AF_NETLINK: i32 = 16;
 /// Alias to emulate 4.4BSD
@@ -187,13 +187,13 @@ pub const AF_RDS: i32 = 21;
 pub const AF_SNA: i32 = 22;
 /// IRDA sockets
 pub const AF_IRDA: i32 = 23;
-/// PPPoX sockets
+/// `PPPoX` sockets
 pub const AF_PPPOX: i32 = 24;
 /// Wanpipe API Sockets
 pub const AF_WANPIPE: i32 = 25;
 /// Linux LLC
 pub const AF_LLC: i32 = 26;
-/// Native InfiniBand address
+/// `Native InfiniBand` address
 pub const AF_IB: i32 = 27;
 /// MPLS
 pub const AF_MPLS: i32 = 28;
@@ -205,9 +205,9 @@ pub const AF_TIPC: i32 = 30;
 pub const AF_BLUETOOTH: i32 = 31;
 /// IUCV sockets
 pub const AF_IUCV: i32 = 32;
-/// RxRPC sockets
+/// `RxRPC` sockets
 pub const AF_RXRPC: i32 = 33;
-/// mISDN sockets
+/// `mISDN` sockets
 pub const AF_ISDN: i32 = 34;
 /// Phonet sockets
 pub const AF_PHONET: i32 = 35;
@@ -225,8 +225,8 @@ pub const AF_VSOCK: i32 = 40;
 pub const AF_KCM: i32 = 41;
 /// Qualcomm IPC Router
 pub const AF_QIPCRTR: i32 = 42;
-/// smc sockets: reserve number for PF_SMC protocol family that reuses
-/// AF_INET address family
+/// smc sockets: reserve number for `PF_SMC` protocol family that reuses
+/// `AF_INET` address family
 pub const AF_SMC: i32 = 43;
 /// XDP sockets
 pub const AF_XDP: i32 = 44;
@@ -289,11 +289,10 @@ pub const SOMAXCONN: i32 = 128;
 
 /// Flags we can use with send/ and recv.
 /// Added those for 1003.1g not all are supported yet
-
 pub const MSG_OOB: i32 = 1;
 pub const MSG_PEEK: i32 = 2;
 pub const MSG_DONTROUTE: i32 = 4;
-/// Synonym for MSG_DONTROUTE for DECnet
+/// Synonym for `MSG_DONTROUTE` for `DECnet`
 pub const MSG_TRYHARD: i32 = 4;
 pub const MSG_CTRUNC: i32 = 8;
 /// Do not send. Only probe path f.e. for MTU
@@ -316,25 +315,25 @@ pub const MSG_ERRQUEUE: i32 = 0x2000;
 pub const MSG_NOSIGNAL: i32 = 0x4000;
 /// Sender will send more
 pub const MSG_MORE: i32 = 0x8000;
-/// recvmmsg(): block until 1+ packets avail
+/// `recvmmsg()`: block until 1+ packets avail
 pub const MSG_WAITFORONE: i32 = 0x10000;
-/// sendpage() internal : do no apply policy
+/// `sendpage()` internal : do no apply policy
 pub const MSG_SENDPAGE_NOPOLICY: i32 = 0x10000;
-/// sendpage() internal : not the last page
+/// `sendpage()` internal : not the last page
 pub const MSG_SENDPAGE_NOTLAST: i32 = 0x20000;
-/// sendmmsg(): more messages coming
+/// `sendmmsg()`: more messages coming
 pub const MSG_BATCH: i32 = 0x40000;
 pub const MSG_EOF: i32 = MSG_FIN;
-/// sendpage() internal : page frags are not shared
+/// `sendpage()` internal : page frags are not shared
 pub const MSG_NO_SHARED_FRAGS: i32 = 0x80000;
-/// sendpage() internal : page may carry plain text and require encryption
+/// `sendpage()` internal : page may carry plain text and require encryption
 pub const MSG_SENDPAGE_DECRYPTED: i32 = 0x0010_0000;
 
 /// Use user data in kernel path
 pub const MSG_ZEROCOPY: i32 = 0x0400_0000;
 /// Send data in TCP SYN
 pub const MSG_FASTOPEN: i32 = 0x2000_0000;
-/// Set close_on_exec for file descriptor received through SCM_RIGHTS
+/// Set `close_on_exec` for file descriptor received through `SCM_RIGHTS`
 pub const MSG_CMSG_CLOEXEC: i32 = 0x4000_0000;
 
 // TODO(Shaohua): Support compat
@@ -344,9 +343,9 @@ pub const MSG_CMSG_CLOEXEC: i32 = 0x4000_0000;
 /// We never have 32 bit fixups
 pub const MSG_CMSG_COMPAT: i32 = 0;
 
-/// Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx
+/// `setsockoptions(2)` level. Thanks to BSD these must match `IPPROTO_xxx`
 pub const SOL_IP: i32 = 0;
-/// #define SOL_ICMP 1 No-no-no! Due to Linux :-) we cannot use SOL_ICMP=1
+/// #define `SOL_ICMP` 1 No-no-no! Due to Linux :-) we cannot use `SOL_ICMP=1`
 pub const SOL_TCP: i32 = 6;
 pub const SOL_UDP: i32 = 17;
 pub const SOL_IPV6: i32 = 41;

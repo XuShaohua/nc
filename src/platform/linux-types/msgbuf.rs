@@ -4,19 +4,19 @@
 
 //! From include/uapi/asm-generic/msgbuf.h
 
-use super::basic_types::*;
-use super::ipc::*;
+use super::basic_types::{pid_t, time_t};
+use super::ipc::ipc_perm_t;
 
-/// generic msqid64_ds structure.
+/// Generic `msqid64_ds` structure.
 ///
 /// Note extra padding because this structure is passed back and forth
 /// between kernel and user space.
 ///
-/// msqid64_ds was originally meant to be architecture specific, but
+/// `msqid64_ds` was originally meant to be architecture specific, but
 /// everyone just ended up making identical copies without specific
 /// optimizations, so we may just as well all use the same one.
 ///
-/// 64 bit architectures typically define a 64 bit __kernel_time_t,
+/// 64 bit architectures typically define a 64 bit `__kernel_time_t`,
 /// so they do not need the first three padding words.
 /// On big-endian systems, the padding is in the wrong place.
 ///

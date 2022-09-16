@@ -2,9 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/linux/perf_event.h
+//! From `include/uapi/linux/perf_event.h`
+//!
+//! User-space ABI bits:
 
-/// User-space ABI bits:
+#![allow(clippy::module_name_repetitions)]
 
 /// attr.type
 #[repr(u8)]
@@ -20,8 +22,8 @@ pub enum perf_type_id_t {
     PERF_TYPE_MAX = 6,
 }
 
-/// Generalized performance event event_id types, used by the
-/// attr.event_id parameter of the sys_perf_event_open()
+/// Generalized performance event `event_id` types, used by the
+/// `attr.event_id` parameter of the `sys_perf_event_open()`
 /// syscall:
 
 /// Common hardware events, generalized by the kernel:
@@ -102,10 +104,10 @@ pub enum perf_sw_ids_t {
     PERF_COUNT_SW_MAX = 11,
 }
 
-/// Bits that can be set in attr.sample_type to request information
+/// Bits that can be set in `attr.sample_type` to request information
 /// in the overflow packets.
 #[repr(u64)]
-#[derive(Debug, PartialOrd, PartialEq)]
+#[derive(Debug, PartialOrd, PartialEq, Eq)]
 pub enum perf_event_sample_format_t {
     PERF_SAMPLE_IP = 1,
     PERF_SAMPLE_TID = 1 << 1,
@@ -144,13 +146,13 @@ pub enum perf_event_sample_format_t {
 pub const PERF_SAMPLE_WEIGHT_TYPE: u64 = perf_event_sample_format_t::PERF_SAMPLE_WEIGHT as u64
     | perf_event_sample_format_t::PERF_SAMPLE_WEIGHT_STRUCT as u64;
 
-/// values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
+/// values to program into `branch_sample_type` when `PERF_SAMPLE_BRANCH` is set
 ///
-/// If the user does not pass priv level information via branch_sample_type
+/// If the user does not pass priv level information via `branch_sample_type`
 /// the kernel uses the event's priv level. Branch and event priv levels do
 /// not have to match. Branch priv level is checked for permissions.
 ///
-/// The branch types can be combined, however BRANCH_ANY covers all types
+/// The branch types can be combined, however `BRANCH_ANY` covers all types
 /// of branches and therefore it supersedes all the other types.
 /// user branches
 #[repr(u8)]
@@ -200,6 +202,7 @@ pub enum perf_branch_sample_type_shift_t {
     PERF_SAMPLE_BRANCH_MAX_SHIFT = 18,
 }
 
+#[allow(clippy::enum_glob_use)]
 use perf_branch_sample_type_shift_t::*;
 
 #[repr(u32)]
@@ -295,8 +298,8 @@ pub const PERF_TXN_ABORT_MASK: u64 = 0xffff_ffff << 32;
 
 pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 
-/// The format of the data returned by read() on a perf event fd
-/// as specified by attr.read_format:
+/// The format of the data returned by `read()` on a perf event fd
+/// as specified by `attr.read_format`:
 ///
 /// ```c
 /// struct read_format {
@@ -331,14 +334,14 @@ pub enum perf_event_read_format_t {
 pub const PERF_ATTR_SIZE_VER0: i32 = 64;
 /// add: config2
 pub const PERF_ATTR_SIZE_VER1: i32 = 72;
-/// add: branch_sample_type
+/// add: `branch_sample_type`
 pub const PERF_ATTR_SIZE_VER2: i32 = 80;
-/// add: sample_regs_user
-/// add: sample_stack_user
+/// add: `sample_regs_user`
+/// add: `sample_stack_user`
 pub const PERF_ATTR_SIZE_VER3: i32 = 96;
-/// add: sample_regs_intr
+/// add: `sample_regs_intr`
 pub const PERF_ATTR_SIZE_VER4: i32 = 104;
-/// add: aux_watermark
+/// add: `aux_watermark`
 pub const PERF_ATTR_SIZE_VER5: i32 = 112;
 
 #[repr(C)]
@@ -384,13 +387,13 @@ pub union perf_event_attr_config2_t {
     pub config2: u64,
 }
 
-/// Hardware event_id to monitor via a performance monitoring event:
+/// Hardware `event_id` to monitor via a performance monitoring event:
 ///
-/// @sample_max_stack: Max number of frame pointers in a callchain
-/// should be < /proc/sys/kernel/perf_event_max_stack
+/// `@sample_max_stack`: Max number of frame pointers in a callchain
+/// should be < `/proc/sys/kernel/perf_event_max_stack`
 #[repr(C)]
 pub struct perf_event_attr_t {
-    /// Major type: hardware/software/tracepoint/etc.
+    /// Major type: `hardware/software/tracepoint/etc`.
     pub type_: u32,
 
     /// Size of the attr structure, for fwd/bwd compat.
@@ -536,7 +539,7 @@ pub struct perf_event_attr_t {
     reserved_2: u16,
 }
 
-/// Structure used by below PERF_EVENT_IOC_QUERY_BPF command
+/// Structure used by below `PERF_EVENT_IOC_QUERY_BPF` command
 /// to query bpf programs attached to the same perf tracepoint
 /// as the given perf event.
 #[repr(C)]
@@ -552,6 +555,7 @@ pub struct perf_event_query_bpf_t {
 }
 
 #[inline]
+#[must_use]
 pub const fn perf_flags(attr: &perf_event_attr_t) -> u64 {
     attr.read_format + 1
 }
@@ -765,33 +769,33 @@ pub const PERF_RECORD_MISC_HYPERVISOR: i32 = 3;
 pub const PERF_RECORD_MISC_GUEST_KERNEL: i32 = 4;
 pub const PERF_RECORD_MISC_GUEST_USER: i32 = 5;
 
-/// Indicates that /proc/PID/maps parsing are truncated by time out.
+/// Indicates that `/proc/PID/maps` parsing are truncated by time out.
 pub const PERF_RECORD_MISC_PROC_MAP_PARSE_TIMEOUT: i32 = 1 << 12;
 
-/// Following PERF_RECORD_MISC_* are used on different
+/// Following `PERF_RECORD_MISC_*` are used on different
 /// events, so can reuse the same bit position:
 ///
-///   PERF_RECORD_MISC_MMAP_DATA  - PERF_RECORD_MMAP* events
-///   PERF_RECORD_MISC_COMM_EXEC  - PERF_RECORD_COMM event
-///   PERF_RECORD_MISC_SWITCH_OUT - PERF_RECORD_SWITCH* events
+/// - `PERF_RECORD_MISC_MMAP_DATA`, `PERF_RECORD_MMAP*` events
+/// - `PERF_RECORD_MISC_COMM_EXEC`, `PERF_RECORD_COMM` event
+/// - `PERF_RECORD_MISC_SWITCH_OUT`, `PERF_RECORD_SWITCH*` events
 pub const PERF_RECORD_MISC_MMAP_DATA: i32 = 1 << 13;
 pub const PERF_RECORD_MISC_COMM_EXEC: i32 = 1 << 13;
 pub const PERF_RECORD_MISC_SWITCH_OUT: i32 = 1 << 13;
 
-/// These PERF_RECORD_MISC_* flags below are safely reused
+/// These `PERF_RECORD_MISC_*` flags below are safely reused
 /// for the following events:
 ///
-///   PERF_RECORD_MISC_EXACT_IP           - PERF_RECORD_SAMPLE of precise events
-///   PERF_RECORD_MISC_SWITCH_OUT_PREEMPT - PERF_RECORD_SWITCH* events
+/// - `PERF_RECORD_MISC_EXACT_IP`: `PERF_RECORD_SAMPLE` of precise events
 ///
+/// - `PERF_RECORD_MISC_SWITCH_OUT_PREEMPT`: `PERF_RECORD_SWITCH*` events
 ///
-/// PERF_RECORD_MISC_EXACT_IP:
-///   Indicates that the content of PERF_SAMPLE_IP points to
+/// - `PERF_RECORD_MISC_EXACT_IP`:
+///   Indicates that the content of `PERF_SAMPLE_IP` points to
 ///   the actual instruction that triggered the event. See also
-///   perf_event_attr::precise_ip.
+///   `perf_event_attr::precise_ip`.
 ///
-/// PERF_RECORD_MISC_SWITCH_OUT_PREEMPT:
-///   Indicates that thread was preempted in TASK_RUNNING state.
+/// - `PERF_RECORD_MISC_SWITCH_OUT_PREEMPT`:
+///   Indicates that thread was preempted in `TASK_RUNNING` state.
 pub const PERF_RECORD_MISC_EXACT_IP: i32 = 1 << 14;
 pub const PERF_RECORD_MISC_SWITCH_OUT_PREEMPT: i32 = 1 << 14;
 
@@ -822,9 +826,9 @@ pub const CGROUP_NS_INDEX: i32 = 6;
 /// number of available namespaces
 pub const NR_NAMESPACES: i32 = 7;
 
-/// perf_event_type
+/// `perf_event_type`
 pub enum perf_event_type_t {
-    /// If perf_event_attr.sample_id_all is set then all event types will
+    /// If `perf_event_attr.sample_id_all` is set then all event types will
     /// have the sample_type selected fields related to where/when
     /// (identity) an event took place (TID, TIME, ID, STREAM_ID, CPU
     /// IDENTIFIER) described in PERF_RECORD_SAMPLE below, it will be stashed
@@ -1184,7 +1188,7 @@ pub enum perf_callchain_context_t {
     PERF_CONTEXT_MAX = -4095,
 }
 
-/// PERF_RECORD_AUX::flags bits
+/// `PERF_RECORD_AUX::flags` bits
 /// record was truncated to fit
 pub const PERF_AUX_FLAG_TRUNCATED: i32 = 0x01;
 /// snapshot from overwrite mode
@@ -1198,7 +1202,7 @@ pub const PERF_FLAG_FD_NO_GROUP: usize = 1;
 pub const PERF_FLAG_FD_OUTPUT: usize = 1 << 1;
 /// pid=cgroup id, per-cpu mode only
 pub const PERF_FLAG_PID_CGROUP: usize = 1 << 2;
-/// O_CLOEXEC
+/// `O_CLOEXEC`
 pub const PERF_FLAG_FD_CLOEXEC: usize = 1 << 3;
 
 #[cfg(target_endian = "little")]
@@ -1411,10 +1415,10 @@ pub const PERF_MEM_TLB_SHIFT: i32 = 26;
 /// support for mispred, predicted is optional. In case it
 /// is not supported mispred = predicted = 0.
 ///
-/// - in_tx: running in a hardware transaction
-/// - abort: aborting a hardware transaction
-/// - cycles: cycles from last branch (or 0 if not supported)
-/// - type: branch type
+/// - `in_tx`: running in a hardware transaction
+/// - `abort`: aborting a hardware transaction
+/// - `cycles`: cycles from last branch (or 0 if not supported)
+/// - `type`: branch type
 #[repr(C)]
 pub struct perf_branch_entry_t {
     pub from: u64,

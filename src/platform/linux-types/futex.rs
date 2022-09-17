@@ -86,7 +86,7 @@ pub const FUTEX_WAITERS: i32 = 0x8000_0000;
 
 /// The kernel signals via this bit that a thread holding a futex
 /// has exited without unlocking the futex. The kernel also does
-/// a FUTEX_WAKE on such futexes, after setting the bit, to wake
+/// a `FUTEX_WAKE` on such futexes, after setting the bit, to wake
 /// up any possible waiters:
 pub const FUTEX_OWNER_DIED: i32 = 0x4000_0000;
 
@@ -97,7 +97,7 @@ pub const FUTEX_TID_MASK: i32 = 0x3fff_ffff;
 /// (Not worth introducing an rlimit for it)
 pub const ROBUST_LIST_LIMIT: i32 = 2048;
 
-/// bitset with all bits set for the FUTEX_xxx_BITSET OPs to request a
+/// bitset with all bits set for the `FUTEX_xxx_BITSET` OPs to request a
 /// match of any bit.
 #[allow(overflowing_literals)]
 pub const FUTEX_BITSET_MATCH_ANY: i32 = 0xffff_ffff;
@@ -129,13 +129,16 @@ pub const FUTEX_OP_CMP_GT: i32 = 4;
 /// if (oldval >= CMPARG) wake
 pub const FUTEX_OP_CMP_GE: i32 = 5;
 
-/// FUTEX_WAKE_OP will perform atomically
+/// `FUTEX_WAKE_OP` will perform atomically.
+/// ```c
 /// int oldval = *(int *)UADDR2;
 /// *(int *)UADDR2 = oldval OP OPARG;
 /// if (oldval CMP CMPARG)
 /// wake UADDR2;
+/// ```
 
 #[inline]
+#[must_use]
 pub const fn FUTEX_OP(op: i32, oparg: i32, cmp: i32, cmparg: i32) -> i32 {
     ((op & 0xf) << 28) | ((cmp & 0xf) << 24) | ((oparg & 0xfff) << 12) | (cmparg & 0xfff)
 }

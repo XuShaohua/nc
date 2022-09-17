@@ -2,26 +2,32 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 /// Gives us 8 prio classes with 13-bits of data for each class
 pub const IOPRIO_CLASS_SHIFT: u8 = 13;
 pub const IOPRIO_PRIO_MASK: i32 = (1 << IOPRIO_CLASS_SHIFT) - 1;
 
 #[inline]
+#[must_use]
 pub const fn ioprio_prio_class(mask: i32) -> i32 {
     mask >> IOPRIO_CLASS_SHIFT
 }
 
 #[inline]
+#[must_use]
 pub const fn ioprio_prio_data(mask: i32) -> i32 {
     mask & IOPRIO_PRIO_MASK
 }
 
 #[inline]
+#[must_use]
 pub const fn ioprio_prio_value(class_: i32, data: i32) -> i32 {
     (class_ << IOPRIO_CLASS_SHIFT) | data
 }
 
 #[inline]
+#[must_use]
 pub const fn ioprio_valid(mask: i32) -> bool {
     ioprio_prio_class(mask) != IOPRIO_CLASS_NONE
 }

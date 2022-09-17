@@ -2,8 +2,10 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::limits::*;
+#![allow(clippy::module_name_repetitions)]
+
+use super::basic_types::{ino64_t, loff_t};
+use super::limits::PATH_MAX;
 use alloc::string::String;
 
 #[repr(C)]

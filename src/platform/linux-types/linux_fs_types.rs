@@ -2,33 +2,34 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::uapi_stat::*;
+//! This is a header for the common implementation of dirent
+//! to fs on-disk file type conversion.
+//!
+//! Although the fs on-disk bits are specific to every file system, in practice,
+//! many file systems use the exact same on-disk format to describe
+//! the lower 3 file type bits that represent the 7 POSIX file types.
+//!
+//! It is important to note that the definitions in this
+//! header MUST NOT change. This would break both the
+//! userspace ABI and the on-disk format of filesystems
+//! using this code.
+//!
+//! All those file systems can use this generic code for the
+//! conversions.
 
-/// This is a header for the common implementation of dirent
-/// to fs on-disk file type conversion.  Although the fs on-disk
-/// bits are specific to every file system, in practice, many
-/// file systems use the exact same on-disk format to describe
-/// the lower 3 file type bits that represent the 7 POSIX file
-/// types.
-///
-/// It is important to note that the definitions in this
-/// header MUST NOT change. This would break both the
-/// userspace ABI and the on-disk format of filesystems
-/// using this code.
-///
-/// All those file systems can use this generic code for the
-/// conversions.
+use super::basic_types::mode_t;
+use super::uapi_stat::S_IFMT;
 
 /// struct dirent file types
-/// exposed to user via getdents(2), readdir(3)
+/// exposed to user via `getdents(2)`, `readdir(3)`
 ///
-/// These match bits 12..15 of stat.st_mode
-/// (ie "(i_mode >> 12) & 15").
+/// These match bits 12..15 of `stat.st_mode`
+/// (ie `(i_mode >> 12) & 15`).
 pub const S_DT_SHIFT: mode_t = 12;
 
 #[inline]
-pub const fn S_DT(mode: mode_t) -> mode_t {
+#[must_use]
+pub const fn s_dt(mode: mode_t) -> mode_t {
     (mode & S_IFMT) >> S_DT_SHIFT
 }
 
@@ -49,13 +50,14 @@ pub const DT_WHT: mode_t = 14;
 pub const DT_MAX: mode_t = S_DT_MASK + 1;
 
 /// fs on-disk file types.
+///
 /// Only the low 3 bits are used for the POSIX file types.
 /// Other bits are reserved for fs private use.
 /// These definitions are shared and used by multiple filesystems,
 /// and MUST NOT change under any circumstances.
 ///
 /// Note that no fs currently stores the whiteout type on-disk,
-/// so whiteout dirents are exposed to user as DT_CHR.
+/// so whiteout dirents are exposed to user as `DT_CHR`.
 pub const FT_UNKNOWN: mode_t = 0;
 pub const FT_REG_FILE: mode_t = 1;
 pub const FT_DIR: mode_t = 2;

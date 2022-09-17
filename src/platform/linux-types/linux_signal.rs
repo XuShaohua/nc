@@ -10,5 +10,5 @@ pub const SS_DISABLE: i32 = 2;
 /// bit-flags
 /// disable sas during sighandling
 pub const SS_AUTODISARM: usize = 1 << 31;
-/// mask for all SS_xxx flags
+/// mask for all `SS_xxx` flags
 pub const SS_FLAG_BITS: usize = SS_AUTODISARM;

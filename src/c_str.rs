@@ -79,6 +79,7 @@ impl CString {
 
     #[must_use]
     #[inline]
+    #[allow(clippy::borrow_deref_ref)]
     pub fn as_c_str(&self) -> &CStr {
         &*self
     }
@@ -148,6 +149,7 @@ impl CStr {
     }
 
     #[must_use]
+    #[allow(clippy::borrow_as_ptr)]
     pub const fn to_bytes_with_nul(&self) -> &[u8] {
         unsafe { &*(&self.inner as *const [u8]) }
     }

@@ -2,8 +2,10 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::msg::*;
+#![allow(clippy::module_name_repetitions)]
+
+use super::basic_types::{gid_t, key_t, mode_t, uid_t};
+use super::msg::msgbuf_t;
 
 pub const IPC_PRIVATE: key_t = 0;
 
@@ -40,11 +42,11 @@ pub const IPC_OWN: i32 = 0o002_0000;
 /// see also specific commands in sem.h, msg.h and shm.h
 /// remove resource
 pub const IPC_RMID: i32 = 0;
-/// set ipc_perm options
+/// Set `ipc_perm` options
 pub const IPC_SET: i32 = 1;
-/// get ipc_perm options
+/// Get `ipc_perm` options
 pub const IPC_STAT: i32 = 2;
-/// see ipcs
+/// See ipcs
 pub const IPC_INFO: i32 = 3;
 
 /// Version flags for semctl, msgctl, and shmctl commands

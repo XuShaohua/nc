@@ -29,7 +29,7 @@ pub const S_DT_SHIFT: mode_t = 12;
 
 #[inline]
 #[must_use]
-pub const fn s_dt(mode: mode_t) -> mode_t {
+pub const fn S_DT(mode: mode_t) -> mode_t {
     (mode & S_IFMT) >> S_DT_SHIFT
 }
 

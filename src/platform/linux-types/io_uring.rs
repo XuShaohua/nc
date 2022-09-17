@@ -2,8 +2,10 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::fs::*;
+#![allow(clippy::module_name_repetitions)]
+
+use super::basic_types::off_t;
+use super::fs::rwf_t;
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -106,7 +108,7 @@ pub const IOSQE_IO_HARDLINK_BIT: u32 = 3;
 pub const IOSQE_ASYNC_BIT: u32 = 4;
 pub const IOSQE_BUFFER_SELECT_BIT: u32 = 5;
 
-/// sqe->flags
+/// `sqe->flags`
 /// use fixed fileset
 pub const IOSQE_FIXED_FILE: u32 = 1 << IOSQE_FIXED_FILE_BIT;
 /// issue after inflight IO
@@ -117,15 +119,15 @@ pub const IOSQE_IO_LINK: u32 = 1 << IOSQE_IO_LINK_BIT;
 pub const IOSQE_IO_HARDLINK: u32 = 1 << IOSQE_IO_HARDLINK_BIT;
 /// always go async
 pub const IOSQE_ASYNC: u32 = 1 << IOSQE_ASYNC_BIT;
-/// select buffer from sqe->buf_group
+/// select buffer from `sqe->buf_group`
 pub const IOSQE_BUFFER_SELECT: u32 = 1 << IOSQE_BUFFER_SELECT_BIT;
 
-/// io_uring_setup() flags
-/// io_context is polled
+/// `io_uring_setup()` flags
+/// `io_context` is polled
 pub const IORING_SETUP_IOPOLL: u32 = 1;
 /// SQ poll thread
 pub const IORING_SETUP_SQPOLL: u32 = 1 << 1;
-/// sq_thread_cpu is valid
+/// `sq_thread_cpu` is valid
 pub const IORING_SETUP_SQ_AFF: u32 = 1 << 2;
 /// app defines CQ size
 pub const IORING_SETUP_CQSIZE: u32 = 1 << 3;
@@ -175,14 +177,15 @@ pub enum IOURING_OP {
     IORING_OP_LAST,
 }
 
-/// sqe->fsync_flags
+/// `sqe->fsync_flags`
 pub const IORING_FSYNC_DATASYNC: u32 = 1;
 
-/// sqe->timeout_flags
+/// `sqe->timeout_flags`
 pub const IORING_TIMEOUT_ABS: u32 = 1;
 
-/// sqe->splice_flags
-/// extends splice(2) flags
+/// `sqe->splice_flags`
+///
+/// extends `splice(2)` flags
 /// the last bit of u32
 pub const SPLICE_F_FD_IN_FIXED: u32 = 1 << 31;
 
@@ -199,8 +202,9 @@ pub struct io_uring_cqe_t {
     pub flags: u32,
 }
 
-/// cqe->flags
-/// IORING_CQE_F_BUFFER    If set, the upper 16 bits are the buffer ID
+/// `cqe->flags`
+///
+/// `IORING_CQE_F_BUFFER`: If set, the upper 16 bits are the buffer ID
 pub const IORING_CQE_F_BUFFER: u32 = 1;
 pub const IORING_CQE_BUFFER_SHIFT: i32 = 16;
 
@@ -209,7 +213,7 @@ pub const IORING_OFF_SQ_RING: off_t = 0;
 pub const IORING_OFF_CQ_RING: off_t = 0x0800_0000;
 pub const IORING_OFF_SQES: off_t = 0x1000_0000;
 
-/// Filled with the offset for mmap(2)
+/// Filled with the offset for `mmap(2)`
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default)]
 pub struct io_sqring_offsets_t {
@@ -224,8 +228,8 @@ pub struct io_sqring_offsets_t {
     pub resv2: u64,
 }
 
-/// sq_ring->flags
-/// needs io_uring_enter wakeup
+/// `sq_ring->flags`
+/// needs `io_uring_enter` wakeup
 pub const IORING_SQ_NEED_WAKEUP: u32 = 1;
 
 #[repr(C)]
@@ -240,11 +244,11 @@ pub struct io_cqring_offsets_t {
     pub resv: [u64; 2],
 }
 
-/// io_uring_enter(2) flags
+/// `io_uring_enter(2)` flags
 pub const IORING_ENTER_GETEVENTS: u32 = 1;
 pub const IORING_ENTER_SQ_WAKEUP: u32 = 1 << 1;
 
-/// Passed in for io_uring_setup(2). Copied back with updated info on success
+/// Passed in for `io_uring_setup(2)`. Copied back with updated info on success
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default)]
 pub struct io_uring_params_t {
@@ -260,7 +264,7 @@ pub struct io_uring_params_t {
     pub cq_off: io_cqring_offsets_t,
 }
 
-/// io_uring_params->features flags
+/// `io_uring_params->features` flags
 pub const IORING_FEAT_SINGLE_MMAP: u32 = 1;
 pub const IORING_FEAT_NODROP: u32 = 1 << 1;
 pub const IORING_FEAT_SUBMIT_STABLE: u32 = 1 << 2;
@@ -268,7 +272,7 @@ pub const IORING_FEAT_RW_CUR_POS: u32 = 1 << 3;
 pub const IORING_FEAT_CUR_PERSONALITY: u32 = 1 << 4;
 pub const IORING_FEAT_FAST_POLL: u32 = 1 << 5;
 
-/// io_uring_register(2) opcodes and arguments
+/// `io_uring_register(2)` opcodes and arguments
 pub const IORING_REGISTER_BUFFERS: i32 = 0;
 pub const IORING_UNREGISTER_BUFFERS: i32 = 1;
 pub const IORING_REGISTER_FILES: i32 = 2;

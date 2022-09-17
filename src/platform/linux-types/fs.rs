@@ -2,21 +2,21 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// This file has definitions for some important file table structures
-/// and constants and structures used by various generic file system
-/// ioctl's.  Please do not make any changes in this file before
-/// sending patches for review to linux-fsdevel@vger.kernel.org and
-/// linux-api@vger.kernel.org.
-
-/// Use of MS_* flags within the kernel is restricted to core `mount(2)` code.
-
-/// It's silly to have `NR_OPEN` bigger than `NR_FILE`, but you can change
-/// the file limit at runtime and only root can increase the per-process
-/// `nr_file` rlimit, so it's safe to set up a ridiculously high absolute
-/// upper limit on files-per-process.
-///
-/// Some programs (notably those using `select()`) may have to be
-/// ecompiled to take full advantage of the new limits..  
+//! This file has definitions for some important file table structures
+//! and constants and structures used by various generic file system
+//! ioctl's.  Please do not make any changes in this file before
+//! sending patches for review to linux-fsdevel@vger.kernel.org and
+//! linux-api@vger.kernel.org.
+//!
+//! Use of MS_* flags within the kernel is restricted to core `mount(2)` code.
+//!
+//! It's silly to have `NR_OPEN` bigger than `NR_FILE`, but you can change
+//! the file limit at runtime and only root can increase the per-process
+//! `nr_file` rlimit, so it's safe to set up a ridiculously high absolute
+//! upper limit on files-per-process.
+//!
+//! Some programs (notably those using `select()`) may have to be
+//! ecompiled to take full advantage of the new limits..
 
 /// Fixed constants first:
 /// Initial setting for nfile rlimits
@@ -175,7 +175,7 @@ pub const FS_XFLAG_NODEFRAG: i32 = 0x0000_2000;
 pub const FS_XFLAG_FILESTREAM: i32 = 0x0000_4000;
 /// use DAX for IO
 pub const FS_XFLAG_DAX: i32 = 0x0000_8000;
-/// CoW extent size allocator hint
+/// `CoW` extent size allocator hint
 pub const FS_XFLAG_COWEXTSIZE: i32 = 0x0001_0000;
 /// no DIFLAG for this
 #[allow(overflowing_literals)]
@@ -387,10 +387,10 @@ pub type rwf_t = i32;
 /// high priority request, poll if possible
 pub const RWF_HIPRI: rwf_t = 0x0000_0001;
 
-/// per-IO O_DSYNC
+/// per-IO `O_DSYNC`
 pub const RWF_DSYNC: rwf_t = 0x0000_0002;
 
-/// per-IO O_SYNC
+/// per-IO `O_SYNC`
 pub const RWF_SYNC: rwf_t = 0x0000_0004;
 
 /// per-IO, return `-EAGAIN` if operation would block

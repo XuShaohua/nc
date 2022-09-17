@@ -2,18 +2,18 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
+use super::basic_types::{gid_t, key_t, mode_t, uid_t};
 
-/// The generic ipc64_perm structure:
+/// The generic `ipc64_perm` structure:
 /// Note extra padding because this structure is passed back and forth
 /// between kernel and user space.
 ///
-/// ipc64_perm was originally meant to be architecture specific, but
+/// `ipc64_perm` was originally meant to be architecture specific, but
 /// everyone just ended up making identical copies without specific
 /// optimizations, so we may just as well all use the same one.
 ///
 /// Pad space is left for:
-/// - 32-bit mode_t on architectures that only had 16 bit
+/// - 32-bit `mode_t` on architectures that only had 16 bit
 /// - 32-bit seq
 /// - 2 miscellaneous 32-bit values
 #[repr(C)]

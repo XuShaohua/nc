@@ -3,22 +3,21 @@
 // in the LICENSE file.
 
 //! From include/uapi/asm-generic/ioctls.h
+//!
+//! These are the most common definitions for tty ioctl numbers.
+//! Most of them do not use the recommended `_IOC()`, but there is
+//! probably some source code out there hardcoding the number,
+//! so we might as well use them for all new platforms.
+//!
+//! The architectures that use different values here typically
+//! try to be compatible with some Unix variants for the same
+//! architecture.
 
-use super::ioctl::*;
-use super::termbits::*;
-use super::uapi_serial::*;
-
-/// These are the most common definitions for tty ioctl numbers.
-/// Most of them do not use the recommended _IOC(), but there is
-/// probably some source code out there hardcoding the number,
-/// so we might as well use them for all new platforms.
-///
-/// The architectures that use different values here typically
-/// try to be compatible with some Unix variants for the same
-/// architecture.
+use super::ioctl::{IO, IOR, IOW, IOWR};
+use super::termbits::termios2_t;
+use super::uapi_serial::serial_iso7816_t;
 
 /// 0x54 is just a magic number to make these relatively unique ('T')
-
 pub const TCGETS: i32 = 0x5401;
 pub const TCSETS: i32 = 0x5402;
 pub const TCSETSW: i32 = 0x5403;

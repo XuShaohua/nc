@@ -4,7 +4,7 @@
 
 //! From `include/uapi/asm-generic/fcntl.h`
 
-use super::basic_types::*;
+use super::basic_types::{loff_t, off_t, pid_t};
 #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
 use super::O_DIRECTORY;
 
@@ -43,10 +43,10 @@ pub const O_DIRECTORY: i32 = 0o020_0000;
 pub const O_NOFOLLOW: i32 = 0o040_0000;
 
 pub const O_NOATIME: i32 = 0o100_0000;
-/// set close_on_exec
+/// set `close_on_exec`
 pub const O_CLOEXEC: i32 = 0o200_0000;
 
-/// Before Linux 2.6.33 only O_DSYNC semantics were implemented, but using
+/// Before Linux 2.6.33 only `O_DSYNC` semantics were implemented, but using
 /// the `O_SYNC` flag. We continue to use the existing numerical value
 /// for `O_DSYNC` semantics now, but using the correct symbolic name for it.
 /// This new value is used to request true Posix `O_SYNC` semantics.  It is

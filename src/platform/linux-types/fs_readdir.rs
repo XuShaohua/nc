@@ -2,8 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::*;
-use super::limits::*;
+use super::basic_types::{ino_t, off_t};
+use super::limits::PATH_MAX;
 
 /// From fs/readir.c
 
@@ -13,10 +13,10 @@ pub struct linux_dirent_t {
     /// Inode number
     pub d_ino: ino_t,
 
-    /// Offset to next linux_dirent
+    /// Offset to next `linux_dirent`
     pub d_off: off_t,
 
-    /// Length of this linux_dirent
+    /// Length of this `linux_dirent`
     pub d_reclen: u16,
 
     /// Filename (null-terminated)

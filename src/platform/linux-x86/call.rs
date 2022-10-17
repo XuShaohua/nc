@@ -2699,18 +2699,14 @@ pub unsafe fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 
 /// Set I/O scheduling class and priority.
 ///
+/// See [ioprio](https://www.kernel.org/doc/Documentation/block/ioprio.txt)
+///
 /// # Example
 ///
 /// ```
-/// let ret = unsafe { nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, 0) };
-/// assert!(ret.is_ok());
-/// let prio = ret.unwrap();
-/// let _prio_class = unsafe { nc::ioprio_prio_class(prio) };
-/// let prio_data = unsafe { nc::ioprio_prio_data(prio) };
-///
-/// // Higher priority
-/// let new_prio_data = prio_data - 1;
-/// let new_prio = unsafe { nc::ioprio_prio_value(nc::IOPRIO_CLASS_BE, new_prio_data) };
+/// // Change priority to lowest.
+/// let new_prio_data = 7;
+/// let new_prio = unsafe { nc::ioprio_prio_value(nc::IOPRIO_CLASS_IDLE, new_prio_data) };
 /// let ret = unsafe { nc::ioprio_set(nc::IOPRIO_WHO_PROCESS, 0, new_prio) };
 /// assert!(ret.is_ok());
 /// ```

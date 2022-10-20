@@ -18,7 +18,7 @@ pub union sigval_t {
 impl fmt::Debug for sigval_t {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let val = unsafe { self.sival_ptr };
-        write!(f, "sigval_t: {val}")
+        write!(f, "sigval_t: {}", val)
     }
 }
 
@@ -410,7 +410,7 @@ impl Default for sigev_un_t {
 impl fmt::Debug for sigev_un_t {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let tid = unsafe { self.tid };
-        write!(f, "sigev_un_t.tid = {tid}")
+        write!(f, "sigev_un_t.tid = {}", tid)
     }
 }
 

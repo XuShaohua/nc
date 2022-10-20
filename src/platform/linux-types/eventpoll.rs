@@ -68,7 +68,7 @@ pub union epoll_data_t {
 impl core::fmt::Debug for epoll_data_t {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         let val: u64 = unsafe { self.v_u64 };
-        write!(f, "epoll_data: {val}")
+        write!(f, "epoll_data: {}", val)
     }
 }
 

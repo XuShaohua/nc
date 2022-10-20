@@ -4,12 +4,14 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+use alloc::string::String;
+use core::fmt;
+
 use super::basic_types::{ino64_t, loff_t};
 use super::limits::PATH_MAX;
-use alloc::string::String;
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct linux_dirent64_t {
     /// 64-bit inode number.
     pub d_ino: ino64_t,
@@ -26,6 +28,18 @@ pub struct linux_dirent64_t {
     /// Filename (null-terminated).
     //pub d_name: [u8; 0],
     pub d_name: [u8; PATH_MAX as usize],
+}
+
+impl fmt::Debug for linux_dirent64_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("linux_dirent64_t")
+            .field("d_ino", &self.d_ino)
+            .field("d_off", &self.d_off)
+            .field("d_reclen", &self.d_reclen)
+            .field("d_type", &self.d_type)
+            .field("d_name", &&self.d_name[0..32])
+            .finish()
+    }
 }
 
 #[repr(C)]

@@ -55,7 +55,10 @@ pub const FD_SETSIZE: usize = 1024;
 #[repr(C)]
 #[derive(Default, Debug, Clone, Copy)]
 pub struct fd_set_t {
-    pub fds_bits: [usize; FD_SETSIZE / (8 * isize::BITS as usize)],
+    #[cfg(target_pointer_width = "64")]
+    pub fds_bits: [usize; FD_SETSIZE / (8 * 64)],
+    #[cfg(target_pointer_width = "32")]
+    pub fds_bits: [usize; FD_SETSIZE / (8 * 32)],
 }
 
 /// Type of a SYSV IPC key.

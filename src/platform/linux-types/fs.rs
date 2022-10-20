@@ -293,14 +293,6 @@ pub const FS_KEY_DESC_PREFIX_SIZE: i32 = 8;
 /// Structure that userspace passes to the kernel keyring
 pub const FS_MAX_KEY_SIZE: i32 = 64;
 
-#[repr(C)]
-#[derive(Debug)]
-pub struct fscrypt_key_t {
-    pub mode: u32,
-    pub raw: [u8; FS_MAX_KEY_SIZE as usize],
-    pub size: u32,
-}
-
 /// Inode flags (`FS_IOC_GETFLAGS` / `FS_IOC_SETFLAGS`)
 ///
 /// Note: for historical reasons, these flags were originally used and

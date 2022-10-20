@@ -48,7 +48,7 @@ pub fn syscall_exists(name: &str) -> Result<bool, Errno> {
     const BUF_LEN: usize = 1024;
 
     let file = File::open(K_ALL_SYMS)?;
-    let mut buf = [0u8; BUF_LEN];
+    let mut buf = [0_u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
         let buf_ptr = buf.as_mut_ptr() as usize;
@@ -110,7 +110,7 @@ pub fn read_syscall_list() -> Result<Syscalls, Errno> {
 
     let file = File::open(K_ALL_SYMS)?;
     let mut set = BTreeSet::new();
-    let mut buf = [0u8; BUF_LEN];
+    let mut buf = [0_u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
         let buf_ptr = buf.as_mut_ptr() as usize;

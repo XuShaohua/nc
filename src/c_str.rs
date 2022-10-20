@@ -150,7 +150,9 @@ impl CStr {
 
     #[must_use]
     #[allow(clippy::borrow_as_ptr)]
-    pub const fn to_bytes_with_nul(&self) -> &[u8] {
+    #[allow(clippy::missing_const_for_fn)]
+    // NOTE(Shaohua): const unsafe feature is not available in rustc 1.46 stable.
+    pub fn to_bytes_with_nul(&self) -> &[u8] {
         unsafe { &*(&self.inner as *const [u8]) }
     }
 }

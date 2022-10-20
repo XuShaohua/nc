@@ -6,7 +6,7 @@
 #![allow(clippy::missing_safety_doc)]
 #![allow(clippy::module_name_repetitions)]
 
-use super::types::*;
+use super::types::{check_errno, Errno, Sysno};
 
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {

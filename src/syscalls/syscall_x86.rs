@@ -8,7 +8,7 @@
 
 use core::arch::asm;
 
-use super::types::*;
+use super::types::{check_errno, Errno, Sysno};
 
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {

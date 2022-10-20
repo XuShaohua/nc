@@ -15,7 +15,7 @@ fn build_syscalls() {
 
 fn get_page_size() {
     let output = Command::new("getconf")
-        .args(["PAGE_SIZE"])
+        .args(&["PAGE_SIZE"])
         .output()
         .expect("Failed to run getconf");
     let page_size_val = std::str::from_utf8(&output.stdout).unwrap();

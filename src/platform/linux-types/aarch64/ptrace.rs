@@ -5,47 +5,47 @@
 //! From `arch/arm64/include/uapi/asm/ptrace.h`
 
 /// PSR bits
-pub const PSR_MODE_EL0T: usize = 0x00000000;
-pub const PSR_MODE_EL1T: usize = 0x00000004;
-pub const PSR_MODE_EL1H: usize = 0x00000005;
-pub const PSR_MODE_EL2T: usize = 0x00000008;
-pub const PSR_MODE_EL2H: usize = 0x00000009;
-pub const PSR_MODE_EL3T: usize = 0x0000000c;
-pub const PSR_MODE_EL3H: usize = 0x0000000d;
-pub const PSR_MODE_MASK: usize = 0x0000000f;
+pub const PSR_MODE_EL0T: usize = 0x0000_0000;
+pub const PSR_MODE_EL1T: usize = 0x0000_0004;
+pub const PSR_MODE_EL1H: usize = 0x0000_0005;
+pub const PSR_MODE_EL2T: usize = 0x0000_0008;
+pub const PSR_MODE_EL2H: usize = 0x0000_0009;
+pub const PSR_MODE_EL3T: usize = 0x0000_000c;
+pub const PSR_MODE_EL3H: usize = 0x0000_000d;
+pub const PSR_MODE_MASK: usize = 0x0000_000f;
 
-/// AArch32 CPSR bits
-pub const PSR_MODE32_BIT: usize = 0x00000010;
+/// `AArch32` CPSR bits
+pub const PSR_MODE32_BIT: usize = 0x0000_0010;
 
-/// AArch64 SPSR bits
-pub const PSR_F_BIT: usize = 0x00000040;
-pub const PSR_I_BIT: usize = 0x00000080;
-pub const PSR_A_BIT: usize = 0x00000100;
-pub const PSR_D_BIT: usize = 0x00000200;
-pub const PSR_BTYPE_MASK: usize = 0x00000c00;
-pub const PSR_SSBS_BIT: usize = 0x00001000;
-pub const PSR_PAN_BIT: usize = 0x00400000;
-pub const PSR_UAO_BIT: usize = 0x00800000;
-pub const PSR_DIT_BIT: usize = 0x01000000;
-pub const PSR_TCO_BIT: usize = 0x02000000;
-pub const PSR_V_BIT: usize = 0x10000000;
-pub const PSR_C_BIT: usize = 0x20000000;
-pub const PSR_Z_BIT: usize = 0x40000000;
-pub const PSR_N_BIT: usize = 0x80000000;
+/// `AArch64` SPSR bits
+pub const PSR_F_BIT: usize = 0x0000_0040;
+pub const PSR_I_BIT: usize = 0x0000_0080;
+pub const PSR_A_BIT: usize = 0x0000_0100;
+pub const PSR_D_BIT: usize = 0x0000_0200;
+pub const PSR_BTYPE_MASK: usize = 0x0000_0c00;
+pub const PSR_SSBS_BIT: usize = 0x0000_1000;
+pub const PSR_PAN_BIT: usize = 0x0040_0000;
+pub const PSR_UAO_BIT: usize = 0x0080_0000;
+pub const PSR_DIT_BIT: usize = 0x0100_0000;
+pub const PSR_TCO_BIT: usize = 0x0200_0000;
+pub const PSR_V_BIT: usize = 0x1000_0000;
+pub const PSR_C_BIT: usize = 0x2000_0000;
+pub const PSR_Z_BIT: usize = 0x4000_0000;
+pub const PSR_N_BIT: usize = 0x8000_0000;
 
 pub const PSR_BTYPE_SHIFT: i32 = 10;
 
 /// Groups of PSR bits
 /// Flags
-pub const PSR_F: usize = 0xff000000;
+pub const PSR_F: usize = 0xff00_0000;
 /// Status
-pub const PSR_S: usize = 0x00ff0000;
+pub const PSR_S: usize = 0x00ff_0000;
 /// Extension
-pub const PSR_X: usize = 0x0000ff00;
+pub const PSR_X: usize = 0x0000_ff00;
 /// Control
-pub const PSR_C: usize = 0x000000ff;
+pub const PSR_C: usize = 0x0000_00ff;
 
-/// Convenience names for the values of PSTATE.BTYPE
+/// Convenience names for the values of `PSTATE.BTYPE`
 pub const PSR_BTYPE_NONE: usize = 0b00 << PSR_BTYPE_SHIFT;
 pub const PSR_BTYPE_JC: usize = 0b01 << PSR_BTYPE_SHIFT;
 pub const PSR_BTYPE_C: usize = 0b10 << PSR_BTYPE_SHIFT;
@@ -93,7 +93,7 @@ pub struct user_hwdebug_state_t {
     pub dbg_regs: [user_hwdebug_regs_t; 16],
 }
 
-/// SVE/FP/SIMD state (NT_ARM_SVE)
+/// SVE/FP/SIMD state (`NT_ARM_SVE`)
 #[repr(C)]
 #[derive(Debug)]
 pub struct user_sve_header_t {
@@ -112,13 +112,13 @@ pub struct user_sve_header_t {
     __reserved: u16,
 }
 
-/// Definitions for user_sve_header.flags:
+/// Definitions for `user_sve_header.flags`:
 pub const SVE_PT_REGS_MASK: usize = 1 << 0;
 
 pub const SVE_PT_REGS_FPSIMD: usize = 0;
 pub const SVE_PT_REGS_SVE: usize = SVE_PT_REGS_MASK;
 
-/// Common SVE_PT_* flags:
+/// Common `SVE_PT_*` flags:
 /// These must be kept in sync with prctl interface in <linux/prctl.h>
 pub const SVE_PT_VL_INHERIT: usize = (1 << 17) /* PR_SVE_VL_INHERIT */ >> 16;
 pub const SVE_PT_VL_ONEXEC: usize = (1 << 18) /* PR_SVE_SET_VL_ONEXEC */ >> 16;
@@ -234,7 +234,7 @@ pub const SVE_PT_VL_ONEXEC: usize = (1 << 18) /* PR_SVE_SET_VL_ONEXEC */ >> 16;
 // 		  SVE_PT_SVE_OFFSET + SVE_PT_SVE_SIZE(vq, flags)	\
 // 		: SVE_PT_FPSIMD_OFFSET + SVE_PT_FPSIMD_SIZE(vq, flags))
 
-/// pointer authentication masks (NT_ARM_PAC_MASK)
+/// pointer authentication masks (`NT_ARM_PAC_MASK`)
 #[repr(C)]
 #[derive(Debug)]
 pub struct user_pac_mask_t {
@@ -242,7 +242,7 @@ pub struct user_pac_mask_t {
     pub insn_mask: u64,
 }
 
-/// pointer authentication keys (NT_ARM_PACA_KEYS, NT_ARM_PACG_KEYS)
+/// pointer authentication keys (`NT_ARM_PACA_KEYS`, `NT_ARM_PACG_KEYS`)
 #[repr(C)]
 #[derive(Debug)]
 struct user_pac_address_keys {

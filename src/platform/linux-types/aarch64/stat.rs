@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 pub const STAT_HAVE_NSEC: i32 = 0;
 
 #[repr(C)]
@@ -30,7 +32,7 @@ pub struct stat_t {
 }
 
 /// This matches struct stat64 in glibc2.1, hence the absolutely
-/// insane amounts of padding around dev_t's.
+/// insane amounts of padding around `dev_t`.
 /// Note: The kernel zero's the padded region because glibc might read them
 /// in the hope that the kernel has stretched to using larger sizes.
 #[repr(C)]

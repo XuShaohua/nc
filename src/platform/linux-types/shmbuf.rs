@@ -4,8 +4,11 @@
 
 //! From uapi/asm-generic/shmbuf.h
 
-use super::basic_types::{pid_t, size_t, time_t};
+use super::basic_types::{pid_t, size_t};
 use super::ipcbuf::ipc64_perm_t;
+
+#[cfg(target_pointer_width = "64")]
+use super::basic_types::time_t;
 
 /// The `shmid64_ds` structure for x86 architecture.
 /// Note extra padding because this structure is passed back and forth

@@ -159,8 +159,8 @@ pub unsafe fn arch_prctl(code: i32, arg2: usize) -> Result<(), Errno> {
 /// There are no bdflush tunables left.  But distributions are
 /// still running obsolete flush daemons, so we terminate them here.
 ///
-/// Use of bdflush() is deprecated and will be removed in a future kernel.
-/// The `flush-X' kernel threads fully replace bdflush daemons and this call.
+/// Use of `bdflush()` is deprecated and will be removed in a future kernel.
+/// The `flush-X` kernel threads fully replace bdflush daemons and this call.
 /// Deprecated.
 pub unsafe fn bdflush() {
     core::unimplemented!();

@@ -19,7 +19,7 @@ pub union in6_un_t {
 impl fmt::Debug for in6_un_t {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let val = unsafe { self.u6_addr8 };
-        write!(f, "in6_un_t: {:?}", val)
+        write!(f, "in6_un_t: {val:?}")
     }
 }
 

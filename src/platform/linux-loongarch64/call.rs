@@ -78,7 +78,6 @@ pub unsafe fn add_key<P: AsRef<Path>>(
     let type_ptr = type_.as_ptr() as usize;
     let description = CString::new(description.as_ref());
     let description_ptr = description.as_ptr() as usize;
-    let plen = plen as usize;
     let dest_keyring = dest_keyring as usize;
     syscall5(
         SYS_ADD_KEY,
@@ -381,7 +380,6 @@ pub unsafe fn copy_file_range(
     let off_in_ptr = off_in as *mut loff_t as usize;
     let fd_out = fd_out as usize;
     let off_out_ptr = off_out as *mut loff_t as usize;
-    let len = len as usize;
     let flags = flags as usize;
     syscall6(
         SYS_COPY_FILE_RANGE,
@@ -712,7 +710,6 @@ pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Res
 pub unsafe fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
-    let len = len as usize;
     let advice = advice as usize;
     syscall4(SYS_FADVISE64, fd, offset, len, advice).map(drop)
 }
@@ -1014,7 +1011,6 @@ pub unsafe fn fgetxattr<P: AsRef<Path>>(
     let fd = fd as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let size = size as usize;
     syscall4(SYS_FGETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
 }
 
@@ -1171,7 +1167,6 @@ pub unsafe fn fsetxattr<P: AsRef<Path>>(
     let fd = fd as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let size = size as usize;
     let flags = flags as usize;
     syscall5(SYS_FSETXATTR, fd, name_ptr, value, size, flags).map(drop)
 }
@@ -1840,7 +1835,6 @@ pub unsafe fn getxattr<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let size = size as usize;
     syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
 }
 
@@ -2028,7 +2022,6 @@ pub unsafe fn io_cancel(
     iocb: &mut iocb_t,
     result: &mut io_event_t,
 ) -> Result<(), Errno> {
-    let ctx_id = ctx_id as usize;
     let iocb_ptr = iocb as *mut iocb_t as usize;
     let result_ptr = result as *mut io_event_t as usize;
     syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(drop)
@@ -2041,7 +2034,6 @@ pub unsafe fn io_cancel(
 /// Will fail with `-ENOSYS` if not implemented.
 /// May fail with `-EINVAL` if the context pointed to is invalid.
 pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
-    let ctx_id = ctx_id as usize;
     syscall1(SYS_IO_DESTROY, ctx_id).map(drop)
 }
 
@@ -2066,7 +2058,6 @@ pub unsafe fn io_getevents(
     events: &mut io_event_t,
     timeout: &mut timespec_t,
 ) -> Result<i32, Errno> {
-    let ctx_id = ctx_id as usize;
     let min_nr = min_nr as usize;
     let nr = nr as usize;
     let events_ptr = events as *mut io_event_t as usize;
@@ -2091,7 +2082,6 @@ pub unsafe fn io_pgetevents(
     timeout: &mut timespec_t,
     usig: &aio_sigset_t,
 ) -> Result<i32, Errno> {
-    let ctx_id = ctx_id as usize;
     let min_nr = min_nr as usize;
     let nr = nr as usize;
     let events_ptr = events as *mut io_event_t as usize;
@@ -2150,7 +2140,6 @@ pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(),
 /// - Will fail with `-ENOSYS` if not implemented.
 // TODO(Shaohua): type of iocbpp is struct iocb**
 pub unsafe fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
-    let ctx_id = ctx_id as usize;
     let nr = nr as usize;
     let iocb_ptr = iocb as *mut iocb_t as usize;
     syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
@@ -2265,7 +2254,6 @@ pub unsafe fn lgetxattr<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let size = size as usize;
     syscall4(SYS_LGETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
 }
 
@@ -2512,7 +2500,6 @@ pub unsafe fn lsetxattr<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let size = size as usize;
     let flags = flags as usize;
     syscall5(SYS_LSETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
 }
@@ -2545,7 +2532,6 @@ pub unsafe fn lsetxattr<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
-    let len = len as usize;
     let advice = advice as usize;
     syscall3(SYS_MADVISE, addr, len, advice).map(drop)
 }
@@ -2640,7 +2626,6 @@ pub unsafe fn migrate_pages(
 /// more pages which are not currently mapped
 ///  -EAGAIN - A kernel resource was temporarily unavailable.
 pub unsafe fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
-    let len = len as usize;
     let vec_ptr = vec as usize;
     syscall3(SYS_MINCORE, start, len, vec_ptr).map(drop)
 }
@@ -2700,7 +2685,6 @@ pub unsafe fn mknodat<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
-    let len = len as usize;
     syscall2(SYS_MLOCK, addr, len).map(drop)
 }
 
@@ -2714,7 +2698,6 @@ pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
-    let len = len as usize;
     let flags = flags as usize;
     syscall3(SYS_MLOCK2, addr, len, flags).map(drop)
 }
@@ -2782,7 +2765,6 @@ pub unsafe fn mmap(
     fd: i32,
     offset: off_t,
 ) -> Result<usize, Errno> {
-    let len = len as usize;
     let prot = prot as usize;
     let flags = flags as usize;
     let fd = fd as usize;
@@ -2887,7 +2869,6 @@ pub unsafe fn move_pages(
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
-    let len = len as usize;
     let prot = prot as usize;
     syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
 }
@@ -3148,8 +3129,6 @@ pub unsafe fn mremap(
     flags: usize,
     new_addr: usize,
 ) -> Result<usize, Errno> {
-    let old_len = old_len as usize;
-    let new_len = new_len as usize;
     syscall5(SYS_MREMAP, addr, old_len, new_len, flags, new_addr)
 }
 
@@ -3278,7 +3257,6 @@ pub unsafe fn msgrcv(
     msgflg: i32,
 ) -> Result<ssize_t, Errno> {
     let msqid = msqid as usize;
-    let msgsz = msgsz as usize;
     let msgtyp = msgtyp as usize;
     let msgflg = msgflg as usize;
     syscall5(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp, msgflg).map(|ret| ret as ssize_t)
@@ -3359,14 +3337,12 @@ pub unsafe fn msgrcv(
 /// ```
 pub unsafe fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
     let msqid = msqid as usize;
-    let msgsz = msgsz as usize;
     let msgflg = msgflg as usize;
     syscall4(SYS_MSGSND, msqid, msgq, msgsz, msgflg).map(drop)
 }
 
 /// Synchronize a file with memory map.
 pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
-    let len = len as usize;
     let flags = flags as usize;
     syscall3(SYS_MSYNC, addr, len, flags).map(drop)
 }
@@ -3387,7 +3363,6 @@ pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
-    let len = len as usize;
     syscall2(SYS_MUNLOCK, addr, len).map(drop)
 }
 
@@ -3447,7 +3422,6 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
-    let len = len as usize;
     syscall2(SYS_MUNMAP, addr, len).map(drop)
 }
 
@@ -3606,7 +3580,6 @@ pub unsafe fn pkey_mprotect(
     prot: usize,
     pkey: i32,
 ) -> Result<(), Errno> {
-    let len = len as usize;
     let pkey = pkey as usize;
     syscall4(SYS_PKEY_MPROTECT, start, len, prot, pkey).map(drop)
 }
@@ -3623,7 +3596,6 @@ pub unsafe fn ppoll(
     let nfds = nfds as usize;
     let timeout_ptr = timeout as *const timespec_t as usize;
     let sigmask_ptr = sigmask as *const sigset_t as usize;
-    let sigsetsize = sigsetsize as usize;
     syscall5(
         SYS_PPOLL,
         fds_ptr,
@@ -3644,10 +3616,6 @@ pub unsafe fn prctl(
     arg5: usize,
 ) -> Result<i32, Errno> {
     let option = option as usize;
-    let arg2 = arg2 as usize;
-    let arg3 = arg3 as usize;
-    let arg4 = arg4 as usize;
-    let arg5 = arg5 as usize;
     syscall5(SYS_PRCTL, option, arg2, arg3, arg4, arg5).map(|ret| ret as i32)
 }
 
@@ -4044,7 +4012,6 @@ pub unsafe fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Er
 pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
-    let count = count as usize;
     syscall3(SYS_READAHEAD, fd, offset, count).map(drop)
 }
 
@@ -4108,7 +4075,7 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 pub unsafe fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov.as_mut_ptr() as usize;
-    let len = iov.len() as usize;
+    let len = iov.len();
     syscall3(SYS_READV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
 }
 
@@ -4193,7 +4160,6 @@ pub unsafe fn remap_file_pages(
     pgoff: off_t,
     flags: i32,
 ) -> Result<(), Errno> {
-    let size = size as usize;
     let prot = prot as usize;
     let pgoff = pgoff as usize;
     let flags = flags as usize;
@@ -4348,7 +4314,6 @@ pub unsafe fn rt_sigaction(
     let sig = sig as usize;
     let act_ptr = act as *const sigaction_t as usize;
     let old_act_ptr = old_act as *mut sigaction_t as usize;
-    let sigsetsize = sigsetsize as usize;
     syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigsetsize).map(drop)
 }
 
@@ -4391,7 +4356,6 @@ pub unsafe fn rt_sigreturn() {
 /// Always returns Errno, normally EINTR.
 pub unsafe fn rt_sigsuspend(set: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
     let set_ptr = set as *mut sigset_t as usize;
-    let sigsetsize = sigsetsize as usize;
     syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigsetsize).map(drop)
 }
 
@@ -4405,7 +4369,6 @@ pub unsafe fn rt_sigtimedwait(
     let uthese_ptr = uthese as *const sigset_t as usize;
     let uinfo_ptr = uinfo as *mut siginfo_t as usize;
     let uts_ptr = uts as *const timespec_t as usize;
-    let sigsetsize = sigsetsize as usize;
     syscall4(
         SYS_RT_SIGTIMEDWAIT,
         uthese_ptr,
@@ -4820,7 +4783,6 @@ pub unsafe fn sendfile(
     let out_fd = out_fd as usize;
     let in_fd = in_fd as usize;
     let offset_ptr = offset as *mut off_t as usize;
-    let count = count as usize;
     syscall4(SYS_SENDFILE, out_fd, in_fd, offset_ptr, count).map(|ret| ret as ssize_t)
 }
 
@@ -4852,7 +4814,6 @@ pub unsafe fn sendto(
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let buf_ptr = buf.as_ptr() as usize;
-    let len = len as usize;
     let flags = flags as usize;
     let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
     let addrlen = addrlen as usize;
@@ -4881,7 +4842,7 @@ pub unsafe fn sendto(
 pub unsafe fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let name_len = name.len() as usize;
+    let name_len = name.len();
     syscall2(SYS_SETDOMAINNAME, name_ptr, name_len).map(drop)
 }
 
@@ -5259,7 +5220,6 @@ pub unsafe fn setxattr<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    let size = size as usize;
     let flags = flags as usize;
     syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
 }
@@ -5380,7 +5340,6 @@ pub unsafe fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 /// ```
 pub unsafe fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno> {
     let key = key as usize;
-    let size = size as usize;
     let shmflg = shmflg as usize;
     syscall3(SYS_SHMGET, key, size, shmflg).map(|ret| ret as i32)
 }
@@ -5403,7 +5362,7 @@ pub unsafe fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Resu
 pub unsafe fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
     let fd = fd as usize;
     let mask_ptr = mask.as_ptr() as usize;
-    let mask_len = mask.len() as usize;
+    let mask_len = mask.len();
     let flags = flags as usize;
     syscall4(SYS_SIGNALFD4, fd, mask_ptr, mask_len, flags).map(|ret| ret as i32)
 }
@@ -5500,7 +5459,6 @@ pub unsafe fn splice(
     let off_in_ptr = off_in.map_or(0, |off_in| off_in as *mut loff_t as usize);
     let fd_out = fd_out as usize;
     let off_out_ptr = off_out.map_or(0, |off_out| off_out as *mut loff_t as usize);
-    let len = len as usize;
     let flags = flags as usize;
     syscall6(
         SYS_SPLICE,
@@ -5762,7 +5720,6 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
     let fd_out = fd_out as usize;
-    let len = len as usize;
     let flags = flags as usize;
     syscall4(SYS_TEE, fd_in, fd_out, len, flags).map(|ret| ret as ssize_t)
 }
@@ -6488,6 +6445,6 @@ pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, E
 pub unsafe fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let iov_ptr = iov.as_ptr() as usize;
-    let len = iov.len() as usize;
+    let len = iov.len();
     syscall3(SYS_WRITEV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
 }

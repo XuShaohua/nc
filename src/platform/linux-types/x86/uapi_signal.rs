@@ -49,16 +49,18 @@ pub const SIGUNUSED: i32 = 31;
 
 /// These should not be considered constants from userland.
 pub const SIGRTMIN: i32 = 32;
+#[allow(clippy::cast_possible_wrap)]
+#[allow(clippy::cast_possible_truncation)]
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
-pub const SA_RESTORER: usize = 0x04000000;
+pub const SA_RESTORER: usize = 0x0400_0000;
 
 pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;
 
 pub type sa_sigaction_fn_t = fn(i32, &mut siginfo_t, usize);
 
-/// sa_sigaction_fn_t as usize
+/// `sa_sigaction_fn_t` as usize
 pub type sa_sigaction_t = usize;
 
 #[repr(C)]
@@ -70,7 +72,7 @@ pub union sigaction_u_t {
 
 impl Default for sigaction_u_t {
     fn default() -> Self {
-        sigaction_u_t {
+        Self {
             sa_handler: SIG_DFL,
         }
     }

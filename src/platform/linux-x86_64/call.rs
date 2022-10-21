@@ -1622,6 +1622,11 @@ pub unsafe fn futex(
     .map(|ret| ret as i32)
 }
 
+pub unsafe fn futex_waitv() {
+    core::unimplemented!();
+    // syscall0(SYS_FUTEX_WAITV);
+}
+
 /// Change timestamp of a file relative to a directory file discriptor.
 ///
 /// # Example
@@ -6407,6 +6412,11 @@ pub unsafe fn set_mempolicy(mode: i32, nmask: *const usize, maxnode: usize) -> R
     let mode = mode as usize;
     let nmask = nmask as usize;
     syscall3(SYS_SET_MEMPOLICY, mode, nmask, maxnode).map(drop)
+}
+
+pub unsafe fn set_mempolicy_home_node() {
+    core::unimplemented!();
+    // syscall0(SYS_SET_MEMPOLICY_HOME_NODE);
 }
 
 /// Set the robust-futex list head of a task.

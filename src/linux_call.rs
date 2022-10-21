@@ -8944,6 +8944,16 @@ pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32,
     syscall3(SYS_PIDFD_GETFD, pidfd, target_fd, flags).map(|ret| ret as i32)
 }
 
+pub unsafe fn futex_waitv() {
+    core::unimplemented!();
+    // syscall0(SYS_FUTEX_WAITV);
+}
+
+pub unsafe fn set_mempolicy_home_node() {
+    core::unimplemented!();
+    // syscall0(SYS_SET_MEMPOLICY_HOME_NODE);
+}
+
 pub unsafe fn process_madvise() {
     core::unimplemented!();
     // syscall0(SYS_PROCESS_MADVISE);

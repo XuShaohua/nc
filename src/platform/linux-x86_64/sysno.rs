@@ -362,3 +362,5 @@ pub const SYS_LANDLOCK_ADD_RULE: Sysno = 445;
 pub const SYS_LANDLOCK_RESTRICT_SELF: Sysno = 446;
 pub const SYS_MEMFD_SECRET: Sysno = 447;
 pub const SYS_PROCESS_MRELEASE: Sysno = 448;
+pub const SYS_FUTEX_WAITV: Sysno = 449;
+pub const SYS_SET_MEMPOLICY_HOME_NODE: Sysno = 450;

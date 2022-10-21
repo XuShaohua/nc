@@ -268,8 +268,8 @@ pub const ERFKILL: Errno = 132;
 pub const EHWPOISON: Errno = 133;
 
 /// Get errno description.
-#[allow(clippy::too_many_lines)]
 #[must_use]
+#[allow(clippy::too_many_lines)]
 pub const fn strerror(errno: Errno) -> &'static str {
     match errno {
         EPERM => "Operation not permitted",

@@ -1634,7 +1634,7 @@ pub unsafe fn futex(
 /// The thread wakes if a `futex_wake()` is performed at any uaddr.
 /// The syscall returns immediately if any waiter has `*uaddr != val`.
 ///
-/// `*timeout` is an optional timeout value for the operation.
+/// `timeout` is an optional timeout value for the operation.
 ///
 /// Each waiter has individual flags. The `flags` argument for the syscall
 /// should be used solely for specifying the timeout as realtime, if needed.
@@ -6455,9 +6455,13 @@ pub unsafe fn set_mempolicy(mode: i32, nmask: *const usize, maxnode: usize) -> R
     syscall3(SYS_SET_MEMPOLICY, mode, nmask, maxnode).map(drop)
 }
 
-pub unsafe fn set_mempolicy_home_node() {
-    core::unimplemented!();
-    // syscall0(SYS_SET_MEMPOLICY_HOME_NODE);
+pub unsafe fn set_mempolicy_home_node(
+    start: usize,
+    len: usize,
+    home_node: usize,
+    flags: usize,
+) -> Result<(), Errno> {
+    syscall4(SYS_SET_MEMPOLICY_HOME_NODE, start, len, home_node, flags).map(drop)
 }
 
 /// Set the robust-futex list head of a task.

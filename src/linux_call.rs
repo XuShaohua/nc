@@ -8990,9 +8990,13 @@ pub unsafe fn futex_waitv(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn set_mempolicy_home_node() {
-    core::unimplemented!();
-    // syscall0(SYS_SET_MEMPOLICY_HOME_NODE);
+pub unsafe fn set_mempolicy_home_node(
+    start: usize,
+    len: usize,
+    home_node: usize,
+    flags: usize,
+) -> Result<(), Errno> {
+    syscall4(SYS_SET_MEMPOLICY_HOME_NODE, start, len, home_node, flags).map(drop)
 }
 
 pub unsafe fn process_madvise() {

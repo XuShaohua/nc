@@ -37,8 +37,29 @@ pub const FUTEX_WAKE_BITSET_PRIVATE: i32 = FUTEX_WAKE_BITSET | FUTEX_PRIVATE_FLA
 pub const FUTEX_WAIT_REQUEUE_PI_PRIVATE: i32 = FUTEX_WAIT_REQUEUE_PI | FUTEX_PRIVATE_FLAG;
 pub const FUTEX_CMP_REQUEUE_PI_PRIVATE: i32 = FUTEX_CMP_REQUEUE_PI | FUTEX_PRIVATE_FLAG;
 
-/// Support for robust futexes: the kernel cleans up held futexes at thread exit time.
+/// Flags to specify the bit length of the futex word for futex2 syscalls.
+/// Currently, only 32 is supported.
+pub const FUTEX_32: i32 = 2;
 
+/// Max numbers of elements in a futex_waitv array.
+pub const FUTEX_WAITV_MAX: i32 = 128;
+
+/// A waiter for vectorized wait.
+#[repr(C)]
+#[derive(Debug)]
+pub struct futex_waitv_t {
+    /// Expected value at uaddr.
+    pub val: u64,
+    /// User address to wait on.
+    pub uaddr: u64,
+    /// Flags for this waiter.
+    pub flags: u32,
+    ///	Reserved member to preserve data alignment. Should be 0.
+    pub __reserved: u32,
+}
+
+/// Support for robust futexes: the kernel cleans up held futexes at thread exit time.
+///
 /// Per-lock list entry - embedded in user-space locks, somewhere close
 /// to the futex field. (Note: user-space uses a double-linked list to
 /// achieve O(1) list add and remove, but the kernel only needs to know

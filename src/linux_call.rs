@@ -8946,17 +8946,17 @@ pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32,
 
 /// Wait on a list of futexes.
 ///
-/// - waiters: List of futexes to wait on
-/// - nr_futexes: Length of futexv
-/// - flags: Flag for timeout (monotonic/realtime)
-/// - timeout: Optional absolute timeout.
-/// - clockid: Clock to be used for the timeout, realtime or monotonic.
+/// - `waiters`: List of futexes to wait on
+/// - `nr_futexes`: Length of futexv
+/// - `flags`: Flag for timeout (monotonic/realtime)
+/// - `timeout`: Optional absolute timeout.
+/// - `clockid`: Clock to be used for the timeout, realtime or monotonic.
 ///
 /// Given an array of `struct futex_waitv_t`, wait on each uaddr.
 /// The thread wakes if a `futex_wake()` is performed at any uaddr.
 /// The syscall returns immediately if any waiter has `*uaddr != val`.
 ///
-/// `*timeout` is an optional timeout value for the operation.
+/// `timeout` is an optional timeout value for the operation.
 ///
 /// Each waiter has individual flags. The `flags` argument for the syscall
 /// should be used solely for specifying the timeout as realtime, if needed.

@@ -1624,11 +1624,11 @@ pub unsafe fn futex(
 
 /// Wait on a list of futexes.
 ///
-/// - waiters: List of futexes to wait on
-/// - nr_futexes: Length of futexv
-/// - flags: Flag for timeout (monotonic/realtime)
-/// - timeout: Optional absolute timeout.
-/// - clockid: Clock to be used for the timeout, realtime or monotonic.
+/// - `waiters`: List of futexes to wait on
+/// - `nr_futexes`: Length of futexv
+/// - `flags`: Flag for timeout (monotonic/realtime)
+/// - `timeout`: Optional absolute timeout.
+/// - `clockid`: Clock to be used for the timeout, realtime or monotonic.
 ///
 /// Given an array of `struct futex_waitv_t`, wait on each uaddr.
 /// The thread wakes if a `futex_wake()` is performed at any uaddr.

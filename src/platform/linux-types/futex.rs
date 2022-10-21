@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 //! From include/uapi/linux/futex.h
 
 /// Second argument to futex syscall
@@ -41,7 +43,7 @@ pub const FUTEX_CMP_REQUEUE_PI_PRIVATE: i32 = FUTEX_CMP_REQUEUE_PI | FUTEX_PRIVA
 /// Currently, only 32 is supported.
 pub const FUTEX_32: i32 = 2;
 
-/// Max numbers of elements in a futex_waitv array.
+/// Max numbers of elements in a `futex_waitv_t` array.
 pub const FUTEX_WAITV_MAX: i32 = 128;
 
 /// A waiter for vectorized wait.
@@ -54,7 +56,7 @@ pub struct futex_waitv_t {
     pub uaddr: u64,
     /// Flags for this waiter.
     pub flags: u32,
-    ///	Reserved member to preserve data alignment. Should be 0.
+    /// Reserved member to preserve data alignment. Should be 0.
     pub __reserved: u32,
 }
 

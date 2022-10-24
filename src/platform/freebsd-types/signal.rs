@@ -488,10 +488,11 @@ pub const SI_LWP: i32 = 0x10007;
 pub const SI_UNDEFINED: i32 = 0;
 
 /// type of pointer to a signal function
-/// typedef	__sighandler_t	*sig_t;
+///
+/// Type of `typedef __sighandler_t *sig_t;`
 pub type sig_t = usize;
 
-/// typedef	void __siginfohandler_t(int, struct __siginfo *, void *);
+/// Type of `typedef void __siginfohandler_t(int, struct __siginfo *, void *);`
 pub type siginfohandler_t = usize;
 
 pub type sigaltstack_t = stack_t;

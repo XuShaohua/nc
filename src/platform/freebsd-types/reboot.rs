@@ -48,16 +48,16 @@ pub const RB_RESERVED1: i32 = 0x40000;
 /// reserved for internal use of boot blocks
 pub const RB_RESERVED2: i32 = 0x80000;
 /// pause after each output line during probe
-pub const RB_PAUSE: i32 = 0x100000;
+pub const RB_PAUSE: i32 = 0x10_0000;
 /// unmount the rootfs and mount it again
-pub const RB_REROOT: i32 = 0x200000;
+pub const RB_REROOT: i32 = 0x20_0000;
 /// Power cycle if possible
-pub const RB_POWERCYCLE: i32 = 0x400000;
+pub const RB_POWERCYCLE: i32 = 0x40_0000;
 /// Probe multiple consoles
-pub const RB_PROBE: i32 = 0x10000000;
+pub const RB_PROBE: i32 = 0x1000_0000;
 /// use multiple consoles
-pub const RB_MULTIPLE: i32 = 0x20000000;
+pub const RB_MULTIPLE: i32 = 0x2000_0000;
 
 /// have `struct bootinfo *' arg
 #[allow(overflowing_literals)]
-pub const RB_BOOTINFO: i32 = 0x80000000;
+pub const RB_BOOTINFO: i32 = 0x8000_0000;

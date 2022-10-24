@@ -18,8 +18,8 @@ pub const SOCK_RDM: i32 = 4;
 pub const SOCK_SEQPACKET: i32 = 5;
 
 /// Creation flags, OR'ed into socket() and socketpair() type argument.
-pub const SOCK_CLOEXEC: i32 = 0x10000000;
-pub const SOCK_NONBLOCK: i32 = 0x20000000;
+pub const SOCK_CLOEXEC: i32 = 0x1000_0000;
+pub const SOCK_NONBLOCK: i32 = 0x2000_0000;
 
 /// Flags for accept1(), kern_accept4() and solisten_dequeue, in addition
 /// to SOCK_CLOEXEC and SOCK_NONBLOCK.
@@ -28,41 +28,41 @@ pub const ACCEPT4_COMPAT: i32 = 0x2;
 
 /// Option flags per-socket.
 /// turn on debugging info recording
-pub const SO_DEBUG: i32 = 0x00000001;
+pub const SO_DEBUG: i32 = 0x0000_0001;
 /// socket has had listen()
-pub const SO_ACCEPTCONN: i32 = 0x00000002;
+pub const SO_ACCEPTCONN: i32 = 0x0000_0002;
 /// allow local address reuse
-pub const SO_REUSEADDR: i32 = 0x00000004;
+pub const SO_REUSEADDR: i32 = 0x0000_0004;
 /// keep connections alive
-pub const SO_KEEPALIVE: i32 = 0x00000008;
+pub const SO_KEEPALIVE: i32 = 0x0000_0008;
 /// just use interface addresses
-pub const SO_DONTROUTE: i32 = 0x00000010;
+pub const SO_DONTROUTE: i32 = 0x0000_0010;
 /// permit sending of broadcast msgs
-pub const SO_BROADCAST: i32 = 0x00000020;
+pub const SO_BROADCAST: i32 = 0x0000_0020;
 /// bypass hardware when possible
-pub const SO_USELOOPBACK: i32 = 0x00000040;
+pub const SO_USELOOPBACK: i32 = 0x0000_0040;
 /// linger on close if data present
-pub const SO_LINGER: i32 = 0x00000080;
+pub const SO_LINGER: i32 = 0x0000_0080;
 /// leave received OOB data in line
-pub const SO_OOBINLINE: i32 = 0x00000100;
+pub const SO_OOBINLINE: i32 = 0x0000_0100;
 /// allow local address & port reuse
-pub const SO_REUSEPORT: i32 = 0x00000200;
+pub const SO_REUSEPORT: i32 = 0x0000_0200;
 /// timestamp received dgram traffic
-pub const SO_TIMESTAMP: i32 = 0x00000400;
+pub const SO_TIMESTAMP: i32 = 0x0000_0400;
 /// no SIGPIPE from EPIPE
-pub const SO_NOSIGPIPE: i32 = 0x00000800;
+pub const SO_NOSIGPIPE: i32 = 0x0000_0800;
 /// there is an accept filter
-pub const SO_ACCEPTFILTER: i32 = 0x00001000;
+pub const SO_ACCEPTFILTER: i32 = 0x0000_1000;
 /// timestamp received dgram traffic
-pub const SO_BINTIME: i32 = 0x00002000;
+pub const SO_BINTIME: i32 = 0x0000_2000;
 /// socket cannot be offloaded
-pub const SO_NO_OFFLOAD: i32 = 0x00004000;
+pub const SO_NO_OFFLOAD: i32 = 0x0000_4000;
 /// disable direct data placement
-pub const SO_NO_DDP: i32 = 0x00008000;
+pub const SO_NO_DDP: i32 = 0x0000_8000;
 /// reuse with load balancing
-pub const SO_REUSEPORT_LB: i32 = 0x00010000;
+pub const SO_REUSEPORT_LB: i32 = 0x0001_0000;
 /// keep track of receive errors
-pub const SO_RERROR: i32 = 0x00020000;
+pub const SO_RERROR: i32 = 0x0002_0000;
 
 /// Additional options, not kept in so_options.
 /// send buffer size
@@ -121,7 +121,7 @@ pub const SO_TS_CLOCK_MAX: i32 = SO_TS_MONOTONIC;
 /// This range applies to all socket option levels.  New socket options
 /// in FreeBSD should always use an option value less than SO_VENDOR.
 #[allow(overflowing_literals)]
-pub const SO_VENDOR: i32 = 0x80000000;
+pub const SO_VENDOR: i32 = 0x8000_0000;
 
 /// Level number for (get/set)sockopt() to apply to socket itself.
 ///
@@ -403,45 +403,45 @@ pub struct msghdr_t {
 }
 
 /// process out-of-band data
-pub const MSG_OOB: i32 = 0x00000001;
+pub const MSG_OOB: i32 = 0x0000_0001;
 /// peek at incoming message
-pub const MSG_PEEK: i32 = 0x00000002;
+pub const MSG_PEEK: i32 = 0x0000_0002;
 /// send without using routing tables
-pub const MSG_DONTROUTE: i32 = 0x00000004;
+pub const MSG_DONTROUTE: i32 = 0x0000_0004;
 /// data completes record
-pub const MSG_EOR: i32 = 0x00000008;
+pub const MSG_EOR: i32 = 0x0000_0008;
 /// data discarded before delivery
-pub const MSG_TRUNC: i32 = 0x00000010;
+pub const MSG_TRUNC: i32 = 0x0000_0010;
 /// control data lost before delivery
-pub const MSG_CTRUNC: i32 = 0x00000020;
+pub const MSG_CTRUNC: i32 = 0x0000_0020;
 /// wait for full request or error
-pub const MSG_WAITALL: i32 = 0x00000040;
+pub const MSG_WAITALL: i32 = 0x0000_0040;
 /// this message should be nonblocking
-pub const MSG_DONTWAIT: i32 = 0x00000080;
+pub const MSG_DONTWAIT: i32 = 0x0000_0080;
 /// data completes connection
-pub const MSG_EOF: i32 = 0x00000100;
-/// 0x00000200	   unused
-/// 0x00000400	   unused
-/// 0x00000800	   unused
-/// 0x00001000	   unused
+pub const MSG_EOF: i32 = 0x0000_0100;
+// 0x00000200	   unused
+// 0x00000400	   unused
+// 0x00000800	   unused
+// 0x00001000	   unused
 /// SCTP notification
-pub const MSG_NOTIFICATION: i32 = 0x00002000;
+pub const MSG_NOTIFICATION: i32 = 0x0000_2000;
 /// FIONBIO mode, used by fifofs
-pub const MSG_NBIO: i32 = 0x00004000;
+pub const MSG_NBIO: i32 = 0x0000_4000;
 /// used in sendit()
-pub const MSG_COMPAT: i32 = 0x00008000;
+pub const MSG_COMPAT: i32 = 0x0000_8000;
 /// for use by socket callbacks - soreceive (TCP)
-pub const MSG_SOCALLBCK: i32 = 0x00010000;
+pub const MSG_SOCALLBCK: i32 = 0x0001_0000;
 /// do not generate SIGPIPE on EOF
-pub const MSG_NOSIGNAL: i32 = 0x00020000;
+pub const MSG_NOSIGNAL: i32 = 0x0002_0000;
 /// make received fds close-on-exec
-pub const MSG_CMSG_CLOEXEC: i32 = 0x00040000;
+pub const MSG_CMSG_CLOEXEC: i32 = 0x0004_0000;
 /// for recvmmsg()
-pub const MSG_WAITFORONE: i32 = 0x00080000;
+pub const MSG_WAITFORONE: i32 = 0x0008_0000;
 /// additional data pending
-pub const MSG_MORETOCOME: i32 = 0x00100000;
+pub const MSG_MORETOCOME: i32 = 0x0010_0000;
 /// only soreceive() app. data (TLS)
-pub const MSG_TLSAPPDATA: i32 = 0x00200000;
+pub const MSG_TLSAPPDATA: i32 = 0x0020_0000;
 
 /// "Socket"-level control message types:
 /// access rights (array of int)
@@ -497,12 +497,12 @@ pub struct sf_hdtr_t {
 }
 
 /// Sendfile-specific flag(s)
-pub const SF_NODISKIO: i32 = 0x00000001;
+pub const SF_NODISKIO: i32 = 0x0000_0001;
 /// obsolete
-pub const SF_MNOWAIT: i32 = 0x00000002;
-pub const SF_SYNC: i32 = 0x00000004;
-pub const SF_USER_READAHEAD: i32 = 0x00000008;
-pub const SF_NOCACHE: i32 = 0x00000010;
+pub const SF_MNOWAIT: i32 = 0x0000_0002;
+pub const SF_SYNC: i32 = 0x0000_0004;
+pub const SF_USER_READAHEAD: i32 = 0x0000_0008;
+pub const SF_NOCACHE: i32 = 0x0000_0010;
 
 pub const fn SF_READAHEAD(flags: i32) -> i32 {
     flags >> 16

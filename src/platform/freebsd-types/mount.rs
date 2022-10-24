@@ -270,27 +270,27 @@ pub const MNT_UPDATEMASK: u64 = MNT_NOSUID
 /// Unmount can use the MNT_FORCE flag.
 ///
 /// not real mount, just update
-pub const MNT_UPDATE: u64 = 0x0000000000010000;
+pub const MNT_UPDATE: u64 = 0x0000_0000_0001_0000;
 /// delete export host lists
-pub const MNT_DELEXPORT: u64 = 0x0000000000020000;
+pub const MNT_DELEXPORT: u64 = 0x0000_0000_0002_0000;
 /// reload filesystem data
-pub const MNT_RELOAD: u64 = 0x0000000000040000;
+pub const MNT_RELOAD: u64 = 0x0000_0000_0004_0000;
 /// force unmount or readonly
-pub const MNT_FORCE: u64 = 0x0000000000080000;
+pub const MNT_FORCE: u64 = 0x0000_0000_0008_0000;
 /// snapshot the filesystem
-pub const MNT_SNAPSHOT: u64 = 0x0000000001000000;
+pub const MNT_SNAPSHOT: u64 = 0x0000_0000_0100_0000;
 /// check vnode use counts.
-pub const MNT_NONBUSY: u64 = 0x0000000004000000;
+pub const MNT_NONBUSY: u64 = 0x0000_0000_0400_0000;
 /// specify filesystem by ID.
-pub const MNT_BYFSID: u64 = 0x0000000008000000;
+pub const MNT_BYFSID: u64 = 0x0000_0000_0800_0000;
 /// Do not cover a mount point
-pub const MNT_NOCOVER: u64 = 0x0000001000000000;
+pub const MNT_NOCOVER: u64 = 0x0000_0010_0000_0000;
 /// Only mount on empty dir
-pub const MNT_EMPTYDIR: u64 = 0x0000002000000000;
+pub const MNT_EMPTYDIR: u64 = 0x0000_0020_0000_0000;
 /// recursively unmount uppers
-pub const MNT_RECURSE: u64 = 0x0000100000000000;
+pub const MNT_RECURSE: u64 = 0x0000_1000_0000_0000;
 /// unmount in async context
-pub const MNT_DEFERRED: u64 = 0x0000200000000000;
+pub const MNT_DEFERRED: u64 = 0x0000_2000_0000_0000;
 pub const MNT_CMDFLAGS: u64 = MNT_UPDATE
     | MNT_DELEXPORT
     | MNT_RELOAD
@@ -316,63 +316,63 @@ pub const MNT_CMDFLAGS: u64 = MNT_UPDATE
 /// the filesystem to cancel operations that might otherwise deadlock
 /// with the unmount attempt (used by NFS).
 /// forced unmount in progress
-pub const MNTK_UNMOUNTF: i32 = 0x00000001;
+pub const MNTK_UNMOUNTF: i32 = 0x0000_0001;
 /// filtered async flag
-pub const MNTK_ASYNC: i32 = 0x00000002;
+pub const MNTK_ASYNC: i32 = 0x0000_0002;
 /// async disabled by softdep
-pub const MNTK_SOFTDEP: i32 = 0x00000004;
+pub const MNTK_SOFTDEP: i32 = 0x0000_0004;
 /// don't do msync
-pub const MNTK_NOMSYNC: i32 = 0x00000008;
+pub const MNTK_NOMSYNC: i32 = 0x0000_0008;
 /// lock draining is happening
-pub const MNTK_DRAINING: i32 = 0x00000010;
+pub const MNTK_DRAINING: i32 = 0x0000_0010;
 /// refcount expiring is happening
-pub const MNTK_REFEXPIRE: i32 = 0x00000020;
+pub const MNTK_REFEXPIRE: i32 = 0x0000_0020;
 /// Allow shared locking for more ops
-pub const MNTK_EXTENDED_SHARED: i32 = 0x00000040;
+pub const MNTK_EXTENDED_SHARED: i32 = 0x0000_0040;
 /// Allow shared locking for writes
-pub const MNTK_SHARED_WRITES: i32 = 0x00000080;
+pub const MNTK_SHARED_WRITES: i32 = 0x0000_0080;
 /// Disallow page faults during reads and writes.
 ///
 /// Filesystem shall properly handle i/o state on EFAULT.
-pub const MNTK_NO_IOPF: i32 = 0x00000100;
+pub const MNTK_NO_IOPF: i32 = 0x0000_0100;
 /// pending recursive unmount
-pub const MNTK_RECURSE: i32 = 0x00000200;
+pub const MNTK_RECURSE: i32 = 0x0000_0200;
 /// waiting to drain MNTK_UPPER_PENDING
-pub const MNTK_UPPER_WAITER: i32 = 0x00000400;
-pub const MNTK_LOOKUP_EXCL_DOTDOT: i32 = 0x00000800;
-pub const MNTK_UNMAPPED_BUFS: i32 = 0x00002000;
+pub const MNTK_UPPER_WAITER: i32 = 0x0000_0400;
+pub const MNTK_LOOKUP_EXCL_DOTDOT: i32 = 0x0000_0800;
+pub const MNTK_UNMAPPED_BUFS: i32 = 0x0000_2000;
 /// FS uses the buffer cache.
-pub const MNTK_USES_BCACHE: i32 = 0x00004000;
+pub const MNTK_USES_BCACHE: i32 = 0x0000_4000;
 /// Keep use ref for text
-pub const MNTK_TEXT_REFS: i32 = 0x00008000;
-pub const MNTK_VMSETSIZE_BUG: i32 = 0x00010000;
+pub const MNTK_TEXT_REFS: i32 = 0x0000_8000;
+pub const MNTK_VMSETSIZE_BUG: i32 = 0x0001_0000;
 /// A hack for F_ISUNIONSTACK
-pub const MNTK_UNIONFS: i32 = 0x00020000;
+pub const MNTK_UNIONFS: i32 = 0x0002_0000;
 /// fast path lookup is supported
-pub const MNTK_FPLOOKUP: i32 = 0x00040000;
+pub const MNTK_FPLOOKUP: i32 = 0x0004_0000;
 /// Suspended by all-fs suspension
-pub const MNTK_SUSPEND_ALL: i32 = 0x00080000;
+pub const MNTK_SUSPEND_ALL: i32 = 0x0008_0000;
 /// Waiting on unmount taskqueue
-pub const MNTK_TASKQUEUE_WAITER: i32 = 0x00100000;
+pub const MNTK_TASKQUEUE_WAITER: i32 = 0x0010_0000;
 /// disable async
-pub const MNTK_NOASYNC: i32 = 0x00800000;
+pub const MNTK_NOASYNC: i32 = 0x0080_0000;
 /// unmount in progress
-pub const MNTK_UNMOUNT: i32 = 0x01000000;
+pub const MNTK_UNMOUNT: i32 = 0x0100_0000;
 /// waiting for unmount to finish
-pub const MNTK_MWAIT: i32 = 0x02000000;
+pub const MNTK_MWAIT: i32 = 0x0200_0000;
 /// request write suspension
-pub const MNTK_SUSPEND: i32 = 0x08000000;
+pub const MNTK_SUSPEND: i32 = 0x0800_0000;
 /// block secondary writes
-pub const MNTK_SUSPEND2: i32 = 0x04000000;
+pub const MNTK_SUSPEND2: i32 = 0x0400_0000;
 /// write operations are suspended
-pub const MNTK_SUSPENDED: i32 = 0x10000000;
+pub const MNTK_SUSPENDED: i32 = 0x1000_0000;
 /// auto disable cache for nullfs mounts over this fs
-pub const MNTK_N_NOCACHE: i32 = 0x20000000;
+pub const MNTK_N_NOCACHE: i32 = 0x2000_0000;
 /// FS supports shared lock lookups
-pub const MNTK_LOOKUP_SHARED: i32 = 0x40000000;
+pub const MNTK_LOOKUP_SHARED: i32 = 0x4000_0000;
 /// Don't send KNOTEs from VOP hooks
 #[allow(overflowing_literals)]
-pub const MNTK_NOKNOTE: i32 = 0x80000000;
+pub const MNTK_NOKNOTE: i32 = 0x8000_0000;
 
 /// Flags for various system call interfaces.
 ///

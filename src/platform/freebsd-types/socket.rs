@@ -17,12 +17,12 @@ pub const SOCK_RDM: i32 = 4;
 /// sequenced packet stream
 pub const SOCK_SEQPACKET: i32 = 5;
 
-/// Creation flags, OR'ed into socket() and socketpair() type argument.
+/// Creation flags, OR'ed into `socket()` and `socketpair()` type argument.
 pub const SOCK_CLOEXEC: i32 = 0x1000_0000;
 pub const SOCK_NONBLOCK: i32 = 0x2000_0000;
 
-/// Flags for accept1(), kern_accept4() and solisten_dequeue, in addition
-/// to SOCK_CLOEXEC and SOCK_NONBLOCK.
+/// Flags for `accept1()`, `kern_accept4()` and `solisten_dequeue`, in addition
+/// to `SOCK_CLOEXEC` and `SOCK_NONBLOCK`.
 pub const ACCEPT4_INHERIT: i32 = 0x1;
 pub const ACCEPT4_COMPAT: i32 = 0x2;
 
@@ -64,7 +64,7 @@ pub const SO_REUSEPORT_LB: i32 = 0x0001_0000;
 /// keep track of receive errors
 pub const SO_RERROR: i32 = 0x0002_0000;
 
-/// Additional options, not kept in so_options.
+/// Additional options, not kept in `so_options`.
 /// send buffer size
 pub const SO_SNDBUF: i32 = 0x1001;
 /// receive buffer size
@@ -97,9 +97,9 @@ pub const SO_SETFIB: i32 = 0x1014;
 pub const SO_USER_COOKIE: i32 = 0x1015;
 /// get socket protocol (Linux name)
 pub const SO_PROTOCOL: i32 = 0x1016;
-/// alias for SO_PROTOCOL (SunOS name)
+/// alias for `SO_PROTOCOL` (`SunOS` name)
 pub const SO_PROTOTYPE: i32 = SO_PROTOCOL;
-/// clock type used for SO_TIMESTAMP
+/// clock type used for `SO_TIMESTAMP`
 pub const SO_TS_CLOCK: i32 = 0x1017;
 /// socket's max TX pacing rate (Linux name)
 pub const SO_MAX_PACING_RATE: i32 = 0x1018;
@@ -119,7 +119,7 @@ pub const SO_TS_CLOCK_MAX: i32 = SO_TS_MONOTONIC;
 
 /// Space reserved for new socket options added by third-party vendors.
 /// This range applies to all socket option levels.  New socket options
-/// in FreeBSD should always use an option value less than SO_VENDOR.
+/// in FreeBSD should always use an option value less than `SO_VENDOR`.
 #[allow(overflowing_literals)]
 pub const SO_VENDOR: i32 = 0x8000_0000;
 
@@ -133,7 +133,7 @@ pub const SOL_SOCKET: i32 = 0xffff;
 pub const AF_UNSPEC: i32 = 0;
 /// local to host (pipes, portals)
 pub const AF_LOCAL: i32 = AF_UNIX;
-/// standardized name for AF_LOCAL
+/// standardized name for `AF_LOCAL`
 pub const AF_UNIX: i32 = 1;
 /// internetwork: UDP, TCP, etc.
 pub const AF_INET: i32 = 2;
@@ -156,7 +156,7 @@ pub const AF_DATAKIT: i32 = 9;
 pub const AF_CCITT: i32 = 10;
 /// IBM SNA
 pub const AF_SNA: i32 = 11;
-/// DECnet
+/// `DECnet`
 pub const AF_DECNET: i32 = 12;
 /// DEC Direct data link interface
 pub const AF_DLI: i32 = 13;
@@ -213,7 +213,7 @@ pub const AF_IEEE80211: i32 = 37;
 pub const AF_INET_SDP: i32 = 40;
 /// OFED Socket Direct Protocol ipv6
 pub const AF_INET6_SDP: i32 = 42;
-/// HyperV sockets
+/// `HyperV` sockets
 pub const AF_HYPERV: i32 = 43;
 pub const AF_MAX: i32 = 43;
 /// When allocating a new AF_ constant, please only allocate
@@ -322,7 +322,7 @@ pub const PF_COIP: i32 = AF_COIP;
 pub const PF_CNT: i32 = AF_CNT;
 pub const PF_SIP: i32 = AF_SIP;
 pub const PF_IPX: i32 = AF_IPX;
-/// same format as AF_INET
+/// same format as `AF_INET`
 pub const PF_RTIP: i32 = PSEUDO_AF_RTIP;
 pub const PF_PIP: i32 = PSEUDO_AF_PIP;
 pub const PF_ISDN: i32 = AF_ISDN;
@@ -341,7 +341,7 @@ pub const PF_INET6_SDP: i32 = AF_INET6_SDP;
 
 pub const PF_MAX: i32 = AF_MAX;
 
-/// Definitions for network related sysctl, CTL_NET.
+/// Definitions for network related sysctl, `CTL_NET`.
 ///
 /// Second level is protocol family.
 ///
@@ -349,12 +349,12 @@ pub const PF_MAX: i32 = AF_MAX;
 ///
 /// Further levels are defined by the individual families.
 ///
-/// PF_ROUTE - Routing table
+/// `PF_ROUTE` - Routing table
 ///
 /// Three additional levels are defined:
 /// Fourth: address family, 0 is wildcard
 /// Fifth: type of info, defined below
-/// Sixth: flag(s) to mask with for NET_RT_FLAGS
+/// Sixth: flag(s) to mask with for `NET_RT_FLAGS`
 /// dump; may limit to a.f.
 pub const NET_RT_DUMP: i32 = 1;
 /// by flags, e.g. RESOLVING
@@ -461,7 +461,7 @@ pub const SCM_TIME_INFO: i32 = 0x07;
 /// process creds (struct sockcred2)
 pub const SCM_CREDS2: i32 = 0x08;
 
-/// howto arguments for shutdown(2), specified by Posix.1g.
+/// howto arguments for `shutdown(2)`, specified by Posix.1g.
 /// shut down the reading side
 pub const SHUT_RD: i32 = 0;
 /// shut down the writing side
@@ -470,7 +470,7 @@ pub const SHUT_WR: i32 = 1;
 pub const SHUT_RDWR: i32 = 2;
 
 /// for SCTP
-/// we cheat and use the SHUT_XX defines for these
+/// we cheat and use the `SHUT_XX` defines for these
 pub const PRU_FLUSH_RD: i32 = SHUT_RD;
 pub const PRU_FLUSH_WR: i32 = SHUT_WR;
 pub const PRU_FLUSH_RDWR: i32 = SHUT_RDWR;
@@ -504,6 +504,7 @@ pub const SF_SYNC: i32 = 0x0000_0004;
 pub const SF_USER_READAHEAD: i32 = 0x0000_0008;
 pub const SF_NOCACHE: i32 = 0x0000_0010;
 
+#[must_use]
 pub const fn SF_READAHEAD(flags: i32) -> i32 {
     flags >> 16
 }

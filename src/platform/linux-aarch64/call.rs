@@ -6588,8 +6588,8 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///     assert!(ret.is_ok());
 ///     println!("cur time: {:?}", cur_time);
 ///
-///     let ret = nc::util::pause();
-///     assert_eq!(ret, Err(nc::EINTR));
+///     let mask = nc::sigset_t::default();
+///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 ///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());

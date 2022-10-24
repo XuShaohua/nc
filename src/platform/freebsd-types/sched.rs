@@ -2,20 +2,22 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 //! From sys/sys/sched.h
 
-/// sched_add arguments (formerly setrunqueue)
+/// `sched_add` arguments (formerly setrunqueue)
 /// No special circumstances.
 pub const SRQ_BORING: i32 = 0x0000;
-/// We are yielding (from mi_switch).
+/// We are yielding (from `mi_switch`).
 pub const SRQ_YIELDING: i32 = 0x0001;
-/// It is ourself (from mi_switch).
+/// It is ourself (from `mi_switch`).
 pub const SRQ_OURSELF: i32 = 0x0002;
 /// It is probably urgent.
 pub const SRQ_INTR: i32 = 0x0004;
 /// has been preempted.. be kind
 pub const SRQ_PREEMPTED: i32 = 0x0008;
-/// Priority updated due to prio_lend
+/// Priority updated due to `prio_lend`
 pub const SRQ_BORROWING: i32 = 0x0010;
 /// Return holding original td lock
 pub const SRQ_HOLD: i32 = 0x0020;

@@ -1951,8 +1951,8 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 /// assert!(ret.is_ok());
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
-/// let ret = nc::util::pause();
-/// assert_eq!(ret, Err(nc::EINTR));
+/// let mask = nc::sigset_t::default();
+/// let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());

@@ -117,8 +117,8 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 /// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
 /// assert!(ret.is_ok());
 /// let remaining = unsafe { nc::alarm(1) };
-/// let ret = unsafe { nc::pause() };
-/// assert!(ret.is_err());
+/// let mask = nc::sigset_t::default();
+/// let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
 /// ```

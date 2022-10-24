@@ -58,6 +58,6 @@ pub const RB_PROBE: i32 = 0x1000_0000;
 /// use multiple consoles
 pub const RB_MULTIPLE: i32 = 0x2000_0000;
 
-/// have `struct bootinfo *' arg
+/// have `struct bootinfo *` arg
 #[allow(overflowing_literals)]
 pub const RB_BOOTINFO: i32 = 0x8000_0000;

@@ -17,10 +17,10 @@ use crate::{gid_t, uid_t, UINT_MAX};
 //pub const CHAR_MIN: i32 = SCHAR_MIN;
 //#endif
 
-/// max value for a gid_t
+/// max value for a `gid_t`
 pub const GID_MAX: gid_t = UINT_MAX;
 
-/// max value for a uid_t
+/// max value for a `uid_t`
 pub const UID_MAX: uid_t = UINT_MAX;
 
 // TODO(Shaohua): Update value type.

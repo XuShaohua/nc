@@ -29,6 +29,7 @@ mod socket;
 mod stat;
 mod syslimits;
 mod time;
+#[allow(clippy::module_inception)]
 mod types;
 mod unistd;
 

@@ -2,13 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From sys/sys/_timeval.h
+//! From `sys/sys/_timeval.h`
 
 use crate::{suseconds_t, time_t};
 
-/// Structure returned by gettimeofday(2) system call, and used in other calls.
+/// Structure returned by `gettimeofday(2)` system call, and used in other calls.
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
+#[allow(clippy::module_name_repetitions)]
 pub struct timeval_t {
     /// seconds
     pub tv_sec: time_t,

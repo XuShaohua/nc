@@ -97,7 +97,7 @@ pub const RLIMIT_NOFILE: i32 = 8;
 pub const RLIMIT_SBSIZE: i32 = 9;
 /// virtual process size (incl. mmap)
 pub const RLIMIT_VMEM: i32 = 10;
-/// standard name for RLIMIT_VMEM
+/// standard name for `RLIMIT_VMEM`
 pub const RLIMIT_AS: i32 = RLIMIT_VMEM;
 /// pseudo-terminals
 pub const RLIMIT_NPTS: i32 = 11;
@@ -111,7 +111,8 @@ pub const RLIMIT_UMTXP: i32 = 14;
 /// number of resource limits
 pub const RLIM_NLIMITS: i32 = 15;
 
-pub const RLIM_INFINITY: rlim_t = ((1u64 << 63) - 1) as rlim_t;
+#[allow(clippy::cast_possible_wrap)]
+pub const RLIM_INFINITY: rlim_t = ((1_u64 << 63) - 1) as rlim_t;
 pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
 

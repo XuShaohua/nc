@@ -4,7 +4,7 @@
 
 //! From sys/sys/mman.h
 
-/// Inheritance for minherit()
+/// Inheritance for `minherit()`
 pub const INHERIT_SHARE: i32 = 0;
 pub const INHERIT_COPY: i32 = 1;
 pub const INHERIT_NONE: i32 = 2;
@@ -20,14 +20,20 @@ pub const PROT_WRITE: i32 = 0x02;
 /// pages can be executed
 pub const PROT_EXEC: i32 = 0x04;
 pub const _PROT_ALL: i32 = PROT_READ | PROT_WRITE | PROT_EXEC;
+
+#[must_use]
 pub const fn PROT_EXTRACT(prot: i32) -> i32 {
     prot & _PROT_ALL
 }
 
 pub const _PROT_MAX_SHIFT: i32 = 16;
+
+#[must_use]
 pub const fn PROT_MAX(prot: i32) -> i32 {
     prot << _PROT_MAX_SHIFT
 }
+
+#[must_use]
 pub const fn PROT_MAX_EXTRACT(prot: i32) -> i32 {
     (prot >> _PROT_MAX_SHIFT) & _PROT_ALL
 }
@@ -47,13 +53,13 @@ pub const MAP_COPY: i32 = MAP_PRIVATE;
 /// map addr must be exactly as requested
 pub const MAP_FIXED: i32 = 0x0010;
 
-/// previously unimplemented MAP_RENAME
+/// previously unimplemented `MAP_RENAME`
 pub const MAP_RESERVED0020: i32 = 0x0020;
-/// previously unimplemented MAP_NORESERVE
+/// previously unimplemented `MAP_NORESERVE`
 pub const MAP_RESERVED0040: i32 = 0x0040;
-/// previously misimplemented MAP_INHERIT
+/// previously misimplemented `MAP_INHERIT`
 pub const MAP_RESERVED0080: i32 = 0x0080;
-/// previously unimplemented MAP_NOEXTEND
+/// previously unimplemented `MAP_NOEXTEND`
 pub const MAP_RESERVED0100: i32 = 0x0100;
 /// region may contain semaphores
 pub const MAP_HASSEMAPHORE: i32 = 0x0200;
@@ -72,31 +78,33 @@ pub const MAP_ANONYMOUS: i32 = MAP_ANON;
 
 /// Extended flags
 /// reserve but don't map address range
-pub const MAP_GUARD: i32 = 0x00002000;
-/// for MAP_FIXED, fail if address is used
-pub const MAP_EXCL: i32 = 0x00004000;
+pub const MAP_GUARD: i32 = 0x0000_2000;
+/// for `MAP_FIXED`, fail if address is used
+pub const MAP_EXCL: i32 = 0x0000_4000;
 /// dont include these pages in a coredump
-pub const MAP_NOCORE: i32 = 0x00020000;
+pub const MAP_NOCORE: i32 = 0x0002_0000;
 /// prefault mapping for reading
-pub const MAP_PREFAULT_READ: i32 = 0x00040000;
+pub const MAP_PREFAULT_READ: i32 = 0x0004_0000;
 
 #[cfg(target_pointer_width = "64")]
 /// map in the low 2GB of address space
-pub const MAP_32BIT: i32 = 0x00080000;
+pub const MAP_32BIT: i32 = 0x0008_0000;
 
 /// Request specific alignment (n == log2 of the desired alignment).
 ///
-/// MAP_ALIGNED_SUPER requests optimal superpage alignment, but does
+/// `MAP_ALIGNED_SUPER` requests optimal superpage alignment, but does
 /// not enforce a specific alignment.
+#[must_use]
 pub const fn MAP_ALIGNED(n: i32) -> i32 {
     n << MAP_ALIGNMENT_SHIFT
 }
+
 pub const MAP_ALIGNMENT_SHIFT: i32 = 24;
 pub const MAP_ALIGNMENT_MASK: i32 = MAP_ALIGNED(0xff);
 /// align on a superpage
 pub const MAP_ALIGNED_SUPER: i32 = MAP_ALIGNED(1);
 
-/// Flags provided to shm_rename
+/// Flags provided to `shm_rename`
 /// Don't overwrite dest, if it exists
 pub const SHM_RENAME_NOREPLACE: i32 = 1 << 0;
 /// Atomically swap src and dest
@@ -108,10 +116,11 @@ pub const MCL_CURRENT: i32 = 0x0001;
 /// Lock all future memory as well
 pub const MCL_FUTURE: i32 = 0x0002;
 
-/// Error return from mmap()
+/// Error return from `mmap()`
+#[allow(clippy::cast_sign_loss)]
 pub const MAP_FAILED: usize = -1_isize as usize;
 
-/// msync() flags
+/// `msync()` flags
 /// msync synchronously
 pub const MS_SYNC: i32 = 0x0000;
 /// return immediately
@@ -163,29 +172,30 @@ pub const MINCORE_MODIFIED_OTHER: i32 = 0x10;
 /// Page is a "super" page
 pub const MINCORE_SUPER: i32 = 0x60;
 /// Page size
+#[must_use]
 pub const fn MINCORE_PSIND(i: i32) -> i32 {
     (i << 5) & MINCORE_SUPER
 }
 
-/// Anonymous object constant for shm_open().
+/// Anonymous object constant for `shm_open()`.
 pub const SHM_ANON: usize = 1;
 
-/// shmflags for shm_open2()
-pub const SHM_ALLOW_SEALING: i32 = 0x00000001;
-pub const SHM_GROW_ON_WRITE: i32 = 0x00000002;
-pub const SHM_LARGEPAGE: i32 = 0x00000004;
+/// shmflags for `shm_open2()`
+pub const SHM_ALLOW_SEALING: i32 = 0x0000_0001;
+pub const SHM_GROW_ON_WRITE: i32 = 0x0000_0002;
+pub const SHM_LARGEPAGE: i32 = 0x0000_0004;
 
 pub const SHM_LARGEPAGE_ALLOC_DEFAULT: i32 = 0;
 pub const SHM_LARGEPAGE_ALLOC_NOWAIT: i32 = 1;
 pub const SHM_LARGEPAGE_ALLOC_HARD: i32 = 2;
 
-/// Flags for memfd_create().
-pub const MFD_CLOEXEC: u32 = 0x00000001;
-pub const MFD_ALLOW_SEALING: u32 = 0x00000002;
+/// Flags for `memfd_create()`.
+pub const MFD_CLOEXEC: u32 = 0x0000_0001;
+pub const MFD_ALLOW_SEALING: u32 = 0x0000_0002;
 
-pub const MFD_HUGETLB: u32 = 0x00000004;
+pub const MFD_HUGETLB: u32 = 0x0000_0004;
 
-pub const MFD_HUGE_MASK: u32 = 0xFC000000;
+pub const MFD_HUGE_MASK: u32 = 0xFC00_0000;
 pub const MFD_HUGE_SHIFT: u32 = 26;
 pub const MFD_HUGE_64KB: usize = 16 << MFD_HUGE_SHIFT;
 pub const MFD_HUGE_512KB: usize = 19 << MFD_HUGE_SHIFT;

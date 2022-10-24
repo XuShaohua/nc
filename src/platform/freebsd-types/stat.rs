@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::module_name_repetitions)]
+
 //! From sys/sys/stat.h
 
 use crate::{
@@ -194,41 +196,49 @@ pub const S_ISVTX: i32 = 0o00_1000;
 pub const S_IFWHT: i32 = 0o16_0000;
 
 /// directory
+#[must_use]
 pub const fn S_ISDIR(m: i32) -> bool {
     (m & 0o17_0000) == 0o04_0000
 }
 
 /// char special
+#[must_use]
 pub const fn S_ISCHR(m: i32) -> bool {
     (m & 0o17_0000) == 0o02_0000
 }
 
 /// block special
+#[must_use]
 pub const fn S_ISBLK(m: i32) -> bool {
     (m & 0o17_0000) == 0o06_0000
 }
 
 /// regular file
+#[must_use]
 pub const fn S_ISREG(m: i32) -> bool {
     (m & 0o17_0000) == 0o10_0000
 }
 
 /// fifo or socket
+#[must_use]
 pub const fn S_ISFIFO(m: i32) -> bool {
     (m & 0o17_0000) == 0o01_0000
 }
 
 /// symbolic link
+#[must_use]
 pub const fn S_ISLNK(m: i32) -> bool {
     (m & 0o17_0000) == 0o12_0000
 }
 
 /// socket
+#[must_use]
 pub const fn S_ISSOCK(m: i32) -> bool {
     (m & 0o17_0000) == 0o14_0000
 }
 
 /// whiteout
+#[must_use]
 pub const fn S_ISWHT(m: i32) -> bool {
     (m & 0o17_0000) == 0o16_0000
 }
@@ -271,7 +281,7 @@ pub const UF_REPARSE: fflags_t = 0x0000_0400;
 pub const UF_ARCHIVE: fflags_t = 0x0000_0800;
 /// Windows readonly file bit
 pub const UF_READONLY: fflags_t = 0x0000_1000;
-/// This is the same as the MacOS X definition of UF_HIDDEN.
+/// This is the same as the `MacOS X` definition of `UF_HIDDEN`.
 /// file is hidden
 pub const UF_HIDDEN: fflags_t = 0x0000_8000;
 

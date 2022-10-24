@@ -25,8 +25,8 @@ pub type sbintime_t = i64;
 
 /// Types suitable for exporting physical addresses, virtual addresses
 /// (pointers), and memory object sizes from the kernel independent of native
-/// word size.  These should be used in place of vm_paddr_t, (u)intptr_t, and
-/// size_t in structs which contain such types that are shared with userspace.
+/// word size.  These should be used in place of `vm_paddr_t`, `(u)intptr_t`,
+/// and `size_t` in structs which contain such types that are shared with userspace.
 pub type kpaddr_t = u64;
 pub type kvaddr_t = u64;
 pub type ksize_t = u64;
@@ -35,7 +35,7 @@ pub type kssize_t = i64;
 pub type vm_offset_t = u64;
 pub type vm_pindex_t = u64;
 
-/// Interrupt mask (spl, xxx_imask...).
+/// Interrupt mask (spl, `xxx_imask`...).
 pub type intrmask_t = u32;
 
 pub type uoff_t = u64;

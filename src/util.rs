@@ -144,26 +144,6 @@ pub fn read_syscall_list() -> Result<Syscalls, Errno> {
     Ok(set)
 }
 
-pub fn pause() -> Result<(), crate::Errno> {
-    // ppoll(0, 0, 0, 0) in C.
-    #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
-    let ret = unsafe {
-        crate::ppoll(
-            &mut crate::pollfd_t::default(),
-            0,
-            &crate::timespec_t::default(),
-            &crate::sigset_t::default(),
-            0,
-        )
-        .map(drop)
-    };
-
-    #[cfg(not(any(target_arch = "aarch64", target_arch = "loongarch64")))]
-    let ret = unsafe { crate::pause() };
-
-    ret
-}
-
 #[allow(clippy::cast_possible_truncation)]
 #[allow(clippy::cast_possible_wrap)]
 pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {

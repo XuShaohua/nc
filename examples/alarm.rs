@@ -23,9 +23,11 @@ fn main() {
 
     let seconds = 1;
     let remaining = nc::util::alarm(seconds);
-    let ret = nc::util::pause();
+
+    let mask = nc::sigset_t::default();
+    let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
+
     assert_eq!(remaining.unwrap(), 0);
-    println!("ret: {:?}", ret);
 }

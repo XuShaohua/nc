@@ -5547,7 +5547,6 @@ pub unsafe fn rt_sigreturn() {
 ///     let ret = unsafe { nc::nanosleep(&t, None) };
 ///     assert!(ret.is_ok());
 ///
-///     // parent process.
 ///     let ret = unsafe { nc::kill(pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }
@@ -6695,7 +6694,6 @@ pub unsafe fn sigreturn() {
 ///     let ret = unsafe { nc::nanosleep(&t, None) };
 ///     assert!(ret.is_ok());
 ///
-///     // parent process.
 ///     let ret = unsafe { nc::kill(pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }
@@ -7164,7 +7162,6 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
 ///     let ret = unsafe { nc::nanosleep(&t, None) };
 ///     assert!(ret.is_ok());
 ///
-///     // parent process.
 ///     let ret = unsafe { nc::tgkill(pid, pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }
@@ -7538,13 +7535,27 @@ pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 /// # Example
 ///
 /// ```
-/// let ret = unsafe { nc::fork() };
-/// assert!(ret.is_ok());
-/// let pid = ret.unwrap();
+/// use core::mem::size_of;
+///
+/// let pid = unsafe { nc::fork() };
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+///
 /// if pid == 0 {
-///     println!("[child] pid: {}", unsafe { nc::getpid() });
-///     let _ret = nc::util::pause();
+///     // child process.
+///     let mask = nc::sigset_t::default();
+///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     assert!(ret.is_ok());
 /// } else {
+///     // parent process.
+///     let t = nc::timespec_t {
+///         tv_sec: 1,
+///         tv_nsec: 0,
+///     };
+///     let ret = unsafe { nc::nanosleep(&t, None) };
+///     assert!(ret.is_ok());
+///
 ///     let ret = unsafe { nc::tkill(pid, nc::SIGTERM) };
 ///     assert!(ret.is_ok());
 /// }

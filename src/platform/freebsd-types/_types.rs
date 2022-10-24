@@ -2,11 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From sys/sys/_types.h
+//! From `sys/sys/_types.h`
 
 /// Basic types upon which most other types are built.
 ///
-/// Note: It would be nice to simply use the compiler-provided __FOO_TYPE__
+/// Note: It would be nice to simply use the compiler-provided `__FOO_TYPE__`
 /// macros. However, in order to do so we have to check that those match the
 /// previous typedefs exactly (not just that they have the same size) since any
 /// change would be an ABI break. For example, changing `long` to `long long`
@@ -28,7 +28,7 @@ pub type uintptr = usize;
 pub type vm_offset_t = usize;
 pub type vm_size_t = usize;
 
-/// sizeof()
+/// `sizeof()`
 pub type size_t = usize;
 
 /// byte count or error
@@ -46,7 +46,7 @@ pub type blksize_t = i32;
 /// file block count.
 pub type blkcnt_t = i64;
 
-/// clock_gettime()...
+/// `clock_gettime()`...
 pub type clockid_t = i32;
 
 /// file flags.
@@ -56,7 +56,7 @@ pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type gid_t = u32;
 
-/// can hold a gid_t, pid_t, or uid_t.
+/// can hold a `gid_t`, `pid_t`, or `uid_t`.
 pub type id_t = i64;
 
 /// inode number.
@@ -89,7 +89,7 @@ pub type pid_t = i32;
 
 /// resource limit - intentionally.
 ///
-/// signed, because of legacy code that uses -1 for RLIM_INFINITY
+/// signed, because of legacy code that uses -1 for `RLIM_INFINITY`
 pub type rlim_t = i64;
 
 pub type sa_family_t = u8;
@@ -129,10 +129,10 @@ pub type daddr_t = i64;
 /// arg type for ctype funcs.
 pub type ct_rune_t = i32;
 
-/// rune_t (see above)
+/// `rune_t` (see above)
 pub type rune_t = ct_rune_t;
 
-/// wint_t (see above).
+/// `wint_t` (see above).
 pub type wint_t = ct_rune_t;
 
 /// device number.

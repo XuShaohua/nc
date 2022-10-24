@@ -17,7 +17,7 @@ pub struct fsid_t {
 ///
 /// These are unique per filesystem on a single machine.
 ///
-/// Note that the offset of fid_data is 4 bytes, so care must be taken to avoid
+/// Note that the offset of `fid_data` is 4 bytes, so care must be taken to avoid
 /// undefined behavior accessing unaligned fields within an embedded struct.
 pub const MAXFIDSZ: usize = 16;
 
@@ -40,7 +40,7 @@ pub const MFSNAMELEN: usize = 16;
 /// size of on/from name bufs
 pub const MNAMELEN: usize = 1024;
 /// current version number
-pub const STATFS_VERSION: i32 = 0x20140518;
+pub const STATFS_VERSION: i32 = 0x2014_0518;
 
 #[repr(C)]
 #[derive(Debug)]
@@ -141,79 +141,79 @@ impl Default for statfs_t {
     }
 }
 
-/// User specifiable flags, stored in mnt_flag.
+/// User specifiable flags, stored in `mnt_flag`.
 /// read only filesystem
-pub const MNT_RDONLY: u64 = 0x0000000000000001;
+pub const MNT_RDONLY: u64 = 0x0000_0000_0000_0001;
 /// fs written synchronously
-pub const MNT_SYNCHRONOUS: u64 = 0x0000000000000002;
+pub const MNT_SYNCHRONOUS: u64 = 0x0000_0000_0000_0002;
 /// can't exec from filesystem
-pub const MNT_NOEXEC: u64 = 0x0000000000000004;
+pub const MNT_NOEXEC: u64 = 0x0000_0000_0000_0004;
 /// don't honor setuid fs bits
-pub const MNT_NOSUID: u64 = 0x0000000000000008;
+pub const MNT_NOSUID: u64 = 0x0000_0000_0000_0008;
 /// enable NFS version 4 ACLs
-pub const MNT_NFS4ACLS: u64 = 0x0000000000000010;
+pub const MNT_NFS4ACLS: u64 = 0x0000_0000_0000_0010;
 /// union with underlying fs
-pub const MNT_UNION: u64 = 0x0000000000000020;
+pub const MNT_UNION: u64 = 0x0000_0000_0000_0020;
 /// fs written asynchronously
-pub const MNT_ASYNC: u64 = 0x0000000000000040;
+pub const MNT_ASYNC: u64 = 0x0000_0000_0000_0040;
 /// special SUID dir handling
-pub const MNT_SUIDDIR: u64 = 0x0000000000100000;
+pub const MNT_SUIDDIR: u64 = 0x0000_0000_0010_0000;
 /// using soft updates
-pub const MNT_SOFTDEP: u64 = 0x0000000000200000;
+pub const MNT_SOFTDEP: u64 = 0x0000_0000_0020_0000;
 /// do not follow symlinks
-pub const MNT_NOSYMFOLLOW: u64 = 0x0000000000400000;
+pub const MNT_NOSYMFOLLOW: u64 = 0x0000_0000_0040_0000;
 /// GEOM journal support enabled
-pub const MNT_GJOURNAL: u64 = 0x0000000002000000;
+pub const MNT_GJOURNAL: u64 = 0x0000_0000_0200_0000;
 /// MAC support for objects
-pub const MNT_MULTILABEL: u64 = 0x0000000004000000;
+pub const MNT_MULTILABEL: u64 = 0x0000_0000_0400_0000;
 /// ACL support enabled
-pub const MNT_ACLS: u64 = 0x0000000008000000;
+pub const MNT_ACLS: u64 = 0x0000_0000_0800_0000;
 /// dont update file access time
-pub const MNT_NOATIME: u64 = 0x0000000010000000;
+pub const MNT_NOATIME: u64 = 0x0000_0000_1000_0000;
 /// disable cluster read
-pub const MNT_NOCLUSTERR: u64 = 0x0000000040000000;
+pub const MNT_NOCLUSTERR: u64 = 0x0000_0000_4000_0000;
 /// disable cluster write
-pub const MNT_NOCLUSTERW: u64 = 0x0000000080000000;
+pub const MNT_NOCLUSTERW: u64 = 0x0000_0000_8000_0000;
 /// using journaled soft updates
-pub const MNT_SUJ: u64 = 0x0000000100000000;
-/// mounted by automountd(8)
-pub const MNT_AUTOMOUNTED: u64 = 0x0000000200000000;
+pub const MNT_SUJ: u64 = 0x0000_0001_0000_0000;
+/// mounted by `automountd(8)`
+pub const MNT_AUTOMOUNTED: u64 = 0x0000_0002_0000_0000;
 /// filesys metadata untrusted
-pub const MNT_UNTRUSTED: u64 = 0x0000000800000000;
+pub const MNT_UNTRUSTED: u64 = 0x0000_0008_0000_0000;
 
 /// NFS export related mount flags.
 /// exported read only
-pub const MNT_EXRDONLY: u64 = 0x0000000000000080;
+pub const MNT_EXRDONLY: u64 = 0x0000_0000_0000_0080;
 /// filesystem is exported
-pub const MNT_EXPORTED: u64 = 0x0000000000000100;
+pub const MNT_EXPORTED: u64 = 0x0000_0000_0000_0100;
 /// exported to the world
-pub const MNT_DEFEXPORTED: u64 = 0x0000000000000200;
+pub const MNT_DEFEXPORTED: u64 = 0x0000_0000_0000_0200;
 /// anon uid mapping for all
-pub const MNT_EXPORTANON: u64 = 0x0000000000000400;
+pub const MNT_EXPORTANON: u64 = 0x0000_0000_0000_0400;
 /// exported with Kerberos
-pub const MNT_EXKERB: u64 = 0x0000000000000800;
-/// public export (WebNFS)
-pub const MNT_EXPUBLIC: u64 = 0x0000000020000000;
+pub const MNT_EXKERB: u64 = 0x0000_0000_0000_0800;
+/// public export (`WebNFS`)
+pub const MNT_EXPUBLIC: u64 = 0x0000_0000_2000_0000;
 /// require TLS
-pub const MNT_EXTLS: u64 = 0x0000004000000000;
+pub const MNT_EXTLS: u64 = 0x0000_0040_0000_0000;
 /// require TLS with client cert
-pub const MNT_EXTLSCERT: u64 = 0x0000008000000000;
+pub const MNT_EXTLSCERT: u64 = 0x0000_0080_0000_0000;
 /// require TLS with user cert
-pub const MNT_EXTLSCERTUSER: u64 = 0x0000010000000000;
+pub const MNT_EXTLSCERTUSER: u64 = 0x0000_0100_0000_0000;
 
 /// Flags set by internal operations, but visible to the user.
 /// filesystem is stored locally
-pub const MNT_LOCAL: u64 = 0x0000000000001000;
+pub const MNT_LOCAL: u64 = 0x0000_0000_0000_1000;
 /// quotas are enabled on fs
-pub const MNT_QUOTA: u64 = 0x0000000000002000;
+pub const MNT_QUOTA: u64 = 0x0000_0000_0000_2000;
 /// identifies the root fs
-pub const MNT_ROOTFS: u64 = 0x0000000000004000;
+pub const MNT_ROOTFS: u64 = 0x0000_0000_0000_4000;
 /// mounted by a user
-pub const MNT_USER: u64 = 0x0000000000008000;
+pub const MNT_USER: u64 = 0x0000_0000_0000_8000;
 /// do not show entry in df
-pub const MNT_IGNORE: u64 = 0x0000000000800000;
+pub const MNT_IGNORE: u64 = 0x0000_0000_0080_0000;
 /// filesystem is verified
-pub const MNT_VERIFIED: u64 = 0x0000000400000000;
+pub const MNT_VERIFIED: u64 = 0x0000_0004_0000_0000;
 
 /// Mask of flags that are visible to statfs().
 pub const MNT_VISFLAGMASK: u64 = MNT_RDONLY
@@ -267,7 +267,7 @@ pub const MNT_UPDATEMASK: u64 = MNT_NOSUID
     | MNT_UNTRUSTED;
 
 /// External filesystem command modifier flags.
-/// Unmount can use the MNT_FORCE flag.
+/// Unmount can use the `MNT_FORCE` flag.
 ///
 /// not real mount, just update
 pub const MNT_UPDATE: u64 = 0x0000_0000_0001_0000;
@@ -303,16 +303,16 @@ pub const MNT_CMDFLAGS: u64 = MNT_UPDATE
     | MNT_RECURSE
     | MNT_DEFERRED;
 
-/// Internal filesystem control flags stored in mnt_kern_flag.
+/// Internal filesystem control flags stored in `mnt_kern_flag`.
 ///
-/// MNTK_UNMOUNT locks the mount entry so that name lookup cannot
+/// `MNTK_UNMOUNT` locks the mount entry so that name lookup cannot
 /// proceed past the mount point.  This keeps the subtree stable during
 /// mounts and unmounts.  When non-forced unmount flushes all vnodes
-/// from the mp queue, the MNTK_UNMOUNT flag prevents insmntque() from
+/// from the mp queue, the `MNTK_UNMOUNT` flag prevents `insmntque()` from
 /// queueing new vnodes.
 ///
-/// MNTK_UNMOUNTF permits filesystems to detect a forced unmount while
-/// dounmount() is still waiting to lock the mountpoint. This allows
+/// `MNTK_UNMOUNTF` permits filesystems to detect a forced unmount while
+/// `dounmount()` is still waiting to lock the mountpoint. This allows
 /// the filesystem to cancel operations that might otherwise deadlock
 /// with the unmount attempt (used by NFS).
 /// forced unmount in progress
@@ -337,7 +337,7 @@ pub const MNTK_SHARED_WRITES: i32 = 0x0000_0080;
 pub const MNTK_NO_IOPF: i32 = 0x0000_0100;
 /// pending recursive unmount
 pub const MNTK_RECURSE: i32 = 0x0000_0200;
-/// waiting to drain MNTK_UPPER_PENDING
+/// waiting to drain `MNTK_UPPER_PENDING`
 pub const MNTK_UPPER_WAITER: i32 = 0x0000_0400;
 pub const MNTK_LOOKUP_EXCL_DOTDOT: i32 = 0x0000_0800;
 pub const MNTK_UNMAPPED_BUFS: i32 = 0x0000_2000;
@@ -346,7 +346,7 @@ pub const MNTK_USES_BCACHE: i32 = 0x0000_4000;
 /// Keep use ref for text
 pub const MNTK_TEXT_REFS: i32 = 0x0000_8000;
 pub const MNTK_VMSETSIZE_BUG: i32 = 0x0001_0000;
-/// A hack for F_ISUNIONSTACK
+/// A hack for `F_ISUNIONSTACK`
 pub const MNTK_UNIONFS: i32 = 0x0002_0000;
 /// fast path lookup is supported
 pub const MNTK_FPLOOKUP: i32 = 0x0004_0000;
@@ -376,7 +376,7 @@ pub const MNTK_NOKNOTE: i32 = 0x8000_0000;
 
 /// Flags for various system call interfaces.
 ///
-/// waitfor flags to vfs_sync() and getfsstat()
+/// waitfor flags to `vfs_sync()` and `getfsstat()`
 /// synchronously wait for I/O to complete
 pub const MNT_WAIT: i32 = 1;
 /// start all I/O, but do not wait for it

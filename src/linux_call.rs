@@ -1630,7 +1630,7 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let mask = nc::sigset_t::default();
-/// let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
@@ -4634,7 +4634,7 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let mask = nc::sigset_t::default();
-/// let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
@@ -5542,7 +5542,7 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 ///     let ret = unsafe { nc::timer_getoverrun(timer_id) };
 ///     assert!(ret.is_ok());
@@ -5617,7 +5617,7 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 ///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());
@@ -5689,7 +5689,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
 ///
 ///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());

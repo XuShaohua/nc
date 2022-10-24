@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From sys/amd64/include/param.h
+//! From `sys/amd64/include/param.h`
 
 use core::mem::size_of;
 
@@ -13,7 +13,7 @@ pub const MAXCPU: i32 = 256;
 
 pub const MAXMEMDOM: i32 = 8;
 
-/// CACHE_LINE_SIZE is the compile-time maximum cache line size for an
+/// `CACHE_LINE_SIZE` is the compile-time maximum cache line size for an
 /// architecture.  It should be used with appropriate caution.
 pub const CACHE_LINE_SHIFT: i32 = 6;
 pub const CACHE_LINE_SIZE: usize = 1 << CACHE_LINE_SHIFT;
@@ -23,7 +23,7 @@ pub const NPTEPG: usize = PAGE_SIZE / size_of::<pt_entry_t>();
 
 /// LOG2(NPTEPG)
 pub const NPTEPGSHIFT: i32 = 9;
-/// LOG2(PAGE_SIZE)
+/// `LOG2(PAGE_SIZE)`
 pub const PAGE_SHIFT: i32 = 12;
 /// bytes/page
 pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;

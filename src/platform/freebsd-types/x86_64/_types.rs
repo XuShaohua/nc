@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From x86/include/_types.h
+//! From `x86/include/_types.h`
 
 pub const __NO_STRICT_ALIGNMENT: bool = true;
 
@@ -34,8 +34,8 @@ pub type u_register_t = u64;
 pub type vm_paddr_t = u64;
 pub type wchar_t = i32;
 
-/// min value for a wchar_t
+/// min value for a `wchar_t`
 pub const WCHAR_MIN: i32 = i32::MIN;
 
-/// max value for a wchar_t
+/// max value for a `wchar_t`
 pub const WCHAR_MAX: i32 = i32::MAX;

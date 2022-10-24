@@ -5855,8 +5855,8 @@ pub unsafe fn rt_sigreturn() {
 /// Wait for a signal.
 ///
 /// Always returns Errno, normally EINTR.
-pub unsafe fn rt_sigsuspend(set: &mut sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
-    let set_ptr = set as *mut sigset_t as usize;
+pub unsafe fn rt_sigsuspend(set: &sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
+    let set_ptr = set as *const sigset_t as usize;
     syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigsetsize).map(drop)
 }
 

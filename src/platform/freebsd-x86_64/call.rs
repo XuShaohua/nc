@@ -249,6 +249,7 @@ pub unsafe fn chown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> R
 /// let pid = nc::getpid();
 /// assert!(pid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getpid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
@@ -337,6 +338,7 @@ pub unsafe fn __getcwd(buf: usize, size: size_t) -> Result<(), Errno> {
 /// let uid = nc::getuid();
 /// assert!(uid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
@@ -348,6 +350,7 @@ pub unsafe fn getuid() -> uid_t {
 /// let euid = nc::geteuid();
 /// assert!(euid > 0);
 /// ```
+#[must_use]
 pub unsafe fn geteuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
@@ -483,6 +486,7 @@ pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 /// let ppid = nc::getppid();
 /// assert!(ppid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getppid() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
@@ -514,6 +518,7 @@ pub unsafe fn dup(oldfd: i32) -> Result<i32, Errno> {
 /// let egid = nc::getegid();
 /// assert!(egid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getegid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
@@ -525,6 +530,7 @@ pub unsafe fn getegid() -> gid_t {
 /// let gid = nc::getgid();
 /// assert!(gid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getgid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
@@ -837,6 +843,7 @@ pub unsafe fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
 /// let pgroup = nc::getpgrp();
 /// assert!(pgroup > 0);
 /// ```
+#[must_use]
 pub unsafe fn getpgrp() -> pid_t {
     // This function is always successful.
     syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
@@ -1066,7 +1073,7 @@ pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Resu
 /// assert!(usage.ru_maxrss > 0);
 /// assert_eq!(usage.ru_nswap, 0);
 /// ```
-pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
+pub unsafe fn getrusage(who: i31, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
     let usage_ptr = usage as *mut rusage_t as usize;
     syscall2(SYS_GETRUSAGE, who, usage_ptr).map(drop)
@@ -1550,11 +1557,7 @@ pub unsafe fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Resul
 /// ```
 pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
-    let rem_ptr = if let Some(rem) = rem {
-        rem as *mut timespec_t as usize
-    } else {
-        0
-    };
+    let rem_ptr = rem.map_or(0, |rem| rem as *mut timespec_t as usize);
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
@@ -1686,6 +1689,7 @@ pub unsafe fn pwritev(
 /// let sid = nc::getsid(ppid);
 /// assert!(sid > 0);
 /// ```
+#[must_use]
 pub unsafe fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     // This function is always successful.
@@ -1744,9 +1748,9 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// Set scheduling paramters.
 ///
 /// ```
-/// // This call always returns error because default scheduler is SCHED_NORMAL.
-/// // We shall call sched_setscheduler() and change to realtime policy
-/// // like SCHED_RR or SCHED_FIFO.
+/// // This call always returns error because default scheduler is `SCHED_NORMAL`.
+/// // We shall call `sched_setscheduler()` and change to realtime policy
+/// // like `SCHED_RR` or `SCHED_FIFO`.
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };
 /// let ret = nc::sched_setparam(0, &sched_param);
 /// assert_eq!(ret, Err(nc::EINVAL));
@@ -1835,7 +1839,7 @@ pub unsafe fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
     syscall1(SYS_SCHED_GET_PRIORITY_MIN, policy).map(|ret| ret as i32)
 }
 
-/// Get the SCHED_RR interval for the named process.
+/// Get the `SCHED_RR` interval for the named process.
 ///
 /// ```
 /// let mut ts = nc::timespec_t::default();
@@ -1942,7 +1946,7 @@ pub unsafe fn sigreturn() {
     let _ = syscall0(SYS_SIGRETURN);
 }
 
-/// Handle {get,set,swap}_context operations
+/// Handle `{get,set,swap}_context` operations
 pub unsafe fn swapcontext() {
     core::unimplemented!();
     //pub unsafe fn swapcontext(old_ctx: &mut ucontext_t, new_ctx: &mut ucontext_t, ctx_size: isize,) -> Result<(), Errno> {}

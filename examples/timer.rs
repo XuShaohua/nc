@@ -1,35 +1,22 @@
-// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
-// Use of this source is governed by Apache-2.0 License that can be found
-// in the LICENSE file.
-
-use core::mem::size_of;
-
 fn main() {
-    run_main();
-}
+    use core::mem::size_of;
 
-fn handle_alarm(signum: i32) {
-    assert_eq!(signum, nc::SIGALRM);
-    //let msg = "Hello alarm\n";
-    //let _ = nc::write(2, msg.as_ptr() as usize, msg.len());
-    //nc::exit(1);
-}
+    fn handle_alarm(signum: i32) {
+        assert_eq!(signum, nc::SIGALRM);
+        let msg = "Hello alarm";
+        let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
+    }
 
-#[cfg(target_arch = "loongarch64")]
-fn run_main() {}
-
-#[cfg(not(target_arch = "loongarch64"))]
-fn run_main() {
     let sa = nc::sigaction_t {
         sa_handler: handle_alarm as nc::sighandler_t,
-        sa_flags: nc::SA_RESTORER,
+        sa_flags: 0,
         ..nc::sigaction_t::default()
     };
     let mut old_sa = nc::sigaction_t::default();
     let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
     assert!(ret.is_ok());
 
-    // Single shot timer, active after 1 second.
+    // Single shot timer, actived after 1 second.
     let itv = nc::itimerval_t {
         it_value: nc::timeval_t {
             tv_sec: 1,
@@ -48,12 +35,12 @@ fn run_main() {
     assert!(ret.is_ok());
     assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 
-    let ret = nc::util::pause();
-    assert_eq!(ret, Err(nc::EINTR));
+    let mask = nc::sigset_t::default();
+    let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+    assert!(ret.is_err());
 
     let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
     assert!(ret.is_ok());
     assert_eq!(prev_itv.it_value.tv_sec, 0);
     assert_eq!(prev_itv.it_value.tv_usec, 0);
-    println!("prev_it: {:?}", prev_itv);
 }

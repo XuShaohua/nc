@@ -119,29 +119,29 @@ pub const _PC_MAC_PRESENT: i32 = 63;
 pub const _PC_ACL_NFS4: i32 = 64;
 pub const _PC_DEALLOC_PRESENT: i32 = 65;
 
-/// From OpenSolaris, used by SEEK_DATA/SEEK_HOLE.
+/// From `OpenSolaris`, used by `SEEK_DATA/SEEK_HOLE`.
 pub const _PC_MIN_HOLE_SIZE: i32 = 21;
 
 /// rfork() options.
 ///
 /// Currently, some operations without RFPROC set are not supported.
-/// UNIMPL new plan9 `name space'
+/// UNIMPL new plan9 `name space`
 pub const RFNAMEG: i32 = 1 << 0;
-/// UNIMPL copy plan9 `env space'
+/// UNIMPL copy plan9 `env space`
 pub const RFENVG: i32 = 1 << 1;
 /// copy fd table
 pub const RFFDG: i32 = 1 << 2;
-/// UNIMPL create new plan9 `note group'
+/// UNIMPL create new plan9 `note group`
 pub const RFNOTEG: i32 = 1 << 3;
 /// change child (else changes curproc)
 pub const RFPROC: i32 = 1 << 4;
-/// share `address space'
+/// share `address space`
 pub const RFMEM: i32 = 1 << 5;
 /// give child to init
 pub const RFNOWAIT: i32 = 1 << 6;
-/// UNIMPL zero plan9 `name space'
+/// UNIMPL zero plan9 `name space`
 pub const RFCNAMEG: i32 = 1 << 10;
-/// UNIMPL zero plan9 `env space'
+/// UNIMPL zero plan9 `env space`
 pub const RFCENVG: i32 = 1 << 11;
 /// close all fds, zero fd table
 pub const RFCFDG: i32 = 1 << 12;

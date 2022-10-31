@@ -125,9 +125,14 @@ pub unsafe fn clock_nanosleep() {
     // syscall0(SYS_CLOCK_NANOSLEEP);
 }
 
-pub unsafe fn close() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOSE);
+/// Close a file descriptor.
+///
+/// ```
+/// assert!(nc::close(2).is_ok());
+/// ```
+pub unsafe fn close(fd: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    syscall1(SYS_CLOSE, fd).map(drop)
 }
 
 pub unsafe fn compat_09_ogetdomainname() {
@@ -1270,14 +1275,44 @@ pub unsafe fn ntp_adjtime() {
     // syscall0(SYS_NTP_ADJTIME);
 }
 
-pub unsafe fn open() {
-    core::unimplemented!();
-    // syscall0(SYS_OPEN);
+/// Open and possibly create a file.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub unsafe fn open<P: AsRef<Path>>(path: P, flags: i32, mode: mode_t) -> Result<i32, Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let flags = flags as usize;
+    let mode = mode as usize;
+    syscall3(SYS_OPEN, path_ptr, flags, mode).map(|ret| ret as i32)
 }
 
-pub unsafe fn openat() {
-    core::unimplemented!();
-    // syscall0(SYS_OPENAT);
+/// Open and possibly create a file within a directory.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub unsafe fn openat<P: AsRef<Path>>(
+    dirfd: i32,
+    filename: P,
+    flags: i32,
+    mode: mode_t,
+) -> Result<i32, Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let flags = flags as usize;
+    let mode = mode as usize;
+    syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
 }
 
 pub unsafe fn paccept() {
@@ -1365,9 +1400,23 @@ pub unsafe fn rasctl() {
     // syscall0(SYS_RASCTL);
 }
 
-pub unsafe fn read() {
-    core::unimplemented!();
-    // syscall0(SYS_READ);
+/// Read from a file descriptor.
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let ret = nc::open(path, nc::O_RDONLY, 0);
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [0_u8; 4 * 1024];
+/// let ret = nc::read(fd, buf.as_mut_ptr() as usize, buf.len());
+/// assert!(ret.is_ok());
+/// let n_read = ret.unwrap();
+/// assert!(n_read <= buf.len() as nc::ssize_t);
+/// assert!(nc::close(fd).is_ok());
+/// ```
+pub unsafe fn read(fd: i32, buf: usize, count: size_t) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    syscall3(SYS_READ, fd, buf, count).map(|ret| ret as ssize_t)
 }
 
 pub unsafe fn readlink() {

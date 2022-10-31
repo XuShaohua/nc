@@ -2587,3 +2587,998 @@ pub unsafe fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ss
     let flags = flags as usize;
     syscall3(SYS_GETRANDOM, buf_ptr, buf_len, flags).map(|ret| ret as ssize_t)
 }
+
+pub unsafe fn abort2() {
+    core::unimplemented!();
+    // syscall0(SYS_ABORT2);
+}
+
+pub unsafe fn adjtime() {
+    core::unimplemented!();
+    // syscall0(SYS_ADJTIME);
+}
+
+pub unsafe fn aio_cancel() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_CANCEL);
+}
+
+pub unsafe fn aio_error() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_ERROR);
+}
+
+pub unsafe fn aio_fsync() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_FSYNC);
+}
+
+pub unsafe fn aio_mlock() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_MLOCK);
+}
+
+pub unsafe fn aio_read() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_READ);
+}
+
+pub unsafe fn aio_return() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_RETURN);
+}
+
+pub unsafe fn aio_suspend() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_SUSPEND);
+}
+
+pub unsafe fn aio_waitcomplete() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_WAITCOMPLETE);
+}
+
+pub unsafe fn aio_write() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_WRITE);
+}
+
+pub unsafe fn audit() {
+    core::unimplemented!();
+    // syscall0(SYS_AUDIT);
+}
+
+pub unsafe fn auditctl() {
+    core::unimplemented!();
+    // syscall0(SYS_AUDITCTL);
+}
+
+pub unsafe fn auditon() {
+    core::unimplemented!();
+    // syscall0(SYS_AUDITON);
+}
+
+pub unsafe fn bindat() {
+    core::unimplemented!();
+    // syscall0(SYS_BINDAT);
+}
+
+pub unsafe fn r#break() {
+    core::unimplemented!();
+    // syscall0(SYS_BREAK);
+}
+
+pub unsafe fn cap_enter() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_ENTER);
+}
+
+pub unsafe fn cap_fcntls_get() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_FCNTLS_GET);
+}
+
+pub unsafe fn cap_fcntls_limit() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_FCNTLS_LIMIT);
+}
+
+pub unsafe fn cap_getmode() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_GETMODE);
+}
+
+pub unsafe fn cap_ioctls_get() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_IOCTLS_GET);
+}
+
+pub unsafe fn cap_ioctls_limit() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_IOCTLS_LIMIT);
+}
+
+pub unsafe fn cap_rights_limit() {
+    core::unimplemented!();
+    // syscall0(SYS_CAP_RIGHTS_LIMIT);
+}
+
+pub unsafe fn chflags() {
+    core::unimplemented!();
+    // syscall0(SYS_CHFLAGS);
+}
+
+pub unsafe fn chflagsat() {
+    core::unimplemented!();
+    // syscall0(SYS_CHFLAGSAT);
+}
+
+pub unsafe fn clock_getcpuclockid2() {
+    core::unimplemented!();
+    // syscall0(SYS_CLOCK_GETCPUCLOCKID2);
+}
+
+pub unsafe fn closefrom() {
+    core::unimplemented!();
+    // syscall0(SYS_CLOSEFROM);
+}
+
+pub unsafe fn connectat() {
+    core::unimplemented!();
+    // syscall0(SYS_CONNECTAT);
+}
+
+pub unsafe fn cpuset() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET);
+}
+
+pub unsafe fn cpuset_getaffinity() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET_GETAFFINITY);
+}
+
+pub unsafe fn cpuset_getdomain() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET_GETDOMAIN);
+}
+
+pub unsafe fn cpuset_getid() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET_GETID);
+}
+
+pub unsafe fn cpuset_setaffinity() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET_SETAFFINITY);
+}
+
+pub unsafe fn cpuset_setdomain() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET_SETDOMAIN);
+}
+
+pub unsafe fn cpuset_setid() {
+    core::unimplemented!();
+    // syscall0(SYS_CPUSET_SETID);
+}
+
+pub unsafe fn eaccess() {
+    core::unimplemented!();
+    // syscall0(SYS_EACCESS);
+}
+
+pub unsafe fn extattrctl() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTRCTL);
+}
+
+pub unsafe fn extattr_delete_fd() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_DELETE_FD);
+}
+
+pub unsafe fn extattr_delete_file() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_DELETE_FILE);
+}
+
+pub unsafe fn extattr_delete_link() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_DELETE_LINK);
+}
+
+pub unsafe fn extattr_get_fd() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_GET_FD);
+}
+
+pub unsafe fn extattr_get_file() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_GET_FILE);
+}
+
+pub unsafe fn extattr_get_link() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_GET_LINK);
+}
+
+pub unsafe fn extattr_list_fd() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_LIST_FD);
+}
+
+pub unsafe fn extattr_list_file() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_LIST_FILE);
+}
+
+pub unsafe fn extattr_list_link() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_LIST_LINK);
+}
+
+pub unsafe fn extattr_set_fd() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_SET_FD);
+}
+
+pub unsafe fn extattr_set_file() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_SET_FILE);
+}
+
+pub unsafe fn extattr_set_link() {
+    core::unimplemented!();
+    // syscall0(SYS_EXTATTR_SET_LINK);
+}
+
+pub unsafe fn fchflags() {
+    core::unimplemented!();
+    // syscall0(SYS_FCHFLAGS);
+}
+
+pub unsafe fn fchmod() {
+    core::unimplemented!();
+    // syscall0(SYS_FCHMOD);
+}
+
+pub unsafe fn fexecve() {
+    core::unimplemented!();
+    // syscall0(SYS_FEXECVE);
+}
+
+pub unsafe fn ffclock_getcounter() {
+    core::unimplemented!();
+    // syscall0(SYS_FFCLOCK_GETCOUNTER);
+}
+
+pub unsafe fn ffclock_getestimate() {
+    core::unimplemented!();
+    // syscall0(SYS_FFCLOCK_GETESTIMATE);
+}
+
+pub unsafe fn ffclock_setestimate() {
+    core::unimplemented!();
+    // syscall0(SYS_FFCLOCK_SETESTIMATE);
+}
+
+pub unsafe fn fhlink() {
+    core::unimplemented!();
+    // syscall0(SYS_FHLINK);
+}
+
+pub unsafe fn fhlinkat() {
+    core::unimplemented!();
+    // syscall0(SYS_FHLINKAT);
+}
+
+pub unsafe fn fhopen() {
+    core::unimplemented!();
+    // syscall0(SYS_FHOPEN);
+}
+
+pub unsafe fn fhreadlink() {
+    core::unimplemented!();
+    // syscall0(SYS_FHREADLINK);
+}
+
+pub unsafe fn fhstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FHSTAT);
+}
+
+pub unsafe fn fhstatfs() {
+    core::unimplemented!();
+    // syscall0(SYS_FHSTATFS);
+}
+
+pub unsafe fn fpathconf() {
+    core::unimplemented!();
+    // syscall0(SYS_FPATHCONF);
+}
+
+pub unsafe fn futimens() {
+    core::unimplemented!();
+    // syscall0(SYS_FUTIMENS);
+}
+
+pub unsafe fn futimes() {
+    core::unimplemented!();
+    // syscall0(SYS_FUTIMES);
+}
+
+pub unsafe fn getaudit() {
+    core::unimplemented!();
+    // syscall0(SYS_GETAUDIT);
+}
+
+pub unsafe fn getaudit_addr() {
+    core::unimplemented!();
+    // syscall0(SYS_GETAUDIT_ADDR);
+}
+
+pub unsafe fn getauid() {
+    core::unimplemented!();
+    // syscall0(SYS_GETAUID);
+}
+
+pub unsafe fn getcontext() {
+    core::unimplemented!();
+    // syscall0(SYS_GETCONTEXT);
+}
+
+pub unsafe fn getdirentries() {
+    core::unimplemented!();
+    // syscall0(SYS_GETDIRENTRIES);
+}
+
+pub unsafe fn getdtablesize() {
+    core::unimplemented!();
+    // syscall0(SYS_GETDTABLESIZE);
+}
+
+pub unsafe fn getfh() {
+    core::unimplemented!();
+    // syscall0(SYS_GETFH);
+}
+
+pub unsafe fn getfhat() {
+    core::unimplemented!();
+    // syscall0(SYS_GETFHAT);
+}
+
+pub unsafe fn getfsstat() {
+    core::unimplemented!();
+    // syscall0(SYS_GETFSSTAT);
+}
+
+pub unsafe fn getlogin() {
+    core::unimplemented!();
+    // syscall0(SYS_GETLOGIN);
+}
+
+pub unsafe fn getloginclass() {
+    core::unimplemented!();
+    // syscall0(SYS_GETLOGINCLASS);
+}
+
+pub unsafe fn issetugid() {
+    core::unimplemented!();
+    // syscall0(SYS_ISSETUGID);
+}
+
+pub unsafe fn jail() {
+    core::unimplemented!();
+    // syscall0(SYS_JAIL);
+}
+
+pub unsafe fn jail_attach() {
+    core::unimplemented!();
+    // syscall0(SYS_JAIL_ATTACH);
+}
+
+pub unsafe fn jail_get() {
+    core::unimplemented!();
+    // syscall0(SYS_JAIL_GET);
+}
+
+pub unsafe fn jail_remove() {
+    core::unimplemented!();
+    // syscall0(SYS_JAIL_REMOVE);
+}
+
+pub unsafe fn jail_set() {
+    core::unimplemented!();
+    // syscall0(SYS_JAIL_SET);
+}
+
+pub unsafe fn kenv() {
+    core::unimplemented!();
+    // syscall0(SYS_KENV);
+}
+
+pub unsafe fn kevent() {
+    core::unimplemented!();
+    // syscall0(SYS_KEVENT);
+}
+
+pub unsafe fn kldfind() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDFIND);
+}
+
+pub unsafe fn kldfirstmod() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDFIRSTMOD);
+}
+
+pub unsafe fn kldload() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDLOAD);
+}
+
+pub unsafe fn kldnext() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDNEXT);
+}
+
+pub unsafe fn kldstat() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDSTAT);
+}
+
+pub unsafe fn kldsym() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDSYM);
+}
+
+pub unsafe fn kldunload() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDUNLOAD);
+}
+
+pub unsafe fn kldunloadf() {
+    core::unimplemented!();
+    // syscall0(SYS_KLDUNLOADF);
+}
+
+pub unsafe fn kqueue() {
+    core::unimplemented!();
+    // syscall0(SYS_KQUEUE);
+}
+
+pub unsafe fn ktimer_create() {
+    core::unimplemented!();
+    // syscall0(SYS_KTIMER_CREATE);
+}
+
+pub unsafe fn ktimer_delete() {
+    core::unimplemented!();
+    // syscall0(SYS_KTIMER_DELETE);
+}
+
+pub unsafe fn ktimer_getoverrun() {
+    core::unimplemented!();
+    // syscall0(SYS_KTIMER_GETOVERRUN);
+}
+
+pub unsafe fn ktimer_gettime() {
+    core::unimplemented!();
+    // syscall0(SYS_KTIMER_GETTIME);
+}
+
+pub unsafe fn ktimer_settime() {
+    core::unimplemented!();
+    // syscall0(SYS_KTIMER_SETTIME);
+}
+
+pub unsafe fn ktrace() {
+    core::unimplemented!();
+    // syscall0(SYS_KTRACE);
+}
+
+pub unsafe fn lchflags() {
+    core::unimplemented!();
+    // syscall0(SYS_LCHFLAGS);
+}
+
+pub unsafe fn lchmod() {
+    core::unimplemented!();
+    // syscall0(SYS_LCHMOD);
+}
+
+pub unsafe fn lgetfh() {
+    core::unimplemented!();
+    // syscall0(SYS_LGETFH);
+}
+
+pub unsafe fn lio_listio() {
+    core::unimplemented!();
+    // syscall0(SYS_LIO_LISTIO);
+}
+
+pub unsafe fn lpathconf() {
+    core::unimplemented!();
+    // syscall0(SYS_LPATHCONF);
+}
+
+pub unsafe fn lutimes() {
+    core::unimplemented!();
+    // syscall0(SYS_LUTIMES);
+}
+
+pub unsafe fn mac_syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_MAC_SYSCALL);
+}
+
+pub unsafe fn mincore() {
+    core::unimplemented!();
+    // syscall0(SYS_MINCORE);
+}
+
+pub unsafe fn minherit() {
+    core::unimplemented!();
+    // syscall0(SYS_MINHERIT);
+}
+
+pub unsafe fn mkfifo() {
+    core::unimplemented!();
+    // syscall0(SYS_MKFIFO);
+}
+
+pub unsafe fn mkfifoat() {
+    core::unimplemented!();
+    // syscall0(SYS_MKFIFOAT);
+}
+
+pub unsafe fn modfind() {
+    core::unimplemented!();
+    // syscall0(SYS_MODFIND);
+}
+
+pub unsafe fn modfnext() {
+    core::unimplemented!();
+    // syscall0(SYS_MODFNEXT);
+}
+
+pub unsafe fn modnext() {
+    core::unimplemented!();
+    // syscall0(SYS_MODNEXT);
+}
+
+pub unsafe fn modstat() {
+    core::unimplemented!();
+    // syscall0(SYS_MODSTAT);
+}
+
+pub unsafe fn nmount() {
+    core::unimplemented!();
+    // syscall0(SYS_NMOUNT);
+}
+
+pub unsafe fn nosys() {
+    core::unimplemented!();
+    // syscall0(SYS_NOSYS);
+}
+
+pub unsafe fn ntp_adjtime() {
+    core::unimplemented!();
+    // syscall0(SYS_NTP_ADJTIME);
+}
+
+pub unsafe fn ntp_gettime() {
+    core::unimplemented!();
+    // syscall0(SYS_NTP_GETTIME);
+}
+
+pub unsafe fn pathconf() {
+    core::unimplemented!();
+    // syscall0(SYS_PATHCONF);
+}
+
+pub unsafe fn pdfork() {
+    core::unimplemented!();
+    // syscall0(SYS_PDFORK);
+}
+
+pub unsafe fn pdgetpid() {
+    core::unimplemented!();
+    // syscall0(SYS_PDGETPID);
+}
+
+pub unsafe fn pdkill() {
+    core::unimplemented!();
+    // syscall0(SYS_PDKILL);
+}
+
+pub unsafe fn posix_fadvise() {
+    core::unimplemented!();
+    // syscall0(SYS_POSIX_FADVISE);
+}
+
+pub unsafe fn posix_fallocate() {
+    core::unimplemented!();
+    // syscall0(SYS_POSIX_FALLOCATE);
+}
+
+pub unsafe fn posix_openpt() {
+    core::unimplemented!();
+    // syscall0(SYS_POSIX_OPENPT);
+}
+
+pub unsafe fn pread() {
+    core::unimplemented!();
+    // syscall0(SYS_PREAD);
+}
+
+pub unsafe fn procctl() {
+    core::unimplemented!();
+    // syscall0(SYS_PROCCTL);
+}
+
+pub unsafe fn profil() {
+    core::unimplemented!();
+    // syscall0(SYS_PROFIL);
+}
+
+pub unsafe fn pselect() {
+    core::unimplemented!();
+    // syscall0(SYS_PSELECT);
+}
+
+pub unsafe fn ptrace() {
+    core::unimplemented!();
+    // syscall0(SYS_PTRACE);
+}
+
+pub unsafe fn pwrite() {
+    core::unimplemented!();
+    // syscall0(SYS_PWRITE);
+}
+
+pub unsafe fn rctl_add_rule() {
+    core::unimplemented!();
+    // syscall0(SYS_RCTL_ADD_RULE);
+}
+
+pub unsafe fn rctl_get_limits() {
+    core::unimplemented!();
+    // syscall0(SYS_RCTL_GET_LIMITS);
+}
+
+pub unsafe fn rctl_get_racct() {
+    core::unimplemented!();
+    // syscall0(SYS_RCTL_GET_RACCT);
+}
+
+pub unsafe fn rctl_get_rules() {
+    core::unimplemented!();
+    // syscall0(SYS_RCTL_GET_RULES);
+}
+
+pub unsafe fn rctl_remove_rule() {
+    core::unimplemented!();
+    // syscall0(SYS_RCTL_REMOVE_RULE);
+}
+
+pub unsafe fn revoke() {
+    core::unimplemented!();
+    // syscall0(SYS_REVOKE);
+}
+
+pub unsafe fn rfork() {
+    core::unimplemented!();
+    // syscall0(SYS_RFORK);
+}
+
+pub unsafe fn rtprio() {
+    core::unimplemented!();
+    // syscall0(SYS_RTPRIO);
+}
+
+pub unsafe fn rtprio_thread() {
+    core::unimplemented!();
+    // syscall0(SYS_RTPRIO_THREAD);
+}
+
+pub unsafe fn sbrk() {
+    core::unimplemented!();
+    // syscall0(SYS_SBRK);
+}
+
+pub unsafe fn setaudit() {
+    core::unimplemented!();
+    // syscall0(SYS_SETAUDIT);
+}
+
+pub unsafe fn setaudit_addr() {
+    core::unimplemented!();
+    // syscall0(SYS_SETAUDIT_ADDR);
+}
+
+pub unsafe fn setauid() {
+    core::unimplemented!();
+    // syscall0(SYS_SETAUID);
+}
+
+pub unsafe fn setcontext() {
+    core::unimplemented!();
+    // syscall0(SYS_SETCONTEXT);
+}
+
+pub unsafe fn setegid() {
+    core::unimplemented!();
+    // syscall0(SYS_SETEGID);
+}
+
+pub unsafe fn seteuid() {
+    core::unimplemented!();
+    // syscall0(SYS_SETEUID);
+}
+
+pub unsafe fn setfib() {
+    core::unimplemented!();
+    // syscall0(SYS_SETFIB);
+}
+
+pub unsafe fn setlogin() {
+    core::unimplemented!();
+    // syscall0(SYS_SETLOGIN);
+}
+
+pub unsafe fn setloginclass() {
+    core::unimplemented!();
+    // syscall0(SYS_SETLOGINCLASS);
+}
+
+pub unsafe fn setuid() {
+    core::unimplemented!();
+    // syscall0(SYS_SETUID);
+}
+
+pub unsafe fn shm_open() {
+    core::unimplemented!();
+    // syscall0(SYS_SHM_OPEN);
+}
+
+pub unsafe fn shm_unlink() {
+    core::unimplemented!();
+    // syscall0(SYS_SHM_UNLINK);
+}
+
+pub unsafe fn sigqueue() {
+    core::unimplemented!();
+    // syscall0(SYS_SIGQUEUE);
+}
+
+pub unsafe fn sigtimedwait() {
+    core::unimplemented!();
+    // syscall0(SYS_SIGTIMEDWAIT);
+}
+
+pub unsafe fn sigwait() {
+    core::unimplemented!();
+    // syscall0(SYS_SIGWAIT);
+}
+
+pub unsafe fn sigwaitinfo() {
+    core::unimplemented!();
+    // syscall0(SYS_SIGWAITINFO);
+}
+
+pub unsafe fn socket() {
+    core::unimplemented!();
+    // syscall0(SYS_SOCKET);
+}
+
+pub unsafe fn sstk() {
+    core::unimplemented!();
+    // syscall0(SYS_SSTK);
+}
+
+pub unsafe fn sysarch() {
+    core::unimplemented!();
+    // syscall0(SYS_SYSARCH);
+}
+
+pub unsafe fn thr_create() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_CREATE);
+}
+
+pub unsafe fn thr_exit() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_EXIT);
+}
+
+pub unsafe fn thr_kill() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_KILL);
+}
+
+pub unsafe fn thr_kill2() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_KILL2);
+}
+
+pub unsafe fn thr_new() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_NEW);
+}
+
+pub unsafe fn thr_self() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_SELF);
+}
+
+pub unsafe fn thr_set_name() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_SET_NAME);
+}
+
+pub unsafe fn thr_suspend() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_SUSPEND);
+}
+
+pub unsafe fn thr_wake() {
+    core::unimplemented!();
+    // syscall0(SYS_THR_WAKE);
+}
+
+pub unsafe fn undelete() {
+    core::unimplemented!();
+    // syscall0(SYS_UNDELETE);
+}
+
+pub unsafe fn utrace() {
+    core::unimplemented!();
+    // syscall0(SYS_UTRACE);
+}
+
+pub unsafe fn uuidgen() {
+    core::unimplemented!();
+    // syscall0(SYS_UUIDGEN);
+}
+
+pub unsafe fn wait6() {
+    core::unimplemented!();
+    // syscall0(SYS_WAIT6);
+}
+
+pub unsafe fn r#yield() {
+    core::unimplemented!();
+    // syscall0(SYS_YIELD);
+}
+
+pub unsafe fn _umtx_op() {
+    core::unimplemented!();
+    // syscall0(SYS__UMTX_OP);
+}
+
+pub unsafe fn __acl_aclcheck_fd() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_ACLCHECK_FD);
+}
+
+pub unsafe fn __acl_aclcheck_file() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_ACLCHECK_FILE);
+}
+
+pub unsafe fn __acl_aclcheck_link() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_ACLCHECK_LINK);
+}
+
+pub unsafe fn __acl_delete_fd() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_DELETE_FD);
+}
+
+pub unsafe fn __acl_delete_file() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_DELETE_FILE);
+}
+
+pub unsafe fn __acl_delete_link() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_DELETE_LINK);
+}
+
+pub unsafe fn __acl_get_fd() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_GET_FD);
+}
+
+pub unsafe fn __acl_get_file() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_GET_FILE);
+}
+
+pub unsafe fn __acl_get_link() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_GET_LINK);
+}
+
+pub unsafe fn __acl_set_fd() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_SET_FD);
+}
+
+pub unsafe fn __acl_set_file() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_SET_FILE);
+}
+
+pub unsafe fn __acl_set_link() {
+    core::unimplemented!();
+    // syscall0(SYS___ACL_SET_LINK);
+}
+
+pub unsafe fn __cap_rights_get() {
+    core::unimplemented!();
+    // syscall0(SYS___CAP_RIGHTS_GET);
+}
+
+pub unsafe fn __mac_execve() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_EXECVE);
+}
+
+pub unsafe fn __mac_get_fd() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_GET_FD);
+}
+
+pub unsafe fn __mac_get_file() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_GET_FILE);
+}
+
+pub unsafe fn __mac_get_link() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_GET_LINK);
+}
+
+pub unsafe fn __mac_get_pid() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_GET_PID);
+}
+
+pub unsafe fn __mac_get_proc() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_GET_PROC);
+}
+
+pub unsafe fn __mac_set_fd() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_SET_FD);
+}
+
+pub unsafe fn __mac_set_file() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_SET_FILE);
+}
+
+pub unsafe fn __mac_set_link() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_SET_LINK);
+}
+
+pub unsafe fn __mac_set_proc() {
+    core::unimplemented!();
+    // syscall0(SYS___MAC_SET_PROC);
+}
+
+pub unsafe fn __setugid() {
+    core::unimplemented!();
+    // syscall0(SYS___SETUGID);
+}
+
+pub unsafe fn __sysctl() {
+    core::unimplemented!();
+    // syscall0(SYS___SYSCTL);
+}

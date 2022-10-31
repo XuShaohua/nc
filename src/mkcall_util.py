@@ -24,16 +24,28 @@ def rust_fmt(filename):
     subprocess.run(["rustfmt", filename])
 
 
+def escape_func_name(func_name):
+    """Escape keyword in Rust."""
+    keywords = (
+        "break",
+        "yield",
+    )
+    if func_name in keywords:
+        return "r#" + func_name
+    return func_name
+
+
 def print_unimplemented_syscalls(sysnos):
     template = """
-pub fn {0}() {{
+pub unsafe fn {0}() {{
     core::unimplemented!();
     // syscall0({1});
 }}
 """
     for sysno in sorted(sysnos):
-        call_name = sysno[4:].lower()
-        print(template.format(call_name, sysno), end="")
+        func_name = sysno[4:].lower()
+        func_name = escape_func_name(func_name)
+        print(template.format(func_name, sysno), end="")
 
 
 def read_sysnos(filepath):

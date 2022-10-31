@@ -45,15 +45,15 @@ pub const O_CLOEXEC: i32 = 0o2000000;
 ///
 /// Note: __O_SYNC must never be used directly.
 pub const __O_SYNC: i32 = 0o4000000;
-pub const O_SYNC: i32 = (__O_SYNC | O_DSYNC);
+pub const O_SYNC: i32 = __O_SYNC | O_DSYNC;
 
 pub const O_PATH: i32 = 0o10000000;
 
 pub const __O_TMPFILE: i32 = 0o20000000;
 
 /// a horrid kludge trying to make sure that this will fail on old kernels
-pub const O_TMPFILE: i32 = (__O_TMPFILE | O_DIRECTORY);
-pub const O_TMPFILE_MASK: i32 = (__O_TMPFILE | O_DIRECTORY | O_CREAT);
+pub const O_TMPFILE: i32 = __O_TMPFILE | O_DIRECTORY;
+pub const O_TMPFILE_MASK: i32 = __O_TMPFILE | O_DIRECTORY | O_CREAT;
 
 pub const O_NDELAY: i32 = O_NONBLOCK;
 
@@ -138,11 +138,6 @@ pub const LOCK_RW: i32 = 192;
 
 pub const F_LINUX_SPECIFIC_BASE: i32 = 1024;
 
-//#ifndef HAVE_ARCH_STRUCT_FLOCK
-//#ifndef __ARCH_FLOCK_PAD
-//#define __ARCH_FLOCK_PAD
-//#endif
-
 #[repr(C)]
 pub struct flock_t {
     pub l_type: i16,
@@ -153,11 +148,6 @@ pub struct flock_t {
     // TODO(Shaohua): FLOCK_PAD
     //__ARCH_FLOCK_PAD
 }
-
-//#ifndef HAVE_ARCH_STRUCT_FLOCK64
-//#ifndef __ARCH_FLOCK64_PAD
-//#define __ARCH_FLOCK64_PAD
-//#endif
 
 #[repr(C)]
 pub struct flock64_t {

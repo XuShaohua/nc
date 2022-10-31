@@ -9,6 +9,7 @@
 #![allow(clippy::missing_safety_doc)]
 #![allow(clippy::similar_names)]
 #![allow(clippy::wildcard_imports)]
+#![allow(non_snake_case)]
 
 extern crate alloc;
 
@@ -85,6 +86,11 @@ pub unsafe fn adjtime() {
     // syscall0(SYS_ADJTIME);
 }
 
+pub unsafe fn afs3_syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_AFS3_SYSCALL);
+}
+
 pub unsafe fn aio_cancel() {
     core::unimplemented!();
     // syscall0(SYS_AIO_CANCEL);
@@ -110,6 +116,11 @@ pub unsafe fn aio_read() {
     // syscall0(SYS_AIO_READ);
 }
 
+pub unsafe fn aio_readv() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_READV);
+}
+
 pub unsafe fn aio_return() {
     core::unimplemented!();
     // syscall0(SYS_AIO_RETURN);
@@ -128,6 +139,11 @@ pub unsafe fn aio_waitcomplete() {
 pub unsafe fn aio_write() {
     core::unimplemented!();
     // syscall0(SYS_AIO_WRITE);
+}
+
+pub unsafe fn aio_writev() {
+    core::unimplemented!();
+    // syscall0(SYS_AIO_WRITEV);
 }
 
 pub unsafe fn audit() {
@@ -365,9 +381,9 @@ pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
-pub unsafe fn closefrom() {
+pub unsafe fn close_range() {
     core::unimplemented!();
-    // syscall0(SYS_CLOSEFROM);
+    // syscall0(SYS_CLOSE_RANGE);
 }
 
 /// Initialize a connection on a socket.
@@ -381,6 +397,11 @@ pub unsafe fn connect(sockfd: i32, addr: &sockaddr_t, addrlen: socklen_t) -> Res
 pub unsafe fn connectat() {
     core::unimplemented!();
     // syscall0(SYS_CONNECTAT);
+}
+
+pub unsafe fn copy_file_range() {
+    core::unimplemented!();
+    // syscall0(SYS_COPY_FILE_RANGE);
 }
 
 pub unsafe fn cpuset() {
@@ -826,6 +847,141 @@ pub unsafe fn fpathconf() {
     // syscall0(SYS_FPATHCONF);
 }
 
+pub unsafe fn freebsd10_pipe() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD10_PIPE);
+}
+
+pub unsafe fn freebsd10__umtx_lock() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD10__UMTX_LOCK);
+}
+
+pub unsafe fn freebsd10__umtx_unlock() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD10__UMTX_UNLOCK);
+}
+
+pub unsafe fn freebsd11_fhstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_FHSTAT);
+}
+
+pub unsafe fn freebsd11_fhstatfs() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_FHSTATFS);
+}
+
+pub unsafe fn freebsd11_fstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_FSTAT);
+}
+
+pub unsafe fn freebsd11_fstatat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_FSTATAT);
+}
+
+pub unsafe fn freebsd11_fstatfs() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_FSTATFS);
+}
+
+pub unsafe fn freebsd11_getdents() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_GETDENTS);
+}
+
+pub unsafe fn freebsd11_getdirentries() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_GETDIRENTRIES);
+}
+
+pub unsafe fn freebsd11_getfsstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_GETFSSTAT);
+}
+
+pub unsafe fn freebsd11_kevent() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_KEVENT);
+}
+
+pub unsafe fn freebsd11_lstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_LSTAT);
+}
+
+pub unsafe fn freebsd11_mknod() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_MKNOD);
+}
+
+pub unsafe fn freebsd11_mknodat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_MKNODAT);
+}
+
+pub unsafe fn freebsd11_nfstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_NFSTAT);
+}
+
+pub unsafe fn freebsd11_nlstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_NLSTAT);
+}
+
+pub unsafe fn freebsd11_nstat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_NSTAT);
+}
+
+pub unsafe fn freebsd11_stat() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_STAT);
+}
+
+pub unsafe fn freebsd11_statfs() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_STATFS);
+}
+
+pub unsafe fn freebsd11_vadvise() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD11_VADVISE);
+}
+
+pub unsafe fn freebsd12_closefrom() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD12_CLOSEFROM);
+}
+
+pub unsafe fn freebsd12_shm_open() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD12_SHM_OPEN);
+}
+
+pub unsafe fn freebsd13_swapoff() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD13_SWAPOFF);
+}
+
+pub unsafe fn freebsd7_msgctl() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD7_MSGCTL);
+}
+
+pub unsafe fn freebsd7_shmctl() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD7_SHMCTL);
+}
+
+pub unsafe fn freebsd7___semctl() {
+    core::unimplemented!();
+    // syscall0(SYS_FREEBSD7___SEMCTL);
+}
+
 /// Get file status about a file descriptor.
 ///
 /// ```
@@ -926,6 +1082,11 @@ pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let length = length as usize;
     syscall2(SYS_FTRUNCATE, fd, length).map(drop)
+}
+
+pub unsafe fn funlinkat() {
+    core::unimplemented!();
+    // syscall0(SYS_FUNLINKAT);
 }
 
 pub unsafe fn futimens() {
@@ -1328,6 +1489,11 @@ pub unsafe fn getuid() -> uid_t {
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }
 
+pub unsafe fn gssd_syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_GSSD_SYSCALL);
+}
+
 /// Control device.
 ///
 /// ```
@@ -1455,9 +1621,89 @@ pub unsafe fn kldunloadf() {
     // syscall0(SYS_KLDUNLOADF);
 }
 
+pub unsafe fn kmq_notify() {
+    core::unimplemented!();
+    // syscall0(SYS_KMQ_NOTIFY);
+}
+
+pub unsafe fn kmq_open() {
+    core::unimplemented!();
+    // syscall0(SYS_KMQ_OPEN);
+}
+
+pub unsafe fn kmq_setattr() {
+    core::unimplemented!();
+    // syscall0(SYS_KMQ_SETATTR);
+}
+
+pub unsafe fn kmq_timedreceive() {
+    core::unimplemented!();
+    // syscall0(SYS_KMQ_TIMEDRECEIVE);
+}
+
+pub unsafe fn kmq_timedsend() {
+    core::unimplemented!();
+    // syscall0(SYS_KMQ_TIMEDSEND);
+}
+
+pub unsafe fn kmq_unlink() {
+    core::unimplemented!();
+    // syscall0(SYS_KMQ_UNLINK);
+}
+
 pub unsafe fn kqueue() {
     core::unimplemented!();
     // syscall0(SYS_KQUEUE);
+}
+
+pub unsafe fn ksem_close() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_CLOSE);
+}
+
+pub unsafe fn ksem_destroy() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_DESTROY);
+}
+
+pub unsafe fn ksem_getvalue() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_GETVALUE);
+}
+
+pub unsafe fn ksem_init() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_INIT);
+}
+
+pub unsafe fn ksem_open() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_OPEN);
+}
+
+pub unsafe fn ksem_post() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_POST);
+}
+
+pub unsafe fn ksem_timedwait() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_TIMEDWAIT);
+}
+
+pub unsafe fn ksem_trywait() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_TRYWAIT);
+}
+
+pub unsafe fn ksem_unlink() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_UNLINK);
+}
+
+pub unsafe fn ksem_wait() {
+    core::unimplemented!();
+    // syscall0(SYS_KSEM_WAIT);
 }
 
 pub unsafe fn ktimer_create() {
@@ -1886,6 +2132,31 @@ pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno>
     syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
 }
 
+pub unsafe fn msgctl() {
+    core::unimplemented!();
+    // syscall0(SYS_MSGCTL);
+}
+
+pub unsafe fn msgget() {
+    core::unimplemented!();
+    // syscall0(SYS_MSGGET);
+}
+
+pub unsafe fn msgrcv() {
+    core::unimplemented!();
+    // syscall0(SYS_MSGRCV);
+}
+
+pub unsafe fn msgsnd() {
+    core::unimplemented!();
+    // syscall0(SYS_MSGSND);
+}
+
+pub unsafe fn msgsys() {
+    core::unimplemented!();
+    // syscall0(SYS_MSGSYS);
+}
+
 /// Synchronize a file with memory map.
 pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     let len = len as usize;
@@ -1978,14 +2249,24 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
+pub unsafe fn nfssvc() {
+    core::unimplemented!();
+    // syscall0(SYS_NFSSVC);
+}
+
+pub unsafe fn nlm_syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_NLM_SYSCALL);
+}
+
 pub unsafe fn nmount() {
     core::unimplemented!();
     // syscall0(SYS_NMOUNT);
 }
 
-pub unsafe fn nosys() {
+pub unsafe fn nnpfs_syscall() {
     core::unimplemented!();
-    // syscall0(SYS_NOSYS);
+    // syscall0(SYS_NNPFS_SYSCALL);
 }
 
 pub unsafe fn ntp_adjtime() {
@@ -2495,6 +2776,11 @@ pub unsafe fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_RMDIR, filename_ptr).map(drop)
 }
 
+pub unsafe fn rpctls_syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_RPCTLS_SYSCALL);
+}
+
 pub unsafe fn rtprio() {
     core::unimplemented!();
     // syscall0(SYS_RTPRIO);
@@ -2508,6 +2794,11 @@ pub unsafe fn rtprio_thread() {
 pub unsafe fn sbrk() {
     core::unimplemented!();
     // syscall0(SYS_SBRK);
+}
+
+pub unsafe fn sched_getcpu() {
+    core::unimplemented!();
+    // syscall0(SYS_SCHED_GETCPU);
 }
 
 /// Get scheduling paramters.
@@ -2617,6 +2908,26 @@ pub unsafe fn sched_yield() -> Result<(), Errno> {
     syscall0(SYS_SCHED_YIELD).map(drop)
 }
 
+pub unsafe fn sctp_generic_recvmsg() {
+    core::unimplemented!();
+    // syscall0(SYS_SCTP_GENERIC_RECVMSG);
+}
+
+pub unsafe fn sctp_generic_sendmsg() {
+    core::unimplemented!();
+    // syscall0(SYS_SCTP_GENERIC_SENDMSG);
+}
+
+pub unsafe fn sctp_generic_sendmsg_iov() {
+    core::unimplemented!();
+    // syscall0(SYS_SCTP_GENERIC_SENDMSG_IOV);
+}
+
+pub unsafe fn sctp_peeloff() {
+    core::unimplemented!();
+    // syscall0(SYS_SCTP_PEELOFF);
+}
+
 /// Sychronous I/O multiplexing.
 pub unsafe fn select(
     nfds: i32,
@@ -2639,6 +2950,21 @@ pub unsafe fn select(
         timeout_ptr,
     )
     .map(|ret| ret as i32)
+}
+
+pub unsafe fn semget() {
+    core::unimplemented!();
+    // syscall0(SYS_SEMGET);
+}
+
+pub unsafe fn semop() {
+    core::unimplemented!();
+    // syscall0(SYS_SEMOP);
+}
+
+pub unsafe fn semsys() {
+    core::unimplemented!();
+    // syscall0(SYS_SEMSYS);
 }
 
 /// Transfer data between two file descriptors.
@@ -2940,9 +3266,39 @@ pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
     syscall1(SYS_SETUID, uid).map(drop)
 }
 
-pub unsafe fn shm_open() {
+pub unsafe fn shmat() {
     core::unimplemented!();
-    // syscall0(SYS_SHM_OPEN);
+    // syscall0(SYS_SHMAT);
+}
+
+pub unsafe fn shmctl() {
+    core::unimplemented!();
+    // syscall0(SYS_SHMCTL);
+}
+
+pub unsafe fn shmdt() {
+    core::unimplemented!();
+    // syscall0(SYS_SHMDT);
+}
+
+pub unsafe fn shmget() {
+    core::unimplemented!();
+    // syscall0(SYS_SHMGET);
+}
+
+pub unsafe fn shmsys() {
+    core::unimplemented!();
+    // syscall0(SYS_SHMSYS);
+}
+
+pub unsafe fn shm_open2() {
+    core::unimplemented!();
+    // syscall0(SYS_SHM_OPEN2);
+}
+
+pub unsafe fn shm_rename() {
+    core::unimplemented!();
+    // syscall0(SYS_SHM_RENAME);
 }
 
 pub unsafe fn shm_unlink() {
@@ -2974,6 +3330,11 @@ pub unsafe fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Resu
     let uss_ptr = uss as *const sigaltstack_t as usize;
     let uoss_ptr = uoss as *mut sigaltstack_t as usize;
     syscall2(SYS_SIGALTSTACK, uss_ptr, uoss_ptr).map(drop)
+}
+
+pub unsafe fn sigfastblock() {
+    core::unimplemented!();
+    // syscall0(SYS_SIGFASTBLOCK);
 }
 
 /// Examine pending signals.
@@ -3159,6 +3520,11 @@ pub unsafe fn sync() -> Result<(), Errno> {
 pub unsafe fn sysarch() {
     core::unimplemented!();
     // syscall0(SYS_SYSARCH);
+}
+
+pub unsafe fn syscall() {
+    core::unimplemented!();
+    // syscall0(SYS_SYSCALL);
 }
 
 pub unsafe fn thr_create() {
@@ -3596,12 +3962,37 @@ pub unsafe fn __mac_set_proc() {
     // syscall0(SYS___MAC_SET_PROC);
 }
 
+pub unsafe fn __realpathat() {
+    core::unimplemented!();
+    // syscall0(SYS___REALPATHAT);
+}
+
+pub unsafe fn __semctl() {
+    core::unimplemented!();
+    // syscall0(SYS___SEMCTL);
+}
+
 pub unsafe fn __setugid() {
     core::unimplemented!();
     // syscall0(SYS___SETUGID);
 }
 
+pub unsafe fn __specialfd() {
+    core::unimplemented!();
+    // syscall0(SYS___SPECIALFD);
+}
+
+pub unsafe fn __syscall() {
+    core::unimplemented!();
+    // syscall0(SYS___SYSCALL);
+}
+
 pub unsafe fn __sysctl() {
     core::unimplemented!();
     // syscall0(SYS___SYSCTL);
+}
+
+pub unsafe fn __sysctlbyname() {
+    core::unimplemented!();
+    // syscall0(SYS___SYSCTLBYNAME);
 }

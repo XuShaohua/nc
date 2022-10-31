@@ -76,7 +76,7 @@ def parse_template(template_file):
         syscall_pattern = re.compile("[^S]*(SYS_\w+)")
         func_name_pattern = re.compile("pub unsafe fn ([a-z0-9_#]+)")
         for line in fh:
-            if line.startswith("pub unsafe fn"):
+            if line.startswith("pub unsafe fn") or line.startswith("///"):
                 headers_end = True
                 new_func_start = True
             if not headers_end:

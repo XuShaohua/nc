@@ -9,10 +9,10 @@ import subprocess
 import sys
 
 
-HEADER_FILE = "/usr/src/sys/sys/errno.h"
+HEADER_FILE = "/usr/include/sys/errno.h"
 
 def read_errno_gcc(header_file):
-    cmd = ["gcc", "-E", "-dD", header_file]
+    cmd = ["cc", "-E", "-dD", header_file]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0 or err:
@@ -41,7 +41,9 @@ def read_errno(header_file):
 
     lines.append("""
     /// Get errno description.
-    pub fn strerror(errno: Errno) -> &'static str {
+    #[allow(clippy::too_many_lines)]
+    #[must_use]
+    pub const fn strerror(errno: Errno) -> &'static str {
         match errno {
     """)
 
@@ -85,8 +87,8 @@ def write_errno(arch_name, lines):
     rust_fmt(errno_file)
 
 # Download freebsd kernel source:
-# ```
-# wget ftp://ftp.freebsd.org/pub/`uname -s`/releases/`uname -m`/`uname -r | cut -d'-' -f1,2`/src.txz
+# ```bash
+# wget ftp://ftp.freebsd.org/pub/$(uname -s)/releases/$(uname -m)/$(freebsd-version -k)/src.txz
 # ```
 def main():
     if len(sys.argv) < 2:

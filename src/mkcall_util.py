@@ -5,9 +5,19 @@
 
 
 import os
+import platform
 import re
 import subprocess
 import sys
+
+
+def check_system(expected_system):
+    expected_lower = expected_system.lower()
+    real_system = platform.system().lower()
+    if real_system != expected_lower:
+        print(f"system not match, expected {expected}")
+        return False
+    return True
 
 
 def rust_fmt(filename):
@@ -110,8 +120,7 @@ def print_call(root_dir, template_file):
     if unmatched_sysno:
         print("unmatched sysnos:", unmatched_sysno)
         print_unimplemented_syscalls(unmatched_sysno)
-        print("Percentage:", sysno_percentage)
-        print(len(sysnos), len(unmatched_sysno), len(matched_sysno))
+        print("Percentage of unimplemented syscalls: {:.2f}%".format(sysno_percentage))
         sys.exit(1)
 
     with open(call_file, "w") as fh:

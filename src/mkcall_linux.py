@@ -6,7 +6,7 @@
 import os
 import sys
 
-from mkcall_util import print_call
+from mkcall_util import (check_system, print_call)
 
 
 SUPPORTED_ARCHES = (
@@ -23,6 +23,9 @@ SUPPORTED_ARCHES = (
 
 
 def main():
+    if not check_system("linux"):
+        sys.exit(1)
+
     def handle_all_arch():
         template_file = "linux_call.rs"
         for arch_name in SUPPORTED_ARCHES:

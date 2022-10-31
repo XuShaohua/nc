@@ -2710,14 +2710,30 @@ pub unsafe fn setcontext() {
     // syscall0(SYS_SETCONTEXT);
 }
 
-pub unsafe fn setegid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETEGID);
+/// Set effective group ID.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setgid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setegid(egid: gid_t) -> Result<(), Errno> {
+    let egid = egid as usize;
+    syscall1(SYS_SETEGID, egid).map(drop)
 }
 
-pub unsafe fn seteuid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETEUID);
+/// Set effective user ID.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setuid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn seteuid(euid: uid_t) -> Result<(), Errno> {
+    let euid = euid as usize;
+    syscall1(SYS_SETEUID, euid).map(drop)
 }
 
 pub unsafe fn setfib() {
@@ -2911,9 +2927,17 @@ pub unsafe fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), E
     syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
 }
 
-pub unsafe fn setuid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETUID);
+/// Set the effective user ID of the calling process to `uid`.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setuid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
+    let uid = uid as usize;
+    syscall1(SYS_SETUID, uid).map(drop)
 }
 
 pub unsafe fn shm_open() {

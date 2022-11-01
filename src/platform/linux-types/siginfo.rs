@@ -415,7 +415,7 @@ impl fmt::Debug for sigev_un_t {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct sigevent_t {
     pub sigev_value: sigval_t,
     pub sigev_signo: i32,

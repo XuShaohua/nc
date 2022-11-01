@@ -17,7 +17,7 @@ pub const KCMP_TYPES: i32 = 8;
 
 /// Slot for `KCMP_EPOLL_TFD`
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct kcmp_epoll_slot_t {
     /// epoll file descriptor
     pub efd: u32,

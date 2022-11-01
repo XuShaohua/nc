@@ -71,7 +71,7 @@ pub const IPPROTO_MAX: i32 = IPPROTO_RAW + 1;
 
 /// Internet address.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct in_addr_t {
     pub s_addr: be32_t,
 }
@@ -156,7 +156,7 @@ pub const IP_DEFAULT_MULTICAST_LOOP: i32 = 1;
 /// Request struct for multicast socket ops
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct ip_mreq_t {
     /// IP multicast address of group
     pub imr_multiaddr: in_addr_t,
@@ -165,7 +165,7 @@ pub struct ip_mreq_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct ip_mreqn_t {
     /// IP multicast address of group
     pub imr_multiaddr: in_addr_t,
@@ -176,7 +176,7 @@ pub struct ip_mreqn_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct ip_mreq_source_t {
     pub imr_multiaddr: be32_t,
     pub imr_interface: be32_t,
@@ -184,7 +184,7 @@ pub struct ip_mreq_source_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct ip_msfilter_t {
     pub imsf_multiaddr: be32_t,
     pub imsf_interface: be32_t,
@@ -198,7 +198,7 @@ pub struct ip_msfilter_t {
 //	+ (numsrc) * sizeof(__u32))
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct group_req_t {
     /// interface index
     pub gr_interface: u32,
@@ -207,7 +207,7 @@ pub struct group_req_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct group_source_req_t {
     /// interface index
     pub gsr_interface: u32,
@@ -218,7 +218,7 @@ pub struct group_source_req_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct group_filter_t {
     /// interface index
     pub gf_interface: u32,
@@ -233,7 +233,7 @@ pub struct group_filter_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct in_pktinfo_t {
     pub ipi_ifindex: i32,
     pub ipi_spec_dst: in_addr_t,
@@ -245,7 +245,7 @@ pub struct in_pktinfo_t {
 pub const SOCK_SIZE: usize = 16;
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sockaddr_in_t {
     /// Address family
     pub sin_family: sa_family_t,

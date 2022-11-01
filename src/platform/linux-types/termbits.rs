@@ -10,7 +10,7 @@ pub const NCCS: usize = 19;
 
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct termios_t {
     /// input mode flags
     pub c_iflag: tcflag_t,
@@ -32,7 +32,7 @@ pub struct termios_t {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct termios2_t {
     /// input mode flags
     pub c_iflag: tcflag_t,
@@ -60,7 +60,7 @@ pub struct termios2_t {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct ktermios_t {
     /// input mode flags
     pub c_iflag: tcflag_t,

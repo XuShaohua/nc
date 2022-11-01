@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct serial_struct_t {
     pub type_: i32,
     pub line: i32,
@@ -72,7 +72,7 @@ pub const UART_NATSEMI: i32 = 0x08;
 
 /// Multiport serial configuration structure --- external structure
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct serial_multiport_struct_t {
     pub irq: i32,
     pub port1: i32,
@@ -94,7 +94,7 @@ pub struct serial_multiport_struct_t {
 /// Serial input interrupt line counters -- external structure
 /// Four lines can interrupt: CTS, DSR, RI, DCD
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct serial_icounter_struct_t {
     pub cts: i32,
     pub dsr: i32,
@@ -118,7 +118,7 @@ pub struct serial_icounter_struct_t {
 /// platform. The set function returns the new state, with any unsupported bits
 /// reverted appropriately.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct serial_rs485_t {
     /// RS485 feature flags
     pub flags: u32,
@@ -150,7 +150,7 @@ pub const SER_RS485_TERMINATE_BUS: i32 = 1 << 5;
 /// support. Set with TIOCSISO7816 and get with TIOCGISO7816 if supported by
 /// your platform.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct serial_iso7816_t {
     /// ISO7816 feature flags
     pub flags: u32,

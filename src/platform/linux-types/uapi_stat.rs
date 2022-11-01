@@ -47,7 +47,7 @@ pub const S_IXOTH: mode_t = 0o0001;
 ///
 /// `tv_nsec` holds a number of nanoseconds (0..999,999,999) after the `tv_sec` time.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct statx_timestamp_t {
     pub tv_sec: i64,
     pub tv_nsec: u32,
@@ -91,7 +91,7 @@ pub struct statx_timestamp_t {
 /// will have values installed for compatibility purposes so that stat() and
 /// co. can be emulated in userspace.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct statx_t {
     // 0x00
     /// What results were written (uncond)

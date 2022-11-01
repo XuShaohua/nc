@@ -32,7 +32,7 @@ impl Default for in6_un_t {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct in6_addr_t {
     pub in6_u: in6_un_t,
 }
@@ -41,7 +41,7 @@ pub struct in6_addr_t {
 //#define s6_addr32		in6_u.u6_addr32
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct sockaddr_in6_t {
     /// AF_INET6
     pub sin6_family: u16,
@@ -56,7 +56,7 @@ pub struct sockaddr_in6_t {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct ipv6_mreq_t {
     /// IPv6 multicast address of group
     pub ipv6mr_multiaddr: in6_addr_t,
@@ -66,7 +66,7 @@ pub struct ipv6_mreq_t {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct in6_flowlabel_req_t {
     pub flr_dst: in6_addr_t,
     pub flr_label: be32_t,

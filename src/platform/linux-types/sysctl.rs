@@ -11,7 +11,7 @@ pub const CTL_MAXNAME: i32 = 10;
 
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct sysctl_args_t {
     pub name: *mut i32,
     pub nlen: i32,

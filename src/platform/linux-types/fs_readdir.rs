@@ -10,7 +10,7 @@ use super::limits::PATH_MAX;
 /// From fs/readir.c
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct linux_dirent_t {
     /// Inode number
     pub d_ino: ino_t,

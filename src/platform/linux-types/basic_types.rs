@@ -100,7 +100,7 @@ pub type slab_flags_t = u32;
 pub type fmode_t = u32;
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct ustat_t {
     pub f_tfree: usize,
     pub f_tinode: ino_t,

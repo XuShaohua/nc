@@ -16,7 +16,7 @@ pub type _statfs_word = isize;
 
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct statfs_t {
     pub f_type: isize,
     pub f_bsize: isize,
@@ -36,7 +36,7 @@ pub struct statfs_t {
 /// between EABI and OABI
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct statfs64_t {
     pub f_type: isize,
     pub f_bsize: isize,
@@ -55,7 +55,7 @@ pub struct statfs64_t {
 /// IA64 and `x86_64` need to avoid the 32-bit padding at the end,
 /// to be compatible with the i386 ABI
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct compat_statfs64_t {
     pub f_type: u32,
     pub f_bsize: u32,

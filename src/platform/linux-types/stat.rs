@@ -5,7 +5,7 @@
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct stat_t {
     pub st_dev: usize,  // Device.
     pub st_ino: usize,  // File serial number.
@@ -31,7 +31,7 @@ pub struct stat_t {
 
 /// This matches struct stat64 in glibc2.1. Only used for 32 bit.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct stat64_t {
     pub st_dev: u64,   // Device.
     pub st_ino: u64,   // File serial number.

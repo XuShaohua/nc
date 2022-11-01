@@ -10,7 +10,7 @@ use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
 /// such as `IN_CREATE`, `IN_DELETE`, `IN_OPEN`, `IN_CLOSE`, ...,
 /// relative to the wd.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct inotify_event_t {
     /// watch descriptor
     pub wd: u32,

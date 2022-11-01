@@ -5,7 +5,7 @@
 use super::basic_types::time_t;
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct utimbuf_t {
     pub actime: time_t,
     pub modtime: time_t,

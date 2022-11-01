@@ -11,7 +11,7 @@ use super::basic_types::{ino64_t, loff_t};
 use super::limits::PATH_MAX;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct linux_dirent64_t {
     /// 64-bit inode number.
     pub d_ino: ino64_t,

@@ -9,7 +9,7 @@
 /// New architectures should not provide their own version.
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct winsize_t {
     pub ws_row: u16,
     pub ws_col: u16,
@@ -20,7 +20,7 @@ pub struct winsize_t {
 pub const NCC: usize = 8;
 
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub struct termio_t {
     /// input mode flags
     pub c_iflag: u16,

@@ -5,7 +5,7 @@
 use super::basic_types::clock_t;
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct tms_t {
     pub tms_utime: clock_t,
     pub tms_stime: clock_t,

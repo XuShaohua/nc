@@ -12,7 +12,7 @@ pub const NTP_API: i32 = 4;
 /// to discipline kernel clock oscillator
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct timex_t {
     /// mode selector
     pub modes: u32,
@@ -61,14 +61,14 @@ pub struct timex_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct kernel_timex_timeval_t {
     pub tv_sec: time64_t,
     pub tv_usec: i64,
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct kernel_timex_t {
     /// mode selector
     pub modes: u32,

@@ -8,7 +8,7 @@ pub const SI_LOAD_SHIFT: i32 = 16;
 
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sysinfo_t {
     /// Seconds since boot
     pub uptime: isize,

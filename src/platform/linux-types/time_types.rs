@@ -6,7 +6,7 @@ use super::basic_types::time64_t;
 use super::time::timespec_t;
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct kernel_timespec_t {
     /// seconds
     pub tv_sec: time64_t,
@@ -15,7 +15,7 @@ pub struct kernel_timespec_t {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct kernel_itimerspec_t {
     /// timer period
     pub it_interval: timespec_t,
@@ -29,14 +29,14 @@ pub struct kernel_itimerspec_t {
 /// this is probably because it is not y2038 safe and needs to
 /// be changed to use another interface.
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct kernle_old_timeval_t {
     pub tv_sec: isize,
     pub tv_usec: isize,
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct kernel_sock_timeval_t {
     pub tv_sec: i64,
     pub tv_usec: i64,

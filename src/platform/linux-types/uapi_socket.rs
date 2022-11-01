@@ -14,7 +14,7 @@ const K_SS_MAXSIZE: i32 = 128;
 pub type kernel_sa_family_t = u16;
 
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct kernel_sockaddr_storage_t {
     /// address family
     pub ss_family: kernel_sa_family_t,

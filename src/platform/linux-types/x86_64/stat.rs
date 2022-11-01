@@ -6,7 +6,7 @@
 
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct stat_t {
     pub st_dev: usize,
     pub st_ino: usize,

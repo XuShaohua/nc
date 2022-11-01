@@ -5,12 +5,10 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-mod fcntl;
+mod netinet;
 mod sys;
 mod types;
-mod uapi_stat;
 
-pub use fcntl::*;
+pub use netinet::*;
 pub use sys::*;
 pub use types::*;
-pub use uapi_stat::*;

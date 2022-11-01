@@ -2,10 +2,12 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
+mod fcntl;
 mod siginfo;
 mod signal;
 mod sigtypes;
 
+pub use fcntl::*;
 pub use siginfo::*;
 pub use signal::*;
 pub use sigtypes::*;

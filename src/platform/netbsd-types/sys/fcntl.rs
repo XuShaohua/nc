@@ -3,13 +3,14 @@
 // in the LICENSE file.
 
 //! From `/usr/include/sys/fcntl.h`
+//!
 //! This file includes the definitions for open and fcntl
 //! described by POSIX for <fcntl.h>; it also includes
 //! related kernel definitions.
 
 #![allow(overflowing_literals)]
 
-use super::{pid_t, off_t};
+use super::{off_t, pid_t};
 
 /// File status flags: these are used by open(2), fcntl(2).
 /// They are also used (indirectly) in the kernel file structure f_flags,

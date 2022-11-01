@@ -6,9 +6,15 @@
 #![allow(non_snake_case)]
 
 mod fcntl;
+mod siginfo;
+mod signal;
+mod sigtypes;
 mod types;
 mod uapi_stat;
 
 pub use fcntl::*;
+pub use siginfo::*;
+pub use signal::*;
+pub use sigtypes::*;
 pub use types::*;
 pub use uapi_stat::*;

@@ -4,6 +4,8 @@
 
 //! From `/usr/include/netinet/in.h`
 
+use crate::{in_addr_t, in_port_t, sa_family_t};
+
 /// dummy for IP
 pub const IPPROTO_IP: i32 = 0;
 /// IP6 hop-by-hop options
@@ -284,9 +286,6 @@ pub struct in_pktinfo_t {
     /// interface index
     pub ipi_ifindex: u32,
 }
-
-/// Solaris/Linux compatibility
-pub const ipi_spec_dst: i32 = ipi_addr;
 
 /// Defaults and limits for options
 ///

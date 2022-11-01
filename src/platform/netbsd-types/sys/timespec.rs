@@ -4,6 +4,8 @@
 
 //! From `/usr/include/sys/timespec.h`
 
+use super::time_t;
+
 #[repr(C)]
 pub struct timespec_t {
     /// seconds

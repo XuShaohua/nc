@@ -18,7 +18,7 @@ pub type fixpt_t = u32;
 /// group id, process id or user id
 pub type id_t = u32;
 /// inode number
-pub type tino_t = u64;
+pub type ino_t = u64;
 /// IPC key (for Sys V IPC)
 pub type key_t = isize;
 

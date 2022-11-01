@@ -6,6 +6,7 @@
 //!
 //! Definitions related to sockets: types, address families, options.
 
+use core::ffi::c_void;
 use core::mem::size_of;
 
 use crate::{gid_t, iovec_t, pid_t, sa_family_t, socklen_t, uid_t};
@@ -346,7 +347,7 @@ pub const SOMAXCONN: i32 = 128;
 /// Used value-result for recvmsg, value only for sendmsg.
 pub struct msghdr_t {
     /// optional address
-    pub msg_name: *mut u8,
+    pub msg_name: *mut c_void,
     /// size of address
     pub msg_namelen: socklen_t,
     /// scatter/gather array
@@ -354,7 +355,7 @@ pub struct msghdr_t {
     /// # elements in msg_iov
     pub msg_iovlen: i32,
     /// ancillary data, see below
-    pub msg_control: *mut u8,
+    pub msg_control: *mut c_void,
     /// ancillary data buffer len
     pub msg_controllen: socklen_t,
     /// flags on received message

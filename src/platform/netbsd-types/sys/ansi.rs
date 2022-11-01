@@ -4,8 +4,10 @@
 
 //! From `/usr/include/sys/ansi.h`
 
+use core::ffi::c_void;
+
 /// core address
-pub type caddr_t = *mut u8;
+pub type caddr_t = *mut c_void;
 /// group id
 pub type gid_t = u32;
 /// IP(v4) address

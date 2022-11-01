@@ -2,12 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `/usr/include/sys/timespec.h`
+/// `sizeof()`
+pub type size_t = usize;
 
-#[repr(C)]
-pub struct timespec_t {
-    /// seconds
-    pub tv_sec: time_t,
-    /// and nanoseconds
-    pub tv_nsec: isize,
-}
+/// byte count or error
+pub type ssize_t = isize;
+
+/// ptr1 - ptr2
+pub type ptrdiff_t = isize;

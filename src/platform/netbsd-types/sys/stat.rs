@@ -1,10 +1,10 @@
 // Copyright (c) 2022 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
-// Use of this source is governed by General Public License that can be found
+// Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
 //! From `/usr/include/sys/stat.h`
 
-use crate::{blkcnt_t, blksize_t, off_t};
+use crate::{blkcnt_t, blksize_t, off_t, timespec_t};
 
 #[repr(C)]
 pub struct stat_t {

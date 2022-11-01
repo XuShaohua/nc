@@ -6,8 +6,10 @@ mod fcntl;
 mod siginfo;
 mod signal;
 mod sigtypes;
+mod stat;
 
 pub use fcntl::*;
 pub use siginfo::*;
 pub use signal::*;
 pub use sigtypes::*;
+pub use stat::*;

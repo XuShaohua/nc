@@ -1,0 +1,45 @@
+// Copyright (c) 2022 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by General Public License that can be found
+// in the LICENSE file.
+
+//! From `/usr/include/sys/types.h`
+
+/// fs block count
+pub type blkcnt_t = i64;
+
+/// fs optimal block size
+pub type blksize_t = i32;
+
+/// device number
+pub type dev_t = u64;
+/// fixed point number
+pub type fixpt_t = u32;
+
+/// group id, process id or user id
+pub type id_t = u32;
+/// inode number
+pub type tino_t = u64;
+/// IPC key (for Sys V IPC)
+pub type key_t = isize;
+
+/// link count
+pub type nlink_t = u32;
+
+/// LWP id
+pub type lwpid_t = i32;
+/// resource limit
+pub type rlim_t = u64;
+/// segment size
+pub type segsz_t = i32;
+/// swap offset
+pub type swblk_t = i32;
+
+pub type mqd_t = i32;
+
+pub type cpuid_t = usize;
+
+pub type psetid_t = i32;
+
+pub const NBBY: i32 = 8;
+
+pub type pri_t = i32;

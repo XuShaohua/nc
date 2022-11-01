@@ -8,6 +8,7 @@ mod signal;
 mod sigtypes;
 mod stat;
 mod timespec;
+mod types;
 
 pub use fcntl::*;
 pub use siginfo::*;
@@ -15,3 +16,4 @@ pub use signal::*;
 pub use sigtypes::*;
 pub use stat::*;
 pub use timespec::*;
+pub use types::*;

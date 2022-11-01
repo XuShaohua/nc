@@ -7,8 +7,6 @@
 
 mod netinet;
 mod sys;
-mod types;
 
 pub use netinet::*;
 pub use sys::*;
-pub use types::*;

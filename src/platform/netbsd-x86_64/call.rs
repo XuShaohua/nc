@@ -24,9 +24,17 @@ pub unsafe fn accept() {
     // syscall0(SYS_ACCEPT);
 }
 
-pub unsafe fn access() {
-    core::unimplemented!();
-    // syscall0(SYS_ACCESS);
+/// Check user's permission for a file.
+///
+/// ```
+/// assert!(nc::access("/etc/passwd", nc::F_OK).is_ok());
+/// assert!(nc::access("/etc/passwd", nc::X_OK).is_err());
+/// ```
+pub unsafe fn access<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall2(SYS_ACCESS, filename_ptr, mode).map(drop)
 }
 
 pub unsafe fn acct() {
@@ -924,9 +932,18 @@ pub unsafe fn getcontext() {
     // syscall0(SYS_GETCONTEXT);
 }
 
-pub unsafe fn getegid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETEGID);
+/// Get the effective group ID of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let egid = unsafe { nc::getegid() };
+/// assert!(egid > 0);
+/// ```
+#[must_use]
+pub unsafe fn getegid() -> gid_t {
+    // This function is always successful.
+    syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
 }
 
 /// Get the effective user ID of the calling process.
@@ -941,9 +958,18 @@ pub unsafe fn geteuid() -> uid_t {
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
 
-pub unsafe fn getgid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETGID);
+/// Get the real group ID of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let gid = unsafe { nc::getgid() };
+/// assert!(gid > 0);
+/// ```
+#[must_use]
+pub unsafe fn getgid() -> gid_t {
+    // This function is always successful.
+    syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
 }
 
 pub unsafe fn getgroups() {
@@ -956,24 +982,60 @@ pub unsafe fn getpeername() {
     // syscall0(SYS_GETPEERNAME);
 }
 
-pub unsafe fn getpgid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETPGID);
+/// Returns the PGID(process group ID) of the process specified by `pid`.
+///
+/// # Example
+///
+/// ```
+/// let ppid = unsafe { nc::getppid() };
+/// let pgid = unsafe { nc::getpgid(ppid) };
+/// assert!(pgid.is_ok());
+/// ```
+pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t)
 }
 
-pub unsafe fn getpgrp() {
-    core::unimplemented!();
-    // syscall0(SYS_GETPGRP);
+/// Get the process group ID of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let pgroup = unsafe { nc::getpgrp() };
+/// assert!(pgroup > 0);
+/// ```
+#[must_use]
+pub unsafe fn getpgrp() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
 }
 
-pub unsafe fn getpid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETPID);
+/// Get the process ID (PID) of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let pid = unsafe { nc::getpid() };
+/// assert!(pid > 0);
+/// ```
+#[must_use]
+pub unsafe fn getpid() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
-pub unsafe fn getppid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETPPID);
+/// Get the process ID of the parent of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let ppid = unsafe { nc::getppid() };
+/// assert!(ppid > 0);
+/// ```
+#[must_use]
+pub unsafe fn getppid() -> pid_t {
+    // This function is always successful.
+    syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
 }
 
 pub unsafe fn getpriority() {
@@ -986,9 +1048,20 @@ pub unsafe fn getrlimit() {
     // syscall0(SYS_GETRLIMIT);
 }
 
-pub unsafe fn getsid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETSID);
+/// Get session Id.
+///
+/// # Example
+///
+/// ```
+/// let ppid = unsafe { nc::getppid() };
+/// let sid = unsafe { nc::getsid(ppid) };
+/// assert!(sid > 0);
+/// ```
+#[must_use]
+pub unsafe fn getsid(pid: pid_t) -> pid_t {
+    let pid = pid as usize;
+    // This function is always successful.
+    syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
 }
 
 pub unsafe fn getsockname() {
@@ -1552,19 +1625,44 @@ pub unsafe fn setcontext() {
     // syscall0(SYS_SETCONTEXT);
 }
 
-pub unsafe fn setegid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETEGID);
+/// Set effective group ID.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setgid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setegid(egid: gid_t) -> Result<(), Errno> {
+    let egid = egid as usize;
+    syscall1(SYS_SETEGID, egid).map(drop)
 }
 
-pub unsafe fn seteuid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETEUID);
+/// Set effective user ID.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setuid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn seteuid(euid: uid_t) -> Result<(), Errno> {
+    let euid = euid as usize;
+    syscall1(SYS_SETEUID, euid).map(drop)
 }
 
-pub unsafe fn setgid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETGID);
+/// Set the group ID of the calling process to `gid`.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setgid(0) };
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setgid(gid: gid_t) -> Result<(), Errno> {
+    let gid = gid as usize;
+    syscall1(SYS_SETGID, gid).map(drop)
 }
 
 pub unsafe fn setgroups() {
@@ -1572,9 +1670,19 @@ pub unsafe fn setgroups() {
     // syscall0(SYS_SETGROUPS);
 }
 
-pub unsafe fn setpgid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETPGID);
+/// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setpgid(nc::getpid(), 1) };
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let pgid = pgid as usize;
+    syscall2(SYS_SETPGID, pid, pgid).map(drop)
 }
 
 pub unsafe fn setpriority() {
@@ -1582,14 +1690,32 @@ pub unsafe fn setpriority() {
     // syscall0(SYS_SETPRIORITY);
 }
 
-pub unsafe fn setregid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETREGID);
+/// Set real and effective group IDs of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setregid(0, 0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
+    let rgid = rgid as usize;
+    let egid = egid as usize;
+    syscall2(SYS_SETREGID, rgid, egid).map(drop)
 }
 
-pub unsafe fn setreuid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETREUID);
+/// Set real and effective user IDs of the calling process.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setreuid(0, 0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
+    let ruid = ruid as usize;
+    let euid = euid as usize;
+    syscall2(SYS_SETREUID, ruid, euid).map(drop)
 }
 
 pub unsafe fn setrlimit() {
@@ -1597,9 +1723,18 @@ pub unsafe fn setrlimit() {
     // syscall0(SYS_SETRLIMIT);
 }
 
-pub unsafe fn setsid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETSID);
+/// Create a new session if the calling process is not a process group leader.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setsid() };
+/// assert!(ret.is_ok());
+/// let pid = unsafe { nc::getpid() };
+/// assert_eq!(ret, Ok(pid));
+/// ```
+pub unsafe fn setsid() -> Result<pid_t, Errno> {
+    syscall0(SYS_SETSID).map(|ret| ret as pid_t)
 }
 
 /// Set options on sockets.

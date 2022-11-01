@@ -4,7 +4,7 @@
 
 //! From `/usr/include/sys/siginfo.h`
 
-#[derive(Debug, Default, Clone)]
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub union sigval_t {
     sival_int: i32,
@@ -20,7 +20,7 @@ pub const KSI_QUEUED: i32 = 0x04;
 /// allocated from the ksiginfo pool
 pub const KSI_FROMPOOL: i32 = 0x08;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub union siginfo_t {
     /// Total size; for future expansion

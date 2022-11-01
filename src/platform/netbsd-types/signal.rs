@@ -163,6 +163,7 @@ pub struct sigstack_t {
 }
 
 pub const BADSIG: sighandler_t = SIG_ERR;
+
 pub type sigev_notify_fn = fn(sigval_t);
 
 #[repr(C)]

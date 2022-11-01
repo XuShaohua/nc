@@ -929,9 +929,16 @@ pub unsafe fn getegid() {
     // syscall0(SYS_GETEGID);
 }
 
-pub unsafe fn geteuid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETEUID);
+/// Get the effective user ID of the calling process.
+///
+/// ```
+/// let euid = nc::geteuid();
+/// assert!(euid > 0);
+/// ```
+#[must_use]
+pub unsafe fn geteuid() -> uid_t {
+    // This function is always successful.
+    syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
 
 pub unsafe fn getgid() {
@@ -999,9 +1006,16 @@ pub unsafe fn getsockopt2() {
     // syscall0(SYS_GETSOCKOPT2);
 }
 
-pub unsafe fn getuid() {
-    core::unimplemented!();
-    // syscall0(SYS_GETUID);
+/// Get the real user ID of the calling process.
+///
+/// ```
+/// let uid = nc::getuid();
+/// assert!(uid > 0);
+/// ```
+#[must_use]
+pub unsafe fn getuid() -> uid_t {
+    // This function is always successful.
+    syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }
 
 pub unsafe fn getvfsstat() {
@@ -1024,9 +1038,29 @@ pub unsafe fn issetugid() {
     // syscall0(SYS_ISSETUGID);
 }
 
-pub unsafe fn kill() {
-    core::unimplemented!();
-    // syscall0(SYS_KILL);
+/// Send signal to a process.
+///
+/// ```
+/// let pid = nc::fork();
+/// assert!(pid.is_ok());
+/// let pid = pid.unwrap();
+/// assert!(pid >= 0);
+/// if pid == 0 {
+///     // child process.
+///     let args = [""];
+///     let env = [""];
+///     let ret = nc::execve("/usr/bin/yes", &args, &env);
+///     assert!(ret.is_ok());
+/// } else {
+///     // parent process.
+///     let ret = nc::kill(pid, nc::SIGTERM);
+///     assert!(ret.is_ok());
+/// }
+/// ```
+pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let signal = signal as usize;
+    syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
 pub unsafe fn kqueue() {
@@ -1568,14 +1602,33 @@ pub unsafe fn setsid() {
     // syscall0(SYS_SETSID);
 }
 
-pub unsafe fn setsockopt() {
-    core::unimplemented!();
-    // syscall0(SYS_SETSOCKOPT);
+/// Set options on sockets.
+pub unsafe fn setsockopt(
+    sockfd: i32,
+    level: i32,
+    optname: i32,
+    optval: &sockaddr_t,
+    optlen: socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let level = level as usize;
+    let optname = optname as usize;
+    let optval_ptr = optval as *const sockaddr_t as usize;
+    let optlen = optlen as usize;
+    syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval_ptr, optlen).map(drop)
 }
 
-pub unsafe fn setuid() {
-    core::unimplemented!();
-    // syscall0(SYS_SETUID);
+/// Set the effective user ID of the calling process to `uid`.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setuid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
+    let uid = uid as usize;
+    syscall1(SYS_SETUID, uid).map(drop)
 }
 
 pub unsafe fn setxattr() {

@@ -1,160 +1,279 @@
-// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Copyright (c) 2022 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::types::*;
+//! From `/usr/include/sys/fcntl.h`
+//! This file includes the definitions for open and fcntl
+//! described by POSIX for <fcntl.h>; it also includes
+//! related kernel definitions.
 
-pub const O_ACCMODE: i32 = 0o0000003;
-pub const O_RDONLY: i32 = 0o0000000;
-pub const O_WRONLY: i32 = 0o0000001;
-pub const O_RDWR: i32 = 0o0000002;
-/// not fcntl
-pub const O_CREAT: i32 = 0o0000100;
-/// not fcntl
-pub const O_EXCL: i32 = 0o0000200;
-/// not fcntl
-pub const O_NOCTTY: i32 = 0o0000400;
-/// not fcntl
-pub const O_TRUNC: i32 = 0o0001000;
-pub const O_APPEND: i32 = 0o0002000;
-pub const O_NONBLOCK: i32 = 0o0004000;
-/// used to be O_SYNC, see below
-pub const O_DSYNC: i32 = 0o0010000;
-/// fcntl, for BSD compatibility
-pub const FASYNC: i32 = 0o0020000;
-/// direct disk access hint
-pub const O_DIRECT: i32 = 0o0040000;
-pub const O_LARGEFILE: i32 = 0o0100000;
-/// must be a directory
-pub const O_DIRECTORY: i32 = 0o0200000;
-/// don't follow links
-pub const O_NOFOLLOW: i32 = 0o0400000;
-pub const O_NOATIME: i32 = 0o1000000;
-/// set close_on_exec
-pub const O_CLOEXEC: i32 = 0o2000000;
+#![allow(overflowing_literals)]
 
-///  Before Linux 2.6.33 only O_DSYNC semantics were implemented, but using
-/// the O_SYNC flag.  We continue to use the existing numerical value
-/// for O_DSYNC semantics now, but using the correct symbolic name for it.
-/// This new value is used to request true Posix O_SYNC semantics.  It is
-/// defined in this strange way to make sure applications compiled against
-/// new headers get at least O_DSYNC semantics on older kernels.
+use super::{pid_t, off_t};
+
+/// File status flags: these are used by open(2), fcntl(2).
+/// They are also used (indirectly) in the kernel file structure f_flags,
+/// which is a superset of the open/fcntl flags.  Open flags and f_flags
+/// are inter-convertible using OFLAGS(fflags) and FFLAGS(oflags).
+/// Open/fcntl flags begin with O_; kernel-internal flags begin with F.
+/// open-only flags
+/// open for reading only
+pub const O_RDONLY: i32 = 0x0000_0000;
+/// open for writing only
+pub const O_WRONLY: i32 = 0x0000_0001;
+/// open for reading and writing
+pub const O_RDWR: i32 = 0x0000_0002;
+/// mask for above modes
+pub const O_ACCMODE: i32 = 0x0000_0003;
+
+/// Kernel encoding of open mode; separate read and write bits that are
+/// independently testable: 1 greater than the above.
 ///
-/// This has the nice side-effect that we can simply test for O_DSYNC
-/// wherever we do not care if O_DSYNC or O_SYNC is used.
-///
-/// Note: __O_SYNC must never be used directly.
-pub const __O_SYNC: i32 = 0o4000000;
-pub const O_SYNC: i32 = __O_SYNC | O_DSYNC;
+/// XXX
+/// FREAD and FWRITE are excluded from the #ifdef _KERNEL so that TIOCFLUSH,
+/// which was documented to use FREAD/FWRITE, continues to work.
+pub const FREAD: i32 = 0x0000_0001;
+pub const FWRITE: i32 = 0x0000_0002;
+/// no delay
+pub const O_NONBLOCK: i32 = 0x0000_0004;
+/// set append mode
+pub const O_APPEND: i32 = 0x0000_0008;
+/// open with shared file lock
+pub const O_SHLOCK: i32 = 0x0000_0010;
+/// open with exclusive file lock
+pub const O_EXLOCK: i32 = 0x000_00020;
+/// signal pgrp when data ready
+pub const O_ASYNC: i32 = 0x0000_0040;
+/// synchronous writes
+pub const O_SYNC: i32 = 0x0000_0080;
+/// don't follow symlinks on the last
+pub const O_NOFOLLOW: i32 = 0x0000_0100;
+/// create if nonexistent
+pub const O_CREAT: i32 = 0x0000_0200;
+/// truncate to zero length
+pub const O_TRUNC: i32 = 0x0000_0400;
+/// error if already exists
+pub const O_EXCL: i32 = 0x0000_0800;
 
-pub const O_PATH: i32 = 0o10000000;
+/// defined by POSIX 1003.1; BSD default, but required to be bitwise distinct
+/// don't assign controlling terminal
+pub const O_NOCTTY: i32 = 0x0000_8000;
 
-pub const __O_TMPFILE: i32 = 0o20000000;
+/// write: I/O data completion
+pub const O_DSYNC: i32 = 0x0001_0000;
+/// read: I/O completion as for write
+pub const O_RSYNC: i32 = 0x0002_0000;
 
-/// a horrid kludge trying to make sure that this will fail on old kernels
-pub const O_TMPFILE: i32 = __O_TMPFILE | O_DIRECTORY;
-pub const O_TMPFILE_MASK: i32 = __O_TMPFILE | O_DIRECTORY | O_CREAT;
+/// use alternate i/o semantics
+pub const O_ALT_IO: i32 = 0x0004_0000;
+/// direct I/O hint
+pub const O_DIRECT: i32 = 0x0008_0000;
 
+/// fail if not a directory
+pub const O_DIRECTORY: i32 = 0x0020_0000;
+/// set close on exec
+pub const O_CLOEXEC: i32 = 0x0040_0000;
+/// skip search permission checks
+pub const O_SEARCH: i32 = 0x0080_0000;
+/// don't deliver sigpipe
+pub const O_NOSIGPIPE: i32 = 0x0100_0000;
+/// fail if not a regular file
+pub const O_REGULAR: i32 = 0x0200_0000;
+
+/// all bits settable during open(2)
+pub const O_MASK: i32 = O_ACCMODE
+    | O_NONBLOCK
+    | O_APPEND
+    | O_SHLOCK
+    | O_EXLOCK
+    | O_ASYNC
+    | O_SYNC
+    | O_CREAT
+    | O_TRUNC
+    | O_EXCL
+    | O_DSYNC
+    | O_RSYNC
+    | O_NOCTTY
+    | O_ALT_IO
+    | O_NOFOLLOW
+    | O_DIRECT
+    | O_DIRECTORY
+    | O_CLOEXEC
+    | O_NOSIGPIPE
+    | O_REGULAR;
+
+/// mark during gc()
+pub const FMARK: i32 = 0x0000_1000;
+/// defer for next gc pass
+pub const FDEFER: i32 = 0x0000_2000;
+/// descriptor holds advisory lock
+pub const FHASLOCK: i32 = 0x0000_4000;
+/// scan during gc passes
+pub const FSCAN: i32 = 0x0010_0000;
+/// suppress kernel error messages
+pub const FSILENT: i32 = 0x4000_0000;
+/// kernel originated ioctl
+pub const FKIOCTL: i32 = 0x8000_0000;
+/// bits settable by fcntl(F_SETFL, ...)
+pub const FCNTLFLAGS: i32 =
+    FAPPEND | FASYNC | FFSYNC | FNONBLOCK | FDSYNC | FRSYNC | FALTIO | FDIRECT | FNOSIGPIPE;
+/// bits to save after open(2)
+pub const FMASK: i32 = FREAD | FWRITE | FCNTLFLAGS;
+
+/// The O_* flags used to have only F* names, which were used in the kernel
+/// and by fcntl.  We retain the F* names for the kernel f_flags field
+/// and for backward compatibility for fcntl.
+/// kernel/compat
+pub const FAPPEND: i32 = O_APPEND;
+/// kernel/compat
+pub const FASYNC: i32 = O_ASYNC;
+/// compat
+pub const O_FSYNC: i32 = O_SYNC;
+/// compat
+pub const FNDELAY: i32 = O_NONBLOCK;
+/// compat
 pub const O_NDELAY: i32 = O_NONBLOCK;
 
-pub const F_DUPFD: i32 = 0; // dup
-pub const F_GETFD: i32 = 1; // get close_on_exec
-pub const F_SETFD: i32 = 2; // set/clear close_on_exec
-pub const F_GETFL: i32 = 3; // get file->f_flags
-pub const F_SETFL: i32 = 4; // set file->f_flags
-pub const F_GETLK: i32 = 5;
-pub const F_SETLK: i32 = 6;
-pub const F_SETLKW: i32 = 7;
-pub const F_SETOWN: i32 = 8; // for sockets.
-pub const F_GETOWN: i32 = 9; // for sockets.
-pub const F_SETSIG: i32 = 10; // for sockets.
-pub const F_GETSIG: i32 = 11; // for sockets.
+/// kernel
+pub const FNOSIGPIPE: i32 = O_NOSIGPIPE;
+/// kernel
+pub const FNONBLOCK: i32 = O_NONBLOCK;
+/// kernel
+pub const FFSYNC: i32 = O_SYNC;
+/// kernel
+pub const FDSYNC: i32 = O_DSYNC;
+/// kernel
+pub const FRSYNC: i32 = O_RSYNC;
+/// kernel
+pub const FALTIO: i32 = O_ALT_IO;
+/// kernel
+pub const FDIRECT: i32 = O_DIRECT;
 
-///  using 'struct flock64'
-pub const F_GETLK64: i32 = 12;
-pub const F_SETLK64: i32 = 13;
-pub const F_SETLKW64: i32 = 14;
-
-pub const F_SETOWN_EX: i32 = 15;
-pub const F_GETOWN_EX: i32 = 16;
-
-pub const F_GETOWNER_UIDS: i32 = 17;
-
-/// Open File Description Locks
+/// Constants used for fcntl(2)
 ///
-/// Usually record locks held by a process are released on *any* close and are
-/// not inherited across a fork().
-///
-/// These cmd values will set locks that conflict with process-associated
-/// record  locks, but are "owned" by the open file description, not the
-/// process. This means that they are inherited across fork() like BSD (flock)
-/// locks, and they are only released automatically when the last reference to
-/// the the open file against which they were acquired is put.
-pub const F_OFD_GETLK: i32 = 36;
-pub const F_OFD_SETLK: i32 = 37;
-pub const F_OFD_SETLKW: i32 = 38;
+/// command values
+/// duplicate file descriptor
+pub const F_DUPFD: i32 = 0;
+/// get file descriptor flags
+pub const F_GETFD: i32 = 1;
+/// set file descriptor flags
+pub const F_SETFD: i32 = 2;
+/// get file status flags
+pub const F_GETFL: i32 = 3;
+/// set file status flags
+pub const F_SETFL: i32 = 4;
+/// get SIGIO/SIGURG proc/pgrp
+pub const F_GETOWN: i32 = 5;
+/// set SIGIO/SIGURG proc/pgrp
+pub const F_SETOWN: i32 = 6;
+/// get record locking information
+pub const F_GETLK: i32 = 7;
+/// set record locking information
+pub const F_SETLK: i32 = 8;
+/// F_SETLK; wait if blocked
+pub const F_SETLKW: i32 = 9;
+/// close all fds >= to the one given
+pub const F_CLOSEM: i32 = 10;
+/// return the max open fd
+pub const F_MAXFD: i32 = 11;
+/// close on exec duplicated fd
+pub const F_DUPFD_CLOEXEC: i32 = 12;
+/// get SIGPIPE disposition
+pub const F_GETNOSIGPIPE: i32 = 13;
+/// set SIGPIPE disposition
+pub const F_SETNOSIGPIPE: i32 = 14;
 
-pub const F_OWNER_TID: i32 = 0;
-pub const F_OWNER_PID: i32 = 1;
-pub const F_OWNER_PGRP: i32 = 2;
-
-#[repr(C)]
-pub struct f_owner_ex_t {
-    pub type_: i32,
-    pub pid: pid_t,
-}
-
-/// for F_[GET|SET]FL
-/// actually anything with low bit set goes
+/// file descriptor flags (F_GETFD, F_SETFD)
+/// close-on-exec flag
 pub const FD_CLOEXEC: i32 = 1;
 
-/// for posix fcntl() and lockf()
-pub const F_RDLCK: i32 = 0;
-pub const F_WRLCK: i32 = 1;
+/// record locking flags (F_GETLK, F_SETLK, F_SETLKW)
+/// shared or read lock
+pub const F_RDLCK: i32 = 1;
+/// unlock
 pub const F_UNLCK: i32 = 2;
+/// exclusive or write lock
+pub const F_WRLCK: i32 = 3;
+/// Wait until lock is granted
+pub const F_WAIT: i32 = 0x010;
+/// Use flock(2) semantics for lock
+pub const F_FLOCK: i32 = 0x020;
+/// Use POSIX semantics for lock
+pub const F_POSIX: i32 = 0x040;
 
-/// for old implementation of bsd flock ()
-pub const F_EXLCK: i32 = 4; // or 3
-pub const F_SHLCK: i32 = 8; // or 4
+/// Constants for fcntl's passed to the underlying fs - like ioctl's.
+pub const F_PARAM_MASK: i32 = 0xfff;
+pub const F_PARAM_MAX: i32 = 4095;
+/// This fcntl goes to the fs
+pub const F_FSCTL: i32 = 0x8000_0000;
+/// no parameters
+pub const F_FSVOID: i32 = 0x4000_0000;
+/// copy out parameter
+pub const F_FSOUT: i32 = 0x2000_0000;
+/// copy in parameter
+pub const F_FSIN: i32 = 0x1000_0000;
+pub const F_FSINOUT: i32 = F_FSIN | F_FSOUT;
+/// mask for IN/OUT/VOID
+pub const F_FSDIRMASK: i32 = 0x7000_0000;
+/// command is fs-specific
+pub const F_FSPRIV: i32 = 0x0000_8000;
 
-/// operations for bsd flock(), also used by the kernel implementation
-/// shared lock
-pub const LOCK_SH: i32 = 1;
-/// exclusive lock
-pub const LOCK_EX: i32 = 2;
-/// or'd with one of the above to prevent blocking
-pub const LOCK_NB: i32 = 4;
-/// remove lock
-pub const LOCK_UN: i32 = 8;
-
-/// This is a mandatory flock ...
-pub const LOCK_MAND: i32 = 32;
-/// which allows concurrent read operations
-pub const LOCK_READ: i32 = 64;
-/// which allows concurrent write operations
-pub const LOCK_WRITE: i32 = 128;
-/// which allows concurrent read & write ops
-pub const LOCK_RW: i32 = 192;
-
-pub const F_LINUX_SPECIFIC_BASE: i32 = 1024;
-
+/// Advisory file segment locking data type -
+/// information passed to system by user
 #[repr(C)]
 pub struct flock_t {
-    pub l_type: i16,
-    pub l_whence: i16,
+    /// starting offset
     pub l_start: off_t,
+    /// len = 0 means until end of file
     pub l_len: off_t,
+    /// lock owner
     pub l_pid: pid_t,
-    // TODO(Shaohua): FLOCK_PAD
-    //__ARCH_FLOCK_PAD
+    /// lock type: read/write, etc.
+    pub l_type: i16,
+    /// type of l_start
+    pub l_whence: i16,
 }
 
-#[repr(C)]
-pub struct flock64_t {
-    pub l_type: i16,
-    pub l_whence: i16,
-    pub l_start: loff_t,
-    pub l_len: loff_t,
-    pub l_pid: pid_t,
-    //__ARCH_FLOCK64_PAD
-}
+/// lock operations for flock(2)
+/// shared file lock
+pub const LOCK_SH: i32 = 0x01;
+/// exclusive file lock
+pub const LOCK_EX: i32 = 0x02;
+/// don't block when locking
+pub const LOCK_NB: i32 = 0x04;
+/// unlock file
+pub const LOCK_UN: i32 = 0x08;
+
+/// set file offset to offset
+pub const SEEK_SET: i32 = 0;
+/// set file offset to current plus offset
+pub const SEEK_CUR: i32 = 1;
+/// set file offset to EOF plus offset
+pub const SEEK_END: i32 = 2;
+
+/// posix_advise advisories.
+///
+/// default advice / no advice
+pub const POSIX_FADV_NORMAL: i32 = 0;
+/// random access
+pub const POSIX_FADV_RANDOM: i32 = 1;
+/// sequential access(lower to higher)
+pub const POSIX_FADV_SEQUENTIAL: i32 = 2;
+/// be needed in near future
+pub const POSIX_FADV_WILLNEED: i32 = 3;
+/// not be needed in near future
+pub const POSIX_FADV_DONTNEED: i32 = 4;
+/// be accessed once
+pub const POSIX_FADV_NOREUSE: i32 = 5;
+
+/// Constants for X/Open Extended API set 2 (a.k.a. C063)
+/// Use cwd for relative link target
+pub const AT_FDCWD: i32 = -100;
+/// Use euig/egid for access checks
+pub const AT_EACCESS: i32 = 0x100;
+/// Do not follow symlinks
+pub const AT_SYMLINK_NOFOLLOW: i32 = 0x200;
+/// Follow symlinks
+pub const AT_SYMLINK_FOLLOW: i32 = 0x400;
+/// Remove directory only
+pub const AT_REMOVEDIR: i32 = 0x800;

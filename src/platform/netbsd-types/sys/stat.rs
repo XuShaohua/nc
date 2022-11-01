@@ -4,6 +4,8 @@
 
 //! From `/usr/include/sys/stat.h`
 
+#![allow(overflowing_literals)]
+
 use crate::{blkcnt_t, blksize_t, dev_t, gid_t, ino_t, mode_t, nlink_t, off_t, timespec_t, uid_t};
 
 #[repr(C)]

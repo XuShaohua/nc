@@ -6,6 +6,8 @@
 //!
 //! Definitions related to sockets: types, address families, options.
 
+#![allow(overflowing_literals)]
+
 use core::ffi::c_void;
 use core::mem::size_of;
 
@@ -28,13 +30,13 @@ pub const SOCK_CONN_DGRAM: i32 = 6;
 pub const SOCK_DCCP: i32 = SOCK_CONN_DGRAM;
 
 /// set close on exec on socket
-pub const SOCK_CLOEXEC: i32 = 0x10000000;
+pub const SOCK_CLOEXEC: i32 = 0x1000_0000;
 /// set non blocking i/o socket
-pub const SOCK_NONBLOCK: i32 = 0x20000000;
+pub const SOCK_NONBLOCK: i32 = 0x2000_0000;
 /// don't send sigpipe
-pub const SOCK_NOSIGPIPE: i32 = 0x40000000;
+pub const SOCK_NOSIGPIPE: i32 = 0x4000_0000;
 /// flags mask
-pub const SOCK_FLAGS_MASK: i32 = 0xf0000000;
+pub const SOCK_FLAGS_MASK: i32 = 0xf000_0000;
 
 /// Option flags per-socket.
 ///
@@ -163,7 +165,7 @@ pub const AF_CCITT: i32 = 10;
 /// IBM SNA
 pub const AF_SNA: i32 = 11;
 /// DECnet
-pub const AF_DECnet: i32 = 12;
+pub const AF_DECNET: i32 = 12;
 /// DEC Direct data link interface
 pub const AF_DLI: i32 = 13;
 /// LAT
@@ -177,19 +179,19 @@ pub const AF_OROUTE: i32 = 17;
 /// Link layer interface
 pub const AF_LINK: i32 = 18;
 /// eXpress Transfer Protocol (no AF)
-pub const pseudo_AF_XTP: i32 = 19;
+pub const PSEUDO_AF_XTP: i32 = 19;
 /// connection-oriented IP, aka ST II
 pub const AF_COIP: i32 = 20;
 /// Computer Network Technology
 pub const AF_CNT: i32 = 21;
 /// Help Identify RTIP packets
-pub const pseudo_AF_RTIP: i32 = 22;
+pub const PSEUDO_AF_RTIP: i32 = 22;
 /// Novell Internet Protocol
 pub const AF_IPX: i32 = 23;
 /// IP version 6
 pub const AF_INET6: i32 = 24;
 /// Help Identify PIP packets
-pub const pseudo_AF_PIP: i32 = 25;
+pub const PSEUDO_AF_PIP: i32 = 25;
 /// Integrated Services Digital Network
 pub const AF_ISDN: i32 = 26;
 /// CCITT E.164 recommendation
@@ -199,9 +201,9 @@ pub const AF_NATM: i32 = 27;
 /// (rev.) addr. res. prot. (RFC 826)
 pub const AF_ARP: i32 = 28;
 /// Internal key management protocol
-pub const pseudo_AF_KEY: i32 = 29;
+pub const PSEUDO_AF_KEY: i32 = 29;
 /// Used by BPF to not rewrite hdrs in interface output routine
-pub const pseudo_AF_HDRCMPLT: i32 = 30;
+pub const PSEUDO_AF_HDRCMPLT: i32 = 30;
 /// Bluetooth: HCI, SCO, L2CAP, RFCOMM
 pub const AF_BLUETOOTH: i32 = 31;
 /// IEEE80211
@@ -267,7 +269,7 @@ pub const PF_ECMA: i32 = AF_ECMA;
 pub const PF_DATAKIT: i32 = AF_DATAKIT;
 pub const PF_CCITT: i32 = AF_CCITT;
 pub const PF_SNA: i32 = AF_SNA;
-pub const PF_DECnet: i32 = AF_DECnet;
+pub const PF_DECNET: i32 = AF_DECNET;
 pub const PF_DLI: i32 = AF_DLI;
 pub const PF_LAT: i32 = AF_LAT;
 pub const PF_HYLINK: i32 = AF_HYLINK;
@@ -275,22 +277,22 @@ pub const PF_APPLETALK: i32 = AF_APPLETALK;
 pub const PF_OROUTE: i32 = AF_OROUTE;
 pub const PF_LINK: i32 = AF_LINK;
 /// really just proto family, no AF
-pub const PF_XTP: i32 = pseudo_AF_XTP;
+pub const PF_XTP: i32 = PSEUDO_AF_XTP;
 pub const PF_COIP: i32 = AF_COIP;
 pub const PF_CNT: i32 = AF_CNT;
 pub const PF_INET6: i32 = AF_INET6;
 /// same format as AF_NS
 pub const PF_IPX: i32 = AF_IPX;
 /// same format as AF_INET
-pub const PF_RTIP: i32 = pseudo_AF_RTIP;
-pub const PF_PIP: i32 = pseudo_AF_PIP;
+pub const PF_RTIP: i32 = PSEUDO_AF_RTIP;
+pub const PF_PIP: i32 = PSEUDO_AF_PIP;
 /// same as E164
 pub const PF_ISDN: i32 = AF_ISDN;
 pub const PF_E164: i32 = AF_E164;
 pub const PF_NATM: i32 = AF_NATM;
 pub const PF_ARP: i32 = AF_ARP;
 /// like PF_ROUTE, only for key mgmt
-pub const PF_KEY: i32 = pseudo_AF_KEY;
+pub const PF_KEY: i32 = PSEUDO_AF_KEY;
 pub const PF_BLUETOOTH: i32 = AF_BLUETOOTH;
 pub const PF_MPLS: i32 = AF_MPLS;
 pub const PF_ROUTE: i32 = AF_ROUTE;

@@ -8,7 +8,7 @@
 
 use core::mem::size_of;
 
-use crate::{gid_t, pid_t, sa_family_t, socklen_t, uid_t};
+use crate::{gid_t, iovec_t, pid_t, sa_family_t, socklen_t, uid_t};
 
 /// Socket types.
 ///

@@ -12,6 +12,7 @@ mod socket;
 mod stat;
 mod timespec;
 mod types;
+mod uio;
 
 pub use ansi::*;
 pub use common_ansi::*;
@@ -23,3 +24,4 @@ pub use socket::*;
 pub use stat::*;
 pub use timespec::*;
 pub use types::*;
+pub use uio::*;

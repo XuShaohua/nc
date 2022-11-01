@@ -110,6 +110,8 @@ As `llvm_asm!` feature is unavailable in stable version.
   - s390x
 - freebsd
   - x86-64
+- netbsd
+  - x86-64
 
 ## Related projects
 - [nix][nix]

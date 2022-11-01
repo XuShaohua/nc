@@ -4,10 +4,11 @@
 
 //! From `/usr/include/sys/siginfo.h`
 
+#[derive(Debug, Default, Clone)]
 #[repr(C)]
 pub union sigval_t {
-	sival_int: i32,
-	sival_ptr: usize,
+    sival_int: i32,
+    sival_ptr: usize,
 }
 
 /// signal caused by trap
@@ -19,11 +20,12 @@ pub const KSI_QUEUED: i32 = 0x04;
 /// allocated from the ksiginfo pool
 pub const KSI_FROMPOOL: i32 = 0x08;
 
+#[derive(Debug, Default, Clone)]
 #[repr(C)]
 pub union siginfo_t {
     /// Total size; for future expansion
-	si_pad: [u8; 128],
-	//_info: _ksiginfo_t,
+    si_pad: [u8; 128],
+    //_info: _ksiginfo_t,
 }
 
 /// si_code
@@ -144,4 +146,3 @@ pub const SI_MESGQ: i32 = -4;
 pub const SI_LWP: i32 = -5;
 /// No signal specific info available
 pub const SI_NOINFO: i32 = 32767;
-

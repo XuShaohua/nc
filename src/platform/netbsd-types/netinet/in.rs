@@ -4,6 +4,8 @@
 
 //! From `/usr/include/netinet/in.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use crate::{in_addr_t, in_port_t, sa_family_t};
 
 /// dummy for IP
@@ -72,7 +74,7 @@ pub const IPPROTO_IPCOMP: i32 = 108;
 pub const IPPROTO_VRRP: i32 = 112;
 /// Common Address Resolution Protocol
 pub const IPPROTO_CARP: i32 = 112;
-/// L2TPv3
+/// `L2TPv3`
 pub const IPPROTO_L2TP: i32 = 115;
 /// SCTP
 pub const IPPROTO_SCTP: i32 = 132;
@@ -85,7 +87,7 @@ pub const IPPROTO_MAX: i32 = 256;
 /// last return value of *_input(), meaning "all job for this pkt is done".
 pub const IPPROTO_DONE: i32 = 257;
 
-/// sysctl placeholder for (FAST_)IPSEC
+/// sysctl placeholder for `(FAST_)IPSEC`
 pub const CTL_IPPROTO_IPSEC: i32 = 258;
 
 pub const IPPORT_RESERVED: i32 = 1024;
@@ -214,7 +216,7 @@ pub const INET_ADDRSTRLEN: usize = 16;
 ///
 /// Used to store options internally, to pass them to a process,
 /// or to restore options retrieved earlier.
-/// The ip_dst is used for the first-hop gateway when using a source route
+/// The `ip_dst` is used for the first-hop gateway when using a source route
 /// (this gets put into the header proper).
 #[repr(C)]
 pub struct ip_opts_t {
@@ -228,7 +230,7 @@ pub struct ip_opts_t {
 ///
 /// First word of comment is data type; bool is stored in int.
 ///
-/// buf/ip_opts; set/get IP options
+/// `buf/ip_opts`; set/get IP options
 pub const IP_OPTIONS: i32 = 1;
 /// int; header is included with data
 pub const IP_HDRINCL: i32 = 2;
@@ -242,18 +244,18 @@ pub const IP_RECVOPTS: i32 = 5;
 pub const IP_RECVRETOPTS: i32 = 6;
 /// bool; receive IP dst addr w/dgram
 pub const IP_RECVDSTADDR: i32 = 7;
-/// ip_opts; set/get IP options
+/// `ip_opts`; set/get IP options
 pub const IP_RETOPTS: i32 = 8;
-/// in_addr; set/get IP multicast i/f
+/// `in_addr`; set/get IP multicast i/f
 pub const IP_MULTICAST_IF: i32 = 9;
-/// u_char; set/get IP multicast ttl
+/// `u_char`; set/get IP multicast ttl
 pub const IP_MULTICAST_TTL: i32 = 10;
-/// u_char; set/get IP multicast loopback
+/// `u_char`; set/get IP multicast loopback
 pub const IP_MULTICAST_LOOP: i32 = 11;
 /// The add and drop membership option numbers need to match with the v6 ones
-/// ip_mreq; add an IP group membership
+/// `ip_mreq`; add an IP group membership
 pub const IP_ADD_MEMBERSHIP: i32 = 12;
-/// ip_mreq; drop an IP group membership
+/// `ip_mreq`; drop an IP group membership
 pub const IP_DROP_MEMBERSHIP: i32 = 13;
 /// int; port selection algo (rfc6056)
 pub const IP_PORTALGO: i32 = 18;
@@ -278,7 +280,7 @@ pub const IP_RECVPKTINFO: i32 = 26;
 pub const IP_SENDSRCADDR: i32 = IP_RECVDSTADDR;
 
 /// Information sent in the control message of a datagram socket for
-/// IP_PKTINFO and IP_RECVPKTINFO.
+/// `IP_PKTINFO` and `IP_RECVPKTINFO`.
 #[repr(C)]
 pub struct in_pktinfo_t {
     /// src/dst address
@@ -296,7 +298,7 @@ pub const IP_DEFAULT_MULTICAST_LOOP: i32 = 1;
 /// per socket; must fit in one mbuf
 pub const IP_MAX_MEMBERSHIPS: i32 = 20;
 
-/// Argument structure for IP_ADD_MEMBERSHIP and IP_DROP_MEMBERSHIP.
+/// Argument structure for `IP_ADD_MEMBERSHIP` and `IP_DROP_MEMBERSHIP`.
 #[repr(C)]
 pub struct ip_mreq_t {
     /// IP multicast address of group
@@ -305,8 +307,9 @@ pub struct ip_mreq_t {
     pub imr_interface: in_addr_s,
 }
 
-/// Argument for IP_PORTRANGE:
+/// Argument for `IP_PORTRANGE`:
 /// - which range to search when port is unspecified at bind() or connect()
+///
 /// default range
 pub const IP_PORTRANGE_DEFAULT: i32 = 0;
 /// same as DEFAULT (FreeBSD compat)
@@ -322,7 +325,7 @@ pub const IPCTL_FORWARDING: i32 = 1;
 pub const IPCTL_SENDREDIRECTS: i32 = 2;
 /// default TTL
 pub const IPCTL_DEFTTL: i32 = 3;
-/// IPCTL_DEFMTU=4, never implemented
+/// `IPCTL_DEFMTU=4`, never implemented
 /// forward source-routed packets
 pub const IPCTL_FORWSRCRT: i32 = 5;
 /// default broadcast behavior

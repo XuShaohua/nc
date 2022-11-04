@@ -13,11 +13,13 @@
 use super::{off_t, pid_t};
 
 /// File status flags: these are used by open(2), fcntl(2).
-/// They are also used (indirectly) in the kernel file structure f_flags,
-/// which is a superset of the open/fcntl flags.  Open flags and f_flags
+/// They are also used (indirectly) in the kernel file structure `f_flags`,
+/// which is a superset of the open/fcntl flags.  Open flags and `f_flags`
 /// are inter-convertible using OFLAGS(fflags) and FFLAGS(oflags).
-/// Open/fcntl flags begin with O_; kernel-internal flags begin with F.
+/// Open/fcntl flags begin with `O_`; kernel-internal flags begin with F.
+///
 /// open-only flags
+///
 /// open for reading only
 pub const O_RDONLY: i32 = 0x0000_0000;
 /// open for writing only
@@ -42,7 +44,7 @@ pub const O_APPEND: i32 = 0x0000_0008;
 /// open with shared file lock
 pub const O_SHLOCK: i32 = 0x0000_0010;
 /// open with exclusive file lock
-pub const O_EXLOCK: i32 = 0x000_00020;
+pub const O_EXLOCK: i32 = 0x0000_0020;
 /// signal pgrp when data ready
 pub const O_ASYNC: i32 = 0x0000_0040;
 /// synchronous writes
@@ -115,14 +117,14 @@ pub const FSCAN: i32 = 0x0010_0000;
 pub const FSILENT: i32 = 0x4000_0000;
 /// kernel originated ioctl
 pub const FKIOCTL: i32 = 0x8000_0000;
-/// bits settable by fcntl(F_SETFL, ...)
+/// bits settable by `fcntl(F_SETFL, ...)`
 pub const FCNTLFLAGS: i32 =
     FAPPEND | FASYNC | FFSYNC | FNONBLOCK | FDSYNC | FRSYNC | FALTIO | FDIRECT | FNOSIGPIPE;
-/// bits to save after open(2)
+/// bits to save after `open(2)`
 pub const FMASK: i32 = FREAD | FWRITE | FCNTLFLAGS;
 
-/// The O_* flags used to have only F* names, which were used in the kernel
-/// and by fcntl.  We retain the F* names for the kernel f_flags field
+/// The `O_*` flags used to have only F* names, which were used in the kernel
+/// and by fcntl.  We retain the F* names for the kernel `f_flags` field
 /// and for backward compatibility for fcntl.
 /// kernel/compat
 pub const FAPPEND: i32 = O_APPEND;
@@ -150,7 +152,7 @@ pub const FALTIO: i32 = O_ALT_IO;
 /// kernel
 pub const FDIRECT: i32 = O_DIRECT;
 
-/// Constants used for fcntl(2)
+/// Constants used for `fcntl(2)`
 ///
 /// command values
 /// duplicate file descriptor
@@ -171,7 +173,7 @@ pub const F_SETOWN: i32 = 6;
 pub const F_GETLK: i32 = 7;
 /// set record locking information
 pub const F_SETLK: i32 = 8;
-/// F_SETLK; wait if blocked
+/// `F_SETLK`; wait if blocked
 pub const F_SETLKW: i32 = 9;
 /// close all fds >= to the one given
 pub const F_CLOSEM: i32 = 10;
@@ -184,11 +186,11 @@ pub const F_GETNOSIGPIPE: i32 = 13;
 /// set SIGPIPE disposition
 pub const F_SETNOSIGPIPE: i32 = 14;
 
-/// file descriptor flags (F_GETFD, F_SETFD)
+/// file descriptor flags `(F_GETFD, F_SETFD)`
 /// close-on-exec flag
 pub const FD_CLOEXEC: i32 = 1;
 
-/// record locking flags (F_GETLK, F_SETLK, F_SETLKW)
+/// record locking flags `(F_GETLK, F_SETLK, F_SETLKW)`
 /// shared or read lock
 pub const F_RDLCK: i32 = 1;
 /// unlock
@@ -252,7 +254,7 @@ pub const SEEK_CUR: i32 = 1;
 /// set file offset to EOF plus offset
 pub const SEEK_END: i32 = 2;
 
-/// posix_advise advisories.
+/// `posix_advise` advisories.
 ///
 /// default advice / no advice
 pub const POSIX_FADV_NORMAL: i32 = 0;

@@ -4,6 +4,8 @@
 
 //! From `/usr/include/sys/uio.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use core::ffi::c_void;
 
 use crate::{off_t, size_t};
@@ -49,7 +51,7 @@ pub struct uio_t {
 
 /// Limits
 ///
-/// Deprecated: use IOV_MAX from <limits.h> instead.
+/// Deprecated: use `IOV_MAX` from <limits.h> instead.
 /// max 1K of iov's
 pub const UIO_MAXIOV: i32 = 1024;
 

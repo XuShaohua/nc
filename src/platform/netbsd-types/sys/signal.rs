@@ -4,6 +4,8 @@
 
 //! From `/usr/include/sys/signal.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use super::{siginfo_t, sigset_t, sigval_t};
 
 pub const _NSIG: i32 = 64;
@@ -86,6 +88,7 @@ pub type sighandler_t = usize;
 
 pub const SIG_DFL: sighandler_t = 0;
 pub const SIG_IGN: sighandler_t = 1;
+#[allow(clippy::cast_sign_loss)]
 pub const SIG_ERR: sighandler_t = -1_isize as sighandler_t;
 pub const SIG_HOLD: sighandler_t = 3;
 
@@ -113,7 +116,7 @@ pub struct sigaction_t {
 pub const SA_ONSTACK: i32 = 0x0001;
 /// restart system call on signal return
 pub const SA_RESTART: i32 = 0x0002;
-/// reset to SIG_DFL when taking signal
+/// reset to `SIG_DFL` when taking signal
 pub const SA_RESETHAND: i32 = 0x0004;
 /// don't mask the signal we're delivering
 pub const SA_NODEFER: i32 = 0x0010;
@@ -122,13 +125,13 @@ pub const SA_NODEFER: i32 = 0x0010;
 pub const SA_NOCLDSTOP: i32 = 0x0008;
 /// do not generate zombies on unwaited child
 pub const SA_NOCLDWAIT: i32 = 0x0020;
-/// take sa_sigaction handler
+/// take `sa_sigaction` handler
 pub const SA_SIGINFO: i32 = 0x0040;
 /// siginfo does not print kernel info on tty
 pub const SA_NOKERNINFO: i32 = 0x0080;
 pub const SA_ALLBITS: i32 = 0x00ff;
 
-/// Flags for sigprocmask():
+/// Flags for `sigprocmask()`:
 ///
 /// block specified signal set
 pub const SIG_BLOCK: i32 = 1;
@@ -141,7 +144,7 @@ pub const SIG_SETMASK: i32 = 3;
 pub type signal_fn = fn(i32);
 pub type sig_t = signal_fn;
 
-/// Flags used with stack_t/struct sigaltstack.
+/// Flags used with `stack_t/struct` sigaltstack.
 ///
 /// take signals on alternate stack
 pub const SS_ONSTACK: i32 = 0x0001;

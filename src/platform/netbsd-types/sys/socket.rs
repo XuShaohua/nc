@@ -42,7 +42,7 @@ pub const SOCK_FLAGS_MASK: i32 = 0xf000_0000;
 ///
 /// turn on debugging info recording
 pub const SO_DEBUG: i32 = 0x0001;
-/// socket has had listen()
+/// socket has had `listen()`
 pub const SO_ACCEPTCONN: i32 = 0x0002;
 /// allow local address reuse
 pub const SO_REUSEADDR: i32 = 0x0004;
@@ -60,7 +60,7 @@ pub const SO_LINGER: i32 = 0x0080;
 pub const SO_OOBINLINE: i32 = 0x0100;
 /// allow local address & port reuse
 pub const SO_REUSEPORT: i32 = 0x0200;
-/// SO_OTIMESTAMP	0x0400
+// SO_OTIMESTAMP	0x0400
 /// no SIGPIPE from EPIPE
 pub const SO_NOSIGPIPE: i32 = 0x0800;
 /// there is an accept filter
@@ -84,7 +84,7 @@ pub const SO_DEFOPTS: i32 = SO_DEBUG
     | SO_TIMESTAMP
     | SO_RERROR;
 
-/// Additional options, not kept in so_options.
+/// Additional options, not kept in `so_options`.
 ///
 /// send buffer size
 pub const SO_SNDBUF: i32 = 0x1001;
@@ -164,7 +164,7 @@ pub const AF_DATAKIT: i32 = 9;
 pub const AF_CCITT: i32 = 10;
 /// IBM SNA
 pub const AF_SNA: i32 = 11;
-/// DECnet
+/// `DECnet`
 pub const AF_DECNET: i32 = 12;
 /// DEC Direct data link interface
 pub const AF_DLI: i32 = 13;
@@ -208,7 +208,7 @@ pub const PSEUDO_AF_HDRCMPLT: i32 = 30;
 pub const AF_BLUETOOTH: i32 = 31;
 /// IEEE80211
 pub const AF_IEEE80211: i32 = 32;
-/// MultiProtocol Label Switching
+/// `MultiProtocol` Label Switching
 pub const AF_MPLS: i32 = 33;
 /// Internal Routing Protocol
 pub const AF_ROUTE: i32 = 34;
@@ -236,9 +236,9 @@ pub struct sockproto_t {
     pub sp_protocol: u16,
 }
 
-/// we make the entire struct at least UCHAR_MAX + 1 in size since existing
-/// use of sockaddr_un permits a path up to 253 bytes + '\0'.
-/// sizeof(sb_len) + sizeof(sb_family) + 253 + '\0'
+/// we make the entire struct at least `UCHAR_MAX + 1` in size since existing
+/// use of `sockaddr_un` permits a path up to 253 bytes + '\0'.
+/// `sizeof(sb_len) + sizeof(sb_family) + 253 + '\0'`
 pub const _SB_DATASIZE: i32 = 254;
 
 #[repr(C)]
@@ -281,9 +281,9 @@ pub const PF_XTP: i32 = PSEUDO_AF_XTP;
 pub const PF_COIP: i32 = AF_COIP;
 pub const PF_CNT: i32 = AF_CNT;
 pub const PF_INET6: i32 = AF_INET6;
-/// same format as AF_NS
+/// same format as `AF_NS`
 pub const PF_IPX: i32 = AF_IPX;
-/// same format as AF_INET
+/// same format as `AF_INET`
 pub const PF_RTIP: i32 = PSEUDO_AF_RTIP;
 pub const PF_PIP: i32 = PSEUDO_AF_PIP;
 /// same as E164
@@ -291,7 +291,7 @@ pub const PF_ISDN: i32 = AF_ISDN;
 pub const PF_E164: i32 = AF_E164;
 pub const PF_NATM: i32 = AF_NATM;
 pub const PF_ARP: i32 = AF_ARP;
-/// like PF_ROUTE, only for key mgmt
+/// like `PF_ROUTE`, only for key mgmt
 pub const PF_KEY: i32 = PSEUDO_AF_KEY;
 pub const PF_BLUETOOTH: i32 = AF_BLUETOOTH;
 pub const PF_MPLS: i32 = AF_MPLS;
@@ -322,22 +322,22 @@ pub struct sockcred_t {
 pub const PCB_SLOP: i32 = 20;
 pub const PCB_ALL: i32 = 0;
 
-/// PF_ROUTE - Routing table
+/// `PF_ROUTE` - Routing table
 ///
 /// Three additional levels are defined:
 /// Fourth: address family, 0 is wildcard
 /// Fifth: type of info, defined below
-/// Sixth: flag(s) to mask with for NET_RT_FLAGS
+/// Sixth: flag(s) to mask with for `NET_RT_FLAGS`
 ///
 /// dump; may limit to a.f.
 pub const NET_RT_DUMP: i32 = 1;
 /// by flags, e.g. RESOLVING
 pub const NET_RT_FLAGS: i32 = 2;
-/// old NET_RT_IFLIST (pre 1.5)
+/// old `NET_RT_IFLIST` (pre 1.5)
 pub const NET_RT_OOOIFLIST: i32 = 3;
-/// old NET_RT_IFLIST (pre-64bit time)
+/// old `NET_RT_IFLIST` (pre-64bit time)
 pub const NET_RT_OOIFLIST: i32 = 4;
-/// old NET_RT_IFLIST (pre 8.0)
+/// old `NET_RT_IFLIST` (pre 8.0)
 pub const NET_RT_OIFLIST: i32 = 5;
 /// survey interface list
 pub const NET_RT_IFLIST: i32 = 6;
@@ -402,17 +402,17 @@ pub struct mmsghdr_t {
 }
 
 /// Extra flags used internally only
-pub const MSG_USERFLAGS: i32 = 0x0ffffff;
-/// msg_name is an mbuf
-pub const MSG_NAMEMBUF: i32 = 0x1000000;
-/// msg_control is an mbuf
-pub const MSG_CONTROLMBUF: i32 = 0x2000000;
-/// msg_iov is in user space
-pub const MSG_IOVUSRSPACE: i32 = 0x4000000;
+pub const MSG_USERFLAGS: i32 = 0x00ff_ffff;
+/// `msg_name` is an mbuf
+pub const MSG_NAMEMBUF: i32 = 0x0100_0000;
+/// `msg_control` is an mbuf
+pub const MSG_CONTROLMBUF: i32 = 0x0200_0000;
+/// `msg_iov` is in user space
+pub const MSG_IOVUSRSPACE: i32 = 0x0400_0000;
 /// address length is in user space
-pub const MSG_LENUSRSPACE: i32 = 0x8000000;
+pub const MSG_LENUSRSPACE: i32 = 0x0800_0000;
 
-/// Header for ancillary data objects in msg_control buffer.
+/// Header for ancillary data objects in `msg_control` buffer.
 /// Used for additional information with/about a datagram
 /// not expressible by flags.  The format is a sequence
 /// of message elements headed by cmsghdr structures.

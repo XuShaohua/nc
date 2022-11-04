@@ -4,6 +4,8 @@
 
 //! From `/usr/include/sys/timespec.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use super::time_t;
 
 #[repr(C)]

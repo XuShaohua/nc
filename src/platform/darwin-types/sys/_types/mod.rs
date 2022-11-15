@@ -4,10 +4,12 @@
 
 mod _blkcnt_t;
 mod _blksize_t;
+mod _dev_t;
 mod _o_dsync;
 mod _seek_set;
 
 pub use _blkcnt_t::*;
 pub use _blksize_t::*;
+pub use _dev_t::*;
 pub use _o_dsync::*;
 pub use _seek_set::*;

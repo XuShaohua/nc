@@ -2,7 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `sys/_types/_gid_t.h`
+//! From `sys/_types/_ssize_t.h`
 
-/// process and group IDs
-pub type gid_t = u32;
+use crate::__darwin_ssize_t;
+
+pub type ssize_t = __darwin_ssize_t;

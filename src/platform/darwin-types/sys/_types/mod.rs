@@ -11,6 +11,8 @@ mod _o_dsync;
 mod _o_sync;
 mod _pid_t;
 mod _seek_set;
+mod _size_t;
+mod _ssize_t;
 
 pub use _blkcnt_t::*;
 pub use _blksize_t::*;
@@ -21,3 +23,5 @@ pub use _o_dsync::*;
 pub use _o_sync::*;
 pub use _pid_t::*;
 pub use _seek_set::*;
+pub use _size_t::*;
+pub use _ssize_t::*;

@@ -63,7 +63,11 @@ def parse_errno(content):
         else:
             m = alias_pattern.match(line)
             if m:
-                errors.append((m.group(1), m.group(2)))
+                err_name = m.group(1)
+                # Ignores `#define EOPNOTSUPP ENOTSUP`
+                if err_name == "EOPNOTSUPP":
+                    continue
+                errors.append((err_name, m.group(2)))
     return errors
 
 def rust_fmt(filename):

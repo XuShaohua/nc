@@ -93,7 +93,6 @@ pub const EPROTONOSUPPORT: Errno = 43;
 pub const ESOCKTNOSUPPORT: Errno = 44;
 /// Operation not supported
 pub const ENOTSUP: Errno = 45;
-pub const EOPNOTSUPP: Errno = ENOTSUP;
 /// Protocol family not supported
 pub const EPFNOSUPPORT: Errno = 46;
 /// Address family not supported by protocol family

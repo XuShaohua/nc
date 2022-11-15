@@ -95,7 +95,7 @@ For stable version of rustc, please install a C compiler (`gcc` or `clang`) firs
 As `llvm_asm!` feature is unavailable in stable version.
 
 
-## Platforms and Architectures
+## Supported Platforms and Architectures
 - linux
   - x86
   - x86-64
@@ -112,6 +112,8 @@ As `llvm_asm!` feature is unavailable in stable version.
   - x86-64
 - netbsd
   - x86-64
+- darwin
+  - x86_64
 
 ## Related projects
 - [nix][nix]

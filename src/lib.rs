@@ -136,7 +136,7 @@ pub mod path;
 pub mod syscalls;
 pub use syscalls::Errno;
 
-#[cfg(target_os = "darwin")]
+#[cfg(target_os = "macos")]
 #[path = "platform/darwin-types/mod.rs"]
 pub mod types;
 
@@ -204,7 +204,7 @@ mod platform;
 #[path = "platform/netbsd-x86_64/mod.rs"]
 mod platform;
 
-#[cfg(all(target_os = "darwin", target_arch = "x86_64"))]
+#[cfg(all(target_os = "macos", target_arch = "x86_64"))]
 #[path = "platform/darwin-x86_64/mod.rs"]
 mod platform;
 

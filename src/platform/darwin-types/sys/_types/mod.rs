@@ -3,5 +3,7 @@
 // in the LICENSE file.
 
 mod _o_dsync;
+mod _seek_set;
 
 pub use _o_dsync::*;
+pub use _seek_set::*;

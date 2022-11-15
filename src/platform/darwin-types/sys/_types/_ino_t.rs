@@ -8,3 +8,7 @@
 ///
 /// Used for 64 bit inodes
 pub type ino_t = u64;
+
+// Used for 32 bit inodes
+// TODO(Shaohua): Check __DARWIN_64_BIT_INO_T
+//pub type ino_t = u32;

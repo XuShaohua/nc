@@ -136,16 +136,20 @@ pub mod path;
 pub mod syscalls;
 pub use syscalls::Errno;
 
+#[cfg(target_os = "darwin")]
+#[path = "platform/darwin-types/mod.rs"]
+pub mod types;
+
 #[cfg(target_os = "freebsd")]
 #[path = "platform/freebsd-types/mod.rs"]
 pub mod types;
 
-#[cfg(target_os = "netbsd")]
-#[path = "platform/netbsd-types/mod.rs"]
-pub mod types;
-
 #[cfg(target_os = "linux")]
 #[path = "platform/linux-types/mod.rs"]
+pub mod types;
+
+#[cfg(target_os = "netbsd")]
+#[path = "platform/netbsd-types/mod.rs"]
 pub mod types;
 
 #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
@@ -198,6 +202,10 @@ mod platform;
 
 #[cfg(all(target_os = "netbsd", target_arch = "x86_64"))]
 #[path = "platform/netbsd-x86_64/mod.rs"]
+mod platform;
+
+#[cfg(all(target_os = "darwin", target_arch = "x86_64"))]
+#[path = "platform/darwin-x86_64/mod.rs"]
 mod platform;
 
 pub mod util;

@@ -9,7 +9,7 @@
 use core::ffi::c_void;
 use core::mem::size_of;
 
-use crate::{sa_family_t, socklen_t};
+use crate::{iovec_t, sa_family_t, socklen_t};
 
 /// Types
 ///

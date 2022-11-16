@@ -386,6 +386,7 @@ pub const LOCK_NB: i32 = 0x04;
 pub const LOCK_UN: i32 = 0x08;
 
 /// force window to popup on open
+#[allow(overflowing_literals)]
 pub const O_POPUP: i32 = 0x8000_0000;
 /// small, clean popup window
 pub const O_ALERT: i32 = 0x2000_0000;

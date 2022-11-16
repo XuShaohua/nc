@@ -4,7 +4,7 @@
 
 //! From `sys/_types/_timeval32.h`
 
-#[derive(Debug, Close, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 #[repr(C)]
 pub struct timeval32_t {
     /// seconds

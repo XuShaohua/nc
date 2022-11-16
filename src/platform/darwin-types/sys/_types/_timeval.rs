@@ -4,7 +4,7 @@
 
 //! From `sys/_types/_timeval.h`
 
-use crate::{__darwin_suseconds_t, __darwin_time_t};
+use crate::{__darwin_time_t, suseconds_t};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[repr(C)]
@@ -12,5 +12,5 @@ pub struct timeval_t {
     /// seconds
     pub tv_sec: __darwin_time_t,
     /// and microseconds
-    pub tv_usec: __darwin_suseconds_t,
+    pub tv_usec: suseconds_t,
 }

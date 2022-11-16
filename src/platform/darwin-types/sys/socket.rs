@@ -252,7 +252,7 @@ pub const AF_CCITT: i32 = 10;
 /// IBM SNA
 pub const AF_SNA: i32 = 11;
 /// DECnet
-pub const AF_DECnet: i32 = 12;
+pub const AF_DECNET: i32 = 12;
 /// DEC Direct data link interface
 pub const AF_DLI: i32 = 13;
 /// LAT
@@ -266,19 +266,19 @@ pub const AF_ROUTE: i32 = 17;
 /// Link layer interface
 pub const AF_LINK: i32 = 18;
 /// eXpress Transfer Protocol (no AF)
-pub const pseudo_AF_XTP: i32 = 19;
+pub const PSEUDO_AF_XTP: i32 = 19;
 /// connection-oriented IP, aka ST II
 pub const AF_COIP: i32 = 20;
 /// Computer Network Technology
 pub const AF_CNT: i32 = 21;
 /// Help Identify RTIP packets
-pub const pseudo_AF_RTIP: i32 = 22;
+pub const PSEUDO_AF_RTIP: i32 = 22;
 /// Novell Internet Protocol
 pub const AF_IPX: i32 = 23;
 /// Simple Internet Protocol
 pub const AF_SIP: i32 = 24;
 /// Help Identify PIP packets
-pub const pseudo_AF_PIP: i32 = 25;
+pub const PSEUDO_AF_PIP: i32 = 25;
 /// Network Driver 'raw' access
 pub const AF_NDRV: i32 = 27;
 /// Integrated Services Digital Network
@@ -286,7 +286,7 @@ pub const AF_ISDN: i32 = 28;
 /// CCITT E.164 recommendation
 pub const AF_E164: i32 = AF_ISDN;
 /// Internal key-management function
-pub const pseudo_AF_KEY: i32 = 29;
+pub const PSEUDO_AF_KEY: i32 = 29;
 /// IPv6
 pub const AF_INET6: i32 = 30;
 /// native ATM access
@@ -298,7 +298,7 @@ pub const AF_NETBIOS: i32 = 33;
 /// PPP communication protocol
 pub const AF_PPP: i32 = 34;
 /// Used by BPF to not rewrite headers in interface output routine
-pub const pseudo_AF_HDRCMPLT: i32 = 35;
+pub const PSEUDO_AF_HDRCMPLT: i32 = 35;
 /// Reserved for internal usage
 pub const AF_RESERVED_36: i32 = 36;
 /// IEEE 802.11 protocol
@@ -357,7 +357,7 @@ pub const PF_ECMA: i32 = AF_ECMA;
 pub const PF_DATAKIT: i32 = AF_DATAKIT;
 pub const PF_CCITT: i32 = AF_CCITT;
 pub const PF_SNA: i32 = AF_SNA;
-pub const PF_DECnet: i32 = AF_DECnet;
+pub const PF_DECNET: i32 = AF_DECNET;
 pub const PF_DLI: i32 = AF_DLI;
 pub const PF_LAT: i32 = AF_LAT;
 pub const PF_HYLINK: i32 = AF_HYLINK;
@@ -365,18 +365,18 @@ pub const PF_APPLETALK: i32 = AF_APPLETALK;
 pub const PF_ROUTE: i32 = AF_ROUTE;
 pub const PF_LINK: i32 = AF_LINK;
 /// really just proto family, no AF
-pub const PF_XTP: i32 = pseudo_AF_XTP;
+pub const PF_XTP: i32 = PSEUDO_AF_XTP;
 pub const PF_COIP: i32 = AF_COIP;
 pub const PF_CNT: i32 = AF_CNT;
 pub const PF_SIP: i32 = AF_SIP;
 /// same format as AF_NS
 pub const PF_IPX: i32 = AF_IPX;
 /// same format as AF_INET
-pub const PF_RTIP: i32 = pseudo_AF_RTIP;
-pub const PF_PIP: i32 = pseudo_AF_PIP;
+pub const PF_RTIP: i32 = PSEUDO_AF_RTIP;
+pub const PF_PIP: i32 = PSEUDO_AF_PIP;
 pub const PF_NDRV: i32 = AF_NDRV;
 pub const PF_ISDN: i32 = AF_ISDN;
-pub const PF_KEY: i32 = pseudo_AF_KEY;
+pub const PF_KEY: i32 = PSEUDO_AF_KEY;
 pub const PF_INET6: i32 = AF_INET6;
 pub const PF_NATM: i32 = AF_NATM;
 pub const PF_SYSTEM: i32 = AF_SYSTEM;

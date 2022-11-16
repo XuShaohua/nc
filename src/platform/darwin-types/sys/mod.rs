@@ -7,6 +7,8 @@
 
 mod _types;
 mod fcntl;
+mod socket;
 
 pub use _types::*;
 pub use fcntl::*;
+pub use socket::*;

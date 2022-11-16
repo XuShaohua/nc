@@ -21,6 +21,7 @@ mod _seek_set;
 mod _sigset_t;
 mod _size_t;
 mod _ssize_t;
+mod _suseconds_t;
 mod _uid_t;
 mod _useconds_t;
 
@@ -43,5 +44,6 @@ pub use _seek_set::*;
 pub use _sigset_t::*;
 pub use _size_t::*;
 pub use _ssize_t::*;
+pub use _suseconds_t::*;
 pub use _uid_t::*;
 pub use _useconds_t::*;

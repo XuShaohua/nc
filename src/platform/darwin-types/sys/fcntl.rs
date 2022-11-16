@@ -6,6 +6,8 @@
 //!
 //! This file includes the definitions for open and fcntl described by POSIX for <fcntl.h>
 
+use crate::{O_DSYNC, O_SYNC};
+
 /// File status flags: these are used by open(2), fcntl(2).
 /// They are also used (indirectly) in the kernel file structure f_flags,
 /// which is a superset of the open/fcntl flags.  Open flags and f_flags

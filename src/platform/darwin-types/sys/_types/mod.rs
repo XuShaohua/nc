@@ -24,6 +24,7 @@ mod _ssize_t;
 mod _suseconds_t;
 mod _uid_t;
 mod _useconds_t;
+mod _uuid_t;
 
 pub use _blkcnt_t::*;
 pub use _blksize_t::*;
@@ -47,3 +48,4 @@ pub use _ssize_t::*;
 pub use _suseconds_t::*;
 pub use _uid_t::*;
 pub use _useconds_t::*;
+pub use _uuid_t::*;

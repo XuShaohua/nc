@@ -4,6 +4,10 @@
 
 //! From `netinet/in.h`
 
+#![allow(non_snake_case)]
+
+use crate::{in_addr_t, in_port_t, sa_family_t, sockaddr_storage_t};
+
 /// Protocols (RFC 1700)
 ///
 /// dummy for IP
@@ -409,7 +413,7 @@ pub const fn IN_PRIVATE(i: in_addr_t) -> bool {
 }
 
 #[must_use]
-pub const fn IN_LOCAL_GROUP(i: in_addr_) -> bool {
+pub const fn IN_LOCAL_GROUP(i: in_addr_t) -> bool {
     (i & 0xffff_ff00) == 0xe000_0000
 }
 
@@ -608,9 +612,9 @@ pub const IP_MAX_SOCK_MUTE_FILTER: i32 = 128;
 #[repr(C)]
 pub struct ip_mreq_t {
     /// IP multicast address of group
-    pub imr_multiaddr: in_addr,
+    pub imr_multiaddr: in_addr_t,
     /// local IP address of interface
-    pub imr_interface: in_addr,
+    pub imr_interface: in_addr_t,
 }
 
 /// Modified argument structure for IP_MULTICAST_IF, obtained from Linux.

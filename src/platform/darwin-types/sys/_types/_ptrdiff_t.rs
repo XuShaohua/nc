@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `sys/_types/_in_port_t.h`
+//! From `sys/_types/_ptrdiff_t.h`
 
-pub type in_port_t = u16;
+use crate::__darwin_ptrdiff_t;
+
+pub type ptrdiff_t = __darwin_ptrdiff_t;

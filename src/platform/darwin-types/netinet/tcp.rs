@@ -4,6 +4,8 @@
 
 //! From `netinet/tcp.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use core::mem::size_of;
 
 use crate::in_port_t;
@@ -107,34 +109,37 @@ pub const TCPOPT_SACK_PERMIT_HDR: i32 =
 pub const TCPOPT_SACK_HDR: i32 = TCPOPT_NOP << 24 | TCPOPT_NOP << 16 | TCPOPT_SACK << 8;
 
 /// Miscellaneous constants
+///
 /// Max # SACK blocks stored at sender side
 pub const MAX_SACK_BLKS: i32 = 6;
 
-/// A SACK option that specifies n blocks will have a length of (8*n + 2)
-/// bytes, so the 40 bytes available for TCP options can specify a
-/// maximum of 4 blocks.
+/// A SACK option that specifies n blocks will have a length of `(8*n + 2)` bytes,
+/// so the 40 bytes available for TCP options can specify a maximum of 4 blocks.
 ///
 /// MAX # SACKs sent in any segment
 pub const TCP_MAX_SACK: i32 = 4;
 
 /// Default maximum segment size for TCP.
+///
 /// With an IP MTU of 576, this is 536,
 /// but 512 is probably more convenient.
-/// This should be defined as MIN(512, IP_MSS - sizeof (struct tcpiphdr)).
+///
+/// This should be defined as `MIN(512, IP_MSS - sizeof (struct tcpiphdr))`.
 pub const TCP_MSS: i32 = 512;
 
-/// TCP_MINMSS is defined to be 216 which is fine for the smallest
+/// `TCP_MINMSS` is defined to be 216 which is fine for the smallest
 /// link MTU (256 bytes, SLIP interface) in the Internet.  However it is very unlikely to come across such low MTU interfaces
 /// these days (anno dato 2004).
 /// Probably it can be set to 512 without ill effects. But we play safe.
-/// See tcp_subr.c tcp_minmss SYSCTL declaration for more comments.
 /// Setting this to "0" disables the minmss check.
 pub const TCP_MINMSS: i32 = 216;
 
 /// Default maximum segment size for TCP6.
+///
 /// With an IP6 MSS of 1280, this is 1220,
 /// but 1024 is probably more convenient. (xxx kazu in doubt)
-/// This should be defined as MIN(1024, IP6_MSS - sizeof (struct tcpip6hdr))
+///
+/// This should be defined as `MIN(1024, IP6_MSS - sizeof (struct tcpip6hdr))`
 pub const TCP6_MSS: i32 = 1024;
 
 /// largest value for (unscaled) window
@@ -161,7 +166,7 @@ pub const TCP_MAXSEG: i32 = 0x02;
 pub const TCP_NOPUSH: i32 = 0x04;
 /// don't use TCP options
 pub const TCP_NOOPT: i32 = 0x08;
-/// idle time used when SO_KEEPALIVE is enabled
+/// idle time used when `SO_KEEPALIVE` is enabled
 pub const TCP_KEEPALIVE: i32 = 0x10;
 /// connection timeout
 pub const TCP_CONNECTIONTIMEOUT: i32 = 0x20;

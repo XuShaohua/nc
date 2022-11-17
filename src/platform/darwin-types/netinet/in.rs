@@ -4,6 +4,8 @@
 
 //! From `netinet/in.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use crate::{in_addr_t, in_port_t, sa_family_t, sockaddr_storage_t};
 
 /// Protocols (RFC 1700)
@@ -80,7 +82,7 @@ pub const IPPROTO_INP: i32 = 32;
 pub const IPPROTO_SEP: i32 = 33;
 /// Third Party Connect
 pub const IPPROTO_3PC: i32 = 34;
-/// InterDomain Policy Routing
+/// `InterDomain` Policy Routing
 pub const IPPROTO_IDPR: i32 = 35;
 /// XTP
 pub const IPPROTO_XTP: i32 = 36;
@@ -100,7 +102,7 @@ pub const IPPROTO_SDRP: i32 = 42;
 pub const IPPROTO_ROUTING: i32 = 43;
 /// IP6 fragmentation header
 pub const IPPROTO_FRAGMENT: i32 = 44;
-/// InterDomain Routing
+/// `InterDomain` Routing
 pub const IPPROTO_IDRP: i32 = 45;
 /// resource reservation
 pub const IPPROTO_RSVP: i32 = 46;
@@ -151,13 +153,13 @@ pub const IPPROTO_VISA: i32 = 70;
 pub const IPPROTO_IPCV: i32 = 71;
 /// Comp. Prot. Net. Executive
 pub const IPPROTO_CPNX: i32 = 72;
-/// Comp. Prot. HeartBeat
+/// Comp. Prot. `HeartBeat`
 pub const IPPROTO_CPHB: i32 = 73;
 /// Wang Span Network
 pub const IPPROTO_WSN: i32 = 74;
 /// Packet Video Protocol
 pub const IPPROTO_PVP: i32 = 75;
-/// BackRoom SATNET Monitoring
+/// `BackRoom` SATNET Monitoring
 pub const IPPROTO_BRSATMON: i32 = 76;
 /// Sun net disk proto (temp.)
 pub const IPPROTO_ND: i32 = 77;
@@ -210,7 +212,7 @@ pub const IPPROTO_GMTP: i32 = 100;
 /// 101-252: Partly Unassigned
 /// Protocol Independent Mcast
 pub const IPPROTO_PIM: i32 = 103;
-/// payload compression (IPComp)
+/// payload compression (`IPComp`)
 pub const IPPROTO_IPCOMP: i32 = 108;
 /// PGM
 pub const IPPROTO_PGM: i32 = 113;
@@ -232,25 +234,25 @@ pub const IPPROTO_DONE: i32 = 257;
 ///
 /// When a user does a bind(2) or connect(2) with a port number of zero,
 /// a non-conflicting local port address is chosen.
-/// The default range is IPPORT_RESERVED through
-/// IPPORT_USERRESERVED, although that is settable by sysctl.
+/// The default range is `IPPORT_RESERVED` through
+/// `IPPORT_USERRESERVED`, although that is settable by sysctl.
 ///
-/// A user may set the IPPROTO_IP option IP_PORTRANGE to change this
+/// A user may set the `IPPROTO_IP` option `IP_PORTRANGE` to change this
 /// default assignment range.
 ///
-/// The value IP_PORTRANGE_DEFAULT causes the default behavior.
+/// The value `IP_PORTRANGE_DEFAULT` causes the default behavior.
 ///
-/// The value IP_PORTRANGE_HIGH changes the range of candidate port numbers
+/// The value `IP_PORTRANGE_HIGH` changes the range of candidate port numbers
 /// into the "high" range.  These are reserved for client outbound connections
 /// which do not want to be filtered by any firewalls.
 ///
-/// The value IP_PORTRANGE_LOW changes the range to the "low" are
+/// The value `IP_PORTRANGE_LOW` changes the range to the "low" are
 /// that is (by convention) restricted to privileged processes.  This
 /// convention is based on "vouchsafe" principles only.  It is only secure
 /// if you trust the remote host to restrict these ports.
 ///
 /// The default range of ports and the high range can be changed by
-/// sysctl(3).  (net.inet.ip.port{hi,low}{first,last}_auto)
+/// sysctl(3).  `(net.inet.ip.port{hi,low}{first,last}_auto)`
 ///
 /// Changing those values has bad security implications if you are
 /// using a a stateless firewall that is allowing packets outside of that
@@ -273,19 +275,21 @@ pub const IPPROTO_DONE: i32 = 257;
 ///
 pub const __DARWIN_IPPORT_RESERVED: in_addr_t = 1024;
 
-/// Ports < IPPORT_RESERVED are reserved for
-/// privileged processes (e.g. root).         (IP_PORTRANGE_LOW)
+/// Ports < `IPPORT_RESERVED` are reserved for privileged processes (e.g. root).
+///
+/// (`IP_PORTRANGE_LOW`)
 pub const IPPORT_RESERVED: in_addr_t = __DARWIN_IPPORT_RESERVED;
-/// Ports > IPPORT_USERRESERVED are reserved
-/// for servers, not necessarily privileged.  (IP_PORTRANGE_DEFAULT)
+/// Ports > `IPPORT_USERRESERVED` are reserved for servers, not necessarily privileged.
+///
+/// (`IP_PORTRANGE_DEFAULT`)
 pub const IPPORT_USERRESERVED: in_addr_t = 5000;
 
-/// Default local port range to use by setting IP_PORTRANGE_HIGH
+/// Default local port range to use by setting `IP_PORTRANGE_HIGH`
 pub const IPPORT_HIFIRSTAUTO: in_addr_t = 49152;
 pub const IPPORT_HILASTAUTO: in_addr_t = 65535;
 
-/// Scanning for a free reserved port return a value below IPPORT_RESERVED,
-/// but higher than IPPORT_RESERVEDSTART.  Traditionally the start value was
+/// Scanning for a free reserved port return a value below `IPPORT_RESERVED`,
+/// but higher than `IPPORT_RESERVEDSTART`.  Traditionally the start value was
 /// 512, but that conflicts with some well-known-services that firewalls may
 /// have a fit if we use.
 pub const IPPORT_RESERVEDSTART: in_addr_t = 600;
@@ -299,7 +303,7 @@ pub struct in_addr_s {
 /// Definitions of bits in internet address integers.
 /// On subnets, the decomposition of addresses to host and net parts
 /// is done according to subnet mask, not the masks here.
-pub const INADDR_ANY: in_addr_t = 0x000_00000;
+pub const INADDR_ANY: in_addr_t = 0x0000_0000;
 /// must be masked
 pub const INADDR_BROADCAST: in_addr_t = 0xffff_ffff;
 
@@ -370,7 +374,7 @@ pub const INADDR_ALLHOSTS_GROUP: in_addr_t = 0xe000_0001;
 /// 224.0.0.2
 pub const INADDR_ALLRTRS_GROUP: in_addr_t = 0xe000_0002;
 
-/// 224.0.0.22, IGMPv3
+/// 224.0.0.22, `IGMPv3`
 pub const INADDR_ALLRPTS_GROUP: in_addr_t = 0xe000_0016;
 
 /// 224.0.0.18
@@ -407,7 +411,7 @@ pub const fn IN_ZERONET(i: in_addr_t) -> bool {
 pub const fn IN_PRIVATE(i: in_addr_t) -> bool {
     ((i & 0xff00_0000) == 0x0a00_0000)
         || ((i & 0xfff0_0000) == 0xac10_0000)
-        || ((i & 0xffff0000) == 0xc0a80000)
+        || ((i & 0xffff_0000) == 0xc0a8_0000)
 }
 
 #[must_use]
@@ -439,7 +443,7 @@ pub const INET_ADDRSTRLEN: usize = 16;
 ///
 /// Used to store options internally, to pass them to a process,
 /// or to restore options retrieved earlier.
-/// The ip_dst is used for the first-hop gateway when using a source route
+/// The `ip_dst` is used for the first-hop gateway when using a source route
 /// (this gets put into the header proper).
 #[repr(C)]
 pub struct ip_opts_t {
@@ -449,10 +453,10 @@ pub struct ip_opts_t {
     pub ip_opts: [u8; 40],
 }
 
-/// Options for use with [gs]etsockopt at the IP level.
+/// Options for use with `[gs]etsockopt` at the IP level.
 /// First word of comment is data type; bool is stored in int.
 ///
-/// buf/ip_opts; set/get IP options
+/// `buf/ip_opts`; set/get IP options
 pub const IP_OPTIONS: i32 = 1;
 /// int; header is included with data
 pub const IP_HDRINCL: i32 = 2;
@@ -466,17 +470,17 @@ pub const IP_RECVOPTS: i32 = 5;
 pub const IP_RECVRETOPTS: i32 = 6;
 /// bool; receive IP dst addr w/dgram
 pub const IP_RECVDSTADDR: i32 = 7;
-/// ip_opts; set/get IP options
+/// `ip_opts`; set/get IP options
 pub const IP_RETOPTS: i32 = 8;
-/// u_char; set/get IP multicast i/f
+/// `u_char`; set/get IP multicast i/f
 pub const IP_MULTICAST_IF: i32 = 9;
-/// u_char; set/get IP multicast ttl
+/// `u_char`; set/get IP multicast ttl
 pub const IP_MULTICAST_TTL: i32 = 10;
-/// u_char; set/get IP multicast loopback
+/// `u_char`; set/get IP multicast loopback
 pub const IP_MULTICAST_LOOP: i32 = 11;
-/// ip_mreq; add an IP group membership
+/// `ip_mreq`; add an IP group membership
 pub const IP_ADD_MEMBERSHIP: i32 = 12;
-/// ip_mreq; drop an IP group membership
+/// `ip_mreq`; drop an IP group membership
 pub const IP_DROP_MEMBERSHIP: i32 = 13;
 /// set/get IP mcast virt. iface
 pub const IP_MULTICAST_VIF: i32 = 14;
@@ -590,8 +594,8 @@ pub const IP_DEFAULT_MULTICAST_TTL: i32 = 1;
 /// normally hear sends if a member
 pub const IP_DEFAULT_MULTICAST_LOOP: i32 = 1;
 
-/// The imo_membership vector for each socket is now dynamically allocated at
-/// run-time, bounded by USHRT_MAX, and is reallocated when needed, sized
+/// The `imo_membership` vector for each socket is now dynamically allocated at
+/// run-time, bounded by `USHRT_MAX`, and is reallocated when needed, sized
 /// according to a power-of-two increment.
 pub const IP_MIN_MEMBERSHIPS: i32 = 31;
 pub const IP_MAX_MEMBERSHIPS: i32 = 4095;
@@ -606,7 +610,7 @@ pub const IP_MAX_SOCK_SRC_FILTER: i32 = 128;
 /// XXX no longer used
 pub const IP_MAX_SOCK_MUTE_FILTER: i32 = 128;
 
-/// Argument structure for IP_ADD_MEMBERSHIP and IP_DROP_MEMBERSHIP.
+/// Argument structure for `IP_ADD_MEMBERSHIP` and `IP_DROP_MEMBERSHIP`.
 #[repr(C)]
 pub struct ip_mreq_t {
     /// IP multicast address of group
@@ -615,10 +619,10 @@ pub struct ip_mreq_t {
     pub imr_interface: in_addr_t,
 }
 
-/// Modified argument structure for IP_MULTICAST_IF, obtained from Linux.
+/// Modified argument structure for `IP_MULTICAST_IF`, obtained from Linux.
 ///
 /// This is used to specify an interface index for multicast sends, as
-/// the IPv4 legacy APIs do not support this (unless IP_SENDIF is available).
+/// the IPv4 legacy APIs do not support this (unless `IP_SENDIF` is available).
 #[repr(C)]
 pub struct ip_mreqn_t {
     /// IP multicast address of group
@@ -669,7 +673,7 @@ pub const MCAST_INCLUDE: i32 = 1;
 /// fmode: exclude these source(s)
 pub const MCAST_EXCLUDE: i32 = 2;
 
-/// Argument for IP_PORTRANGE:
+/// Argument for `IP_PORTRANGE`:
 /// - which range to search when port is unspecified at bind() or connect()
 ///
 /// default range
@@ -679,22 +683,22 @@ pub const IP_PORTRANGE_HIGH: i32 = 1;
 /// "low" - vouchsafe security
 pub const IP_PORTRANGE_LOW: i32 = 2;
 
-/// IP_PKTINFO: Packet information (equivalent to  RFC2292 sec 5 for IPv4)
+/// `IP_PKTINFO`: Packet information (equivalent to  RFC2292 sec 5 for IPv4)
 /// This structure is used for
 ///
-/// 1) Receiving ancilliary data about the datagram if IP_PKTINFO sockopt is
-/// set on the socket. In this case ipi_ifindex will contain the interface
-/// index the datagram was received on, ipi_addr is the IP address the
+/// 1) Receiving ancilliary data about the datagram if `IP_PKTINFO` sockopt is
+/// set on the socket. In this case `ipi_ifindex` will contain the interface
+/// index the datagram was received on, `ipi_addr` is the IP address the
 /// datagram was received to.
 ///
 /// 2) Sending a datagram using a specific interface or IP source address.
-/// if ipi_ifindex is set to non-zero when in_pktinfo is passed as
-/// ancilliary data of type IP_PKTINFO, this will be used as the source
-/// interface to send the datagram from. If ipi_ifindex is null, ip_spec_dst
+/// if `ipi_ifindex` is set to non-zero when `in_pktinfo` is passed as
+/// ancilliary data of type `IP_PKTINFO`, this will be used as the source
+/// interface to send the datagram from. If `ipi_ifindex` is null, `ip_spec_dst`
 /// will be used for the source address.
 ///
-/// Note: if IP_BOUND_IF is set on the socket, ipi_ifindex in the ancillary
-/// IP_PKTINFO option silently overrides the bound interface when it is
+/// Note: if `IP_BOUND_IF` is set on the socket, `ipi_ifindex` in the ancillary
+/// `IP_PKTINFO` option silently overrides the bound interface when it is
 /// specified during send time.
 #[repr(C)]
 pub struct in_pktinfo_t {

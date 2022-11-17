@@ -9,8 +9,8 @@
 use crate::{O_DSYNC, O_SYNC};
 
 /// File status flags: these are used by open(2), fcntl(2).
-/// They are also used (indirectly) in the kernel file structure f_flags,
-/// which is a superset of the open/fcntl flags.  Open flags and f_flags
+/// They are also used (indirectly) in the kernel file structure `f_flags`,
+/// which is a superset of the open/fcntl flags.  Open flags and `f_flags`
 /// are inter-convertible using OFLAGS(fflags) and FFLAGS(oflags).
 /// Open/fcntl flags begin with O_; kernel-internal flags begin with F.
 /// open-only flags
@@ -60,7 +60,7 @@ pub const O_SYMLINK: i32 = 0x0020_0000;
 // synch I/O data integrity
 //pub const O_DSYNC: i32 = 0x0040_0000;
 
-/// implicitly set FD_CLOEXEC
+/// implicitly set `FD_CLOEXEC`
 pub const O_CLOEXEC: i32 = 0x0100_0000;
 
 /// no symlinks allowed in path
@@ -88,7 +88,7 @@ pub const O_DP_GETRAWENCRYPTED: i32 = 0x0001;
 pub const O_DP_GETRAWUNENCRYPTED: i32 = 0x0002;
 
 /// The O_* flags used to have only F* names, which were used in the kernel
-/// and by fcntl.  We retain the F* names for the kernel f_flags field
+/// and by fcntl.  We retain the F* names for the kernel `f_flags` field
 /// and for backward compatibility for fcntl.
 /// kernel/compat
 pub const FAPPEND: i32 = O_APPEND;
@@ -130,9 +130,9 @@ pub const F_SETOWN: i32 = 6;
 pub const F_GETLK: i32 = 7;
 /// set record locking information
 pub const F_SETLK: i32 = 8;
-/// F_SETLK; wait if blocked
+/// `F_SETLK`; wait if blocked
 pub const F_SETLKW: i32 = 9;
-/// F_SETLK; wait if blocked, return on timeout
+/// `F_SETLK`; wait if blocked, return on timeout
 pub const F_SETLKWTIMEOUT: i32 = 10;
 pub const F_FLUSH_DATA: i32 = 40;
 /// Used for regression test
@@ -169,7 +169,7 @@ pub const F_ADDSIGS: i32 = 59;
 /// add signature from same file (used by dyld for shared libs)
 pub const F_ADDFILESIGS: i32 = 61;
 
-/// used in conjunction with F_NOCACHE to indicate that DIRECT, synchonous writes
+/// used in conjunction with `F_NOCACHE` to indicate that DIRECT, synchonous writes
 ///
 /// should not be used (i.e. its ok to temporaily create cached pages)
 pub const F_NODIRECT: i32 = 62;
@@ -244,17 +244,18 @@ pub const F_ADDFILESUPPL: i32 = 104;
 /// Look up code signature information attached to a file or slice
 pub const F_GETSIGSINFO: i32 = 105;
 
-// FS-specific fcntl()'s numbers begin at 0x00010000 and go up
+/// FS-specific fcntl()'s numbers begin at 0x00010000 and go up
 pub const FCNTL_FS_SPECIFIC_BASE: i32 = 0x0001_0000;
 
-/// mark the dup with FD_CLOEXEC
+/// mark the dup with `FD_CLOEXEC`
 pub const F_DUPFD_CLOEXEC: i32 = 67;
 
-/// file descriptor flags (F_GETFD, F_SETFD)
+/// file descriptor flag
 /// close-on-exec flag
 pub const FD_CLOEXEC: i32 = 1;
 
-/// record locking flags (F_GETLK, F_SETLK, F_SETLKW)
+/// record locking flags
+///
 /// shared or read lock
 pub const F_RDLCK: i32 = 1;
 /// unlock
@@ -262,14 +263,14 @@ pub const F_UNLCK: i32 = 2;
 /// exclusive or write lock
 pub const F_WRLCK: i32 = 3;
 
-/// allocate flags (F_PREALLOCATE)
+/// allocate flags (`F_PREALLOCATE`)
 ///
 /// allocate contigious space
-pub const F_ALLOCATECONTIG: i32 = 0x00000002;
+pub const F_ALLOCATECONTIG: i32 = 0x0000_0002;
 /// allocate all requested space or no space at all
-pub const F_ALLOCATEALL: i32 = 0x00000004;
+pub const F_ALLOCATEALL: i32 = 0x0000_0004;
 
-/// Position Modes (fst_posmode) for F_PREALLOCATE
+/// Position Modes (`fst_posmode`) for `F_PREALLOCATE`
 ///
 /// Make it past all of the SEEK pos modes so that
 ///
@@ -278,7 +279,7 @@ pub const F_PEOFPOSMODE: i32 = 3;
 /// specify volume starting postion
 pub const F_VOLPOSMODE: i32 = 4;
 
-///*
+//*
 // * Advisory file segment locking data type -
 // * information passed to system by user
 // */
@@ -293,7 +294,7 @@ pub const F_VOLPOSMODE: i32 = 4;
 //#include <sys/_types/_timespec.h>
 //
 //#if __DARWIN_C_LEVEL >= __DARWIN_C_FULL
-///*
+//*
 // * Advisory file segment locking with time out -
 // * Information passed to system by user for F_SETLKWTIMEOUT
 // */
@@ -304,7 +305,7 @@ pub const F_VOLPOSMODE: i32 = 4;
 //#endif /* __DARWIN_C_LEVEL >= __DARWIN_C_FULL */
 //
 //#if !defined(_POSIX_C_SOURCE) || defined(_DARWIN_C_SOURCE)
-///*
+//*
 // * advisory file read data type -
 // * information passed by user to system
 // */
@@ -316,7 +317,7 @@ pub const F_VOLPOSMODE: i32 = 4;
 //};
 //
 //
-///*
+//*
 // * detached code signatures data type -
 // * information passed by user to system used by F_ADDSIGS and F_ADDFILESIGS.
 // * F_ADDFILESIGS is a shortcut for files that contain their own signature and
@@ -344,7 +345,7 @@ pub const F_VOLPOSMODE: i32 = 4;
 //
 //
 //
-///*
+//*
 // * DYLD needs to check if the object is allowed to be combined
 // * into the main binary. This is done between the code signature
 // * is loaded and dyld is doing all the work to process the LOAD commands.
@@ -361,7 +362,7 @@ pub const F_VOLPOSMODE: i32 = 4;
 //} fchecklv_t;
 //
 //
-///* At this time F_GETSIGSINFO can only indicate platformness.
+//* At this time F_GETSIGSINFO can only indicate platformness.
 // *  As additional requestable information is defined, new keys will be added and the
 // *  fgetsigsinfo_t structure will be lengthened to add space for the additional information
 // */

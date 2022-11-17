@@ -4,6 +4,8 @@
 
 //! From `sys/_types/_timeval.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use crate::{__darwin_time_t, suseconds_t};
 
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -4,6 +4,8 @@
 
 //! From `sys/_types/_timeval64.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[repr(C)]
 pub struct timeval64_t {

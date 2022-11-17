@@ -4,8 +4,6 @@
 
 //! From `netinet/in.h`
 
-#![allow(non_snake_case)]
-
 use crate::{in_addr_t, in_port_t, sa_family_t, sockaddr_storage_t};
 
 /// Protocols (RFC 1700)

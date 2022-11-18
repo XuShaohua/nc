@@ -2,11 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `fs/readir.c`
+
 use core::fmt;
 
 use crate::{ino_t, off_t, PATH_MAX};
-
-/// From fs/readir.c
 
 #[repr(C)]
 #[derive(Clone)]

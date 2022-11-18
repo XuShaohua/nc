@@ -65,7 +65,6 @@ mod bpf;
 mod fs;
 mod fs_readdir;
 mod hugetlb_encode;
-mod kernel;
 mod linux;
 mod uapi;
 
@@ -76,6 +75,5 @@ pub use bpf::*;
 pub use fs::*;
 pub use fs_readdir::*;
 pub use hugetlb_encode::*;
-pub use kernel::*;
 pub use linux::*;
 pub use uapi::*;

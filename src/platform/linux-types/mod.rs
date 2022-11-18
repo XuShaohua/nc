@@ -109,7 +109,6 @@ mod siginfo;
 mod signal_defs;
 mod socket;
 mod sockios;
-mod statfs;
 mod uapi;
 
 pub use basic_types::*;
@@ -156,5 +155,4 @@ pub use siginfo::*;
 pub use signal_defs::*;
 pub use socket::*;
 pub use sockios::*;
-pub use statfs::*;
 pub use uapi::*;

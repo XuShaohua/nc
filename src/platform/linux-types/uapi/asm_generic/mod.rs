@@ -4,10 +4,12 @@
 
 mod mman;
 mod mman_common;
+mod statfs;
 mod termbits;
 mod termios;
 
 pub use mman::*;
 pub use mman_common::*;
+pub use statfs::*;
 pub use termbits::*;
 pub use termios::*;

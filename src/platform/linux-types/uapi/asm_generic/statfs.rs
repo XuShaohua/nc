@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/asm-generic/statfs.h
+//! From `include/uapi/asm-generic/statfs.h`
 
 use super::basic_types::fsid_t;
 

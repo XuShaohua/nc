@@ -4,6 +4,7 @@
 
 mod aio_abi;
 mod futex;
+mod in6;
 mod inotify;
 mod io_uring;
 mod kcmp;
@@ -24,6 +25,7 @@ mod xattr;
 
 pub use aio_abi::*;
 pub use futex::*;
+pub use in6::*;
 pub use inotify::*;
 pub use io_uring::*;
 pub use kcmp::*;

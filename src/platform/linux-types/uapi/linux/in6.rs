@@ -2,10 +2,13 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/in6.h`
+//!
 //! Types and definitions for `AF_INET6`
 
-use super::basic_types::{be16_t, be32_t};
 use core::fmt;
+
+use crate::{be16_t, be32_t};
 
 /// IPv6 address structure
 #[repr(C)]

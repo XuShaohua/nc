@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/hugetlb_encode.h`
+
 //! Several system calls take a flag to request "hugetlb" huge pages.
 //! Without further specification, these system calls will use the
 //! system's default huge page size.  If a system supports multiple

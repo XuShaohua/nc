@@ -8,6 +8,7 @@ mod stat;
 pub use stat::*;
 
 mod fcntl;
+mod hugetlb_encode;
 mod ioctl;
 mod ioctls;
 mod ipcbuf;
@@ -27,6 +28,7 @@ mod termbits;
 mod termios;
 
 pub use fcntl::*;
+pub use hugetlb_encode::*;
 pub use ioctl::*;
 pub use ioctls::*;
 pub use ipcbuf::*;

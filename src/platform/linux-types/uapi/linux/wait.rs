@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-// From uapi/linux/wait.h
+//! From `include/uapi/linux/wait.h`
 
 pub const WNOHANG: i32 = 0x0000_0001;
 pub const WUNTRACED: i32 = 0x0000_0002;

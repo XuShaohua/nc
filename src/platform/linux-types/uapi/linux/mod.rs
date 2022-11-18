@@ -12,6 +12,7 @@ mod quota;
 mod reboot;
 mod uio;
 mod utsname;
+mod wait;
 mod xattr;
 
 pub use aio_abi::*;
@@ -24,4 +25,5 @@ pub use quota::*;
 pub use reboot::*;
 pub use uio::*;
 pub use utsname::*;
+pub use wait::*;
 pub use xattr::*;

@@ -116,7 +116,6 @@ mod sysctl;
 mod termbits;
 mod termios;
 mod time;
-mod time_types;
 mod uapi;
 
 pub use basic_types::*;
@@ -170,5 +169,4 @@ pub use sysctl::*;
 pub use termbits::*;
 pub use termios::*;
 pub use time::*;
-pub use time_types::*;
 pub use uapi::*;

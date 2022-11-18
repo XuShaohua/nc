@@ -2,10 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/ipc.h`
+
 #![allow(clippy::module_name_repetitions)]
 
-use super::basic_types::{gid_t, key_t, mode_t, uid_t};
-use super::msg::msgbuf_t;
+use crate::{gid_t, key_t, mode_t, msgbuf_t, uid_t};
 
 pub const IPC_PRIVATE: key_t = 0;
 

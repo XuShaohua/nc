@@ -3,12 +3,14 @@
 // in the LICENSE file.
 
 mod aio_abi;
+mod futex;
 mod io_uring;
 mod key;
 mod quota;
 mod uio;
 
 pub use aio_abi::*;
+pub use futex::*;
 pub use io_uring::*;
 pub use key::*;
 pub use quota::*;

@@ -114,8 +114,6 @@ mod statfs;
 mod swap;
 mod sysctl;
 mod termbits;
-mod termios;
-mod time;
 mod uapi;
 
 pub use basic_types::*;
@@ -167,6 +165,4 @@ pub use statfs::*;
 pub use swap::*;
 pub use sysctl::*;
 pub use termbits::*;
-pub use termios::*;
-pub use time::*;
 pub use uapi::*;

@@ -4,6 +4,7 @@
 
 mod aio_abi;
 mod futex;
+mod r#in;
 mod in6;
 mod inotify;
 mod io_uring;
@@ -32,6 +33,7 @@ pub use kcmp::*;
 pub use kexec::*;
 pub use net::*;
 pub use quota::*;
+pub use r#in::*;
 pub use reboot::*;
 pub use resource::*;
 pub use serial::*;

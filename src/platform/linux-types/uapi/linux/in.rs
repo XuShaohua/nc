@@ -2,13 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/in.h`
+
 #![allow(overflowing_literals)]
 #![allow(clippy::cast_sign_loss)]
 
 use core::mem::size_of;
 
-use crate::{be16_t, be32_t};
-use crate::{sa_family_t, sockaddr_storage_t};
+use crate::{be16_t, be32_t, sa_family_t, sockaddr_storage_t};
 
 /// INET: An implementation of the TCP/IP protocol suite for the LINUX
 /// operating system. INET is implemented using the  BSD Socket

@@ -132,7 +132,6 @@ mod timex;
 mod uapi;
 mod uapi_fadvise;
 mod uapi_fcntl;
-mod uapi_in;
 mod utime;
 
 pub use basic_types::*;
@@ -202,5 +201,4 @@ pub use timex::*;
 pub use uapi::*;
 pub use uapi_fadvise::*;
 pub use uapi_fcntl::*;
-pub use uapi_in::*;
 pub use utime::*;

@@ -3,5 +3,7 @@
 // in the LICENSE file.
 
 mod mman;
+mod mman_common;
 
 pub use mman::*;
+pub use mman_common::*;

@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// From `uapi/asm-generic/mman-common.h`
+//! From `uapi/asm-generic/mman-common.h`
 
 /// page can be read
 pub const PROT_READ: i32 = 0x1;

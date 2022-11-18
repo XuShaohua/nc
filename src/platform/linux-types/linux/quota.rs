@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/quota.h`
+
 /// element used for user quotas
 pub const USRQUOTA: i32 = 0;
 /// element used for group quotas

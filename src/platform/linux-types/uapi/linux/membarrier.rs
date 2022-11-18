@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/membarrier.h`
+
 /// enum `membarrier_cmd` - membarrier system call command
 /// @`MEMBARRIER_CMD_QUERY`:   Query the set of supported commands. It returns
 ///                          a bitmask of valid commands.

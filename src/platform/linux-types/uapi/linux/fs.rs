@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/fs.h`
+
 //! This file has definitions for some important file table structures
 //! and constants and structures used by various generic file system
 //! ioctl's.  Please do not make any changes in this file before

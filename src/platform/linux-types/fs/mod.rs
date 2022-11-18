@@ -3,5 +3,7 @@
 // in the LICENSE file.
 
 mod aio;
+mod fs_readdir;
 
 pub use aio::*;
+pub use fs_readdir::*;

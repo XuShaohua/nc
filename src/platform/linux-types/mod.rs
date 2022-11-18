@@ -74,7 +74,6 @@ mod kernel;
 mod linux;
 mod mount;
 mod msg;
-mod msgbuf;
 mod perf_event;
 mod uapi;
 
@@ -91,6 +90,5 @@ pub use kernel::*;
 pub use linux::*;
 pub use mount::*;
 pub use msg::*;
-pub use msgbuf::*;
 pub use perf_event::*;
 pub use uapi::*;

@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/mempolicy.h`
+
 //! NUMA memory policies for Linux.
 //!
 //! Both the `MPOL_*` mempolicy mode and the `MPOL_F_*` optional mode flags are

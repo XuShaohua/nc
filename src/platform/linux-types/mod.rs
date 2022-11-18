@@ -73,7 +73,6 @@ mod hugetlb_encode;
 mod kernel;
 mod linux;
 mod mount;
-mod msg;
 mod perf_event;
 mod uapi;
 
@@ -89,6 +88,5 @@ pub use hugetlb_encode::*;
 pub use kernel::*;
 pub use linux::*;
 pub use mount::*;
-pub use msg::*;
 pub use perf_event::*;
 pub use uapi::*;

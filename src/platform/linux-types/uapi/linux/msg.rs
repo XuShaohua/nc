@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/msg.h`
+
 /// ipcs ctl commands
 pub const MSG_STAT: i32 = 11;
 pub const MSG_INFO: i32 = 12;

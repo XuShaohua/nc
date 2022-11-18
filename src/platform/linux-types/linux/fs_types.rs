@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/fs_types.h`
+//!
 //! This is a header for the common implementation of dirent
 //! to fs on-disk file type conversion.
 //!
@@ -17,8 +19,7 @@
 //! All those file systems can use this generic code for the
 //! conversions.
 
-use crate::mode_t;
-use crate::S_IFMT;
+use crate::{mode_t, S_IFMT};
 
 /// struct dirent file types
 /// exposed to user via `getdents(2)`, `readdir(3)`

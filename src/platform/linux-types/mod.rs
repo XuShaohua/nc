@@ -94,8 +94,6 @@ mod prctl;
 mod ptrace;
 mod resource;
 mod rseq;
-mod sched;
-mod sched_types;
 mod uapi;
 
 pub use basic_types::*;
@@ -132,6 +130,4 @@ pub use prctl::*;
 pub use ptrace::*;
 pub use resource::*;
 pub use rseq::*;
-pub use sched::*;
-pub use sched_types::*;
 pub use uapi::*;

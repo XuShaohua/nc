@@ -5,7 +5,7 @@
 use super::basic_types::size_t;
 use super::linux_time64::timespec64_t;
 use super::uapi_socket::{kernel_sa_family_t, kernel_sockaddr_storage_t};
-use super::uio::iovec_t;
+use crate::iovec_t;
 
 pub type sa_family_t = kernel_sa_family_t;
 

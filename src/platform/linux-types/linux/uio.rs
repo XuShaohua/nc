@@ -2,18 +2,30 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use core::ffi::c_void;
+//! From `linux/uio.h`
 
-use super::basic_types::size_t;
+use core::ffi::c_void;
+use core::ptr;
+
+use crate::size_t;
 
 /// Berkeley style UIO structures
 #[repr(C)]
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct iovec_t {
     /// BSD uses caddr_t (1003.1g requires void *)
     pub iov_base: *mut c_void,
     /// Must be size_t (1003.1g)
     pub iov_len: size_t,
+}
+
+impl Default for iovec_t {
+    fn default() -> Self {
+        Self {
+            iov_base: ptr::null::<*const c_void>() as *mut c_void,
+            iov_len: 0,
+        }
+    }
 }
 
 /// `UIO_MAXIOV` shall be at least 16 1003.1g (5.4.1.1)

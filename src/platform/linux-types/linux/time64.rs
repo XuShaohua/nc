@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/time64.h`
+
 pub type time64_t = i64;
 pub type timeu64_t = u64;
 

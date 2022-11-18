@@ -4,6 +4,8 @@
 
 mod getcpu;
 mod key;
+mod time64;
 
 pub use getcpu::*;
 pub use key::*;
+pub use time64::*;

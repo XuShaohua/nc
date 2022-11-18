@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use core::ffi::c_void;
+
 use super::basic_types::size_t;
 
 /// Berkeley style UIO structures
@@ -9,7 +11,7 @@ use super::basic_types::size_t;
 #[derive(Debug, Default, Clone)]
 pub struct iovec_t {
     /// BSD uses caddr_t (1003.1g requires void *)
-    pub iov_base: usize,
+    pub iov_base: *mut c_void,
     /// Must be size_t (1003.1g)
     pub iov_len: size_t,
 }

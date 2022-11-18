@@ -100,7 +100,6 @@ mod seccomp;
 mod sem;
 mod shm;
 mod shmbuf;
-mod signal_defs;
 mod uapi;
 
 pub use basic_types::*;
@@ -143,5 +142,4 @@ pub use seccomp::*;
 pub use sem::*;
 pub use shm::*;
 pub use shmbuf::*;
-pub use signal_defs::*;
 pub use uapi::*;

@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/net.h`
+//!
 //! NET: An implementation of the SOCKET network access protocol.
 //! This is the master header file for the Linux NET layer,
 //! or, in plain English: the networking handling part of the kernel.

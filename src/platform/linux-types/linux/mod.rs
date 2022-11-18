@@ -4,12 +4,14 @@
 
 mod getcpu;
 mod key;
+mod net;
 mod quota;
 mod socket;
 mod time64;
 
 pub use getcpu::*;
 pub use key::*;
+pub use net::*;
 pub use quota::*;
 pub use socket::*;
 pub use time64::*;

@@ -144,7 +144,7 @@ pub mod types;
 #[path = "platform/freebsd-types/mod.rs"]
 pub mod types;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "android"))]
 #[path = "platform/linux-types/mod.rs"]
 pub mod types;
 
@@ -152,7 +152,10 @@ pub mod types;
 #[path = "platform/netbsd-types/mod.rs"]
 pub mod types;
 
-#[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+#[cfg(all(
+    any(target_os = "linux", target_os = "android"),
+    target_arch = "aarch64"
+))]
 #[path = "platform/linux-aarch64/mod.rs"]
 mod platform;
 

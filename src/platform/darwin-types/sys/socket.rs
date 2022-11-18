@@ -53,7 +53,7 @@ pub const SO_TIMESTAMP_MONOTONIC: i32 = 0x0800;
 /// there is an accept filter
 pub const SO_ACCEPTFILTER: i32 = 0x1000;
 
-/// Additional options, not kept in so_options.
+/// Additional options, not kept in `so_options`.
 /// send buffer size
 pub const SO_SNDBUF: i32 = 0x1001;
 /// receive buffer size
@@ -98,7 +98,7 @@ pub const SO_NUMRCVPKT: i32 = 0x1112;
 /// Network service type
 pub const SO_NET_SERVICE_TYPE: i32 = 0x1116;
 
-/// Get QoS marking in effect for socket
+/// Get `QoS` marking in effect for socket
 pub const SO_NETSVC_MARKING_LEVEL: i32 = 0x1119;
 
 /// Best effort
@@ -131,7 +131,7 @@ pub const NET_SERVICE_TYPE_VI: i32 = 3;
 ///
 /// "Interactive Voice", very low delay tolerant, very low loss tolerant,
 /// inelastic flow, constant packet rate, somewhat fixed size.
-/// E.g. VoIP.
+/// E.g. `VoIP`.
 pub const NET_SERVICE_TYPE_VO: i32 = 4;
 
 /// Responsive Multimedia Audio/Video
@@ -163,7 +163,7 @@ pub const NET_SERVICE_TYPE_OAM: i32 = 7;
 /// urgency (user waiting for output).
 pub const NET_SERVICE_TYPE_RD: i32 = 8;
 
-/// These are supported values for SO_NETSVC_MARKING_LEVEL
+/// These are supported values for `SO_NETSVC_MARKING_LEVEL`
 /// The outgoing network interface is not known
 pub const NETSVC_MRKNG_UNKNOWN: i32 = 0;
 /// Default marking at layer 2 (for example Wi-Fi WMM)
@@ -251,7 +251,7 @@ pub const AF_DATAKIT: i32 = 9;
 pub const AF_CCITT: i32 = 10;
 /// IBM SNA
 pub const AF_SNA: i32 = 11;
-/// DECnet
+/// `DECnet`
 pub const AF_DECNET: i32 = 12;
 /// DEC Direct data link interface
 pub const AF_DLI: i32 = 13;
@@ -293,7 +293,7 @@ pub const AF_INET6: i32 = 30;
 pub const AF_NATM: i32 = 31;
 /// Kernel event messages
 pub const AF_SYSTEM: i32 = 32;
-/// NetBIOS
+/// `NetBIOS`
 pub const AF_NETBIOS: i32 = 33;
 /// PPP communication protocol
 pub const AF_PPP: i32 = 34;
@@ -329,7 +329,7 @@ pub const _SS_PAD1SIZE: usize = _SS_ALIGNSIZE - size_of::<u8>() - size_of::<sa_f
 pub const _SS_PAD2SIZE: usize =
     _SS_MAXSIZE - size_of::<u8>() - size_of::<sa_family_t>() - _SS_PAD1SIZE - _SS_ALIGNSIZE;
 
-/// sockaddr_storage
+/// `sockaddr_storage`
 pub struct sockaddr_storage_t {
     /// address length
     pub ss_len: u8,
@@ -369,9 +369,9 @@ pub const PF_XTP: i32 = PSEUDO_AF_XTP;
 pub const PF_COIP: i32 = AF_COIP;
 pub const PF_CNT: i32 = AF_CNT;
 pub const PF_SIP: i32 = AF_SIP;
-/// same format as AF_NS
+/// same format as `AF_NS`
 pub const PF_IPX: i32 = AF_IPX;
-/// same format as AF_INET
+/// same format as `AF_INET`
 pub const PF_RTIP: i32 = PSEUDO_AF_RTIP;
 pub const PF_PIP: i32 = PSEUDO_AF_PIP;
 pub const PF_NDRV: i32 = AF_NDRV;
@@ -396,12 +396,12 @@ pub const PF_BOND: i32 = 0x626f_6e64;
 
 pub const NET_MAXID: i32 = AF_MAX;
 
-/// PF_ROUTE - Routing table
+/// `PF_ROUTE` - Routing table
 ///
 /// Three additional levels are defined:
 /// Fourth: address family, 0 is wildcard
 /// Fifth: type of info, defined below
-/// Sixth: flag(s) to mask with for NET_RT_FLAGS
+/// Sixth: flag(s) to mask with for `NET_RT_FLAGS`
 ///
 /// dump; may limit to a.f.
 pub const NET_RT_DUMP: i32 = 1;
@@ -465,11 +465,11 @@ pub const MSG_WAITALL: i32 = 0x40;
 pub const MSG_DONTWAIT: i32 = 0x80;
 /// data completes connection
 pub const MSG_EOF: i32 = 0x100;
-/// Start of 'hold' seq; dump so_temp, deprecated
+/// Start of 'hold' seq; dump `so_temp`, deprecated
 pub const MSG_FLUSH: i32 = 0x400;
-/// Hold frag in so_temp, deprecated
+/// Hold frag in `so_temp`, deprecated
 pub const MSG_HOLD: i32 = 0x800;
-/// Send the packet in so_temp, deprecated
+/// Send the packet in `so_temp`, deprecated
 pub const MSG_SEND: i32 = 0x1000;
 /// Data ready to be read
 pub const MSG_HAVEMORE: i32 = 0x2000;
@@ -483,13 +483,13 @@ pub const MSG_NOSIGNAL: i32 = 0x80000;
 
 /// "Socket"-level control message types:
 ///
-/// access rights (array of int)
+/// access rights (`array of int`)
 pub const SCM_RIGHTS: i32 = 0x01;
-/// timestamp (struct timeval)
+/// timestamp (`struct timeval`)
 pub const SCM_TIMESTAMP: i32 = 0x02;
-/// process creds (struct cmsgcred)
+/// process creds (`struct cmsgcred`)
 pub const SCM_CREDS: i32 = 0x03;
-/// timestamp (uint64_t)
+/// timestamp (`uint64_t`)
 pub const SCM_TIMESTAMP_MONOTONIC: i32 = 0x04;
 
 /// howto arguments for shutdown(2), specified by Posix.1g.

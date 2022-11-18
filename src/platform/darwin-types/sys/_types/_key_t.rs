@@ -2,11 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
+//! From `sys/_types/_key_t.h`
 
-mod r#in;
-mod tcp;
-
-pub use r#in::*;
-pub use tcp::*;
+/// IPC key (for Sys V IPC)
+pub type key_t = i32;

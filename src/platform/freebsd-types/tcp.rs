@@ -39,20 +39,18 @@ pub struct tcphdr_t {
     pub th_seq: tcp_seq,
     /// acknowledgement number
     pub th_ack: tcp_seq,
-    #[cfg(target_endian = "little")]
-    /// (unused)
-    pub th_x2: [u8; 4],
+
+    // (unused)
+    //pub th_x2: 4,
     #[cfg(target_endian = "little")]
     /// data offset
-    pub th_off: [u8; 4],
+    pub th_off: u8,
 
     #[cfg(target_endian = "big")]
     /// data offset
-    pub th_off: [u8; 4],
-    #[cfg(target_endian = "big")]
-    /// (unused)
-    pub th_x2: [u8; 4],
-
+    pub th_off: u8,
+    // (unused)
+    //pub th_x2: 4,
     pub th_flags: u8,
     /// window
     pub th_win: u16,

@@ -4,5 +4,5 @@
 
 //! From `sys/_types/_id_t.h`
 
-/// can hold pid_t, gid_t, or uid_t
+/// can hold `pid_t`, `gid_t`, or `uid_t`
 pub type id_t = u32;

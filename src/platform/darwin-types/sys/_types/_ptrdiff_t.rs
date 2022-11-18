@@ -2,11 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
+//! From `sys/_types/_ptrdiff_t.h`
 
-mod r#in;
-mod tcp;
+use crate::__darwin_ptrdiff_t;
 
-pub use r#in::*;
-pub use tcp::*;
+pub type ptrdiff_t = __darwin_ptrdiff_t;

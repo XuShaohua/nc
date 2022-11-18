@@ -2,11 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
+//! From `sys/_types/_in_port_t.h`
 
-mod r#in;
-mod tcp;
-
-pub use r#in::*;
-pub use tcp::*;
+pub type in_port_t = u16;

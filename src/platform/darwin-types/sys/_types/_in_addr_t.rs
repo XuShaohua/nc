@@ -2,11 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
+//! From `sys/_types/_in_addr_t.h`
 
-mod r#in;
-mod tcp;
-
-pub use r#in::*;
-pub use tcp::*;
+/// base type for internet address
+pub type in_addr_t = u32;

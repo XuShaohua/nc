@@ -146,7 +146,7 @@ pub struct siginfo_t {
     __pad: [usize; 7],
 }
 
-/// Values for si_code
+/// Values for `si_code`
 ///
 /// Codes for SIGILL
 /// if only I knew...
@@ -282,7 +282,7 @@ pub struct sigaction_t {
 pub const SA_ONSTACK: i32 = 0x0001;
 /// restart system on signal return
 pub const SA_RESTART: i32 = 0x0002;
-/// reset to SIG_DFL when taking signal
+/// reset to `SIG_DFL` when taking signal
 pub const SA_RESETHAND: i32 = 0x0004;
 /// do not generate SIGCHLD on child stop
 pub const SA_NOCLDSTOP: i32 = 0x0008;
@@ -290,23 +290,21 @@ pub const SA_NOCLDSTOP: i32 = 0x0008;
 pub const SA_NODEFER: i32 = 0x0010;
 /// don't keep zombies around
 pub const SA_NOCLDWAIT: i32 = 0x0020;
-/// signal handler with SA_SIGINFO args
+/// signal handler with `SA_SIGINFO` args
 pub const SA_SIGINFO: i32 = 0x0040;
 /// do not bounce off kernel's sigtramp
 pub const SA_USERTRAMP: i32 = 0x0100;
 /// This will provide 64bit register set in a 32bit user address space
-/// signal handler with SA_SIGINFO args with 64bit regs information
+/// signal handler with `SA_SIGINFO` args with 64bit regs information
 pub const SA_64REGSET: i32 = 0x0200;
 
-/* the following are the only bits we support from user space, the
- * rest are for kernel use only.
- */
+/// the following are the only bits we support from user space, the
+/// rest are for kernel use only.
 pub const SA_USERSPACE_MASK: i32 =
     SA_ONSTACK | SA_RESTART | SA_RESETHAND | SA_NOCLDSTOP | SA_NODEFER | SA_NOCLDWAIT | SA_SIGINFO;
 
-/*
- * Flags for sigprocmask:
- */
+/// Flags for sigprocmask:
+///
 /// block specified signal set
 pub const SIG_BLOCK: i32 = 1;
 /// unblock specified signal set
@@ -338,7 +336,7 @@ pub const SS_DISABLE: i32 = 0x0004;
 /// (32K)minimum allowable stack
 pub const MINSIGSTKSZ: i32 = 32768;
 /// (128K)recommended stack size
-pub const SIGSTKSZ: i32 = 131072;
+pub const SIGSTKSZ: i32 = 131_072;
 
 /// 4.3 compatibility:
 /// Signal vector "template" used in sigvec call.

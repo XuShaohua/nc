@@ -4,12 +4,14 @@
 
 mod mman;
 mod mman_common;
+mod sockios;
 mod statfs;
 mod termbits;
 mod termios;
 
 pub use mman::*;
 pub use mman_common::*;
+pub use sockios::*;
 pub use statfs::*;
 pub use termbits::*;
 pub use termios::*;

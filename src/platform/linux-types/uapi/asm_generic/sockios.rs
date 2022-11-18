@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/sockios.h`
+
 /// Socket-level I/O control calls.
 pub const FIOSETOWN: i32 = 0x8901;
 pub const SIOCSPGRP: i32 = 0x8902;

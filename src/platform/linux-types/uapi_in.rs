@@ -7,8 +7,8 @@
 
 use core::mem::size_of;
 
-use super::basic_types::{be16_t, be32_t};
-use super::linux_socket::{sa_family_t, sockaddr_storage_t};
+use crate::{be16_t, be32_t};
+use crate::{sa_family_t, sockaddr_storage_t};
 
 /// INET: An implementation of the TCP/IP protocol suite for the LINUX
 /// operating system. INET is implemented using the  BSD Socket

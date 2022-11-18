@@ -2,10 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::size_t;
-use super::linux_time64::timespec64_t;
-use super::uapi_socket::{kernel_sa_family_t, kernel_sockaddr_storage_t};
-use crate::iovec_t;
+use crate::{iovec_t, kernel_sa_family_t, kernel_sockaddr_storage_t, size_t, timespec64_t};
 
 pub type sa_family_t = kernel_sa_family_t;
 

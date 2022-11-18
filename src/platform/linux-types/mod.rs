@@ -140,7 +140,6 @@ mod uapi_mman_common;
 mod uapi_net;
 mod uapi_resource;
 mod uapi_serial;
-mod uapi_socket;
 mod utime;
 
 pub use basic_types::*;
@@ -218,5 +217,4 @@ pub use uapi_mman_common::*;
 pub use uapi_net::*;
 pub use uapi_resource::*;
 pub use uapi_serial::*;
-pub use uapi_socket::*;
 pub use utime::*;

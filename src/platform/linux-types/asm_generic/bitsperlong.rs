@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/asm-generic/bitsperlong.h
+//! From `include/asm-generic/bitsperlong.h`
 
 #[cfg(target_pointer_width = "64")]
 pub const BITS_PER_LONG: usize = 64;

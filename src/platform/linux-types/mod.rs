@@ -60,14 +60,12 @@ pub use signal::*;
 
 mod asm_generic;
 mod basic_types;
-mod bitsperlong;
 mod fs;
 mod linux;
 mod uapi;
 
 pub use asm_generic::*;
 pub use basic_types::*;
-pub use bitsperlong::*;
 pub use fs::*;
 pub use linux::*;
 pub use uapi::*;

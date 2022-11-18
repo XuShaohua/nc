@@ -4,8 +4,7 @@
 
 use core::fmt;
 
-use super::basic_types::{ino_t, off_t};
-use super::limits::PATH_MAX;
+use crate::{ino_t, off_t, PATH_MAX};
 
 /// From fs/readir.c
 

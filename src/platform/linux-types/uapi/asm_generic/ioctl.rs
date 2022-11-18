@@ -2,7 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/asm-generic/ioctl.h
+//! From `include/uapi/asm-generic/ioctl.h`
+//!
 //! ioctl command encoding: 32 bits total, command in lower 16 bits,
 //! size of the parameter structure in the lower 14 bits of the
 //! upper 16 bits.

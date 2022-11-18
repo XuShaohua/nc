@@ -2,11 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/capability.h`
+
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_possible_wrap)]
 
-use super::basic_types::le32_t;
 use core::mem::size_of;
+
+use crate::le32_t;
 
 /// User-level do most of the mapping between kernel and user
 /// capabilities based on the version tag given by the kernel. The

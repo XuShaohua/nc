@@ -2,8 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::poll_t;
-use super::fcntl::O_CLOEXEC;
+//! From `include/uapi/linux/eventpoll.h`
+
+use crate::{poll_t, O_CLOEXEC};
 
 /// Flags for `epoll_create1()`.
 pub const EPOLL_CLOEXEC: i32 = O_CLOEXEC;

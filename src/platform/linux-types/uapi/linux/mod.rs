@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 mod aio_abi;
+mod eventpoll;
 mod fadvise;
 mod fcntl;
 mod futex;
@@ -54,6 +55,7 @@ mod wait;
 mod xattr;
 
 pub use aio_abi::*;
+pub use eventpoll::*;
 pub use fadvise::*;
 pub use fcntl::*;
 pub use futex::*;

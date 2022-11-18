@@ -2,13 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/dirent.h`
+
 #![allow(clippy::module_name_repetitions)]
 
 use alloc::string::String;
 use core::fmt;
 
-use super::basic_types::{ino64_t, loff_t};
-use super::limits::PATH_MAX;
+use crate::{ino64_t, loff_t, PATH_MAX};
 
 #[repr(C)]
 #[derive(Clone)]

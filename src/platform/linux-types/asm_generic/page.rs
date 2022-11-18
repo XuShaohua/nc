@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/asm-generic/page.h
+//! From `include/asm-generic/page.h`
 //!
 //! Generic page.h implementation, for NOMMU architectures.
 //! This provides the dummy definitions for the memory management.

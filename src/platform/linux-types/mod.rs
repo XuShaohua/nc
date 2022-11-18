@@ -53,14 +53,12 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
-mod page;
-pub use page::*;
-
 #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
 mod signal;
 #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
 pub use signal::*;
 
+mod asm_generic;
 mod basic_types;
 mod bitsperlong;
 mod bpf;
@@ -76,6 +74,7 @@ mod mount;
 mod perf_event;
 mod uapi;
 
+pub use asm_generic::*;
 pub use basic_types::*;
 pub use bitsperlong::*;
 pub use bpf::*;

@@ -14,7 +14,7 @@ use crate::size_t;
 #[derive(Debug, Clone)]
 pub struct iovec_t {
     /// BSD uses caddr_t (1003.1g requires void *)
-    pub iov_base: *mut c_void,
+    pub iov_base: *const c_void,
     /// Must be size_t (1003.1g)
     pub iov_len: size_t,
 }
@@ -22,7 +22,7 @@ pub struct iovec_t {
 impl Default for iovec_t {
     fn default() -> Self {
         Self {
-            iov_base: ptr::null::<*const c_void>() as *mut c_void,
+            iov_base: ptr::null(),
             iov_len: 0,
         }
     }

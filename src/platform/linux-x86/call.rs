@@ -19,8 +19,6 @@ use crate::sysno::*;
 use crate::types::*;
 
 /// Accept a connection on a socket.
-
-/// Accept a connection on a socket.
 pub unsafe fn accept4(
     sockfd: i32,
     addr: &mut sockaddr_in_t,
@@ -5027,6 +5025,8 @@ pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Resul
 /// # Example
 ///
 /// ```
+/// use core::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
@@ -5037,7 +5037,7 @@ pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Resul
 /// for ref mut item in (&mut buf).iter() {
 ///     iov.push(nc::iovec_t {
 ///         iov_len: item.len(),
-///         iov_base: item.as_ptr() as usize,
+///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
 /// let iov_len = iov.len();
@@ -5064,6 +5064,8 @@ pub unsafe fn preadv(
 /// # Example
 ///
 /// ```
+/// use core::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
@@ -5074,7 +5076,7 @@ pub unsafe fn preadv(
 /// for ref mut item in (&mut buf).iter() {
 ///     iov.push(nc::iovec_t {
 ///         iov_len: item.len(),
-///         iov_base: item.as_ptr() as usize,
+///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
 /// let iov_len = iov.len();
@@ -5276,6 +5278,8 @@ pub unsafe fn pwrite64(
 /// # Example
 ///
 /// ```
+/// use core::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
@@ -5286,7 +5290,7 @@ pub unsafe fn pwrite64(
 /// for ref mut item in (&mut buf).iter() {
 ///     iov.push(nc::iovec_t {
 ///         iov_len: item.len(),
-///         iov_base: item.as_ptr() as usize,
+///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
 /// let ret = unsafe { nc::readv(fd, &mut iov) };
@@ -5324,6 +5328,8 @@ pub unsafe fn pwritev(
 /// # Example
 ///
 /// ```
+/// use core::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
@@ -5334,7 +5340,7 @@ pub unsafe fn pwritev(
 /// for ref mut item in (&mut buf).iter() {
 ///     iov.push(nc::iovec_t {
 ///         iov_len: item.len(),
-///         iov_base: item.as_ptr() as usize,
+///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
 /// let ret = unsafe { nc::readv(fd, &mut iov) };
@@ -5507,6 +5513,8 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 /// # Example
 ///
 /// ```
+/// use core::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
@@ -5518,7 +5526,7 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 /// // TODO(Shaohua): Replace with as_mut_ptr()
 ///     iov.push(nc::iovec_t {
 ///         iov_len: item.len(),
-///         iov_base: item.as_ptr() as usize,
+///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
 /// let ret = unsafe { nc::readv(fd, &mut iov) };
@@ -8569,6 +8577,8 @@ pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, E
 /// # Example
 ///
 /// ```
+/// use core::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
@@ -8579,7 +8589,7 @@ pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, E
 /// for ref mut item in (&mut buf).iter() {
 ///     iov.push(nc::iovec_t {
 ///         iov_len: item.len(),
-///         iov_base: item.as_ptr() as usize,
+///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
 /// let ret = unsafe { nc::readv(fd, &mut iov) };

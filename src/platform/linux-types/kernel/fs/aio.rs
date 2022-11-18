@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `fs/aio.c`
+//! From `kernel/fs/aio.c`
 
 use crate::{sigset_t, size_t};
 

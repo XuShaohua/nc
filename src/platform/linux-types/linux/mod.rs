@@ -4,8 +4,10 @@
 
 mod aio_abi;
 mod io_uring;
+mod key;
 mod uio;
 
 pub use aio_abi::*;
 pub use io_uring::*;
+pub use key::*;
 pub use uio::*;

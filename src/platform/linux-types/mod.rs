@@ -96,7 +96,6 @@ mod resource;
 mod rseq;
 mod sched;
 mod sched_types;
-mod seccomp;
 mod uapi;
 
 pub use basic_types::*;
@@ -135,5 +134,4 @@ pub use resource::*;
 pub use rseq::*;
 pub use sched::*;
 pub use sched_types::*;
-pub use seccomp::*;
 pub use uapi::*;

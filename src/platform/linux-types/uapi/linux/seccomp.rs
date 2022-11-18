@@ -2,11 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/linux/seccomp.h
+//! From `include/uapi/linux/seccomp.h`
 
 #![allow(clippy::module_name_repetitions)]
 
-use super::ioctl::IO;
+use crate::IO;
 
 /// Valid values for seccomp.mode and prctl(`PR_SET_SECCOMP`, <mode>)
 /// seccomp is not in use.

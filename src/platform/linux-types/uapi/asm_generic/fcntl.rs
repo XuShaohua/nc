@@ -4,9 +4,10 @@
 
 //! From `include/uapi/asm-generic/fcntl.h`
 
-use super::basic_types::{loff_t, off_t, pid_t};
+use crate::{loff_t, off_t, pid_t};
+
 #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
-use super::O_DIRECTORY;
+use crate::O_DIRECTORY;
 
 pub const O_ACCMODE: i32 = 0o000_0003;
 pub const O_RDONLY: i32 = 0o000_0000;

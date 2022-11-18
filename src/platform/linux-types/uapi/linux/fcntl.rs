@@ -4,7 +4,7 @@
 
 //! From `include/uapi/linux/fcntl.h`
 
-use super::fcntl::F_LINUX_SPECIFIC_BASE;
+use crate::F_LINUX_SPECIFIC_BASE;
 
 pub const F_SETLEASE: i32 = F_LINUX_SPECIFIC_BASE;
 pub const F_GETLEASE: i32 = F_LINUX_SPECIFIC_BASE + 1;

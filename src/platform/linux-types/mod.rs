@@ -130,7 +130,6 @@ mod time_types;
 mod times;
 mod timex;
 mod uapi;
-mod uapi_fadvise;
 mod utime;
 
 pub use basic_types::*;
@@ -198,5 +197,4 @@ pub use time_types::*;
 pub use times::*;
 pub use timex::*;
 pub use uapi::*;
-pub use uapi_fadvise::*;
 pub use utime::*;

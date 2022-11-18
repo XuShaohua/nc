@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-// From uapi/linux/fadvise.h
+//! From `include/uapi/linux/fadvise.h`
 
 /// No further special treatment.
 pub const POSIX_FADV_NORMAL: i32 = 0;

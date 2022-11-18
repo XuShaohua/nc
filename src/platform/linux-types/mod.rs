@@ -113,7 +113,6 @@ mod splice;
 mod statfs;
 mod swap;
 mod sysctl;
-mod termbits;
 mod uapi;
 
 pub use basic_types::*;
@@ -164,5 +163,4 @@ pub use splice::*;
 pub use statfs::*;
 pub use swap::*;
 pub use sysctl::*;
-pub use termbits::*;
 pub use uapi::*;

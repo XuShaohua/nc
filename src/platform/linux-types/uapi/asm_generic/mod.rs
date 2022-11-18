@@ -4,8 +4,10 @@
 
 mod mman;
 mod mman_common;
+mod termbits;
 mod termios;
 
 pub use mman::*;
 pub use mman_common::*;
+pub use termbits::*;
 pub use termios::*;

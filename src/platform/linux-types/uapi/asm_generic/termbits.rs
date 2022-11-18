@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/termbits.h`
+
 pub type cc_t = u8;
 pub type speed_t = u32;
 pub type tcflag_t = u32;

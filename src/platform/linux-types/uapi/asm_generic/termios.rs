@@ -2,11 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// Most architectures have straight copies of the x86 code, with
-/// varying levels of bug fixes on top. Usually it's a good idea
-/// to use this generic version instead, but be careful to avoid
-/// ABI changes.
-/// New architectures should not provide their own version.
+//! From `include/uapi/asm-generic/termios.h`
+//!
+//! Most architectures have straight copies of the x86 code, with
+//! varying levels of bug fixes on top. Usually it's a good idea
+//! to use this generic version instead, but be careful to avoid
+//! ABI changes.
+//!
+//! New architectures should not provide their own version.
 
 #[repr(C)]
 #[derive(Default, Debug, Clone)]

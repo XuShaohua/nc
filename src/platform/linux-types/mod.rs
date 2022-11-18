@@ -127,7 +127,6 @@ mod termbits;
 mod termios;
 mod time;
 mod time_types;
-mod times;
 mod timex;
 mod uapi;
 
@@ -193,6 +192,5 @@ pub use termbits::*;
 pub use termios::*;
 pub use time::*;
 pub use time_types::*;
-pub use times::*;
 pub use timex::*;
 pub use uapi::*;

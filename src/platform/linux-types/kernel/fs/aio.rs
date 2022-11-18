@@ -2,9 +2,10 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::{sigset_t, size_t};
+//! From `fs/aio.c`
 
-// FROM fs/aio.c
+use crate::{sigset_t, size_t};
+
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]
 #[derive(Debug, Default)]

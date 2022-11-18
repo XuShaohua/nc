@@ -88,7 +88,6 @@ mod msg;
 mod msgbuf;
 mod perf_event;
 mod personality;
-mod poll;
 mod uapi;
 
 pub use basic_types::*;
@@ -119,5 +118,4 @@ pub use msg::*;
 pub use msgbuf::*;
 pub use perf_event::*;
 pub use personality::*;
-pub use poll::*;
 pub use uapi::*;

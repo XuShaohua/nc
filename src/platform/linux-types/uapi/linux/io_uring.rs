@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `linux/io_uring.h`
+//! From `uapi/linux/io_uring.h`
 
 #![allow(clippy::module_name_repetitions)]
 

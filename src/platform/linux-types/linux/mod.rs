@@ -2,10 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-mod aio_abi;
-mod futex;
 mod getcpu;
-mod io_uring;
 mod kcmp;
 mod kexec;
 mod key;
@@ -14,10 +11,7 @@ mod reboot;
 mod uio;
 mod utsname;
 
-pub use aio_abi::*;
-pub use futex::*;
 pub use getcpu::*;
-pub use io_uring::*;
 pub use kcmp::*;
 pub use kexec::*;
 pub use key::*;

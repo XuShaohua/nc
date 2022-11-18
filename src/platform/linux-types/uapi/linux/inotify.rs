@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
+//! From `include/uapi/linux/inotify.h`
+
+use crate::{O_CLOEXEC, O_NONBLOCK};
 
 /// struct `inotify_event` - structure read from the inotify device for each event
 ///
@@ -124,11 +126,3 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
 /// Flags for `sys_inotify_init1`.
 pub const IN_CLOEXEC: i32 = O_CLOEXEC;
 pub const IN_NONBLOCK: i32 = O_NONBLOCK;
-
-// ioctl numbers: inotify uses 'I' prefix for all ioctls,
-// except historical FIONREAD, which is based on 'T'.
-//
-// INOTIFY_IOC_SETNEXTWD: set desired number of next created
-// watch descriptor.
-// FIXME(Shaohua):
-//pub const INOTIFY_IOC_SETNEXTWD: i32 = _IOW;('I', 0, __s32)

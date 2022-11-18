@@ -137,7 +137,6 @@ mod uapi_in6;
 mod uapi_linux_tcp;
 mod uapi_mman;
 mod uapi_mman_common;
-mod uapi_net;
 mod utime;
 
 pub use basic_types::*;
@@ -212,5 +211,4 @@ pub use uapi_in6::*;
 pub use uapi_linux_tcp::*;
 pub use uapi_mman::*;
 pub use uapi_mman_common::*;
-pub use uapi_net::*;
 pub use utime::*;

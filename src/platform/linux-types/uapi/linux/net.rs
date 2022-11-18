@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::linux_socket::AF_MAX;
+//! From `include/uapi/linux/net.h`
+
+use crate::AF_MAX;
 
 /// NET: An implementation of the SOCKET network access protocol.
 /// This is the master header file for the Linux NET layer,

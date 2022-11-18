@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/limits.h`
+
 pub const NR_OPEN: i32 = 1024;
 
 /// supplemental group IDs are available

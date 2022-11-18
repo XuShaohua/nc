@@ -2,8 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `linux/kexec.h`
+
 #![allow(overflowing_literals)]
-use super::basic_types::size_t;
+
+use crate::size_t;
 
 /// kexec system call -  It loads the new kernel to boot into.
 /// kexec does not sync, or unmount filesystems so if you need

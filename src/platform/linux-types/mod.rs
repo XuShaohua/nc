@@ -142,7 +142,6 @@ mod uapi_resource;
 mod uapi_serial;
 mod uapi_socket;
 mod uapi_stat;
-mod uapi_timerfd;
 mod utime;
 
 pub use basic_types::*;
@@ -222,5 +221,4 @@ pub use uapi_resource::*;
 pub use uapi_serial::*;
 pub use uapi_socket::*;
 pub use uapi_stat::*;
-pub use uapi_timerfd::*;
 pub use utime::*;

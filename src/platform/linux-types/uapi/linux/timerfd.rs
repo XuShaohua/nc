@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
+//! From `include/uapi/linux/timerfd.h`
 
-// From uapi/linux/timerfd.h
+use crate::{O_CLOEXEC, O_NONBLOCK};
 
 /// CAREFUL: Check include/asm-generic/fcntl.h when defining
 /// new flags, since they might collide with `O_*` ones.

@@ -110,7 +110,6 @@ mod signal_defs;
 mod socket;
 mod sockios;
 mod statfs;
-mod swap;
 mod uapi;
 
 pub use basic_types::*;
@@ -158,5 +157,4 @@ pub use signal_defs::*;
 pub use socket::*;
 pub use sockios::*;
 pub use statfs::*;
-pub use swap::*;
 pub use uapi::*;

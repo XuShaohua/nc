@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/swap.h`
+
 /// set if swap priority specified
 pub const SWAP_FLAG_PREFER: i32 = 0x8000;
 pub const SWAP_FLAG_PRIO_MASK: i32 = 0x7fff;

@@ -10,6 +10,7 @@ mod kcmp;
 mod key;
 mod quota;
 mod uio;
+mod utsname;
 
 pub use aio_abi::*;
 pub use futex::*;
@@ -19,3 +20,4 @@ pub use kcmp::*;
 pub use key::*;
 pub use quota::*;
 pub use uio::*;
+pub use utsname::*;

@@ -148,7 +148,6 @@ mod uapi_timerfd;
 mod uapi_wait;
 mod uapi_xattr;
 mod utime;
-mod utsname;
 
 pub use basic_types::*;
 pub use bitsperlong::*;
@@ -233,4 +232,3 @@ pub use uapi_timerfd::*;
 pub use uapi_wait::*;
 pub use uapi_xattr::*;
 pub use utime::*;
-pub use utsname::*;

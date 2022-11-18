@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `linux/utsname.h`
+
 use core::{fmt, str};
 
 // Length of the entries in `struct utsname_t` is 65.

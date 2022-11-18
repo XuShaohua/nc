@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/socket.h`
+
 use crate::{iovec_t, kernel_sa_family_t, kernel_sockaddr_storage_t, size_t, timespec64_t};
 
 pub type sa_family_t = kernel_sa_family_t;

@@ -4,8 +4,10 @@
 
 mod getcpu;
 mod key;
+mod socket;
 mod time64;
 
 pub use getcpu::*;
 pub use key::*;
+pub use socket::*;
 pub use time64::*;

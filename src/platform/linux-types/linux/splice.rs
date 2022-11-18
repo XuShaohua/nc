@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-// From linux/splice.h
+//! From `include/linux/splice.h`
 
 /// Flags passed in from splice/tee/vmsplice
 /// move pages instead of copying

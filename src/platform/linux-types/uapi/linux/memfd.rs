@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::hugetlb_encode::{
+//! From `include/uapi/linux/memfd.h`
+
+use crate::{
     HUGETLB_FLAG_ENCODE_16GB, HUGETLB_FLAG_ENCODE_16MB, HUGETLB_FLAG_ENCODE_1GB,
     HUGETLB_FLAG_ENCODE_1MB, HUGETLB_FLAG_ENCODE_256MB, HUGETLB_FLAG_ENCODE_2GB,
     HUGETLB_FLAG_ENCODE_2MB, HUGETLB_FLAG_ENCODE_32MB, HUGETLB_FLAG_ENCODE_512KB,

@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/socket.h`
+
 /// For setsockopt(3)
 pub const SOL_SOCKET: i32 = 1;
 

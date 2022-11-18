@@ -102,7 +102,6 @@ mod shm;
 mod shmbuf;
 mod siginfo;
 mod signal_defs;
-mod socket;
 mod uapi;
 
 pub use basic_types::*;
@@ -147,5 +146,4 @@ pub use shm::*;
 pub use shmbuf::*;
 pub use siginfo::*;
 pub use signal_defs::*;
-pub use socket::*;
 pub use uapi::*;

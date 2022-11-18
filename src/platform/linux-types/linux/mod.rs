@@ -4,6 +4,7 @@
 
 mod aio_abi;
 mod futex;
+mod getcpu;
 mod io_uring;
 mod kcmp;
 mod key;
@@ -12,6 +13,7 @@ mod uio;
 
 pub use aio_abi::*;
 pub use futex::*;
+pub use getcpu::*;
 pub use io_uring::*;
 pub use kcmp::*;
 pub use key::*;

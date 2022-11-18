@@ -2,8 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::time_t;
-use super::ipc::ipc_perm_t;
+//! From `include/uapi/linux/sem.h`
+
+use crate::{ipc_perm_t, time_t};
 
 /// semop flags
 /// undo the operation on exit

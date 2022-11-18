@@ -130,7 +130,6 @@ mod time_types;
 mod times;
 mod timex;
 mod uapi;
-mod utime;
 
 pub use basic_types::*;
 pub use bitsperlong::*;
@@ -197,4 +196,3 @@ pub use time_types::*;
 pub use times::*;
 pub use timex::*;
 pub use uapi::*;
-pub use utime::*;

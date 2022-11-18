@@ -53,11 +53,6 @@ pub use arch::*;
 mod arch;
 pub use arch::*;
 
-#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
-mod signal;
-#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
-pub use signal::*;
-
 mod asm_generic;
 mod basic_types;
 mod fs;

@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/asm-generic/signal.h
+//! From `include/uapi/asm-generic/signal.h`
 
 use crate::{sighandler_t, size_t, BITS_PER_LONG};
 

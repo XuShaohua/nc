@@ -2,17 +2,17 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/shm.h`
+
 #![allow(clippy::module_name_repetitions)]
 
-use super::basic_types::{ipc_pid_t, time_t};
-use super::hugetlb_encode::{
-    HUGETLB_FLAG_ENCODE_16GB, HUGETLB_FLAG_ENCODE_16MB, HUGETLB_FLAG_ENCODE_1GB,
-    HUGETLB_FLAG_ENCODE_1MB, HUGETLB_FLAG_ENCODE_256MB, HUGETLB_FLAG_ENCODE_2GB,
-    HUGETLB_FLAG_ENCODE_2MB, HUGETLB_FLAG_ENCODE_32MB, HUGETLB_FLAG_ENCODE_512KB,
-    HUGETLB_FLAG_ENCODE_512MB, HUGETLB_FLAG_ENCODE_64KB, HUGETLB_FLAG_ENCODE_8MB,
-    HUGETLB_FLAG_ENCODE_MASK, HUGETLB_FLAG_ENCODE_SHIFT,
+use crate::{
+    ipc_perm_t, ipc_pid_t, time_t, HUGETLB_FLAG_ENCODE_16GB, HUGETLB_FLAG_ENCODE_16MB,
+    HUGETLB_FLAG_ENCODE_1GB, HUGETLB_FLAG_ENCODE_1MB, HUGETLB_FLAG_ENCODE_256MB,
+    HUGETLB_FLAG_ENCODE_2GB, HUGETLB_FLAG_ENCODE_2MB, HUGETLB_FLAG_ENCODE_32MB,
+    HUGETLB_FLAG_ENCODE_512KB, HUGETLB_FLAG_ENCODE_512MB, HUGETLB_FLAG_ENCODE_64KB,
+    HUGETLB_FLAG_ENCODE_8MB, HUGETLB_FLAG_ENCODE_MASK, HUGETLB_FLAG_ENCODE_SHIFT,
 };
-use super::ipc::ipc_perm_t;
 
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be
 /// modified by sysctl. The SHMMAX and SHMALL values have been chosen to

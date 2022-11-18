@@ -98,7 +98,6 @@ mod sched;
 mod sched_types;
 mod seccomp;
 mod sem;
-mod shm;
 mod shmbuf;
 mod uapi;
 
@@ -140,6 +139,5 @@ pub use sched::*;
 pub use sched_types::*;
 pub use seccomp::*;
 pub use sem::*;
-pub use shm::*;
 pub use shmbuf::*;
 pub use uapi::*;

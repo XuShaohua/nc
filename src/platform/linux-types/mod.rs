@@ -92,7 +92,6 @@ mod poll;
 mod posix_types;
 mod prctl;
 mod ptrace;
-mod resource;
 mod rseq;
 mod uapi;
 
@@ -128,6 +127,5 @@ pub use poll::*;
 pub use posix_types::*;
 pub use prctl::*;
 pub use ptrace::*;
-pub use resource::*;
 pub use rseq::*;
 pub use uapi::*;

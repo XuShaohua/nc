@@ -2,6 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod fs;
 mod fs_types;
 mod getcpu;
 mod key;
@@ -11,6 +12,7 @@ mod socket;
 mod time64;
 mod timex;
 
+pub use fs::*;
 pub use fs_types::*;
 pub use getcpu::*;
 pub use key::*;

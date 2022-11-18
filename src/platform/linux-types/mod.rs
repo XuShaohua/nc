@@ -87,7 +87,6 @@ mod mqueue;
 mod msg;
 mod msgbuf;
 mod perf_event;
-mod personality;
 mod uapi;
 
 pub use basic_types::*;
@@ -117,5 +116,4 @@ pub use mqueue::*;
 pub use msg::*;
 pub use msgbuf::*;
 pub use perf_event::*;
-pub use personality::*;
 pub use uapi::*;

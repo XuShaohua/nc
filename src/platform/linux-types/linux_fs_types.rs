@@ -17,8 +17,8 @@
 //! All those file systems can use this generic code for the
 //! conversions.
 
-use super::basic_types::mode_t;
-use super::uapi_stat::S_IFMT;
+use crate::mode_t;
+use crate::S_IFMT;
 
 /// struct dirent file types
 /// exposed to user via `getdents(2)`, `readdir(3)`

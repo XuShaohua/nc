@@ -8,7 +8,7 @@
 //! This is the master header file for the Linux NET layer,
 //! or, in plain English: the networking handling part of the kernel.
 
-use super::fcntl::{O_CLOEXEC, O_NONBLOCK};
+use crate::{O_CLOEXEC, O_NONBLOCK};
 
 /// Historically, `SOCKWQ_ASYNC_NOSPACE` & `SOCKWQ_ASYNC_WAITDATA` were located
 /// in `sock->flags`, but moved into `sk->sk_wq->flags` to be RCU protected.

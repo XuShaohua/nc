@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/linux/timex.h`
+
 /// switch between adjtime/adjtimex modes
 pub const ADJ_ADJTIME: i32 = 0x8000;
 /// old-fashioned adjtime

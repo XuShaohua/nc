@@ -61,11 +61,6 @@ mod signal;
 #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
 pub use signal::*;
 
-#[cfg(target_arch = "loongarch64")]
-mod stat;
-#[cfg(target_arch = "loongarch64")]
-pub use stat::*;
-
 mod basic_types;
 mod bitsperlong;
 mod bpf;

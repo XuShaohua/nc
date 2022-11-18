@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/stat.h`
+
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]

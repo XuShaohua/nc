@@ -2,12 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/mount.h`
+
 /// These are the fs-independent mount-flags: up to 32 flags are supported
 ///
 /// Usage of these is restricted within the kernel to core mount(2) code and
 /// callers of `sys_mount()` only.  Filesystems should be using the `SB_*`
 /// equivalent instead.
-
+///
 /// Mount read-only
 pub const MS_RDONLY: usize = 1;
 /// Ignore suid and sgid bits

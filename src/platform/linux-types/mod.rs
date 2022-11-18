@@ -70,7 +70,6 @@ mod fs_readdir;
 mod hugetlb_encode;
 mod kernel;
 mod linux;
-mod mount;
 mod uapi;
 
 pub use asm_generic::*;
@@ -85,5 +84,4 @@ pub use fs_readdir::*;
 pub use hugetlb_encode::*;
 pub use kernel::*;
 pub use linux::*;
-pub use mount::*;
 pub use uapi::*;

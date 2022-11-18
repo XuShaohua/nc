@@ -4,8 +4,7 @@
 
 //! From include/uapi/asm-generic/msgbuf.h
 
-use super::basic_types::{pid_t, time_t};
-use super::ipc::ipc_perm_t;
+use crate::{ipc_perm_t, pid_t, time_t};
 
 /// Generic `msqid64_ds` structure.
 ///

@@ -91,7 +91,6 @@ mod personality;
 mod poll;
 mod posix_types;
 mod prctl;
-mod ptrace;
 mod rseq;
 mod uapi;
 
@@ -126,6 +125,5 @@ pub use personality::*;
 pub use poll::*;
 pub use posix_types::*;
 pub use prctl::*;
-pub use ptrace::*;
 pub use rseq::*;
 pub use uapi::*;

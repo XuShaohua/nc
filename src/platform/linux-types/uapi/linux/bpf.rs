@@ -2,9 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/bpf.h`
+
 #![allow(clippy::module_name_repetitions)]
 
-use super::basic_types::{be16_t, be32_t};
+use crate::{be16_t, be32_t};
 
 /// Extended instruction set based on top of classic BPF
 

@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 mod aio_abi;
+mod bpf;
 mod capability;
 mod eventpoll;
 mod fadvise;
@@ -57,6 +58,7 @@ mod wait;
 mod xattr;
 
 pub use aio_abi::*;
+pub use bpf::*;
 pub use capability::*;
 pub use eventpoll::*;
 pub use fadvise::*;

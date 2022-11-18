@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::fs::rwf_t;
+//! From `linux/aio_abi.h
+
+use crate::rwf_t;
 
 pub type aio_context_t = usize;
 

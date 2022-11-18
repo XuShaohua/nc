@@ -66,7 +66,6 @@ mod stat;
 #[cfg(target_arch = "loongarch64")]
 pub use stat::*;
 
-mod aio_abi;
 mod basic_types;
 mod bitsperlong;
 mod bpf;
@@ -157,7 +156,6 @@ mod uapi_xattr;
 mod utime;
 mod utsname;
 
-pub use aio_abi::*;
 pub use basic_types::*;
 pub use bitsperlong::*;
 pub use bpf::*;

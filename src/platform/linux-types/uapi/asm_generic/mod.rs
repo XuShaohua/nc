@@ -9,6 +9,7 @@ pub use stat::*;
 
 mod mman;
 mod mman_common;
+mod posix_types;
 mod resource;
 mod shmbuf;
 mod siginfo;
@@ -21,6 +22,7 @@ mod termios;
 
 pub use mman::*;
 pub use mman_common::*;
+pub use posix_types::*;
 pub use resource::*;
 pub use shmbuf::*;
 pub use siginfo::*;

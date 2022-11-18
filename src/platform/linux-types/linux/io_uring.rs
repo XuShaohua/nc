@@ -2,10 +2,12 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `linux/io_uring.h`
+
 #![allow(clippy::module_name_repetitions)]
 
-use super::basic_types::off_t;
-use super::fs::rwf_t;
+use crate::off_t;
+use crate::rwf_t;
 
 #[repr(C)]
 #[derive(Copy, Clone)]

@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::time::timeval_t;
+//! From `include/uapi/linux/resource.h`
+
+use crate::timeval_t;
 
 /// Resource control/accounting header file for linux
 

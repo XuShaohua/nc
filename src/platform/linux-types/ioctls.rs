@@ -13,9 +13,7 @@
 //! try to be compatible with some Unix variants for the same
 //! architecture.
 
-use super::ioctl::{IO, IOR, IOW, IOWR};
-use super::termbits::termios2_t;
-use super::uapi_serial::serial_iso7816_t;
+use crate::{serial_iso7816_t, termios2_t, IO, IOR, IOW, IOWR};
 
 /// 0x54 is just a magic number to make these relatively unique ('T')
 pub const TCGETS: i32 = 0x5401;

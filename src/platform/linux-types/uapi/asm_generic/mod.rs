@@ -9,6 +9,7 @@ pub use stat::*;
 
 mod mman;
 mod mman_common;
+mod shmbuf;
 mod siginfo;
 mod signal_defs;
 mod socket;
@@ -19,6 +20,7 @@ mod termios;
 
 pub use mman::*;
 pub use mman_common::*;
+pub use shmbuf::*;
 pub use siginfo::*;
 pub use signal_defs::*;
 pub use socket::*;

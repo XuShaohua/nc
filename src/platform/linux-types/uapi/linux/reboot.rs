@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `linux/reboot.h`
+//! From `include/uapi/linux/reboot.h`
 
 /// Magic values required to use `_reboot()` system call.
 #[allow(overflowing_literals)]

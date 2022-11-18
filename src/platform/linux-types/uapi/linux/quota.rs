@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `linux/quota.h`
+//! From `include/uapi/linux/quota.h`
 
 pub const MAXQUOTAS: i32 = 3;
 /// element used for user quotas

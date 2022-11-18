@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-// From uapi/linux/xattr.h
+//! From `include/uapi/linux/xattr.h`
 
 /// set value, fail if attr already exists
 pub const XATTR_CREATE: i32 = 0x1;

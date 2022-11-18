@@ -2,8 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::time64_t;
-use super::time::timespec_t;
+use crate::{time64_t, timespec_t};
 
 #[repr(C)]
 #[derive(Debug, Default, Clone)]

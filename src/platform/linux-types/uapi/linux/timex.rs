@@ -2,8 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::basic_types::time64_t;
-use super::time::timeval_t;
+//! From `include/uapi/linux/timex.h`
+
+use crate::{time64_t, timeval_t};
 
 /// NTP API version
 pub const NTP_API: i32 = 4;

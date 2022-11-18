@@ -30,7 +30,6 @@ pub struct fsid_t {
 pub type off_t = isize;
 pub type loff_t = i64;
 pub type time_t = isize;
-pub type time64_t = i64;
 pub type clock_t = isize;
 pub type timer_t = i32;
 pub type clockid_t = i32;

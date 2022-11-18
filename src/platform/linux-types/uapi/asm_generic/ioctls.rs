@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From include/uapi/asm-generic/ioctls.h
+//! From `include/uapi/asm-generic/ioctls.h`
 //!
 //! These are the most common definitions for tty ioctl numbers.
 //! Most of them do not use the recommended `_IOC()`, but there is

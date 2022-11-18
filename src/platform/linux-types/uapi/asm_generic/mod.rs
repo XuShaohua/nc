@@ -7,6 +7,7 @@ mod stat;
 #[cfg(test_arch = "loongarch64")]
 pub use stat::*;
 
+mod ioctls;
 mod ipcbuf;
 mod mman;
 mod mman_common;
@@ -22,6 +23,7 @@ mod statfs;
 mod termbits;
 mod termios;
 
+pub use ioctls::*;
 pub use ipcbuf::*;
 pub use mman::*;
 pub use mman_common::*;

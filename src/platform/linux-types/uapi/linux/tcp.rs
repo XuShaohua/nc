@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From uapi/linux/tcp.h
+//! From `include/uapi/linux/tcp.h`
 
 /// TCP general constants
 /// IPv4 (RFC1122, RFC2581)

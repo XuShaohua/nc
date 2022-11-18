@@ -134,7 +134,6 @@ mod uapi_fadvise;
 mod uapi_fcntl;
 mod uapi_in;
 mod uapi_in6;
-mod uapi_linux_tcp;
 mod utime;
 
 pub use basic_types::*;
@@ -206,5 +205,4 @@ pub use uapi_fadvise::*;
 pub use uapi_fcntl::*;
 pub use uapi_in::*;
 pub use uapi_in6::*;
-pub use uapi_linux_tcp::*;
 pub use utime::*;

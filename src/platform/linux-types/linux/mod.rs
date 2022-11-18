@@ -9,6 +9,7 @@ mod io_uring;
 mod kcmp;
 mod key;
 mod quota;
+mod reboot;
 mod uio;
 mod utsname;
 
@@ -19,5 +20,6 @@ pub use io_uring::*;
 pub use kcmp::*;
 pub use key::*;
 pub use quota::*;
+pub use reboot::*;
 pub use uio::*;
 pub use utsname::*;

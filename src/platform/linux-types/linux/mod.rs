@@ -5,9 +5,11 @@
 mod aio_abi;
 mod io_uring;
 mod key;
+mod quota;
 mod uio;
 
 pub use aio_abi::*;
 pub use io_uring::*;
 pub use key::*;
+pub use quota::*;
 pub use uio::*;

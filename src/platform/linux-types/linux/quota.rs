@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `linux/quota.h`
+
 pub const MAXQUOTAS: i32 = 3;
 /// element used for user quotas
 pub const USRQUOTA: i32 = 0;
@@ -11,12 +13,15 @@ pub const GRPQUOTA: i32 = 1;
 pub const PRJQUOTA: i32 = 2;
 
 // Definitions for the default names of the quotas files.
-//#define INITQFNAMES { \
-//	"user",    /* USRQUOTA */ \
-//	"group",   /* GRPQUOTA */ \
-//	"project", /* PRJQUOTA */ \
-//	"undefined", \
-//};
+pub const INITQFNAMES: &[&str] = &[
+    // USRQUOTA
+    "user",
+    // GRPQUOTA
+    "group",
+    // PRJQUOTA
+    "project",
+    "undefined",
+];
 
 /// Command definitions for the 'quotactl' system call.
 /// The commands are broken into a main command defined below

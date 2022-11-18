@@ -2,11 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/asm-generic/siginfo.h`
+
 #![allow(clippy::module_name_repetitions)]
 
-use super::basic_types::{clock_t, pid_t, timer_t, uid_t};
 use core::fmt;
 use core::mem::size_of;
+
+use crate::{clock_t, pid_t, timer_t, uid_t};
 
 #[repr(C)]
 #[derive(Clone, Copy)]

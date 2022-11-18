@@ -9,6 +9,7 @@ pub use stat::*;
 
 mod mman;
 mod mman_common;
+mod siginfo;
 mod socket;
 mod sockios;
 mod statfs;
@@ -17,6 +18,7 @@ mod termios;
 
 pub use mman::*;
 pub use mman_common::*;
+pub use siginfo::*;
 pub use socket::*;
 pub use sockios::*;
 pub use statfs::*;

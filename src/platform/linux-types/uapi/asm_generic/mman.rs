@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// From `uapi/asm-generic/mman.h`
+//! From `linux/uapi/asm-generic/mman.h`
 
 /// stack-like segment
 pub const MAP_GROWSDOWN: i32 = 0x0100;

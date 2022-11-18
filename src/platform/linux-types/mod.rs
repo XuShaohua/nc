@@ -135,7 +135,6 @@ mod uapi_fcntl;
 mod uapi_in;
 mod uapi_in6;
 mod uapi_linux_tcp;
-mod uapi_mman;
 mod uapi_mman_common;
 mod utime;
 
@@ -209,6 +208,5 @@ pub use uapi_fcntl::*;
 pub use uapi_in::*;
 pub use uapi_in6::*;
 pub use uapi_linux_tcp::*;
-pub use uapi_mman::*;
 pub use uapi_mman_common::*;
 pub use utime::*;

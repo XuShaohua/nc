@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 fn main() -> Result<(), nc::Errno> {
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "android"))]
     let fd = unsafe { nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0)? };
 
     #[cfg(target_os = "freebsd")]

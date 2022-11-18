@@ -17,7 +17,7 @@ fn unlockpt(pty_fd: i32) -> Result<(), nc::Errno> {
 }
 
 fn open_pty() -> Result<(i32, i32), nc::Errno> {
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "android"))]
     let pty_fd = unsafe { nc::openat(nc::AT_FDCWD, "/dev/ptmx", nc::O_RDWR, 0)? };
     #[cfg(target_os = "freebsd")]
     let pty_fd = unsafe { nc::open("/dev/ptmx", nc::O_RDWR, 0)? };
@@ -28,7 +28,7 @@ fn open_pty() -> Result<(i32, i32), nc::Errno> {
     println!("sname: {}", sname);
     unlockpt(pty_fd)?;
 
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "android"))]
     let tty_fd = unsafe { nc::openat(nc::AT_FDCWD, &sname, nc::O_RDWR | nc::O_NOCTTY, 0)? };
 
     #[cfg(target_os = "freebsd")]

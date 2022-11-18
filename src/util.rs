@@ -144,7 +144,7 @@ pub fn read_syscall_list() -> Result<Syscalls, Errno> {
     Ok(set)
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "android"))]
 #[allow(clippy::cast_possible_truncation)]
 #[allow(clippy::cast_possible_wrap)]
 pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {

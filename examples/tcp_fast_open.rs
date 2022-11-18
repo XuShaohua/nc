@@ -7,10 +7,10 @@ fn main() -> Result<(), nc::Errno> {
 
     // For Linux, value is the queue length of pending packets.
     // See https://github.com/rust-lang/socket2/issues/49
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "android"))]
     let queue_len: i32 = 5;
     // For the others, just a boolean value for enable and disable.
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(target_os = "freebsd")]
     let queue_len: i32 = 1;
     let queue_len_ptr = &queue_len as *const i32 as usize;
 

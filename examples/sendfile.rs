@@ -6,7 +6,7 @@ fn main() {
     println!("S_IRUSR: {}", nc::S_IRUSR);
     println!("S_IRGRP: {}", nc::S_IRGRP);
 
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "android"))]
     let in_fd = unsafe {
         nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!")
     };
@@ -16,7 +16,7 @@ fn main() {
         nc::openat(nc::AT_FDCWD, "/etc/passwd", nc::O_RDONLY, 0).expect("Failed to open file!")
     };
 
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "linux", target_os = "android"))]
     let out_fd = unsafe {
         nc::openat(
             nc::AT_FDCWD,

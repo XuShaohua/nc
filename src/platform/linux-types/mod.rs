@@ -90,7 +90,6 @@ mod perf_event;
 mod personality;
 mod poll;
 mod posix_types;
-mod rseq;
 mod uapi;
 
 pub use basic_types::*;
@@ -123,5 +122,4 @@ pub use perf_event::*;
 pub use personality::*;
 pub use poll::*;
 pub use posix_types::*;
-pub use rseq::*;
 pub use uapi::*;

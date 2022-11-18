@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `include/uapi/linux/ioprio.h`
+
 #![allow(clippy::module_name_repetitions)]
 
 /// Gives us 8 prio classes with 13-bits of data for each class

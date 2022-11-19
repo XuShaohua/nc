@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `sys/sys/_sigset.h`
+//! From `sys/_sigset.h`
 
 pub const _SIG_WORDS: usize = 4;
 pub const _SIG_MAXSIG: i32 = 128;

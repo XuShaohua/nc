@@ -8,6 +8,7 @@ mod reboot;
 mod sched;
 mod select;
 mod socket;
+mod syslimits;
 mod unistd;
 
 pub use mman::*;
@@ -16,4 +17,5 @@ pub use reboot::*;
 pub use sched::*;
 pub use select::*;
 pub use socket::*;
+pub use syslimits::*;
 pub use unistd::*;

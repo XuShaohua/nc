@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::super::basic_types::{gid_t, mode_t, off_t, uid_t};
+//! From `arch/mips/include/uapi/asm/stat.h`
+
+use crate::{gid_t, mode_t, off_t, uid_t};
 
 /// The memory layout is the same as of struct stat64 of the 32-bit kernel.
 #[repr(C)]

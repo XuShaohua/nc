@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From arch/mips/include/uapi/asm/signal.h
+//! From `arch/mips/include/uapi/asm/signal.h`
 
 use core::mem::size_of;
 

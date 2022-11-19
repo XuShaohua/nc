@@ -5,6 +5,7 @@
 //! From `netinet/in.h`
 
 #![allow(overflowing_literals)]
+#![allow(clippy::module_name_repetitions)]
 
 use crate::sa_family_t;
 
@@ -115,7 +116,7 @@ pub const IPPROTO_INP: i32 = 32;
 pub const IPPROTO_DCCP: i32 = 33;
 /// Third Party Connect
 pub const IPPROTO_3PC: i32 = 34;
-/// InterDomain Policy Routing
+/// `InterDomain` Policy Routing
 pub const IPPROTO_IDPR: i32 = 35;
 /// XTP
 pub const IPPROTO_XTP: i32 = 36;
@@ -133,7 +134,7 @@ pub const IPPROTO_SDRP: i32 = 42;
 pub const IPPROTO_ROUTING: i32 = 43;
 /// IP6 fragmentation header
 pub const IPPROTO_FRAGMENT: i32 = 44;
-/// InterDomain Routing
+/// `InterDomain` Routing
 pub const IPPROTO_IDRP: i32 = 45;
 /// resource reservation
 pub const IPPROTO_RSVP: i32 = 46;
@@ -189,13 +190,13 @@ pub const IPPROTO_VISA: i32 = 70;
 pub const IPPROTO_IPCV: i32 = 71;
 /// Comp. Prot. Net. Executive
 pub const IPPROTO_CPNX: i32 = 72;
-/// Comp. Prot. HeartBeat
+/// Comp. Prot. `HeartBeat`
 pub const IPPROTO_CPHB: i32 = 73;
 /// Wang Span Network
 pub const IPPROTO_WSN: i32 = 74;
 /// Packet Video Protocol
 pub const IPPROTO_PVP: i32 = 75;
-/// BackRoom SATNET Monitoring
+/// `BackRoom` SATNET Monitoring
 pub const IPPROTO_BRSATMON: i32 = 76;
 /// Sun net disk proto (temp.)
 pub const IPPROTO_ND: i32 = 77;
@@ -245,7 +246,7 @@ pub const IPPROTO_ENCAP: i32 = 98;
 pub const IPPROTO_APES: i32 = 99;
 /// GMTP
 pub const IPPROTO_GMTP: i32 = 100;
-/// payload compression (IPComp)
+/// payload compression (`IPComp`)
 pub const IPPROTO_IPCOMP: i32 = 108;
 /// SCTP
 pub const IPPROTO_SCTP: i32 = 132;
@@ -278,17 +279,17 @@ pub const IPPROTO_RESERVED_254: i32 = 254;
 pub const IPPROTO_OLD_DIVERT: i32 = 254;
 pub const IPPROTO_MAX: i32 = 256;
 
-/// last return value of *_input(), meaning "all job for this pkt is done".
+/// last return value of `*_input()`, meaning "all job for this pkt is done".
 pub const IPPROTO_DONE: i32 = 257;
 
 /// Only used internally, so can be outside the range of valid IP protocols.
 /// divert pseudo-protocol
 pub const IPPROTO_DIVERT: i32 = 258;
-/// SeND pseudo-protocol
+/// SEND pseudo-protocol
 pub const IPPROTO_SEND: i32 = 259;
 
 /// Defined to avoid confusion.  The master value is defined by
-/// PROTO_SPACER in sys/protosw.h.
+/// `PROTO_SPACER` in sys/protosw.h.
 ///
 /// spacer for loadable protos
 pub const IPPROTO_SPACER: i32 = 32767;
@@ -297,19 +298,19 @@ pub const IPPROTO_SPACER: i32 = 32767;
 ///
 /// When a user does a bind(2) or connect(2) with a port number of zero,
 /// a non-conflicting local port address is chosen.
-/// The default range is IPPORT_HIFIRSTAUTO through
-/// IPPORT_HILASTAUTO, although that is settable by sysctl.
+/// The default range is `IPPORT_HIFIRSTAUTO` through
+/// `IPPORT_HILASTAUTO`, although that is settable by sysctl.
 ///
-/// A user may set the IPPROTO_IP option IP_PORTRANGE to change this
+/// A user may set the `IPPROTO_IP` option `IP_PORTRANGE` to change this
 /// default assignment range.
 ///
-/// The value IP_PORTRANGE_DEFAULT causes the default behavior.
+/// The value `IP_PORTRANGE_DEFAULT` causes the default behavior.
 ///
-/// The value IP_PORTRANGE_HIGH changes the range of candidate port numbers
+/// The value `IP_PORTRANGE_HIGH` changes the range of candidate port numbers
 /// into the "high" range.  These are reserved for client outbound connections
 /// which do not want to be filtered by any firewalls.
 ///
-/// The value IP_PORTRANGE_LOW changes the range to the "low" are
+/// The value `IP_PORTRANGE_LOW` changes the range to the "low" are
 /// that is (by convention) restricted to privileged processes.  This
 /// convention is based on "vouchsafe" principles only.  It is only secure
 /// if you trust the remote host to restrict these ports.
@@ -335,20 +336,20 @@ pub const IPPROTO_SPACER: i32 = 32767;
 ///             1024 - 49151 Registered Ports
 ///            49152 - 65535 Dynamic and/or Private Ports
 ///
-/// Ports < IPPORT_RESERVED are reserved for
-/// privileged processes (e.g. root).         (IP_PORTRANGE_LOW)
+/// `Ports < IPPORT_RESERVED` are reserved for
+/// privileged processes (e.g. root). (`IP_PORTRANGE_LOW`)
 pub const IPPORT_RESERVED: i32 = 1024;
 
-/// Default local port range, used by IP_PORTRANGE_DEFAULT
+/// Default local port range, used by `IP_PORTRANGE_DEFAULT`
 pub const IPPORT_EPHEMERALFIRST: i32 = 10000;
 pub const IPPORT_EPHEMERALLAST: i32 = 65535;
 
-/// Dynamic port range, used by IP_PORTRANGE_HIGH.
+/// Dynamic port range, used by `IP_PORTRANGE_HIGH`.
 pub const IPPORT_HIFIRSTAUTO: i32 = 49152;
 pub const IPPORT_HILASTAUTO: i32 = 65535;
 
-/// Scanning for a free reserved port return a value below IPPORT_RESERVED,
-/// but higher than IPPORT_RESERVEDSTART.  Traditionally the start value was
+/// Scanning for a free reserved port return a value below `IPPORT_RESERVED`,
+/// but higher than `IPPORT_RESERVEDSTART`.  Traditionally the start value was
 /// 512, but that conflicts with some well-known-services that firewalls may
 /// have a fit if we use.
 pub const IPPORT_RESERVEDSTART: i32 = 600;
@@ -357,11 +358,11 @@ pub const IPPORT_MAX: i32 = 65535;
 
 /// Historical definitions of bits in internet address integers
 /// (pre-CIDR).  Class A/B/C are long obsolete, and now deprecated.
-/// Hide these definitions from the kernel unless IN_HISTORICAL_NETS
+/// Hide these definitions from the kernel unless `IN_HISTORICAL_NETS`
 /// is defined.  Provide the historical definitions to user level for now.
 #[must_use]
 pub const fn IN_CLASSA(i: in_addr_t) -> bool {
-    (i & 0x80000000) == 0
+    (i & 0x8000_0000) == 0
 }
 pub const IN_CLASSA_NET: i32 = 0xff00_0000;
 pub const IN_CLASSA_NSHIFT: i32 = 24;
@@ -456,7 +457,7 @@ pub const INADDR_UNSPEC_GROUP: in_addr_t = 0xe000_0000;
 pub const INADDR_ALLHOSTS_GROUP: in_addr_t = 0xe000_0001;
 /// 224.0.0.2
 pub const INADDR_ALLRTRS_GROUP: in_addr_t = 0xe000_0002;
-/// 224.0.0.22, IGMPv3
+/// 224.0.0.22, `IGMPv3`
 pub const INADDR_ALLRPTS_GROUP: in_addr_t = 0xe000_0016;
 /// 224.0.0.18
 pub const INADDR_CARP_GROUP: in_addr_t = 0xe000_0012;
@@ -471,9 +472,9 @@ pub const IN_LOOPBACKNET: i32 = 127;
 
 pub const IN_RFC3021_MASK: in_addr_t = 0xffff_fffe;
 
-/// Options for use with [gs]etsockopt at the IP level.
+/// Options for use with getsockopt/setsockopt at the IP level.
 /// First word of comment is data type; bool is stored in int.
-/// buf/ip_opts; set/get IP options
+/// `buf/ip_opts`; set/get IP options
 pub const IP_OPTIONS: i32 = 1;
 /// int; header is included with data
 pub const IP_HDRINCL: i32 = 2;
@@ -487,19 +488,19 @@ pub const IP_RECVOPTS: i32 = 5;
 pub const IP_RECVRETOPTS: i32 = 6;
 /// bool; receive IP dst addr w/dgram
 pub const IP_RECVDSTADDR: i32 = 7;
-/// cmsg_type to set src addr
+/// `cmsg_type` to set src addr
 pub const IP_SENDSRCADDR: i32 = IP_RECVDSTADDR;
-/// ip_opts; set/get IP options
+/// `ip_opts`; set/get IP options
 pub const IP_RETOPTS: i32 = 8;
-/// struct in_addr *or* struct ip_mreqn; set/get IP multicast i/f
+/// `struct in_addr` or `struct ip_mreqn`; set/get IP multicast i/f
 pub const IP_MULTICAST_IF: i32 = 9;
-/// u_char; set/get IP multicast ttl
+/// `u_char`; set/get IP multicast ttl
 pub const IP_MULTICAST_TTL: i32 = 10;
-/// u_char; set/get IP multicast loopback
+/// `u_char`; set/get IP multicast loopback
 pub const IP_MULTICAST_LOOP: i32 = 11;
-/// ip_mreq; add an IP group membership
+/// `ip_mreq`; add an IP group membership
 pub const IP_ADD_MEMBERSHIP: i32 = 12;
-/// ip_mreq; drop an IP group membership
+/// `ip_mreq`; drop an IP group membership
 pub const IP_DROP_MEMBERSHIP: i32 = 13;
 /// set/get IP mcast virt. iface
 pub const IP_MULTICAST_VIF: i32 = 14;
@@ -533,7 +534,7 @@ pub const IP_RECVORIGDSTADDR: i32 = IP_ORIGDSTADDR;
 
 /// Options for controlling the firewall and dummynet.
 /// Historical options (from 40 to 64) will eventually be
-/// replaced by only two options, IP_FW3 and IP_DUMMYNET3.
+/// replaced by only two options, `IP_FW3` and `IP_DUMMYNET3`.
 ///
 /// add entry
 pub const IP_FW_TABLE_ADD: i32 = 40;
@@ -591,7 +592,7 @@ pub const IP_DONTFRAG: i32 = 67;
 /// bool; receive IP TOS w/dgram
 pub const IP_RECVTOS: i32 = 68;
 
-/// IPv4 Source Filter Multicast API [RFC3678]
+/// IPv4 Source Filter Multicast API `[RFC3678]`
 /// join a source-specific group
 pub const IP_ADD_SOURCE_MEMBERSHIP: i32 = 70;
 /// drop a single source
@@ -610,7 +611,7 @@ pub const IP_MSFILTER: i32 = 74;
 pub const IP_VLAN_PCP: i32 = 75;
 // -1 use interface default
 
-/// Protocol Independent Multicast API [RFC3678]
+/// Protocol Independent Multicast API `[RFC3678]`
 /// join an any-source group
 pub const MCAST_JOIN_GROUP: i32 = 80;
 /// leave all sources for group
@@ -627,7 +628,7 @@ pub const MCAST_UNBLOCK_SOURCE: i32 = 85;
 /// Flow and RSS definitions
 /// get flow id for the given socket/inp
 pub const IP_FLOWID: i32 = 90;
-/// get flow type (M_HASHTYPE)
+/// get flow type (`M_HASHTYPE`)
 pub const IP_FLOWTYPE: i32 = 91;
 /// get RSS flowid -> bucket mapping
 pub const IP_RSSBUCKETID: i32 = 92;
@@ -706,7 +707,7 @@ pub const MCAST_INCLUDE: i32 = 1;
 /// fmode: exclude these source(s)
 pub const MCAST_EXCLUDE: i32 = 2;
 
-/// Argument for IP_PORTRANGE:
+/// Argument for `IP_PORTRANGE`:
 /// - which range to search when port is unspecified at bind() or connect()
 ///
 /// default range

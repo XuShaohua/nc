@@ -4,6 +4,8 @@
 
 //! From `netinet/tcp.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use core::mem::size_of;
 
 use crate::SO_VENDOR;
@@ -23,7 +25,7 @@ pub const TH_ACK: i32 = 0x10;
 pub const TH_URG: i32 = 0x20;
 pub const TH_ECE: i32 = 0x40;
 pub const TH_CWR: i32 = 0x80;
-/// maps into th_x2
+/// maps into `th_x2`
 pub const TH_AE: i32 = 0x100;
 pub const TH_FLAGS: i32 = TH_FIN | TH_SYN | TH_RST | TH_PUSH | TH_ACK | TH_URG | TH_ECE | TH_CWR;
 
@@ -104,8 +106,8 @@ pub const TCP_MAX_SACK: i32 = 4;
 /// size of the IP and TCP header.  With IPv6 the minimum MTU is specified
 /// in RFC2460.
 ///
-/// For IPv4 the MSS is 576 - sizeof(struct tcpiphdr)
-/// For IPv6 the MSS is IPV6_MMTU - sizeof(struct ip6_hdr) - sizeof(struct tcphdr)
+/// For IPv4 the MSS is `576 - sizeof(struct tcpiphdr)`
+/// For IPv6 the MSS is `IPV6_MMTU - sizeof(struct ip6_hdr) - sizeof(struct tcphdr)`
 ///
 /// We use explicit numerical definition here to avoid header pollution.
 pub const TCP_MSS: i32 = 536;
@@ -115,9 +117,9 @@ pub const TCP6_MSS: i32 = 1220;
 /// option.  Allowing low values of MSS can consume significant resources and
 /// be used to mount a resource exhaustion attack.
 /// Connections requesting lower MSS values will be rounded up to this value
-/// and the IP_DF flag will be cleared to allow fragmentation along the path.
+/// and the `IP_DF` flag will be cleared to allow fragmentation along the path.
 ///
-/// See tcp_subr.c tcp_minmss SYSCTL declaration for more comments.  Setting
+/// See `tcp_subr.c` `tcp_minmss SYSCTL` declaration for more comments.  Setting
 /// it to "0" disables the minmss check.
 ///
 /// The default value is fine for TCP across the Internet's smallest official
@@ -145,7 +147,7 @@ pub const TCP_MAXOLEN: usize = TCP_MAXHLEN - size_of::<tcphdr_t>();
 pub const TCP_FASTOPEN_MIN_COOKIE_LEN: usize = 4;
 /// Per RFC7413
 pub const TCP_FASTOPEN_MAX_COOKIE_LEN: usize = 16;
-/// Same as TCP_FASTOPEN_KEY_LEN
+/// Same as `TCP_FASTOPEN_KEY_LEN`
 pub const TCP_FASTOPEN_PSK_LEN: usize = 16;
 
 /// User-settable options (used with setsockopt).  These are discrete
@@ -161,7 +163,7 @@ pub const TCP_NOPUSH: i32 = 4;
 pub const TCP_NOOPT: i32 = 8;
 /// use MD5 digests (RFC2385)
 pub const TCP_MD5SIG: i32 = 16;
-/// retrieve tcp_info structure
+/// retrieve `tcp_info` structure
 pub const TCP_INFO: i32 = 32;
 /// retrieve stats blob structure
 pub const TCP_STATS: i32 = 33;
@@ -286,7 +288,7 @@ pub const TCP_BBR_PROBE_RTT_INT: i32 = 1072;
 pub const TCP_BBR_ONE_RETRAN: i32 = 1073;
 /// Do we exit a loss during startup if not 20% incr
 pub const TCP_BBR_STARTUP_LOSS_EXIT: i32 = 1074;
-/// lower the gain in PROBE_BW enable
+/// lower the gain in `PROBE_BW` enable
 pub const TCP_BBR_USE_LOWGAIN: i32 = 1075;
 /// Unused after 2.3 morphs to TSLIMITS >= 2.3
 pub const TCP_BBR_LOWGAIN_THRESH: i32 = 1076;
@@ -400,9 +402,9 @@ pub const TCP_SHARED_CWND_TIME_LIMIT: i32 = 1128;
 pub const TCP_RACK_PROFILE: i32 = 1129;
 /// Allow hardware rates to cap pacing rate
 pub const TCP_HDWR_RATE_CAP: i32 = 1130;
-/// Highest rate allowed in pacing in bytes per second (uint64_t)
+/// Highest rate allowed in pacing in bytes per second (`uint64_t`)
 pub const TCP_PACING_RATE_CAP: i32 = 1131;
-/// Allow the pacing rate to climb but not descend (with the exception of fill-cw
+/// Allow the pacing rate to climb but not descend (with the exception of fill-cw)
 pub const TCP_HDWR_UP_ONLY: i32 = 1132;
 /// Set a local ABC value different then the system default
 pub const TCP_RACK_ABC_VAL: i32 = 1133;
@@ -410,9 +412,9 @@ pub const TCP_RACK_ABC_VAL: i32 = 1133;
 pub const TCP_REC_ABC_VAL: i32 = 1134;
 /// How many measurements are required in GP pacing
 pub const TCP_RACK_MEASURE_CNT: i32 = 1135;
-/// Defer options until the proper number of measurements occur, does not defer TCP_RACK_MEASURE_CNT
+/// Defer options until the proper number of measurements occur, does not defer `TCP_RACK_MEASURE_CNT`
 pub const TCP_DEFER_OPTIONS: i32 = 1136;
-/// Do we do the broken thing where we don't twiddle the TLP bits properly in fast_rsm_output?
+/// Do we do the broken thing where we don't twiddle the TLP bits properly in `fast_rsm_output`?
 pub const TCP_FAST_RSM_HACK: i32 = 1137;
 /// Changing the beta for pacing
 pub const TCP_RACK_PACING_BETA: i32 = 1138;
@@ -504,7 +506,7 @@ pub const TCP_LOG_ID_LEN: i32 = 64;
 //	__tcpi_pad: [u32; 26],
 //}
 
-/// If this structure is provided when setting the TCP_FASTOPEN socket
+/// If this structure is provided when setting the `TCP_FASTOPEN` socket
 /// option, and the enable member is non-zero, a subsequent connect will use
 /// pre-shared key (PSK) mode using the provided key.
 #[repr(C)]
@@ -521,7 +523,7 @@ pub struct tcp_function_set_t {
     pub pcbcnt: u32,
 }
 
-/// TLS modes for TCP_TXTLS_MODE
+/// TLS modes for `TCP_TXTLS_MODE`
 pub const TCP_TLS_MODE_NONE: i32 = 0;
 pub const TCP_TLS_MODE_SW: i32 = 1;
 pub const TCP_TLS_MODE_IFNET: i32 = 2;
@@ -531,7 +533,7 @@ pub const TCP_TLS_MODE_TOE: i32 = 3;
 pub const TLS_SET_RECORD_TYPE: i32 = 1;
 pub const TLS_GET_RECORD: i32 = 2;
 
-/// TCP specific variables of interest for tp->t_stats stats(9) accounting.
+/// TCP specific variables of interest for `tp->t_stats` stats(9) accounting.
 /// Transmit payload bytes
 pub const VOI_TCP_TXPB: i32 = 0;
 /// Retransmit payload bytes
@@ -546,11 +548,11 @@ pub const VOI_TCP_RTT: i32 = 4;
 pub const VOI_TCP_CSIG: i32 = 5;
 /// Goodput
 pub const VOI_TCP_GPUT: i32 = 6;
-/// Congestion avoidance LCWIN - FRWIN
+/// Congestion avoidance `LCWIN - FRWIN`
 pub const VOI_TCP_CALCFRWINDIFF: i32 = 7;
 /// Goodput normalised delta
 pub const VOI_TCP_GPUT_ND: i32 = 8;
-/// Average ACKed bytes per ACK
+/// Average `ACKed` bytes per ACK
 pub const VOI_TCP_ACKLEN: i32 = 9;
 
 /// remove numa binding

@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From arch/x86/include/uapi/asm/ptrace-abi.h
+//! From `arch/x86/include/uapi/asm/ptrace-abi.h`
 
 /// C ABI says these regs are callee-preserved. They aren't saved on kernel entry
 /// unless syscall needs a complete, fully filled `struct pt_regs`.

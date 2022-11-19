@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#![allow(clippy::module_name_repetitions)]
+//! From `sys/sys/stat.h`
 
-//! From sys/sys/stat.h
+#![allow(clippy::module_name_repetitions)]
 
 use crate::{
     blkcnt_t, blksize_t, dev_t, fflags_t, gid_t, ino_t, mode_t, nlink_t, off_t, timespec_t, uid_t,

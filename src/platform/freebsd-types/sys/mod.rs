@@ -4,6 +4,8 @@
 
 mod mman;
 mod reboot;
+mod socket;
 
 pub use mman::*;
 pub use reboot::*;
+pub use socket::*;

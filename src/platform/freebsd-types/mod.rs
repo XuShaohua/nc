@@ -10,16 +10,8 @@
 mod arch;
 pub use arch::*;
 
-mod _iovec;
-mod _sigset;
-mod _timespec;
-mod _timeval;
 mod netinet;
 mod sys;
 
-pub use _iovec::*;
-pub use _sigset::*;
-pub use _timespec::*;
-pub use _timeval::*;
 pub use netinet::*;
 pub use sys::*;

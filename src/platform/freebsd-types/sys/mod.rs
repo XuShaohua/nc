@@ -2,6 +2,10 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod _iovec;
+mod _sigset;
+mod _timespec;
+mod _timeval;
 mod _types;
 mod fcntl;
 mod limits;
@@ -21,6 +25,10 @@ mod time;
 mod types;
 mod unistd;
 
+pub use _iovec::*;
+pub use _sigset::*;
+pub use _timespec::*;
+pub use _timeval::*;
 pub use _types::*;
 pub use fcntl::*;
 pub use limits::*;

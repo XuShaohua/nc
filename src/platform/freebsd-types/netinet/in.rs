@@ -2,11 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `netinet/in.h`
+//! From `sys/netinet/in.h`
 
 #![allow(overflowing_literals)]
 
-use super::sa_family_t;
+use crate::sa_family_t;
 
 /// Protocols common to RFC 1700, POSIX, and X/Open.
 /// dummy for IP

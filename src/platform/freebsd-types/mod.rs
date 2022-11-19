@@ -19,7 +19,6 @@ mod fcntl;
 mod limits;
 mod mount;
 mod netinet;
-mod signal;
 mod sys;
 #[allow(clippy::module_inception)]
 mod types;
@@ -33,6 +32,5 @@ pub use fcntl::*;
 pub use limits::*;
 pub use mount::*;
 pub use netinet::*;
-pub use signal::*;
 pub use sys::*;
 pub use types::*;

@@ -2,6 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod limits;
 mod mman;
 mod mount;
 mod poll;
@@ -16,6 +17,7 @@ mod syslimits;
 mod time;
 mod unistd;
 
+pub use limits::*;
 pub use mman::*;
 pub use mount::*;
 pub use poll::*;

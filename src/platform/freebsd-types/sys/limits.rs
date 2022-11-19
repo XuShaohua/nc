@@ -2,20 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From sys/sys/limits.h
+//! From `sys/sys/limits.h`
 
 use crate::{gid_t, uid_t, UINT_MAX};
-
-// TODO(Shaohua): Check __CHAR_UNSIGNED__ macro
-//#ifdef __CHAR_UNSIGNED__
-// max value for a char
-//pub const CHAR_MAX: i32 = UCHAR_MAX;
-// min value for a char
-//pub const CHAR_MIN: i32 = 0;
-//#else
-//pub const CHAR_MAX: i32 = SCHAR_MAX;
-//pub const CHAR_MIN: i32 = SCHAR_MIN;
-//#endif
 
 /// max value for a `gid_t`
 pub const GID_MAX: gid_t = UINT_MAX;

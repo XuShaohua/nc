@@ -16,7 +16,6 @@ mod _timespec;
 mod _timeval;
 mod _types;
 mod fcntl;
-mod limits;
 mod netinet;
 mod sys;
 #[allow(clippy::module_inception)]
@@ -28,7 +27,6 @@ pub use _timespec::*;
 pub use _timeval::*;
 pub use _types::*;
 pub use fcntl::*;
-pub use limits::*;
 pub use netinet::*;
 pub use sys::*;
 pub use types::*;

@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `arch/arm/include/uapi/asm/stat.h`
+
 #![allow(clippy::module_name_repetitions)]
 
 pub const STAT_HAVE_NSEC: i32 = 0;

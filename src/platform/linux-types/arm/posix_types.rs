@@ -2,11 +2,11 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-/// From arch/arm/include/asm/posix_types.h
-
-/// This file is generally used by user-level software, so you need to
-/// be a little careful about namespace pollution etc.  Also, we cannot
-/// assume GCC is being used.
+//! From `arch/arm/include/asm/posix_types.h`
+//!
+//! This file is generally used by user-level software, so you need to
+//! be a little careful about namespace pollution etc.  Also, we cannot
+//! assume GCC is being used.
 
 pub type __kernel_mode_t = u16;
 

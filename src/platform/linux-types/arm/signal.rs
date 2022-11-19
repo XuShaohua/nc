@@ -3,9 +3,9 @@
 // in the LICENSE file.
 
 //! From `arch/arm/include/asm/signal.h`
-
-/// Most things should be clean enough to redefine this at will, if care
-/// is taken to make libc match.
+//!
+//! Most things should be clean enough to redefine this at will, if care
+//! is taken to make libc match.
 
 pub const _NSIG: usize = 64;
 pub const _NSIG_BPW: usize = 32;

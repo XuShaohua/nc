@@ -2,6 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod _types;
 mod fcntl;
 mod limits;
 mod mman;
@@ -20,6 +21,7 @@ mod time;
 mod types;
 mod unistd;
 
+pub use _types::*;
 pub use fcntl::*;
 pub use limits::*;
 pub use mman::*;

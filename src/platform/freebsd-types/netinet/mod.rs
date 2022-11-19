@@ -3,5 +3,7 @@
 // in the LICENSE file.
 
 mod r#in;
+mod tcp;
 
 pub use r#in::*;
+pub use tcp::*;

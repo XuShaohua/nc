@@ -27,7 +27,6 @@ mod signal;
 mod stat;
 mod sys;
 mod syslimits;
-mod tcp;
 mod time;
 #[allow(clippy::module_inception)]
 mod types;
@@ -50,7 +49,6 @@ pub use signal::*;
 pub use stat::*;
 pub use sys::*;
 pub use syslimits::*;
-pub use tcp::*;
 pub use time::*;
 pub use types::*;
 pub use unistd::*;

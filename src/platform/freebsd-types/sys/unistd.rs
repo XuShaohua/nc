@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#![allow(clippy::unreadable_literal)]
+//! From `sys/sys/unistd.h`
 
-//! From sys/sys/unistd.h
+#![allow(clippy::unreadable_literal)]
 
 /// POSIX options and option groups we unconditionally do or don't
 /// implement.  Those options which are implemented (or not) entirely

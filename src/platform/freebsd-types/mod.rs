@@ -28,7 +28,6 @@ mod syslimits;
 mod time;
 #[allow(clippy::module_inception)]
 mod types;
-mod unistd;
 
 pub use _iovec::*;
 pub use _sigset::*;
@@ -47,4 +46,3 @@ pub use sys::*;
 pub use syslimits::*;
 pub use time::*;
 pub use types::*;
-pub use unistd::*;

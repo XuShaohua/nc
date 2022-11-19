@@ -7,9 +7,11 @@ mod poll;
 mod reboot;
 mod sched;
 mod socket;
+mod unistd;
 
 pub use mman::*;
 pub use poll::*;
 pub use reboot::*;
 pub use sched::*;
 pub use socket::*;
+pub use unistd::*;

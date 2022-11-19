@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use crate::types::signal::sigset_t;
+//! From `arch/powerpc/include/uapi/asm/ucontext.h`
+
+use crate::sigset_t;
 
 #[repr(C)]
 pub struct ucontext_t {

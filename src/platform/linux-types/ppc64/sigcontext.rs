@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `arch/powerpc/include/uapi/asm/sigcontext.h`
+
 #[repr(C)]
 pub struct sigcontext_t {
     unused: [usize; 4],

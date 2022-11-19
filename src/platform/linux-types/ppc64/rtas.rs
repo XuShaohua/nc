@@ -2,7 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use super::super::basic_types::be32_t;
+//! From `arch/powerpc/include/asm/rtas.h`
+
+use crate::be32_t;
 
 /// Definitions for talking to the RTAS on CHRP machines.
 

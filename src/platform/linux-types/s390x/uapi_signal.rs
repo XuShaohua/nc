@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 //! From `arch/s390/include/uapi/asm/signal.h`
+//!
 //! S390 version
 //! Derived from "include/asm-i386/signal.h"
 

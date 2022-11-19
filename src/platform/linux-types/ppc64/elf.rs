@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `arch/powerpc/include/uapi/asm/elf.h`
+//!
 /// ELF register definitions..
 
 /// PowerPC relocations defined by the ABIs

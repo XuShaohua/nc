@@ -17,8 +17,6 @@ mod _timeval;
 mod _types;
 mod netinet;
 mod sys;
-#[allow(clippy::module_inception)]
-mod types;
 
 pub use _iovec::*;
 pub use _sigset::*;
@@ -27,4 +25,3 @@ pub use _timeval::*;
 pub use _types::*;
 pub use netinet::*;
 pub use sys::*;
-pub use types::*;

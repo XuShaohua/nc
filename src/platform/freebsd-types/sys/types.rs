@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From sys/sys/include/types.h
+//! From `sys/sys/types.h`
 
 /// quads (deprecated).
 pub type u_quad_t = u64;

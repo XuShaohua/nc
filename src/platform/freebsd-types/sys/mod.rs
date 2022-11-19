@@ -16,6 +16,8 @@ mod socket;
 mod stat;
 mod syslimits;
 mod time;
+#[allow(clippy::module_inception)]
+mod types;
 mod unistd;
 
 pub use fcntl::*;
@@ -32,4 +34,5 @@ pub use socket::*;
 pub use stat::*;
 pub use syslimits::*;
 pub use time::*;
+pub use types::*;
 pub use unistd::*;

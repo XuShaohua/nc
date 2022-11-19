@@ -22,7 +22,6 @@ mod netinet;
 mod signal;
 mod stat;
 mod sys;
-mod time;
 #[allow(clippy::module_inception)]
 mod types;
 
@@ -38,5 +37,4 @@ pub use netinet::*;
 pub use signal::*;
 pub use stat::*;
 pub use sys::*;
-pub use time::*;
 pub use types::*;

@@ -10,6 +10,7 @@ mod sched;
 mod select;
 mod socket;
 mod syslimits;
+mod time;
 mod unistd;
 
 pub use mman::*;
@@ -20,4 +21,5 @@ pub use sched::*;
 pub use select::*;
 pub use socket::*;
 pub use syslimits::*;
+pub use time::*;
 pub use unistd::*;

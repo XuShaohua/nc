@@ -5,9 +5,19 @@
 fn main() {
     let mut statbuf = nc::stat_t::default();
     let filepath = "/dev/fd/0";
-    #[cfg(not(any(target_arch = "aarch64", target_arch = "loongarch64")))]
-    let ret = unsafe { nc::stat(filepath, &mut statbuf) };
-    #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
+    #[cfg(target_os = "linux")]
+    let ret = {
+        #[cfg(not(any(target_arch = "aarch64", target_arch = "loongarch64")))]
+        unsafe {
+            nc::stat(filepath, &mut statbuf)
+        }
+
+        #[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
+        unsafe {
+            nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0)
+        }
+    };
+    #[cfg(any(target_os = "android", target_os = "freebsd"))]
     let ret = unsafe { nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0) };
 
     match ret {

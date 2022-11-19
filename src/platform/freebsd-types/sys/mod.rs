@@ -5,6 +5,7 @@
 mod mman;
 mod poll;
 mod reboot;
+mod resource;
 mod sched;
 mod select;
 mod socket;
@@ -14,6 +15,7 @@ mod unistd;
 pub use mman::*;
 pub use poll::*;
 pub use reboot::*;
+pub use resource::*;
 pub use sched::*;
 pub use select::*;
 pub use socket::*;

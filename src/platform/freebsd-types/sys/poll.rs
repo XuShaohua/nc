@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From sys/sys/poll.h
+//! From `sys/sys/poll.h`
 
 /// This file is intended to be compatible with the traditional poll.h.
 pub type nfds_t = u32;

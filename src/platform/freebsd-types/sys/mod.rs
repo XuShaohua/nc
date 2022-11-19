@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 mod mman;
+mod mount;
 mod poll;
 mod reboot;
 mod resource;
@@ -16,6 +17,7 @@ mod time;
 mod unistd;
 
 pub use mman::*;
+pub use mount::*;
 pub use poll::*;
 pub use reboot::*;
 pub use resource::*;

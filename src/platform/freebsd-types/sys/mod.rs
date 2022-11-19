@@ -4,8 +4,10 @@
 
 mod mman;
 mod reboot;
+mod sched;
 mod socket;
 
 pub use mman::*;
 pub use reboot::*;
+pub use sched::*;
 pub use socket::*;

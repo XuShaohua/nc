@@ -81,6 +81,10 @@ def write_errno(arch_name, lines):
     rust_fmt(errno_file)
 
 
+# Download netbsd kernel source:
+# ```bash
+# wget ftp://ftp.NetBSD.org/pub/NetBSD/NetBSD-9.3/source/sets/syssrc.tgz
+# ```
 def main():
     if len(sys.argv) < 2:
         print("Usage: %s arch-name" % sys.argv[0])

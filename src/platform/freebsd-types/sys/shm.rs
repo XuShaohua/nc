@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use crate::{pid_t, size_t, time_t, PAGE_SIZE};
+use crate::{ipc_perm_t, pid_t, size_t, time_t, IPC_R, IPC_W, PAGE_SIZE};
 
 /// Attach read-only (else read-write)
 pub const SHM_RDONLY: i32 = 0o10_000;

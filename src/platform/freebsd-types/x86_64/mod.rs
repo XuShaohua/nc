@@ -4,10 +4,12 @@
 
 mod _limits;
 mod _types;
+mod linux;
 mod param;
 mod pmap;
 
 pub use _limits::*;
 pub use _types::*;
+pub use linux::*;
 pub use param::*;
 pub use pmap::*;

@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `/usr/include/sys/fcntl.h`
+//! From `sys/fcntl.h`
 //!
 //! This file includes the definitions for open and fcntl
 //! described by POSIX for <fcntl.h>; it also includes

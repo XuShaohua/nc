@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `/usr/include/sys/sigtypes.h`
+//! From `sys/sigtypes.h`
 
 #[repr(C)]
 pub struct sigset_t {

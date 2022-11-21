@@ -2,7 +2,7 @@
 // Use of this source is governed by General Public License that can be found
 // in the LICENSE file.
 
-//! From `/usr/include/sys/socket.h`
+//! From `sys/socket.h`
 //!
 //! Definitions related to sockets: types, address families, options.
 

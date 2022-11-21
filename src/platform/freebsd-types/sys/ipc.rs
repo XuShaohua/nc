@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `sys/ipc.h`
+
 use crate::{gid_t, key_t, mode_t, uid_t};
 
 #[derive(Debug, Default, Clone)]

@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+//! From `sys/shm.h`
+
 use crate::{ipc_perm_t, pid_t, size_t, time_t, IPC_R, IPC_W, PAGE_SIZE};
 
 /// Attach read-only (else read-write)

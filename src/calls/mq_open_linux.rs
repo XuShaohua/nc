@@ -8,7 +8,7 @@
 ///     nc::mq_open(
 ///         name,
 ///         nc::O_CREAT | nc::O_RDWR,
-///         (nc::S_IRUSR | nc::S_IWUSR) as nc::mode_t,
+///         (nc::S_IRUSR | nc::S_IWUSR) as nc::umode_t,
 ///         None,
 ///     )
 /// };
@@ -22,7 +22,7 @@
 pub unsafe fn mq_open<P: AsRef<Path>>(
     name: P,
     oflag: i32,
-    mode: mode_t,
+    mode: umode_t,
     attr: Option<&mut mq_attr_t>,
 ) -> Result<mqd_t, Errno> {
     let name = CString::new(name.as_ref());

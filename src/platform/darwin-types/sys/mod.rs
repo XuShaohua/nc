@@ -7,6 +7,7 @@
 
 mod _types;
 mod fcntl;
+mod msg;
 mod poll;
 mod resource;
 mod signal;
@@ -16,6 +17,7 @@ mod time;
 
 pub use _types::*;
 pub use fcntl::*;
+pub use msg::*;
 pub use poll::*;
 pub use resource::*;
 pub use signal::*;

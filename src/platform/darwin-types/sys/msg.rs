@@ -4,7 +4,7 @@
 
 //! From `sys/msg.h`
 
-use crate::{ipc_perm_t, msglen_t, msgqnum_t, pid_t, time_t};
+use crate::{ipc_perm_t, pid_t, time_t};
 
 /// Used for the number of messages in the message queue
 pub type msgqnum_t = usize;

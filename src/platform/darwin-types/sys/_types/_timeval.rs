@@ -8,7 +8,7 @@
 
 use crate::{__darwin_time_t, suseconds_t};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone)]
 #[repr(C)]
 pub struct timeval_t {
     /// seconds

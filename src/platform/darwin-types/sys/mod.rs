@@ -7,10 +7,12 @@
 
 mod _types;
 mod fcntl;
+mod resource;
 mod signal;
 mod socket;
 
 pub use _types::*;
 pub use fcntl::*;
+pub use resource::*;
 pub use signal::*;
 pub use socket::*;

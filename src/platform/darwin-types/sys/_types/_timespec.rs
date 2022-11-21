@@ -8,7 +8,7 @@
 
 use crate::__darwin_time_t;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone)]
 #[repr(C)]
 pub struct timespec_t {
     pub tv_sec: __darwin_time_t,

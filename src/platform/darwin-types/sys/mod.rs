@@ -10,6 +10,7 @@ mod fcntl;
 mod resource;
 mod signal;
 mod socket;
+mod stat;
 mod time;
 
 pub use _types::*;
@@ -17,4 +18,5 @@ pub use fcntl::*;
 pub use resource::*;
 pub use signal::*;
 pub use socket::*;
+pub use stat::*;
 pub use time::*;

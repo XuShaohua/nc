@@ -5,7 +5,9 @@
 //! From `sys/stat.h`
 
 use crate::{
-    blkcnt_t, blksize_t, dev_t, gid_t, ino64_t, mode_t, nlink_t, off_t, timespec_t, uid_t,
+    blkcnt_t, blksize_t, dev_t, gid_t, ino64_t, mode_t, nlink_t, off_t, timespec_t, uid_t, S_IRGRP,
+    S_IROTH, S_IRUSR, S_IRWXG, S_IRWXO, S_IRWXU, S_ISGID, S_ISTXT, S_ISUID, S_IWGRP, S_IWOTH,
+    S_IWUSR,
 };
 
 /// This structure is used as the second parameter to the fstat64(),

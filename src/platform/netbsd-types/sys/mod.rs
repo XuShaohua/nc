@@ -5,6 +5,7 @@
 mod ansi;
 mod common_ansi;
 mod fcntl;
+mod ipc;
 mod resource;
 mod sem;
 mod siginfo;
@@ -20,6 +21,7 @@ mod uio;
 pub use ansi::*;
 pub use common_ansi::*;
 pub use fcntl::*;
+pub use ipc::*;
 pub use resource::*;
 pub use sem::*;
 pub use siginfo::*;

@@ -4,7 +4,7 @@
 
 //! From `sys/sem.h`
 
-use crate::{ipc_perm_t, time_t};
+use crate::{ipc_perm_sysctl_t, ipc_perm_t, time_t};
 
 #[derive(Debug, Default, Clone)]
 #[repr(C)]

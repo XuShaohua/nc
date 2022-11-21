@@ -8,6 +8,7 @@
 
 use super::time_t;
 
+#[derive(Debug, Default, Clone)]
 #[repr(C)]
 pub struct timespec_t {
     /// seconds

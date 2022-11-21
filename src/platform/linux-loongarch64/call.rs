@@ -105,11 +105,6 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
 }
 
-pub unsafe fn arch_specific_syscall() {
-    core::unimplemented!();
-    // syscall0(SYS_ARCH_SPECIFIC_SYSCALL);
-}
-
 /// Bind a name to a socket.
 pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -3466,13 +3461,6 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
     let req_ptr = req as *const timespec_t as usize;
     let rem_ptr = rem.map_or(0, |rem| rem as *mut timespec_t as usize);
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
-}
-
-/// Syscall interface to kernel nfs daemon.
-/// Deprecated.
-pub unsafe fn nfsservctl() {
-    core::unimplemented!();
-    // syscall0(SYS_NFSSERVCTL);
 }
 
 /// Open and possibly create a file within a directory.

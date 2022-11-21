@@ -122,11 +122,6 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
 }
 
-pub unsafe fn afs_syscall() {
-    core::unimplemented!();
-    // syscall0(SYS_AFS_SYSCALL);
-}
-
 /// Set an alarm clock for delivery of a signal.
 ///
 /// # Example
@@ -158,18 +153,6 @@ pub unsafe fn alarm(seconds: u32) -> u32 {
     syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32
 }
 
-/// Start, flush or tune buffer-dirty-flush daemon.
-/// There are no bdflush tunables left.  But distributions are
-/// still running obsolete flush daemons, so we terminate them here.
-///
-/// Use of `bdflush()` is deprecated and will be removed in a future kernel.
-/// The `flush-X` kernel threads fully replace bdflush daemons and this call.
-/// Deprecated.
-pub unsafe fn bdflush() {
-    core::unimplemented!();
-    // syscall0(SYS_BDFLUSH);
-}
-
 /// Bind a name to a socket.
 pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -184,11 +167,6 @@ pub unsafe fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Err
     let attr_ptr = attr as *mut bpf_attr_t as usize;
     let size = size as usize;
     syscall3(SYS_BPF, cmd, attr_ptr, size).map(|ret| ret as i32)
-}
-
-pub unsafe fn r#break() {
-    core::unimplemented!();
-    // syscall0(SYS_BREAK);
 }
 
 /// Change data segment size.
@@ -453,11 +431,6 @@ pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
-pub unsafe fn close_range() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOSE_RANGE);
-}
-
 /// Initialize a connection on a socket.
 pub unsafe fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -539,11 +512,6 @@ pub unsafe fn creat<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<i32, Er
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     syscall2(SYS_CREAT, filename_ptr, mode).map(|ret| ret as i32)
-}
-
-pub unsafe fn create_module() {
-    core::unimplemented!();
-    // syscall0(SYS_CREATE_MODULE);
 }
 
 /// Unlock a kernel module.
@@ -784,11 +752,6 @@ pub unsafe fn epoll_pwait(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn epoll_pwait2() {
-    core::unimplemented!();
-    // syscall0(SYS_EPOLL_PWAIT2);
-}
-
 /// Wait for an I/O event on an epoll file descriptor.
 ///
 /// # Example
@@ -958,11 +921,6 @@ pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Res
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode).map(drop)
-}
-
-pub unsafe fn faccessat2() {
-    core::unimplemented!();
-    // syscall0(SYS_FACCESSAT2);
 }
 
 /// Predeclare an access pattern for file data.
@@ -1596,13 +1554,6 @@ pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_FSYNC, fd).map(drop)
 }
 
-/// Return date and time.
-/// DEPRECATED.
-pub unsafe fn ftime() {
-    core::unimplemented!();
-    // syscall0(SYS_FTIME);
-}
-
 /// Truncate an opened file to a specified length.
 ///
 /// # Example
@@ -2003,11 +1954,6 @@ pub unsafe fn getpid() -> pid_t {
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
-pub unsafe fn getpmsg() {
-    core::unimplemented!();
-    // syscall0(SYS_GETPMSG);
-}
-
 /// Get the process ID of the parent of the calling process.
 ///
 /// # Example
@@ -2281,13 +2227,6 @@ pub unsafe fn getxattr<P: AsRef<Path>>(
     syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
 }
 
-/// Retrieve exported kernel and module symbols.
-/// Deprecated.
-pub unsafe fn get_kernel_syms() {
-    core::unimplemented!();
-    // syscall0(SYS_GET_KERNEL_SYMS);
-}
-
 /// Retrieve NUMA memory policy for a thread
 pub unsafe fn get_mempolicy(
     mode: &mut i32,
@@ -2312,11 +2251,6 @@ pub unsafe fn get_robust_list(
     let head_ptr = head_ptr as *mut usize as usize;
     let len_ptr = len_ptr as *mut size_t as usize;
     syscall3(SYS_GET_ROBUST_LIST, pid, head_ptr, len_ptr).map(drop)
-}
-
-pub unsafe fn gtty() {
-    core::unimplemented!();
-    // syscall0(SYS_GTTY);
 }
 
 /// Make process 0 idle.
@@ -2797,21 +2731,6 @@ pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
-pub unsafe fn landlock_add_rule() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_ADD_RULE);
-}
-
-pub unsafe fn landlock_create_ruleset() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_CREATE_RULESET);
-}
-
-pub unsafe fn landlock_restrict_self() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_RESTRICT_SELF);
-}
-
 /// Change ownership of a file. Does not deference symbolic link.
 ///
 /// # Example
@@ -3062,11 +2981,6 @@ pub unsafe fn llistxattr<P: AsRef<Path>>(
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall3(SYS_LLISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
-}
-
-pub unsafe fn lock() {
-    core::unimplemented!();
-    // syscall0(SYS_LOCK);
 }
 
 /// Return a directory entry's path.
@@ -3503,12 +3417,6 @@ pub unsafe fn mmap(
     syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
 }
 
-// FIXME(Shaohua):
-pub unsafe fn modify_ldt() {
-    core::unimplemented!();
-    // syscall0(SYS_MODIFY_LDT);
-}
-
 /// Mount filesystem.
 ///
 /// # Example
@@ -3551,11 +3459,6 @@ pub unsafe fn mount<P: AsRef<Path>>(
         data,
     )
     .map(drop)
-}
-
-pub unsafe fn mount_setattr() {
-    core::unimplemented!();
-    // syscall0(SYS_MOUNT_SETATTR);
 }
 
 /// Move a mount from one place to another.
@@ -3645,11 +3548,6 @@ pub unsafe fn move_pages(
 pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     let prot = prot as usize;
     syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
-}
-
-pub unsafe fn mpx() {
-    core::unimplemented!();
-    // syscall0(SYS_MPX);
 }
 
 /// Get/set message queue attributes
@@ -4126,11 +4024,6 @@ pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
     syscall3(SYS_MSYNC, addr, len, flags).map(drop)
 }
 
-pub unsafe fn multiplexer() {
-    core::unimplemented!();
-    // syscall0(SYS_MULTIPLEXER);
-}
-
 /// Unlock memory.
 ///
 /// # Example
@@ -4277,13 +4170,6 @@ pub unsafe fn newfstatat<P: AsRef<Path>>(
     syscall4(SYS_NEWFSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop)
 }
 
-/// Syscall interface to kernel nfs daemon.
-/// Deprecated.
-pub unsafe fn nfsservctl() {
-    core::unimplemented!();
-    // syscall0(SYS_NFSSERVCTL);
-}
-
 /// Change the priority of current process.
 ///
 /// # Example
@@ -4295,37 +4181,6 @@ pub unsafe fn nfsservctl() {
 pub unsafe fn nice(increment: i32) -> Result<(), Errno> {
     let increment = increment as usize;
     syscall1(SYS_NICE, increment).map(drop)
-}
-
-/// Deprecated
-pub unsafe fn oldfstat() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDFSTAT);
-}
-
-/// Deprecated
-pub unsafe fn oldlstat() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDLSTAT);
-}
-
-/// Deprecated.
-pub unsafe fn oldolduname() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDOLDUNAME);
-}
-
-/// Deprecated.
-pub unsafe fn oldstat() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDSTAT);
-}
-
-/// Get name and information about current kernel.
-/// Deprecated.
-pub unsafe fn olduname() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDUNAME);
 }
 
 /// Open and possibly create a file.
@@ -4372,11 +4227,6 @@ pub unsafe fn openat<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
-}
-
-pub unsafe fn openat2() {
-    core::unimplemented!();
-    // syscall0(SYS_OPENAT2);
 }
 
 /// Obtain handle for an open file
@@ -4903,16 +4753,6 @@ pub unsafe fn prlimit64(
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
-pub unsafe fn process_madvise() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_MADVISE);
-}
-
-pub unsafe fn process_mrelease() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_MRELEASE);
-}
-
 /// Transfer data between process address spaces
 pub unsafe fn process_vm_readv(
     pid: pid_t,
@@ -4963,16 +4803,6 @@ pub unsafe fn process_vm_writev(
     .map(|ret| ret as ssize_t)
 }
 
-pub unsafe fn prof() {
-    core::unimplemented!();
-    // syscall0(SYS_PROF);
-}
-
-pub unsafe fn profil() {
-    core::unimplemented!();
-    // syscall0(SYS_PROFIL);
-}
-
 /// Sychronous I/O multiplexing.
 ///
 /// Most architectures can't handle 7-argument syscalls. So we provide a
@@ -5010,11 +4840,6 @@ pub unsafe fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Resu
     let request = request as usize;
     let pid = pid as usize;
     syscall4(SYS_PTRACE, request, pid, addr, data).map(|ret| ret as isize)
-}
-
-pub unsafe fn putpmsg() {
-    core::unimplemented!();
-    // syscall0(SYS_PUTPMSG);
 }
 
 /// Write to a file descriptor without changing file offset.
@@ -5149,11 +4974,6 @@ pub unsafe fn pwritev2(
     syscall6(SYS_PWRITEV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
 }
 
-pub unsafe fn query_module() {
-    core::unimplemented!();
-    // syscall0(SYS_QUERY_MODULE);
-}
-
 /// Manipulate disk quotes.
 pub unsafe fn quotactl<P: AsRef<Path>>(
     cmd: i32,
@@ -5166,11 +4986,6 @@ pub unsafe fn quotactl<P: AsRef<Path>>(
     let special_ptr = special.as_ptr() as usize;
     let id = id as usize;
     syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
-}
-
-pub unsafe fn quotactl_fd() {
-    core::unimplemented!();
-    // syscall0(SYS_QUOTACTL_FD);
 }
 
 /// Read from a file descriptor.
@@ -5212,11 +5027,6 @@ pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Err
     let fd = fd as usize;
     let offset = offset as usize;
     syscall3(SYS_READAHEAD, fd, offset, count).map(drop)
-}
-
-pub unsafe fn readdir() {
-    core::unimplemented!();
-    // syscall0(SYS_READDIR);
 }
 
 /// Read value of a symbolic link.
@@ -6628,13 +6438,6 @@ pub unsafe fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
     syscall1(SYS_SET_TID_ADDRESS, tid_ptr).map(|ret| ret as isize)
 }
 
-/// Manipulation of signal mask.
-/// Depercated. Use `sigprocmask` instead.
-pub unsafe fn sgetmask() {
-    core::unimplemented!();
-    // syscall0(SYS_SGETMASK);
-}
-
 /// Attach the System V shared memory segment.
 ///
 /// # Example
@@ -6996,13 +6799,6 @@ pub unsafe fn spu_run(fd: i32, npc: &mut u32, status: &mut u32) -> Result<usize,
     syscall3(SYS_SPU_RUN, fd, npc_ptr, status_ptr)
 }
 
-/// Manipulation of signal mask.
-/// Deprecated. Use `sigprocmask` instead.
-pub unsafe fn ssetmask() {
-    core::unimplemented!();
-    // syscall0(SYS_SSETMASK);
-}
-
 /// Get file status about a file.
 ///
 /// # Example
@@ -7103,28 +6899,10 @@ pub unsafe fn stime(t: &time_t) -> Result<(), Errno> {
     syscall1(SYS_STIME, t_ptr).map(drop)
 }
 
-pub unsafe fn stty() {
-    core::unimplemented!();
-    // syscall0(SYS_STTY);
-}
-
 /// Define a subpage protection for an address range.
 pub unsafe fn subpage_prot(addr: usize, len: usize, map: &mut u32) -> Result<(), Errno> {
     let map_ptr = map as *mut u32 as usize;
     syscall3(SYS_SUBPAGE_PROT, addr, len, map_ptr).map(drop)
-}
-
-/// Handle {get,set,swap}_context operations
-pub unsafe fn swapcontext() {
-    core::unimplemented!();
-    //pub unsafe fn swapcontext(old_ctx: &mut ucontext_t, new_ctx: &mut ucontext_t, ctx_size: isize,) -> Result<(), Errno> {}
-    // syscall0(SYS_SWAPCONTEXT);
-    //
-    //        let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
-    //        let new_ctx_ptr = new_ctx as *mut ucontext_t as usize;
-    //        let ctx_size = ctx_size as usize;
-    //        syscall3(SYS_SWAPCONTEXT, old_ctx_ptr, new_ctx_ptr, ctx_size).map(drop)
-    //    }
 }
 
 /// Stop swapping to file/device.
@@ -7158,11 +6936,6 @@ pub unsafe fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errn
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
     syscall2(SYS_SWAPON, filename_ptr, flags).map(drop)
-}
-
-pub unsafe fn switch_endian() {
-    core::unimplemented!();
-    // syscall0(SYS_SWITCH_ENDIAN);
 }
 
 /// Make a new name for a file.
@@ -7314,11 +7087,6 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
     syscall3(SYS_SYSLOG, action, buf_ptr, buf_len).map(|ret| ret as i32)
-}
-
-pub unsafe fn sys_debug_setcontext() {
-    core::unimplemented!();
-    // syscall0(SYS_SYS_DEBUG_SETCONTEXT);
 }
 
 /// Duplicate pipe content.
@@ -7829,22 +7597,6 @@ pub unsafe fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(),
     syscall2(SYS_TRUNCATE, filename_ptr, length).map(drop)
 }
 
-pub unsafe fn tuxcall() {
-    core::unimplemented!();
-    // syscall0(SYS_TUXCALL);
-}
-
-pub unsafe fn ugetrlimit() {
-    core::unimplemented!();
-    // syscall0(SYS_UGETRLIMIT);
-}
-
-/// Deprecated.
-pub unsafe fn ulimit() {
-    core::unimplemented!();
-    // syscall0(SYS_ULIMIT);
-}
-
 /// Set file mode creation mask.
 ///
 /// # Example
@@ -8121,11 +7873,6 @@ pub unsafe fn vhangup() -> Result<(), Errno> {
     syscall0(SYS_VHANGUP).map(drop)
 }
 
-pub unsafe fn vm86() {
-    core::unimplemented!();
-    // syscall0(SYS_VM86);
-}
-
 /// Splice user page into a pipe.
 pub unsafe fn vmsplice(
     fd: i32,
@@ -8325,13 +8072,6 @@ pub unsafe fn _llseek(
     let result_ptr = result as *mut loff_t as usize;
     let whence = whence as usize;
     syscall5(SYS__LLSEEK, fd, offset_high, offset_low, result_ptr, whence).map(drop)
-}
-
-// For unimplemented syscalls:
-
-pub unsafe fn _newselect() {
-    core::unimplemented!();
-    // syscall0(SYS__NEWSELECT);
 }
 
 /// Read/write system parameters.

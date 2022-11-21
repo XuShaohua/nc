@@ -110,11 +110,6 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
 }
 
-pub unsafe fn afs_syscall() {
-    core::unimplemented!();
-    // syscall0(SYS_AFS_SYSCALL);
-}
-
 /// Set an alarm clock for delivery of a signal.
 ///
 /// # Example
@@ -152,18 +147,6 @@ pub unsafe fn arch_prctl(code: i32, arg2: usize) -> Result<(), Errno> {
     syscall2(SYS_ARCH_PRCTL, code, arg2).map(drop)
 }
 
-/// Start, flush or tune buffer-dirty-flush daemon.
-/// There are no bdflush tunables left.  But distributions are
-/// still running obsolete flush daemons, so we terminate them here.
-///
-/// Use of `bdflush()` is deprecated and will be removed in a future kernel.
-/// The `flush-X` kernel threads fully replace bdflush daemons and this call.
-/// Deprecated.
-pub unsafe fn bdflush() {
-    core::unimplemented!();
-    // syscall0(SYS_BDFLUSH);
-}
-
 /// Bind a name to a socket.
 pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -178,11 +161,6 @@ pub unsafe fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Err
     let attr_ptr = attr as *mut bpf_attr_t as usize;
     let size = size as usize;
     syscall3(SYS_BPF, cmd, attr_ptr, size).map(|ret| ret as i32)
-}
-
-pub unsafe fn r#break() {
-    core::unimplemented!();
-    // syscall0(SYS_BREAK);
 }
 
 /// Change data segment size.
@@ -286,11 +264,6 @@ pub unsafe fn chown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> R
     syscall3(SYS_CHOWN, filename_ptr, user, group).map(drop)
 }
 
-pub unsafe fn chown32() {
-    core::unimplemented!();
-    // syscall0(SYS_CHOWN32);
-}
-
 /// Change the root directory.
 ///
 /// # Example
@@ -321,11 +294,6 @@ pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<
     syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr).map(drop)
 }
 
-pub unsafe fn clock_adjtime64() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOCK_ADJTIME64);
-}
-
 /// Get resolution(precision) of the specific clock.
 ///
 /// # Example
@@ -342,11 +310,6 @@ pub unsafe fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Resul
     syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr).map(drop)
 }
 
-pub unsafe fn clock_getres_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOCK_GETRES_TIME64);
-}
-
 /// Get time of specific clock.
 ///
 /// # Example
@@ -361,11 +324,6 @@ pub unsafe fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Resu
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *mut timespec_t as usize;
     syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr).map(drop)
-}
-
-pub unsafe fn clock_gettime64() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOCK_GETTIME64);
 }
 
 /// High resolution sleep with a specific clock.
@@ -394,11 +352,6 @@ pub unsafe fn clock_nanosleep(
     syscall4(SYS_CLOCK_NANOSLEEP, which_clock, flags, rqtp_ptr, rmtp_ptr).map(drop)
 }
 
-pub unsafe fn clock_nanosleep_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOCK_NANOSLEEP_TIME64);
-}
-
 /// Set time of specific clock.
 ///
 /// # Example
@@ -416,11 +369,6 @@ pub unsafe fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *const timespec_t as usize;
     syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr).map(drop)
-}
-
-pub unsafe fn clock_settime64() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOCK_SETTIME64);
 }
 
 /// Create a child process.
@@ -475,11 +423,6 @@ pub unsafe fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, 
 pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_CLOSE, fd).map(drop)
-}
-
-pub unsafe fn close_range() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOSE_RANGE);
 }
 
 /// Initialize a connection on a socket.
@@ -563,11 +506,6 @@ pub unsafe fn creat<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<i32, Er
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     syscall2(SYS_CREAT, filename_ptr, mode).map(|ret| ret as i32)
-}
-
-pub unsafe fn create_module() {
-    core::unimplemented!();
-    // syscall0(SYS_CREATE_MODULE);
 }
 
 /// Unlock a kernel module.
@@ -808,11 +746,6 @@ pub unsafe fn epoll_pwait(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn epoll_pwait2() {
-    core::unimplemented!();
-    // syscall0(SYS_EPOLL_PWAIT2);
-}
-
 /// Wait for an I/O event on an epoll file descriptor.
 ///
 /// # Example
@@ -982,11 +915,6 @@ pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Res
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode).map(drop)
-}
-
-pub unsafe fn faccessat2() {
-    core::unimplemented!();
-    // syscall0(SYS_FACCESSAT2);
 }
 
 /// Predeclare an access pattern for file data.
@@ -1199,11 +1127,6 @@ pub unsafe fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
     let user = user as usize;
     let group = group as usize;
     syscall3(SYS_FCHOWN, fd, user, group).map(drop)
-}
-
-pub unsafe fn fchown32() {
-    core::unimplemented!();
-    // syscall0(SYS_FCHOWN32);
 }
 
 /// Change ownership of a file.
@@ -1722,13 +1645,6 @@ pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_FSYNC, fd).map(drop)
 }
 
-/// Return date and time.
-/// DEPRECATED.
-pub unsafe fn ftime() {
-    core::unimplemented!();
-    // syscall0(SYS_FTIME);
-}
-
 /// Truncate an opened file to a specified length.
 ///
 /// # Example
@@ -1798,11 +1714,6 @@ pub unsafe fn futex(
         val3,
     )
     .map(|ret| ret as i32)
-}
-
-pub unsafe fn futex_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_FUTEX_TIME64);
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
@@ -1998,12 +1909,6 @@ pub unsafe fn getegid() -> gid_t {
     syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
 }
 
-/// Deprecated
-pub unsafe fn getegid32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETEGID32);
-}
-
 /// Get the effective user ID of the calling process.
 ///
 /// # Example
@@ -2018,12 +1923,6 @@ pub unsafe fn geteuid() -> uid_t {
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
 }
 
-/// Deprecated
-pub unsafe fn geteuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETEUID32);
-}
-
 /// Get the real group ID of the calling process.
 ///
 /// # Example
@@ -2036,12 +1935,6 @@ pub unsafe fn geteuid32() {
 pub unsafe fn getgid() -> gid_t {
     // This function is always successful.
     syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
-}
-
-/// Deprecated
-pub unsafe fn getgid32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETGID32);
 }
 
 /// Get list of supplementary group Ids.
@@ -2063,12 +1956,6 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
     let size = size as usize;
     let group_ptr = group_list.as_mut_ptr() as usize;
     syscall2(SYS_GETGROUPS, size, group_ptr).map(|ret| ret as i32)
-}
-
-/// Deprecated
-pub unsafe fn getgroups32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETGROUPS32);
 }
 
 /// Get value of an interval timer.
@@ -2180,11 +2067,6 @@ pub unsafe fn getpid() -> pid_t {
     syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
 }
 
-pub unsafe fn getpmsg() {
-    core::unimplemented!();
-    // syscall0(SYS_GETPMSG);
-}
-
 /// Get the process ID of the parent of the calling process.
 ///
 /// # Example
@@ -2258,11 +2140,6 @@ pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) ->
     syscall3(SYS_GETRESGID, rgid_ptr, egid_ptr, sgid_ptr).map(drop)
 }
 
-pub unsafe fn getresgid32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETRESGID32);
-}
-
 /// Get real, effect and saved user ID.
 ///
 /// # Example
@@ -2282,11 +2159,6 @@ pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) ->
     let euid_ptr = euid as *mut uid_t as usize;
     let suid_ptr = suid as *mut uid_t as usize;
     syscall3(SYS_GETRESUID, ruid_ptr, euid_ptr, suid_ptr).map(drop)
-}
-
-pub unsafe fn getresuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETRESUID32);
 }
 
 /// Get resource limit.
@@ -2420,11 +2292,6 @@ pub unsafe fn getuid() -> uid_t {
     syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
 }
 
-pub unsafe fn getuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_GETUID32);
-}
-
 /// Get extended attribute value.
 ///
 /// # Example
@@ -2473,13 +2340,6 @@ pub unsafe fn getxattr<P: AsRef<Path>>(
     syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
 }
 
-/// Retrieve exported kernel and module symbols.
-/// Deprecated.
-pub unsafe fn get_kernel_syms() {
-    core::unimplemented!();
-    // syscall0(SYS_GET_KERNEL_SYMS);
-}
-
 /// Retrieve NUMA memory policy for a thread
 pub unsafe fn get_mempolicy(
     mode: &mut i32,
@@ -2511,11 +2371,6 @@ pub unsafe fn get_robust_list(
 pub unsafe fn get_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
     let user_desc_ptr = user_desc as *mut user_desc_t as usize;
     syscall1(SYS_GET_THREAD_AREA, user_desc_ptr).map(drop)
-}
-
-pub unsafe fn gtty() {
-    core::unimplemented!();
-    // syscall0(SYS_GTTY);
 }
 
 /// Make process 0 idle.
@@ -2803,11 +2658,6 @@ pub unsafe fn io_pgetevents(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn io_pgetevents_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_IO_PGETEVENTS_TIME64);
-}
-
 /// Create an asynchronous I/O context.
 ///
 /// Create an `aio_context` capable of receiving at least `nr_events`.
@@ -2978,21 +2828,6 @@ pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
-pub unsafe fn landlock_add_rule() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_ADD_RULE);
-}
-
-pub unsafe fn landlock_create_ruleset() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_CREATE_RULESET);
-}
-
-pub unsafe fn landlock_restrict_self() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_RESTRICT_SELF);
-}
-
 /// Change ownership of a file. Does not deference symbolic link.
 ///
 /// # Example
@@ -3023,11 +2858,6 @@ pub unsafe fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> 
     let user = user as usize;
     let group = group as usize;
     syscall3(SYS_LCHOWN, filename_ptr, user, group).map(drop)
-}
-
-pub unsafe fn lchown32() {
-    core::unimplemented!();
-    // syscall0(SYS_LCHOWN32);
 }
 
 /// Get extended attribute value.
@@ -3248,11 +3078,6 @@ pub unsafe fn llistxattr<P: AsRef<Path>>(
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall3(SYS_LLISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
-}
-
-pub unsafe fn lock() {
-    core::unimplemented!();
-    // syscall0(SYS_LOCK);
 }
 
 /// Return a directory entry's path.
@@ -3489,11 +3314,6 @@ pub unsafe fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, E
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
     syscall2(SYS_MEMFD_CREATE, name_ptr, flags).map(|ret| ret as i32)
-}
-
-pub unsafe fn memfd_secret() {
-    core::unimplemented!();
-    // syscall0(SYS_MEMFD_SECRET);
 }
 
 /// Move all pages in a process to another set of nodes
@@ -3769,12 +3589,6 @@ pub unsafe fn mmap2(
     syscall6(SYS_MMAP2, start, len, prot, flags, fd, offset)
 }
 
-// FIXME(Shaohua):
-pub unsafe fn modify_ldt() {
-    core::unimplemented!();
-    // syscall0(SYS_MODIFY_LDT);
-}
-
 /// Mount filesystem.
 ///
 /// # Example
@@ -3817,11 +3631,6 @@ pub unsafe fn mount<P: AsRef<Path>>(
         data,
     )
     .map(drop)
-}
-
-pub unsafe fn mount_setattr() {
-    core::unimplemented!();
-    // syscall0(SYS_MOUNT_SETATTR);
 }
 
 /// Move a mount from one place to another.
@@ -3911,11 +3720,6 @@ pub unsafe fn move_pages(
 pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
     let prot = prot as usize;
     syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
-}
-
-pub unsafe fn mpx() {
-    core::unimplemented!();
-    // syscall0(SYS_MPX);
 }
 
 /// Get/set message queue attributes
@@ -4077,11 +3881,6 @@ pub unsafe fn mq_timedreceive(
     .map(|ret| ret as ssize_t)
 }
 
-pub unsafe fn mq_timedreceive_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_MQ_TIMEDRECEIVE_TIME64);
-}
-
 /// Send message to a message queue.
 ///
 /// # Example
@@ -4142,11 +3941,6 @@ pub unsafe fn mq_timedsend(
         abs_timeout_ptr,
     )
     .map(drop)
-}
-
-pub unsafe fn mq_timedsend_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_MQ_TIMEDSEND_TIME64);
 }
 
 /// Remove a message queue.
@@ -4523,13 +4317,6 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
-/// Syscall interface to kernel nfs daemon.
-/// Deprecated.
-pub unsafe fn nfsservctl() {
-    core::unimplemented!();
-    // syscall0(SYS_NFSSERVCTL);
-}
-
 /// Change the priority of current process.
 ///
 /// # Example
@@ -4541,37 +4328,6 @@ pub unsafe fn nfsservctl() {
 pub unsafe fn nice(increment: i32) -> Result<(), Errno> {
     let increment = increment as usize;
     syscall1(SYS_NICE, increment).map(drop)
-}
-
-/// Deprecated
-pub unsafe fn oldfstat() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDFSTAT);
-}
-
-/// Deprecated
-pub unsafe fn oldlstat() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDLSTAT);
-}
-
-/// Deprecated.
-pub unsafe fn oldolduname() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDOLDUNAME);
-}
-
-/// Deprecated.
-pub unsafe fn oldstat() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDSTAT);
-}
-
-/// Get name and information about current kernel.
-/// Deprecated.
-pub unsafe fn olduname() {
-    core::unimplemented!();
-    // syscall0(SYS_OLDUNAME);
 }
 
 /// Open and possibly create a file.
@@ -4618,11 +4374,6 @@ pub unsafe fn openat<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
-}
-
-pub unsafe fn openat2() {
-    core::unimplemented!();
-    // syscall0(SYS_OPENAT2);
 }
 
 /// Obtain handle for an open file
@@ -4980,11 +4731,6 @@ pub unsafe fn ppoll(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn ppoll_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_PPOLL_TIME64);
-}
-
 /// Operations on a process.
 pub unsafe fn prctl(
     option: i32,
@@ -5125,16 +4871,6 @@ pub unsafe fn prlimit64(
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
-pub unsafe fn process_madvise() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_MADVISE);
-}
-
-pub unsafe fn process_mrelease() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_MRELEASE);
-}
-
 /// Transfer data between process address spaces
 pub unsafe fn process_vm_readv(
     pid: pid_t,
@@ -5185,16 +4921,6 @@ pub unsafe fn process_vm_writev(
     .map(|ret| ret as ssize_t)
 }
 
-pub unsafe fn prof() {
-    core::unimplemented!();
-    // syscall0(SYS_PROF);
-}
-
-pub unsafe fn profil() {
-    core::unimplemented!();
-    // syscall0(SYS_PROFIL);
-}
-
 /// Sychronous I/O multiplexing.
 ///
 /// Most architectures can't handle 7-argument syscalls. So we provide a
@@ -5227,21 +4953,11 @@ pub unsafe fn pselect6(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn pselect6_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_PSELECT6_TIME64);
-}
-
 /// Process trace.
 pub unsafe fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Result<isize, Errno> {
     let request = request as usize;
     let pid = pid as usize;
     syscall4(SYS_PTRACE, request, pid, addr, data).map(|ret| ret as isize)
-}
-
-pub unsafe fn putpmsg() {
-    core::unimplemented!();
-    // syscall0(SYS_PUTPMSG);
 }
 
 /// Write to a file descriptor without changing file offset.
@@ -5376,11 +5092,6 @@ pub unsafe fn pwritev2(
     syscall6(SYS_PWRITEV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
 }
 
-pub unsafe fn query_module() {
-    core::unimplemented!();
-    // syscall0(SYS_QUERY_MODULE);
-}
-
 /// Manipulate disk quotes.
 pub unsafe fn quotactl<P: AsRef<Path>>(
     cmd: i32,
@@ -5393,11 +5104,6 @@ pub unsafe fn quotactl<P: AsRef<Path>>(
     let special_ptr = special.as_ptr() as usize;
     let id = id as usize;
     syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
-}
-
-pub unsafe fn quotactl_fd() {
-    core::unimplemented!();
-    // syscall0(SYS_QUOTACTL_FD);
 }
 
 /// Read from a file descriptor.
@@ -5439,11 +5145,6 @@ pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Err
     let fd = fd as usize;
     let offset = offset as usize;
     syscall3(SYS_READAHEAD, fd, offset, count).map(drop)
-}
-
-pub unsafe fn readdir() {
-    core::unimplemented!();
-    // syscall0(SYS_READDIR);
 }
 
 /// Read value of a symbolic link.
@@ -5604,11 +5305,6 @@ pub unsafe fn recvmmsg(
     let flags = flags as usize;
     let timeout_ptr = timeout as *mut timespec_t as usize;
     syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr).map(|ret| ret as i32)
-}
-
-pub unsafe fn recvmmsg_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_RECVMMSG_TIME64);
 }
 
 /// Receive a msg from a socket.
@@ -5956,11 +5652,6 @@ pub unsafe fn rt_sigtimedwait(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn rt_sigtimedwait_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_RT_SIGTIMEDWAIT_TIME64);
-}
-
 /// Queue a signal and data.
 pub unsafe fn rt_tgsigqueueinfo(
     tgid: pid_t,
@@ -6158,11 +5849,6 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
     let pid = pid as usize;
     let interval_ptr = interval as *mut timespec_t as usize;
     syscall2(SYS_SCHED_RR_GET_INTERVAL, pid, interval_ptr).map(drop)
-}
-
-pub unsafe fn sched_rr_get_interval_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_SCHED_RR_GET_INTERVAL_TIME64);
 }
 
 /// Set a thread's CPU affinity mask.
@@ -6363,11 +6049,6 @@ pub unsafe fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> 
     syscall3(SYS_SEMGET, key, nsems, semflg).map(|ret| ret as i32)
 }
 
-pub unsafe fn semtimedop_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_SEMTIMEDOP_TIME64);
-}
-
 /// Transfer data between two file descriptors.
 pub unsafe fn sendfile(
     out_fd: i32,
@@ -6470,11 +6151,6 @@ pub unsafe fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
     syscall1(SYS_SETFSGID, fsgid).map(|ret| ret as gid_t)
 }
 
-pub unsafe fn setfsgid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETFSGID32);
-}
-
 /// Set user identify used for filesystem checkes.
 ///
 /// # Example
@@ -6488,11 +6164,6 @@ pub unsafe fn setfsgid32() {
 pub unsafe fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
     let fsuid = fsuid as usize;
     syscall1(SYS_SETFSUID, fsuid).map(|ret| ret as uid_t)
-}
-
-pub unsafe fn setfsuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETFSUID32);
 }
 
 /// Set the group ID of the calling process to `gid`.
@@ -6509,11 +6180,6 @@ pub unsafe fn setgid(gid: gid_t) -> Result<(), Errno> {
     syscall1(SYS_SETGID, gid).map(drop)
 }
 
-pub unsafe fn setgid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETGID32);
-}
-
 /// Set list of supplementary group Ids.
 ///
 /// # Example
@@ -6528,11 +6194,6 @@ pub unsafe fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     let group_len = group_list.len();
     let group_ptr = group_list.as_ptr() as usize;
     syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop)
-}
-
-pub unsafe fn setgroups32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETGROUPS32);
 }
 
 /// Set hostname.
@@ -6664,11 +6325,6 @@ pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     syscall2(SYS_SETREGID, rgid, egid).map(drop)
 }
 
-pub unsafe fn setregid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETREGID32);
-}
-
 /// Set real, effective and saved group Ids of the calling process.
 ///
 /// # Example
@@ -6682,11 +6338,6 @@ pub unsafe fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Err
     let egid = egid as usize;
     let sgid = sgid as usize;
     syscall3(SYS_SETRESGID, rgid, egid, sgid).map(drop)
-}
-
-pub unsafe fn setresgid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETRESGID32);
 }
 
 /// Set real, effective and saved user Ids of the calling process.
@@ -6704,11 +6355,6 @@ pub unsafe fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Err
     syscall3(SYS_SETRESUID, ruid, euid, suid).map(drop)
 }
 
-pub unsafe fn setresuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETRESUID32);
-}
-
 /// Set real and effective user IDs of the calling process.
 ///
 /// # Example
@@ -6721,11 +6367,6 @@ pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
     let ruid = ruid as usize;
     let euid = euid as usize;
     syscall2(SYS_SETREUID, ruid, euid).map(drop)
-}
-
-pub unsafe fn setreuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETREUID32);
 }
 
 /// Set resource limit.
@@ -6830,11 +6471,6 @@ pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
     syscall1(SYS_SETUID, uid).map(drop)
 }
 
-pub unsafe fn setuid32() {
-    core::unimplemented!();
-    // syscall0(SYS_SETUID32);
-}
-
 /// Set extended attribute value.
 ///
 /// # Example
@@ -6899,23 +6535,10 @@ pub unsafe fn set_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> 
     syscall1(SYS_SET_THREAD_AREA, user_desc_ptr).map(drop)
 }
 
-#[cfg(any(target_arch = "mips", target_arch = "mips64"))]
-/// Set thread-local storage information.
-pub unsafe fn set_thread_area(addr: usize) -> Result<(), Errno> {
-    syscall1(SYS_SET_THREAD_AREA, addr).map(drop)
-}
-
 /// Set pointer to thread ID.
 pub unsafe fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
     let tid_ptr = tid as *mut i32 as usize;
     syscall1(SYS_SET_TID_ADDRESS, tid_ptr).map(|ret| ret as isize)
-}
-
-/// Manipulation of signal mask.
-/// Depercated. Use `sigprocmask` instead.
-pub unsafe fn sgetmask() {
-    core::unimplemented!();
-    // syscall0(SYS_SGETMASK);
 }
 
 /// Attach the System V shared memory segment.
@@ -7256,13 +6879,6 @@ pub unsafe fn splice(
     .map(|ret| ret as ssize_t)
 }
 
-/// Manipulation of signal mask.
-/// Deprecated. Use `sigprocmask` instead.
-pub unsafe fn ssetmask() {
-    core::unimplemented!();
-    // syscall0(SYS_SSETMASK);
-}
-
 /// Get file status about a file.
 ///
 /// # Example
@@ -7380,11 +6996,6 @@ pub unsafe fn statx<P: AsRef<Path>>(
 pub unsafe fn stime(t: &time_t) -> Result<(), Errno> {
     let t_ptr = t as *const time_t as usize;
     syscall1(SYS_STIME, t_ptr).map(drop)
-}
-
-pub unsafe fn stty() {
-    core::unimplemented!();
-    // syscall0(SYS_STTY);
 }
 
 /// Stop swapping to file/device.
@@ -7693,11 +7304,6 @@ pub unsafe fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<
     syscall2(SYS_TIMERFD_GETTIME, ufd, cur_value_ptr).map(drop)
 }
 
-pub unsafe fn timerfd_gettime64() {
-    core::unimplemented!();
-    // syscall0(SYS_TIMERFD_GETTIME64);
-}
-
 /// Set current timer via a file descriptor.
 ///
 /// # Example
@@ -7739,11 +7345,6 @@ pub unsafe fn timerfd_settime(
         old_value_ptr,
     )
     .map(drop)
-}
-
-pub unsafe fn timerfd_settime64() {
-    core::unimplemented!();
-    // syscall0(SYS_TIMERFD_SETTIME64);
 }
 
 /// Create a per-process timer
@@ -7929,11 +7530,6 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
     syscall2(SYS_TIMER_GETTIME, timer_id, curr_ptr).map(drop)
 }
 
-pub unsafe fn timer_gettime64() {
-    core::unimplemented!();
-    // syscall0(SYS_TIMER_GETTIME64);
-}
-
 /// Arm/disarm state of per-process timer.
 ///
 /// # Example
@@ -8018,11 +7614,6 @@ pub unsafe fn timer_settime(
         old_value_ptr,
     )
     .map(drop)
-}
-
-pub unsafe fn timer_settime64() {
-    core::unimplemented!();
-    // syscall0(SYS_TIMER_SETTIME64);
 }
 
 /// Get process times.
@@ -8121,17 +7712,6 @@ pub unsafe fn truncate64<P: AsRef<Path>>(path: P, len: loff_t) -> Result<(), Err
     let path_ptr = path.as_ptr() as usize;
     let len = len as usize;
     syscall2(SYS_TRUNCATE64, path_ptr, len).map(drop)
-}
-
-pub unsafe fn ugetrlimit() {
-    core::unimplemented!();
-    // syscall0(SYS_UGETRLIMIT);
-}
-
-/// Deprecated.
-pub unsafe fn ulimit() {
-    core::unimplemented!();
-    // syscall0(SYS_ULIMIT);
 }
 
 /// Set file mode creation mask.
@@ -8367,11 +7947,6 @@ pub unsafe fn utimensat<P: AsRef<Path>>(
     syscall4(SYS_UTIMENSAT, dirfd, filename_ptr, times_ptr, flags).map(drop)
 }
 
-pub unsafe fn utimensat_time64() {
-    core::unimplemented!();
-    // syscall0(SYS_UTIMENSAT_TIME64);
-}
-
 /// Change file last access and modification time.
 ///
 /// # Example
@@ -8415,16 +7990,6 @@ pub unsafe fn vhangup() -> Result<(), Errno> {
     syscall0(SYS_VHANGUP).map(drop)
 }
 
-pub unsafe fn vm86() {
-    core::unimplemented!();
-    // syscall0(SYS_VM86);
-}
-
-pub unsafe fn vm86old() {
-    core::unimplemented!();
-    // syscall0(SYS_VM86OLD);
-}
-
 /// Splice user page into a pipe.
 pub unsafe fn vmsplice(
     fd: i32,
@@ -8436,11 +8001,6 @@ pub unsafe fn vmsplice(
     let iov_ptr = iov as *const iovec_t as usize;
     let flags = flags as usize;
     syscall4(SYS_VMSPLICE, fd, iov_ptr, nr_segs, flags).map(|ret| ret as ssize_t)
-}
-
-pub unsafe fn vserver() {
-    core::unimplemented!();
-    // syscall0(SYS_VSERVER);
 }
 
 /// Wait for process to change state.
@@ -8629,13 +8189,6 @@ pub unsafe fn _llseek(
     let result_ptr = result as *mut loff_t as usize;
     let whence = whence as usize;
     syscall5(SYS__LLSEEK, fd, offset_high, offset_low, result_ptr, whence).map(drop)
-}
-
-// For unimplemented syscalls:
-
-pub unsafe fn _newselect() {
-    core::unimplemented!();
-    // syscall0(SYS__NEWSELECT);
 }
 
 /// Read/write system parameters.

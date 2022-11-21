@@ -105,11 +105,6 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
     syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32)
 }
 
-pub unsafe fn arch_specific_syscall() {
-    core::unimplemented!();
-    // syscall0(SYS_ARCH_SPECIFIC_SYSCALL);
-}
-
 /// Bind a name to a socket.
 pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -331,11 +326,6 @@ pub unsafe fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, 
 pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_CLOSE, fd).map(drop)
-}
-
-pub unsafe fn close_range() {
-    core::unimplemented!();
-    // syscall0(SYS_CLOSE_RANGE);
 }
 
 /// Initialize a connection on a socket.
@@ -594,11 +584,6 @@ pub unsafe fn epoll_pwait(
     .map(|ret| ret as i32)
 }
 
-pub unsafe fn epoll_pwait2() {
-    core::unimplemented!();
-    // syscall0(SYS_EPOLL_PWAIT2);
-}
-
 /// Create a file descriptor for event notification.
 pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
     let count = count as usize;
@@ -701,11 +686,6 @@ pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Res
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     syscall3(SYS_FACCESSAT, dfd, filename_ptr, mode).map(drop)
-}
-
-pub unsafe fn faccessat2() {
-    core::unimplemented!();
-    // syscall0(SYS_FACCESSAT2);
 }
 
 /// Predeclare an access pattern for file data.
@@ -2379,21 +2359,6 @@ pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
-pub unsafe fn landlock_add_rule() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_ADD_RULE);
-}
-
-pub unsafe fn landlock_create_ruleset() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_CREATE_RULESET);
-}
-
-pub unsafe fn landlock_restrict_self() {
-    core::unimplemented!();
-    // syscall0(SYS_LANDLOCK_RESTRICT_SELF);
-}
-
 /// Get extended attribute value.
 ///
 /// # Example
@@ -2778,11 +2743,6 @@ pub unsafe fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, E
     syscall2(SYS_MEMFD_CREATE, name_ptr, flags).map(|ret| ret as i32)
 }
 
-pub unsafe fn memfd_secret() {
-    core::unimplemented!();
-    // syscall0(SYS_MEMFD_SECRET);
-}
-
 /// Move all pages in a process to another set of nodes
 pub unsafe fn migrate_pages(
     pid: pid_t,
@@ -3004,11 +2964,6 @@ pub unsafe fn mount<P: AsRef<Path>>(
         data,
     )
     .map(drop)
-}
-
-pub unsafe fn mount_setattr() {
-    core::unimplemented!();
-    // syscall0(SYS_MOUNT_SETATTR);
 }
 
 /// Move a mount from one place to another.
@@ -3695,13 +3650,6 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
-/// Syscall interface to kernel nfs daemon.
-/// Deprecated.
-pub unsafe fn nfsservctl() {
-    core::unimplemented!();
-    // syscall0(SYS_NFSSERVCTL);
-}
-
 /// Open and possibly create a file within a directory.
 ///
 /// # Example
@@ -3726,11 +3674,6 @@ pub unsafe fn openat<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
-}
-
-pub unsafe fn openat2() {
-    core::unimplemented!();
-    // syscall0(SYS_OPENAT2);
 }
 
 /// Obtain handle for an open file
@@ -4174,16 +4117,6 @@ pub unsafe fn prlimit64(
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
-pub unsafe fn process_madvise() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_MADVISE);
-}
-
-pub unsafe fn process_mrelease() {
-    core::unimplemented!();
-    // syscall0(SYS_PROCESS_MRELEASE);
-}
-
 /// Transfer data between process address spaces
 pub unsafe fn process_vm_readv(
     pid: pid_t,
@@ -4417,11 +4350,6 @@ pub unsafe fn quotactl<P: AsRef<Path>>(
     let special_ptr = special.as_ptr() as usize;
     let id = id as usize;
     syscall4(SYS_QUOTACTL, cmd, special_ptr, id, addr).map(drop)
-}
-
-pub unsafe fn quotactl_fd() {
-    core::unimplemented!();
-    // syscall0(SYS_QUOTACTL_FD);
 }
 
 /// Read from a file descriptor.

@@ -6,7 +6,7 @@
 import os
 import sys
 
-from mkcall_util import (check_system, print_call)
+from mkcall_util import (check_system, generate_call_file)
 
 
 SUPPORTED_ARCHES = (
@@ -21,16 +21,18 @@ SUPPORTED_ARCHES = (
     "x86_64",
 )
 
+SYSTEM_NAME = "linux"
+
 
 def main():
-    if not check_system("linux"):
+    if not check_system(SYSTEM_NAME):
         sys.exit(1)
 
     def handle_all_arch():
         template_file = "linux_call.rs"
         for arch_name in SUPPORTED_ARCHES:
             root_dir = "platform/linux-%s" % arch_name
-            print_call(root_dir, template_file)
+            generate_call_file(root_dir, SYSTEM_NAME)
 
     if len(sys.argv) == 1:
         handle_all_arch()
@@ -40,7 +42,7 @@ def main():
         if arch_name == "all":
             handle_all_arch()
         else:
-            print_call(arch_name)
+            generate_call_file(arch_name, SYSTEM_NAME)
     else:
         print("Usage: %s arch-name" % sys.argv[0])
         sys.exit(1)

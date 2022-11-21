@@ -114,30 +114,51 @@ def parse_template(template_file):
     return syscalls, headers
 
 
-def print_call(root_dir, template_file):
+def check_call_file_exists(sysno, system_name):
+    CALLS_DIR = "calls"
+    real_sysno = sysno.replace("SYS_", "").lower()
+    spec_filename = "".join([real_sysno, "_", system_name, ".rs"])
+    spec_filepath = os.path.join(CALLS_DIR, spec_filename)
+    if os.path.exists(spec_filepath):
+        return (spec_filepath, True)
+
+    general_filename = "".join([real_sysno, ".rs"])
+    general_filepath = os.path.join(CALLS_DIR, general_filename)
+    if os.path.exists(general_filepath):
+        return (general_filepath, True)
+
+    return ("", False)
+
+
+def generate_call_file(root_dir, system_name):
     sysno_file = os.path.join(root_dir, "sysno.rs")
     call_file = os.path.join(root_dir, "call.rs")
 
-    syscalls, headers = parse_template(template_file)
+    with open("call_header.rs") as fh:
+        headers = fh.read()
     sysnos = read_sysnos(sysno_file)
     matched_sysno = []
     unmatched_sysno = []
 
-    for sysno in sysnos:
-        if sysno in syscalls:
-            matched_sysno.append(sysno)
-        else:
-            unmatched_sysno.append(sysno)
-    sysno_percentage = len(unmatched_sysno) * 100.0 / len(sysnos)
-    if unmatched_sysno:
-        print("unmatched sysnos:", unmatched_sysno)
-        print_unimplemented_syscalls(unmatched_sysno)
-        print("Percentage of unimplemented syscalls: {:.2f}%".format(sysno_percentage))
-        sys.exit(1)
-
     with open(call_file, "w") as fh:
         fh.writelines(headers)
-        for sysno in sorted(matched_sysno):
-            for call in syscalls[sysno]:
-                fh.writelines(call)
+        fh.write("\n")
+
+        for sysno in sorted(sysnos):
+            in_filepath, exists = check_call_file_exists(sysno, system_name)
+            if exists:
+                matched_sysno.append(sysno)
+                with open(in_filepath) as in_fh:
+                    fh.write(in_fh.read())
+                fh.write("\n")
+            else:
+                unmatched_sysno.append(sysno)
     rust_fmt(call_file)
+
+    sysno_percentage = len(matched_sysno) * 100.0 / len(sysnos)
+    if unmatched_sysno:
+        print("-" * 80)
+        print("root_dir:", root_dir, ", system_name:", system_name)
+        print("unmatched sysnos:", unmatched_sysno)
+        print("Percentage of implemented syscalls: {:.2f}%".format(sysno_percentage))
+        print("\n")

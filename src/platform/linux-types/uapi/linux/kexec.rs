@@ -5,6 +5,7 @@
 //! From `include/uapi/linux/kexec.h`
 
 #![allow(overflowing_literals)]
+#![allow(clippy::module_name_repetitions)]
 
 use crate::size_t;
 

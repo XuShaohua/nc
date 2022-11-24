@@ -6,6 +6,7 @@
 
 #![allow(overflowing_literals)]
 #![allow(clippy::cast_sign_loss)]
+#![allow(clippy::module_name_repetitions)]
 
 use core::mem::size_of;
 

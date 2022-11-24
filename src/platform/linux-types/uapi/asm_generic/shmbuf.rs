@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `include/`uapi/asm-generic/shmbuf.h`
+//! From `include/uapi/asm-generic/shmbuf.h`
 
 use crate::{ipc64_perm_t, pid_t, size_t};
 

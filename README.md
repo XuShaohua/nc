@@ -115,7 +115,7 @@ As `llvm_asm!` feature is unavailable in stable version.
 - netbsd
   - x86-64
 - mac os
-  - x86_64
+  - x86-64
 
 ## Related projects
 - [nix][nix]

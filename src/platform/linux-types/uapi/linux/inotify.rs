@@ -4,6 +4,8 @@
 
 //! From `include/uapi/linux/inotify.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 use crate::{O_CLOEXEC, O_NONBLOCK};
 
 /// struct `inotify_event` - structure read from the inotify device for each event

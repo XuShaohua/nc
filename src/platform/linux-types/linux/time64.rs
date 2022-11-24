@@ -4,6 +4,8 @@
 
 //! From `include/linux/time64.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 pub type time64_t = i64;
 pub type timeu64_t = u64;
 

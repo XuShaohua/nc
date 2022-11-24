@@ -6,6 +6,8 @@
 //!
 //! Types and definitions for `AF_INET6`
 
+#![allow(clippy::module_name_repetitions)]
+
 use core::fmt;
 
 use crate::{be16_t, be32_t};

@@ -4,6 +4,8 @@
 
 //! From `include/uapi/linux/serial.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct serial_struct_t {

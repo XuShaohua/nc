@@ -5,6 +5,7 @@
 mod aio_abi;
 mod bpf;
 mod capability;
+mod close_range;
 mod eventpoll;
 mod fadvise;
 mod fcntl;
@@ -61,6 +62,7 @@ mod xattr;
 pub use aio_abi::*;
 pub use bpf::*;
 pub use capability::*;
+pub use close_range::*;
 pub use eventpoll::*;
 pub use fadvise::*;
 pub use fcntl::*;

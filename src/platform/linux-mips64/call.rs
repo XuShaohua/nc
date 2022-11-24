@@ -438,6 +438,23 @@ pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
+/// Close all file descriptors in a given range
+///
+/// # Example
+///
+/// ```
+/// const STDOUT_FD: u32 = 1;
+/// const STDERR_FD: u32 = 2;
+/// let ret = unsafe { nc::close_range(STDOUT_FD, STDERR_FD, nc::CLOSE_RANGE_CLOEXEC) };
+/// assert!(ret.is_ok());
+/// ```
+pub unsafe fn close_range(first_fd: u32, last_fd: u32, flags: u32) -> Result<(), Errno> {
+    let first = first_fd as usize;
+    let last = last_fd as usize;
+    let flags = flags as usize;
+    syscall3(SYS_CLOSE_RANGE, first, last, flags).map(drop)
+}
+
 /// Initialize a connection on a socket.
 pub unsafe fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;

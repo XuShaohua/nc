@@ -6,6 +6,8 @@
 #![allow(clippy::cast_sign_loss)]
 
 use alloc::collections::BTreeSet;
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 
 use crate::Errno;
 

@@ -26,7 +26,7 @@ jobs:
         include:
         - build: pinned
           os: ubuntu-20.04
-          rust: 1.46.0
+          rust: 1.56.0
         - build: stable
           os: ubuntu-20.04
           rust: stable
@@ -38,8 +38,6 @@ jobs:
           rust: nightly
     steps:
     - uses: actions/checkout@v2
-    - run: env
-    - run: ls -l
     - run: cargo clippy
     - run: cargo build --verbose
     - run: cargo doc --verbose

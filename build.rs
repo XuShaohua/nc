@@ -23,7 +23,7 @@ fn get_page_size() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("page_size.rs");
     fs::write(
-        &dest_path,
+        dest_path,
         format!("pub const PAGE_SIZE: usize = {};", page_size_val),
     )
     .unwrap();

@@ -7,6 +7,7 @@
 //! Types and definitions for `AF_INET6`
 
 #![allow(clippy::module_name_repetitions)]
+#![allow(clippy::uninlined_format_args)]
 
 use core::fmt;
 

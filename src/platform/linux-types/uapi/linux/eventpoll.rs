@@ -4,6 +4,8 @@
 
 //! From `include/uapi/linux/eventpoll.h`
 
+#![allow(clippy::uninlined_format_args)]
+
 use crate::{poll_t, O_CLOEXEC};
 
 /// Flags for `epoll_create1()`.

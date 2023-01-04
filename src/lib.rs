@@ -129,7 +129,8 @@
     clippy::nursery,
     clippy::pedantic
 )]
-#![allow(dead_code, clippy::uninlined_format_args)]
+#![allow(dead_code)]
+#![allow(unknown_lints)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[macro_use]

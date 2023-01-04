@@ -5,6 +5,7 @@
 //! From `include/uapi/asm-generic/siginfo.h`
 
 #![allow(clippy::module_name_repetitions)]
+#![allow(clippy::uninlined_format_args)]
 
 use core::fmt;
 use core::mem::size_of;

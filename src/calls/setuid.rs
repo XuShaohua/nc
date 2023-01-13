@@ -1,4 +1,4 @@
-/// Set the effective user ID of the calling process to `uid`.
+/// Set user ID of the calling process to `uid`.
 ///
 /// # Example
 ///

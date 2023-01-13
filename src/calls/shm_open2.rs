@@ -4,7 +4,7 @@ pub unsafe fn shm_open2<P: AsRef<Path>>(
     flags: i32,
     mode: mode_t,
     shmflags: i32,
-    fcaps: *mut filecaps_t,
+    fcaps: &mut filecaps_t,
     name: P,
 ) -> Result<(), Errno> {
     // TODO(Shaohua): Add AsRef<CStr>
@@ -13,6 +13,7 @@ pub unsafe fn shm_open2<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     let shmflags = shmflags as usize;
+    let fcaps_ptr = fcaps as *mut filecaps_t as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     syscall6(

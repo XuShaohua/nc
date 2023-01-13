@@ -12,11 +12,11 @@
 /// The next five bits contain array index. Only one bit is used and bit position
 /// in this five-bits range defines array index. This means there can be at most
 /// five array elements.
-pub const CAP_RIGHTS_VERSION_00: i32 = 0;
-// pub const CAP_RIGHTS_VERSION_01: i32 = 1;
-// pub const CAP_RIGHTS_VERSION_02: i32 = 2;
-// pub const CAP_RIGHTS_VERSION_03: i32 = 3;
-pub const CAP_RIGHTS_VERSION: i32 = CAP_RIGHTS_VERSION_00;
+pub const CAP_RIGHTS_VERSION_00: usize = 0;
+// pub const CAP_RIGHTS_VERSION_01: usize = 1;
+// pub const CAP_RIGHTS_VERSION_02: usize = 2;
+// pub const CAP_RIGHTS_VERSION_03: usize = 3;
+pub const CAP_RIGHTS_VERSION: usize = CAP_RIGHTS_VERSION_00;
 
 #[derive(Debug, Default, Clone)]
 #[repr(C)]

@@ -4,6 +4,8 @@
 
 //! From `sys/filedesc.h`
 
+use crate::cap_rights_t;
+
 #[derive(Debug, Default, Clone)]
 #[repr(C)]
 pub struct filecaps_t {
@@ -11,7 +13,8 @@ pub struct filecaps_t {
     pub fc_rights: cap_rights_t,
 
     /// per-descriptor allowed ioctls
-    pub fc_ioctls: *mut usize,
+    //TODO(Shaohua): Defined as *mut usize
+    pub fc_ioctls: usize,
 
     /// fc_ioctls array size
     pub fc_nioctls: i16,

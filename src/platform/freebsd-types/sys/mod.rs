@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 mod _iovec;
+mod _semaphore;
 mod _sigset;
 mod _timespec;
 mod _timeval;
@@ -35,6 +36,7 @@ mod unistd;
 mod uuid;
 
 pub use _iovec::*;
+pub use _semaphore::*;
 pub use _sigset::*;
 pub use _timespec::*;
 pub use _timeval::*;

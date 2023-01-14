@@ -9,7 +9,7 @@ pub unsafe fn kmq_timedreceive(
     let mqd = mqd as usize;
     let msg_ptr = msg.as_mut_ptr() as usize;
     let msg_prio = msg_prio as usize;
-    let abs_timeout_ptr = abs_timeout.as_ptr() as usize;
+    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(
         SYS_KMQ_TIMEDRECEIVE,
         mqd,

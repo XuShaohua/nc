@@ -2,6 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod _domainset;
 mod _iovec;
 mod _semaphore;
 mod _sigset;
@@ -35,6 +36,7 @@ mod types;
 mod unistd;
 mod uuid;
 
+pub use _domainset::*;
 pub use _iovec::*;
 pub use _semaphore::*;
 pub use _sigset::*;

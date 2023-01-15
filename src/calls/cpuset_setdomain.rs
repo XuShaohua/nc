@@ -5,13 +5,13 @@ pub unsafe fn cpuset_setdomain(
     which: cpuwhich_t,
     id: id_t,
     domainset_size: size_t,
-    mask: &mut domainset_t,
+    mask: &domainset_t,
     policy: i32,
 ) -> Result<(), Errno> {
     let level = level as usize;
     let which = which as usize;
     let id = id as usize;
-    let mask_ptr = mask as *mut domainset_t as usize;
+    let mask_ptr = mask as *const domainset_t as usize;
     let policy = policy as usize;
     syscall6(
         SYS_CPUSET_SETDOMAIN,

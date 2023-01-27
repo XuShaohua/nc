@@ -10,6 +10,7 @@
 /// const _MTYPE_SERVER: isize = 2;
 ///
 /// #[derive(Debug, Clone, Copy)]
+/// #[repr(C)]
 /// struct Message {
 ///     pub mtype: isize,
 ///     pub mtext: [u8; MAX_MTEXT],

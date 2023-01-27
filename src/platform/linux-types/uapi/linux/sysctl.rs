@@ -306,7 +306,7 @@ pub const NET_NETFILTER: i32 = 19;
 pub const NET_DCCP: i32 = 20;
 pub const NET_IRDA: i32 = 412;
 
-/// /proc/sys/kernel/random
+/// `/proc/sys/kernel/random`
 pub const RANDOM_POOLSIZE: i32 = 1;
 pub const RANDOM_ENTROPY_COUNT: i32 = 2;
 pub const RANDOM_READ_THRESH: i32 = 3;
@@ -314,16 +314,16 @@ pub const RANDOM_WRITE_THRESH: i32 = 4;
 pub const RANDOM_BOOT_ID: i32 = 5;
 pub const RANDOM_UUID: i32 = 6;
 
-/// /proc/sys/kernel/pty
+/// `/proc/sys/kernel/pty`
 pub const PTY_MAX: i32 = 1;
 pub const PTY_NR: i32 = 2;
 
-/// /proc/sys/bus/isa
+/// `/proc/sys/bus/isa`
 pub const BUS_ISA_MEM_BASE: i32 = 1;
 pub const BUS_ISA_PORT_BASE: i32 = 2;
 pub const BUS_ISA_PORT_SHIFT: i32 = 3;
 
-/// /proc/sys/net/core
+/// `/proc/sys/net/core`
 pub const NET_CORE_WMEM_MAX: i32 = 1;
 pub const NET_CORE_RMEM_MAX: i32 = 2;
 pub const NET_CORE_WMEM_DEFAULT: i32 = 3;
@@ -347,17 +347,16 @@ pub const NET_CORE_AEVENT_ETIME: i32 = 20;
 pub const NET_CORE_AEVENT_RSEQTH: i32 = 21;
 pub const NET_CORE_WARNINGS: i32 = 22;
 
-/// /proc/sys/net/ethernet
+// /proc/sys/net/ethernet
 
-/// /proc/sys/net/802
+// /proc/sys/net/802
 
-/// /proc/sys/net/unix
-
+/// `/proc/sys/net/unix`
 pub const NET_UNIX_DESTROY_DELAY: i32 = 1;
 pub const NET_UNIX_DELETE_DELAY: i32 = 2;
 pub const NET_UNIX_MAX_DGRAM_QLEN: i32 = 3;
 
-/// /proc/sys/net/netfilter
+/// `/proc/sys/net/netfilter`
 pub const NET_NF_CONNTRACK_MAX: i32 = 1;
 pub const NET_NF_CONNTRACK_TCP_TIMEOUT_SYN_SENT: i32 = 2;
 pub const NET_NF_CONNTRACK_TCP_TIMEOUT_SYN_RECV: i32 = 3;
@@ -391,7 +390,8 @@ pub const NET_NF_CONNTRACK_FRAG6_LOW_THRESH: i32 = 30;
 pub const NET_NF_CONNTRACK_FRAG6_HIGH_THRESH: i32 = 31;
 pub const NET_NF_CONNTRACK_CHECKSUM: i32 = 32;
 
-/// /proc/sys/net/ipv4
+/// `/proc/sys/net/ipv4`
+///
 /// v2.0 compatibile variables
 pub const NET_IPV4_FORWARD: i32 = 8;
 pub const NET_IPV4_DYNADDR: i32 = 9;
@@ -537,7 +537,7 @@ pub const NET_IPV4_CONF_PROMOTE_SECONDARIES: i32 = 20;
 pub const NET_IPV4_CONF_ARP_ACCEPT: i32 = 21;
 pub const NET_IPV4_CONF_ARP_NOTIFY: i32 = 22;
 
-/// /proc/sys/net/ipv4/netfilter
+/// `/proc/sys/net/ipv4/netfilter`
 pub const NET_IPV4_NF_CONNTRACK_MAX: i32 = 1;
 pub const NET_IPV4_NF_CONNTRACK_TCP_TIMEOUT_SYN_SENT: i32 = 2;
 pub const NET_IPV4_NF_CONNTRACK_TCP_TIMEOUT_SYN_RECV: i32 = 3;
@@ -567,7 +567,7 @@ pub const NET_IPV4_NF_CONNTRACK_SCTP_TIMEOUT_SHUTDOWN_ACK_SENT: i32 = 26;
 pub const NET_IPV4_NF_CONNTRACK_COUNT: i32 = 27;
 pub const NET_IPV4_NF_CONNTRACK_CHECKSUM: i32 = 28;
 
-/// /proc/sys/net/ipv6
+/// `/proc/sys/net/ipv6`
 pub const NET_IPV6_CONF: i32 = 16;
 pub const NET_IPV6_NEIGH: i32 = 17;
 pub const NET_IPV6_ROUTE: i32 = 18;
@@ -618,11 +618,11 @@ pub const NET_IPV6_ACCEPT_RA_FROM_LOCAL: i32 = 26;
 pub const NET_IPV6_ACCEPT_RA_RT_INFO_MIN_PLEN: i32 = 27;
 pub const NET_IPV6_MAX: i32 = 28;
 
-/// /proc/sys/net/ipv6/icmp
+/// `/proc/sys/net/ipv6/icmp`
 pub const NET_IPV6_ICMP_RATELIMIT: i32 = 1;
 pub const NET_IPV6_ICMP_ECHO_IGNORE_ALL: i32 = 2;
 
-/// /proc/sys/net/<protocol>/neigh/<dev>
+/// `/proc/sys/net/<protocol>/neigh/<dev>`
 pub const NET_NEIGH_MCAST_SOLICIT: i32 = 1;
 pub const NET_NEIGH_UCAST_SOLICIT: i32 = 2;
 pub const NET_NEIGH_APP_SOLICIT: i32 = 3;
@@ -642,36 +642,36 @@ pub const NET_NEIGH_GC_THRESH3: i32 = 16;
 pub const NET_NEIGH_RETRANS_TIME_MS: i32 = 17;
 pub const NET_NEIGH_REACHABLE_TIME_MS: i32 = 18;
 
-/// /proc/sys/net/dccp
+/// `/proc/sys/net/dccp`
 pub const NET_DCCP_DEFAULT: i32 = 1;
 
-/// /proc/sys/net/ipx
+/// `/proc/sys/net/ipx`
 pub const NET_IPX_PPROP_BROADCASTING: i32 = 1;
 pub const NET_IPX_FORWARDING: i32 = 2;
 
-/// /proc/sys/net/llc
+/// `/proc/sys/net/llc`
 pub const NET_LLC2: i32 = 1;
 pub const NET_LLC_STATION: i32 = 2;
 
-/// /proc/sys/net/llc/llc2
+/// `/proc/sys/net/llc/llc2`
 pub const NET_LLC2_TIMEOUT: i32 = 1;
 
-/// /proc/sys/net/llc/station
+/// `/proc/sys/net/llc/station`
 pub const NET_LLC_STATION_ACK_TIMEOUT: i32 = 1;
 
-/// /proc/sys/net/llc/llc2/timeout
+/// `/proc/sys/net/llc/llc2/timeout`
 pub const NET_LLC2_ACK_TIMEOUT: i32 = 1;
 pub const NET_LLC2_P_TIMEOUT: i32 = 2;
 pub const NET_LLC2_REJ_TIMEOUT: i32 = 3;
 pub const NET_LLC2_BUSY_TIMEOUT: i32 = 4;
 
-/// /proc/sys/net/appletalk
+/// `/proc/sys/net/appletalk`
 pub const NET_ATALK_AARP_EXPIRY_TIME: i32 = 1;
 pub const NET_ATALK_AARP_TICK_TIME: i32 = 2;
 pub const NET_ATALK_AARP_RETRANSMIT_LIMIT: i32 = 3;
 pub const NET_ATALK_AARP_RESOLVE_TIME: i32 = 4;
 
-/// /proc/sys/net/netrom
+/// `/proc/sys/net/netrom`
 pub const NET_NETROM_DEFAULT_PATH_QUALITY: i32 = 1;
 pub const NET_NETROM_OBSOLESCENCE_COUNT_INITIALISER: i32 = 2;
 pub const NET_NETROM_NETWORK_TTL_INITIALISER: i32 = 3;
@@ -685,7 +685,7 @@ pub const NET_NETROM_ROUTING_CONTROL: i32 = 10;
 pub const NET_NETROM_LINK_FAILS_COUNT: i32 = 11;
 pub const NET_NETROM_RESET: i32 = 12;
 
-/// /proc/sys/net/ax25
+/// `/proc/sys/net/ax25`
 pub const NET_AX25_IP_DEFAULT_MODE: i32 = 1;
 pub const NET_AX25_DEFAULT_MODE: i32 = 2;
 pub const NET_AX25_BACKOFF_TYPE: i32 = 3;
@@ -701,7 +701,7 @@ pub const NET_AX25_PACLEN: i32 = 12;
 pub const NET_AX25_PROTOCOL: i32 = 13;
 pub const NET_AX25_DAMA_SLAVE_TIMEOUT: i32 = 14;
 
-/// /proc/sys/net/rose
+/// `/proc/sys/net/rose`
 pub const NET_ROSE_RESTART_REQUEST_TIMEOUT: i32 = 1;
 pub const NET_ROSE_CALL_REQUEST_TIMEOUT: i32 = 2;
 pub const NET_ROSE_RESET_REQUEST_TIMEOUT: i32 = 3;
@@ -713,7 +713,7 @@ pub const NET_ROSE_MAX_VCS: i32 = 8;
 pub const NET_ROSE_WINDOW_SIZE: i32 = 9;
 pub const NET_ROSE_NO_ACTIVITY_TIMEOUT: i32 = 10;
 
-/// /proc/sys/net/x25
+/// `/proc/sys/net/x25`
 pub const NET_X25_RESTART_REQUEST_TIMEOUT: i32 = 1;
 pub const NET_X25_CALL_REQUEST_TIMEOUT: i32 = 2;
 pub const NET_X25_RESET_REQUEST_TIMEOUT: i32 = 3;
@@ -721,10 +721,10 @@ pub const NET_X25_CLEAR_REQUEST_TIMEOUT: i32 = 4;
 pub const NET_X25_ACK_HOLD_BACK_TIMEOUT: i32 = 5;
 pub const NET_X25_FORWARD: i32 = 6;
 
-/// /proc/sys/net/token-ring
+/// `/proc/sys/net/token-ring`
 pub const NET_TR_RIF_TIMEOUT: i32 = 1;
 
-/// /proc/sys/net/decnet/
+/// `/proc/sys/net/decnet/`
 pub const NET_DECNET_NODE_TYPE: i32 = 1;
 pub const NET_DECNET_NODE_ADDRESS: i32 = 2;
 pub const NET_DECNET_NODE_NAME: i32 = 3;
@@ -741,7 +741,7 @@ pub const NET_DECNET_RMEM: i32 = 13;
 pub const NET_DECNET_WMEM: i32 = 14;
 pub const NET_DECNET_DEBUG_LEVEL: i32 = 255;
 
-/// /proc/sys/net/decnet/conf/<dev>
+/// `/proc/sys/net/decnet/conf/<dev>`
 pub const NET_DECNET_CONF_LOOPBACK: i32 = -2;
 pub const NET_DECNET_CONF_DDCMP: i32 = -3;
 pub const NET_DECNET_CONF_PPP: i32 = -4;
@@ -749,7 +749,7 @@ pub const NET_DECNET_CONF_X25: i32 = -5;
 pub const NET_DECNET_CONF_GRE: i32 = -6;
 pub const NET_DECNET_CONF_ETHER: i32 = -7;
 
-/// /proc/sys/net/decnet/conf/<dev>/
+/// `/proc/sys/net/decnet/conf/<dev>/`
 pub const NET_DECNET_CONF_DEV_PRIORITY: i32 = 1;
 pub const NET_DECNET_CONF_DEV_T1: i32 = 2;
 pub const NET_DECNET_CONF_DEV_T2: i32 = 3;
@@ -758,7 +758,7 @@ pub const NET_DECNET_CONF_DEV_FORWARDING: i32 = 5;
 pub const NET_DECNET_CONF_DEV_BLKSIZE: i32 = 6;
 pub const NET_DECNET_CONF_DEV_STATE: i32 = 7;
 
-/// /proc/sys/net/sctp
+/// `/proc/sys/net/sctp`
 pub const NET_SCTP_RTO_INITIAL: i32 = 1;
 pub const NET_SCTP_RTO_MIN: i32 = 2;
 pub const NET_SCTP_RTO_MAX: i32 = 3;
@@ -777,7 +777,7 @@ pub const NET_SCTP_SNDBUF_POLICY: i32 = 15;
 pub const NET_SCTP_SACK_TIMEOUT: i32 = 16;
 pub const NET_SCTP_RCVBUF_POLICY: i32 = 17;
 
-/// /proc/sys/net/bridge
+/// `/proc/sys/net/bridge`
 pub const NET_BRIDGE_NF_CALL_ARPTABLES: i32 = 1;
 pub const NET_BRIDGE_NF_CALL_IPTABLES: i32 = 2;
 pub const NET_BRIDGE_NF_CALL_IP6TABLES: i32 = 3;
@@ -827,7 +827,7 @@ pub const FS_INOTIFY: i32 = 20;
 /// ocfs2
 pub const FS_OCFS2: i32 = 988;
 
-/// /proc/sys/fs/quota/
+/// `/proc/sys/fs/quota/`
 pub const FS_DQ_LOOKUPS: i32 = 1;
 pub const FS_DQ_DROPS: i32 = 2;
 pub const FS_DQ_READS: i32 = 3;
@@ -847,7 +847,7 @@ pub const DEV_MAC_HID: i32 = 5;
 pub const DEV_SCSI: i32 = 6;
 pub const DEV_IPMI: i32 = 7;
 
-/// /proc/sys/dev/cdrom
+/// `/proc/sys/dev/cdrom`
 pub const DEV_CDROM_INFO: i32 = 1;
 pub const DEV_CDROM_AUTOCLOSE: i32 = 2;
 pub const DEV_CDROM_AUTOEJECT: i32 = 3;
@@ -855,18 +855,18 @@ pub const DEV_CDROM_DEBUG: i32 = 4;
 pub const DEV_CDROM_LOCK: i32 = 5;
 pub const DEV_CDROM_CHECK_MEDIA: i32 = 6;
 
-/// /proc/sys/dev/parport
+/// `/proc/sys/dev/parport`
 pub const DEV_PARPORT_DEFAULT: i32 = -3;
 
-/// /proc/sys/dev/raid
+/// `/proc/sys/dev/raid`
 pub const DEV_RAID_SPEED_LIMIT_MIN: i32 = 1;
 pub const DEV_RAID_SPEED_LIMIT_MAX: i32 = 2;
 
-/// /proc/sys/dev/parport/default
+/// `/proc/sys/dev/parport/default`
 pub const DEV_PARPORT_DEFAULT_TIMESLICE: i32 = 1;
 pub const DEV_PARPORT_DEFAULT_SPINTIME: i32 = 2;
 
-/// /proc/sys/dev/parport/parport n
+/// `/proc/sys/dev/parport/parport n`
 pub const DEV_PARPORT_SPINTIME: i32 = 1;
 pub const DEV_PARPORT_BASE_ADDR: i32 = 2;
 pub const DEV_PARPORT_IRQ: i32 = 3;
@@ -875,10 +875,10 @@ pub const DEV_PARPORT_MODES: i32 = 5;
 pub const DEV_PARPORT_DEVICES: i32 = 6;
 pub const DEV_PARPORT_AUTOPROBE: i32 = 16;
 
-/// /proc/sys/dev/parport/parport n/devices/
+/// `/proc/sys/dev/parport/parport n/devices/`
 pub const DEV_PARPORT_DEVICES_ACTIVE: i32 = -3;
 
-/// /proc/sys/dev/parport/parport n/devices/device n
+/// `/proc/sys/dev/parport/parport n /devices/device n`
 pub const DEV_PARPORT_DEVICE_TIMESLICE: i32 = 1;
 
 /// `/proc/sys/dev/mac_hid`
@@ -889,13 +889,14 @@ pub const DEV_MAC_HID_MOUSE_BUTTON2_KEYCODE: i32 = 4;
 pub const DEV_MAC_HID_MOUSE_BUTTON3_KEYCODE: i32 = 5;
 pub const DEV_MAC_HID_ADB_MOUSE_SENDS_KEYCODES: i32 = 6;
 
-/// /proc/sys/dev/scsi
+/// `/proc/sys/dev/scsi`
 pub const DEV_SCSI_LOGGING_LEVEL: i32 = 1;
 
-/// /proc/sys/dev/ipmi
+/// `/proc/sys/dev/ipmi`
 pub const DEV_IPMI_POWEROFF_POWERCYCLE: i32 = 1;
 
-/// /proc/sys/abi
+/// `/proc/sys/abi`
+///
 /// default handler for coff binaries
 pub const ABI_DEFHANDLER_COFF: i32 = 1;
 /// default handler for ELF binaries

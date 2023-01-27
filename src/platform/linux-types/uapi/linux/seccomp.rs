@@ -8,7 +8,7 @@
 
 use crate::IO;
 
-/// Valid values for seccomp.mode and prctl(`PR_SET_SECCOMP`, <mode>)
+/// Valid values for seccomp.mode and prctl(`PR_SET_SECCOMP`, `<mode>`)
 /// seccomp is not in use.
 pub const SECCOMP_MODE_DISABLED: i32 = 0;
 /// uses hard-coded filter.

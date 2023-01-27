@@ -6,7 +6,7 @@
 /// @flags:  future flags
 ///
 /// The syscall currently only signals via `PIDTYPE_PID` which covers
-/// kill(<positive-pid>, <signal>. It does not signal threads or process
+/// `kill(<positive-pid>, <signal>)`. It does not signal threads or process
 /// groups.
 /// In order to extend the syscall to threads and process groups the @flags
 /// argument should be used. In essence, the @flags argument will determine

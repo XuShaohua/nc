@@ -3883,6 +3883,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 /// const _MTYPE_SERVER: isize = 2;
 ///
 /// #[derive(Debug, Clone, Copy)]
+/// #[repr(C)]
 /// struct Message {
 ///     pub mtype: isize,
 ///     pub mtext: [u8; MAX_MTEXT],
@@ -3970,6 +3971,7 @@ pub unsafe fn msgrcv(
 /// const _MTYPE_SERVER: isize = 2;
 ///
 /// #[derive(Debug, Clone, Copy)]
+/// #[repr(C)]
 /// struct Message {
 ///     pub mtype: isize,
 ///     pub mtext: [u8; MAX_MTEXT],
@@ -6360,7 +6362,7 @@ pub unsafe fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), E
     syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
 }
 
-/// Set the effective user ID of the calling process to `uid`.
+/// Set user ID of the calling process to `uid`.
 ///
 /// # Example
 ///

@@ -1575,7 +1575,7 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let mut stat = nc::stat_t::default();
-/// let ret = unsafe { nc::fstat63(fd, &mut stat) };
+/// let ret = unsafe { nc::fstat64(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
 /// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);

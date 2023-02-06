@@ -3576,14 +3576,13 @@ pub unsafe fn pkey_mprotect(
 
 /// Wait for some event on a file descriptor.
 pub unsafe fn ppoll(
-    fds: &mut pollfd_t,
-    nfds: i32,
+    fds: &mut [pollfd_t],
     timeout: &timespec_t,
     sigmask: &sigset_t,
     sigsetsize: size_t,
 ) -> Result<i32, Errno> {
-    let fds_ptr = fds as *mut pollfd_t as usize;
-    let nfds = nfds as usize;
+    let fds_ptr = fds.as_mut_ptr() as usize;
+    let nfds = fds.len();
     let timeout_ptr = timeout as *const timespec_t as usize;
     let sigmask_ptr = sigmask as *const sigset_t as usize;
     syscall5(

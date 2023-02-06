@@ -207,10 +207,6 @@ mod platform;
 #[path = "platform/freebsd-x86_64/mod.rs"]
 mod platform;
 
-#[cfg(all(target_os = "netbsd", target_arch = "x86"))]
-#[path = "platform/netbsd-x86/mod.rs"]
-mod platform;
-
 #[cfg(all(target_os = "netbsd", target_arch = "x86_64"))]
 #[path = "platform/netbsd-x86_64/mod.rs"]
 mod platform;

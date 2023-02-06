@@ -69,6 +69,13 @@ pub unsafe fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_ACCT, filename_ptr).map(drop)
 }
 
+/// Retrieve return status of asynchronous I/O operation (REALTIME)
+pub unsafe fn aio_return(job: &mut aiocb_t, job_ops: &mut aiocb_ops_t) -> Result<ssize_t, Errno> {
+    let job_ptr = job as *mut aiocb_t as usize;
+    let job_ops_ptr = job_ops as *mut aiocb_ops_t as usize;
+    syscall2(SYS_AIO_RETURN, job_ptr, job_ops_ptr).map(|val| val as ssize_t)
+}
+
 /// Bind a name to a socket.
 pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -1858,6 +1865,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 /// const _MTYPE_SERVER: isize = 2;
 ///
 /// #[derive(Debug, Clone, Copy)]
+/// #[repr(C)]
 /// struct Message {
 ///     pub mtype: isize,
 ///     pub mtext: [u8; MAX_MTEXT],
@@ -1945,6 +1953,7 @@ pub unsafe fn msgrcv(
 /// const _MTYPE_SERVER: isize = 2;
 ///
 /// #[derive(Debug, Clone, Copy)]
+/// #[repr(C)]
 /// struct Message {
 ///     pub mtype: isize,
 ///     pub mtext: [u8; MAX_MTEXT],
@@ -2656,6 +2665,33 @@ pub unsafe fn sendto(
     .map(|ret| ret as ssize_t)
 }
 
+/// Set the effective group ID of the calling process to `gid`.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::setegid(0) };
+/// assert!(ret.is_err());
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn setegid(gid: gid_t) -> Result<(), Errno> {
+    let gid = gid as usize;
+    syscall1(SYS_SETEGID, gid).map(drop)
+}
+
+/// Set the effective user ID of the calling process to `uid`.
+///
+/// # Example
+///
+/// ```
+/// let ret = unsafe { nc::seteuid(0) };
+/// assert_eq!(ret, Err(nc::EPERM));
+/// ```
+pub unsafe fn seteuid(uid: uid_t) -> Result<(), Errno> {
+    let uid = uid as usize;
+    syscall1(SYS_SETEUID, uid).map(drop)
+}
+
 /// Set the group ID of the calling process to `gid`.
 ///
 /// # Example
@@ -2816,7 +2852,7 @@ pub unsafe fn setsockopt(
     syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen).map(drop)
 }
 
-/// Set the effective user ID of the calling process to `uid`.
+/// Set user ID of the calling process to `uid`.
 ///
 /// # Example
 ///
@@ -3264,6 +3300,13 @@ pub unsafe fn utimensat<P: AsRef<Path>>(
     let times_ptr = times.as_ptr() as usize;
     let flags = flags as usize;
     syscall4(SYS_UTIMENSAT, dirfd, filename_ptr, times_ptr, flags).map(drop)
+}
+
+/// Generate universally unique identifiers
+pub unsafe fn uuidgen(store: &mut [uuid_t]) -> Result<(), Errno> {
+    let store_ptr = store.as_mut_ptr() as usize;
+    let count = store.len();
+    syscall2(SYS_UUIDGEN, store_ptr, count).map(drop)
 }
 
 /// Create a child process and wait until it is terminated.

@@ -108,9 +108,9 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 }
 
 /// Bind a name to a socket.
-pub unsafe fn bind(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+pub unsafe fn bind(sockfd: i32, addr: *const sockaddr_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *const sockaddr_in_t as usize;
+    let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
     syscall3(SYS_BIND, sockfd, addr_ptr, addrlen).map(drop)
 }

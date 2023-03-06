@@ -1,5 +1,5 @@
-/// Initialize a connection on a socket.
-pub unsafe fn connect(
+/// Bind a name to a socket.
+pub unsafe fn bind(
     fd: i32,
     sockfd: i32,
     addr: *const sockaddr_t,
@@ -9,5 +9,5 @@ pub unsafe fn connect(
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
-    syscall4(SYS_CONNECTAT, fd, sockfd, addr_ptr, addrlen).map(drop)
+    syscall4(SYS_BINDAT, fd, sockfd, addr_ptr, addrlen).map(drop)
 }

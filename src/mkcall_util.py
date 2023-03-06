@@ -159,6 +159,7 @@ def generate_call_file(root_dir, system_name):
     if unmatched_sysno:
         print("-" * 80)
         print("root_dir:", root_dir, ", system_name:", system_name)
-        print("unmatched sysnos:", unmatched_sysno)
+        unmatched_sysno_lower = [name.replace("SYS_", "").lower() for name in unmatched_sysno]
+        print("unmatched sysnos:", unmatched_sysno_lower)
         print("Percentage of implemented syscalls: {:.2f}%".format(sysno_percentage))
         print("\n")

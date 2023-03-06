@@ -11,7 +11,9 @@ mod arch;
 pub use arch::*;
 
 mod netinet;
+mod netinet6;
 mod sys;
 
 pub use netinet::*;
+pub use netinet6::*;
 pub use sys::*;

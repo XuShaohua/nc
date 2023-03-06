@@ -1,5 +1,5 @@
 /// Bind a name to a socket.
-pub unsafe fn bind(
+pub unsafe fn bindat(
     fd: i32,
     sockfd: i32,
     addr: *const sockaddr_t,

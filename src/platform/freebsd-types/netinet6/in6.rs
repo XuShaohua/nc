@@ -4,6 +4,9 @@
 
 //! From `netinet6/in6.h`
 
+use crate::sa_family_t;
+use crate::types::sys::in_port_t;
+
 /// IPv6 address
 #[repr(C)]
 pub struct in6_addr_t {

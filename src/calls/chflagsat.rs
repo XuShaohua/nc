@@ -1,5 +1,5 @@
 /// Set file flags.
-pub unsafe fn chflags<P: AsRef<Path>>(
+pub unsafe fn chflagsat<P: AsRef<Path>>(
     fd: i32,
     path: P,
     flags: fflags_t,

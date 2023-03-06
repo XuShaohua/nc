@@ -455,10 +455,13 @@ pub unsafe fn close_range(first_fd: u32, last_fd: u32, flags: u32) -> Result<(),
 }
 
 /// Initialize a connection on a socket.
-pub unsafe fn connect(sockfd: i32, addr: &sockaddr_in_t, addrlen: socklen_t) -> Result<(), Errno> {
+pub unsafe fn connect(
+    sockfd: i32,
+    addr: *const sockaddr_t,
+    addrlen: socklen_t,
+) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    // TODO(Shaohua): Use sockaddr_t generic type.
-    let addr_ptr = addr as *const sockaddr_in_t as usize;
+    let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
     syscall3(SYS_CONNECT, sockfd, addr_ptr, addrlen).map(drop)
 }

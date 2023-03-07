@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 mod _bitset;
+mod _cpuset;
 mod _domainset;
 mod _iovec;
 mod _semaphore;
@@ -39,6 +40,7 @@ mod unistd;
 mod uuid;
 
 pub use _bitset::*;
+pub use _cpuset::*;
 pub use _domainset::*;
 pub use _iovec::*;
 pub use _semaphore::*;

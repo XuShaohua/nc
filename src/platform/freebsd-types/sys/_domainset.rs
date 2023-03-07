@@ -9,6 +9,7 @@ use crate::__bitset_words;
 pub const DOMAINSET_MAXSIZE: usize = 256;
 pub const DOMAINSET_SETSIZE: usize = DOMAINSET_MAXSIZE;
 
+#[derive(Clone)]
 #[repr(C)]
 pub struct _domainset_t {
     pub __bits: [isize; __bitset_words(DOMAINSET_SETSIZE)],

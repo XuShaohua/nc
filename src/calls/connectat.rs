@@ -1,5 +1,5 @@
 /// Initialize a connection on a socket.
-pub unsafe fn connect(
+pub unsafe fn connectat(
     fd: i32,
     sockfd: i32,
     addr: *const sockaddr_t,

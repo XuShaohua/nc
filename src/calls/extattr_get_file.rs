@@ -4,7 +4,7 @@ pub unsafe fn extattr_get_file<P: AsRef<Path>>(
     attr_namespace: i32,
     attr_name: &str,
     data: &mut [u8],
-) -> Result<(), Errno> {
+) -> Result<ssize_t, Errno> {
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let attr_namespace = attr_namespace as usize;
@@ -19,5 +19,5 @@ pub unsafe fn extattr_get_file<P: AsRef<Path>>(
         data_ptr,
         nbytes,
     )
-    .map(drop)
+    .map(|val| val as ssize_t)
 }

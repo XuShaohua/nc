@@ -4,7 +4,7 @@
 
 //! From `sys/mount.h`
 
-use crate::uid_t;
+use crate::{c_char, gid_t, size_t, sockaddr_t, uid_t};
 
 /// filesystem id type
 #[repr(C)]
@@ -385,3 +385,157 @@ pub const MNT_NOWAIT: i32 = 2;
 pub const MNT_LAZY: i32 = 3;
 /// Suspend file system after sync
 pub const MNT_SUSPEND: i32 = 4;
+
+/// Generic file handle
+#[repr(C)]
+pub struct fhandle_t {
+    /// Filesystem id of mount point
+    pub fh_fsid: fsid_t,
+    /// Filesys specific id
+    pub fh_fid: fid_t,
+}
+
+/// Export arguments for local filesystem mount calls.
+#[repr(C)]
+pub struct export_args_t {
+    /// export related flags
+    pub ex_flags: u64,
+    /// mapping for root uid
+    pub ex_root: uid_t,
+    /// mapping for anonymous user
+    pub ex_uid: uid_t,
+    pub ex_ngroups: i32,
+    pub ex_groups: *mut gid_t,
+    /// net address to which exported
+    pub ex_addr: *mut sockaddr_t,
+    /// and the net address length
+    pub ex_addrlen: u8,
+    /// mask of valid bits in saddr
+    pub ex_mask: *mut sockaddr_t,
+    /// and the smask length
+    pub ex_masklen: u8,
+    /// index file for WebNFS URLs
+    pub ex_indexfile: *mut c_char,
+    /// security flavor count
+    pub ex_numsecflavors: i32,
+    /// list of security flavors
+    pub ex_secflavors: [i32; MAXSECFLAVORS],
+}
+
+pub const MAXSECFLAVORS: usize = 5;
+
+//*
+// * Structure holding information for a publicly exported filesystem
+// * (WebNFS). Currently the specs allow just for one such filesystem.
+// */
+//struct nfs_public {
+//	int		np_valid;	/* Do we hold valid information */
+//	fhandle_t	np_handle;	/* Filehandle for pub fs (internal) */
+//	struct mount	*np_mount;	/* Mountpoint of exported fs */
+//	char		*np_index;	/* Index file */
+//};
+//
+// Userland version of the struct vfsconf.
+//#[repr(C)]
+//pub struct xvfsconf_t {
+//	struct	vfsops *vfc_vfsops;	/* filesystem operations vector */
+//	char	vfc_name[MFSNAMELEN];	/* filesystem type name */
+//	int	vfc_typenum;		/* historic filesystem type number */
+//	int	vfc_refcount;		/* number mounted of this type */
+//	int	vfc_flags;		/* permanent flags */
+//	struct	vfsconf *vfc_next;	/* next in list */
+//}
+
+/*
+ * NB: these flags refer to IMPLEMENTATION properties, not properties of
+ * any actual mounts; i.e., it does not make sense to change the flags.
+ */
+/// statically compiled into kernel
+pub const VFCF_STATIC: i32 = 0x00010000;
+/// may get data over the network
+pub const VFCF_NETWORK: i32 = 0x00020000;
+/// writes are not implemented
+pub const VFCF_READONLY: i32 = 0x00040000;
+/// data does not represent real files
+pub const VFCF_SYNTHETIC: i32 = 0x00080000;
+/// aliases some other mounted FS
+pub const VFCF_LOOPBACK: i32 = 0x00100000;
+/// stores file names as Unicode
+pub const VFCF_UNICODE: i32 = 0x00200000;
+/// can be mounted from within a jail
+pub const VFCF_JAIL: i32 = 0x00400000;
+/// supports delegated administration
+pub const VFCF_DELEGADMIN: i32 = 0x00800000;
+/// Stop at Boundary: defer stop requests to kernel->user (AST) transition
+pub const VFCF_SBDRY: i32 = 0x01000000;
+/// allow mounting files
+pub const VFCF_FILEMOUNT: i32 = 0x02000000;
+
+pub type fsctlop_t = u32;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct vfsidctl_t {
+    /// should be VFSIDCTL_VERS1 (below)
+    pub vc_vers: i32,
+
+    /// fsid to operate on
+    pub vc_fsid: fsid_t,
+
+    /// type of fs 'nfs' or '*'
+    pub vc_fstypename: [c_char; MFSNAMELEN],
+
+    /// operation VFS_CTL_* (below)
+    pub vc_op: fsctlop_t,
+
+    /// pointer to data structure
+    pub vc_ptr: usize,
+
+    /// sizeof said structure
+    pub vc_len: size_t,
+
+    /// spare (must be zero)
+    pub vc_spare: [i32; 12],
+}
+
+/// vfsidctl API version.
+pub const VFS_CTL_VERS1: i32 = 0x01;
+
+/*
+ * New style VFS sysctls, do not reuse/conflict with the namespace for
+ * private sysctls.
+ * All "global" sysctl ops have the 33rd bit set:
+ * 0x...1....
+ * Private sysctl ops should have the 33rd bit unset.
+ */
+/// anything wrong? (vfsquery)
+pub const VFS_CTL_QUERY: i32 = 0x00010001;
+/// set timeout for vfs notification
+pub const VFS_CTL_TIMEO: i32 = 0x00010002;
+/// disable file locking
+pub const VFS_CTL_NOLOCKS: i32 = 0x00010003;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct vfsquery_t {
+    pub vq_flags: u32,
+    pub vq_spare: [u32; 31],
+}
+
+/// vfsquery flags
+/// server down
+pub const VQ_NOTRESP: i32 = 0x0001;
+/// server bad auth
+pub const VQ_NEEDAUTH: i32 = 0x0002;
+/// we're low on space
+pub const VQ_LOWDISK: i32 = 0x0004;
+/// new filesystem arrived
+pub const VQ_MOUNT: i32 = 0x0008;
+/// filesystem has left
+pub const VQ_UNMOUNT: i32 = 0x0010;
+/// filesystem is dead, needs force unmount
+pub const VQ_DEAD: i32 = 0x0020;
+/// filesystem needs assistance from external program
+pub const VQ_ASSIST: i32 = 0x0040;
+/// server lockd down
+pub const VQ_NOTRESPLOCK: i32 = 0x0080;

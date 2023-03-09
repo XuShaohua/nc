@@ -4,7 +4,7 @@
 
 //! From `sys/jail.h`
 
-use crate::{c_char, cpusetid_t, in6_addr_t, in_addr_t};
+use crate::{c_char, cpusetid_t, in6_addr_t, in_addr_t, MAXHOSTNAMELEN, MAXPATHLEN};
 
 #[repr(C)]
 #[derive(Debug, Clone)]

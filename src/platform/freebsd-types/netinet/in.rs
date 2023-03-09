@@ -7,7 +7,7 @@
 #![allow(overflowing_literals)]
 #![allow(clippy::module_name_repetitions)]
 
-use crate::sa_family_t;
+use crate::{in_addr_t, in_port_t, sa_family_t};
 
 /// Protocols common to RFC 1700, POSIX, and X/Open.
 /// dummy for IP
@@ -23,8 +23,9 @@ pub const INADDR_ANY: in_addr_t = 0x0000_0000;
 /// must be masked
 pub const INADDR_BROADCAST: in_addr_t = 0xffff_ffff;
 
-pub type in_addr_t = u32;
-pub type in_port_t = u16;
+// Already defined in sys/types.rs
+//pub type in_addr_t = u32;
+//pub type in_port_t = u16;
 
 /// Internet address (a structure for historical reasons).
 #[repr(C)]

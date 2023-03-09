@@ -1184,6 +1184,53 @@ pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_FDATASYNC, fd).map(drop)
 }
 
+/// Execute a new program.
+pub unsafe fn fexecve(fd: i32, argv: &[&str], env: &[&str]) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let argv_ptr = argv.as_ptr() as usize;
+    let env_ptr = env.as_ptr() as usize;
+    syscall3(SYS_FEXECVE, fd, argv_ptr, env_ptr).map(drop)
+}
+
+/// Make a hard link.
+pub unsafe fn fhlink<P: AsRef<Path>>(fh: &mut fhandle_t, to: P) -> Result<(), Errno> {
+    let fh_ptr = fh as *mut fhandle_t as usize;
+    let to = CString::new(to.as_ref());
+    let to_ptr = to.as_ptr() as usize;
+    syscall2(SYS_FHLINK, fh_ptr, to_ptr).map(drop)
+}
+
+/// Make a hard link.
+pub unsafe fn fhlinkat<P: AsRef<Path>>(fh: &mut fhandle_t, tofd: i32, to: P) -> Result<(), Errno> {
+    let fh_ptr = fh as *mut fhandle_t as usize;
+    let tofd = tofd as usize;
+    let to = CString::new(to.as_ref());
+    let to_ptr = to.as_ptr() as usize;
+    syscall3(SYS_FHLINKAT, fh_ptr, tofd, to_ptr).map(drop)
+}
+
+/// Opens the file referenced by `fh` for reading and/or writing,
+/// and returns the file descriptor to the calling process.
+pub unsafe fn fhopen(fh: &fhandle_t, flags: i32) -> Result<i32, Errno> {
+    let fh_ptr = fh as *const fhandle_t as usize;
+    let flags = flags as usize;
+    syscall2(SYS_FHOPEN, fh_ptr, flags).map(|val| val as i32)
+}
+
+/// Get file status referenced by `fh`.
+pub unsafe fn fhstat(fh: &fhandle_t, sb: &mut stat_t) -> Result<(), Errno> {
+    let fh_ptr = fh as *const fhandle_t as usize;
+    let sb_ptr = sb as *mut stat_t as usize;
+    syscall2(SYS_FHSTAT, fh_ptr, sb_ptr).map(drop)
+}
+
+/// Get filesystem statistics referenced by `fh`.
+pub unsafe fn fhstatfs(fh: &fhandle_t, buf: &mut statfs_t) -> Result<(), Errno> {
+    let fh_ptr = fh as *const fhandle_t as usize;
+    let buf_ptr = buf as *mut statfs_t as usize;
+    syscall2(SYS_FHSTATFS, fh_ptr, buf_ptr).map(drop)
+}
+
 /// Apply or remove an advisory lock on an open file.
 ///
 /// # Example
@@ -1817,6 +1864,46 @@ pub unsafe fn issetugid() -> i32 {
     syscall0(SYS_ISSETUGID)
         .map(|val| val as i32)
         .expect("issetugid() failed")
+}
+
+/// Sets up a jail and locks current process in it.
+///
+/// Returns jail identifier (JID).
+pub unsafe fn jail(conf: &jail_t) -> Result<i32, Errno> {
+    let conf_ptr = conf as *const jail_t as usize;
+    syscall1(SYS_JAIL, conf_ptr).map(|ret| ret as i32)
+}
+
+/// Attaches the current process to an existing jail.
+pub unsafe fn jail_attach(jid: i32) -> Result<(), Errno> {
+    let jid = jid as usize;
+    syscall1(SYS_JAIL_ATTACH, jid).map(drop)
+}
+
+/// Retrieves jail parameters.
+pub unsafe fn jail_get(iov: &mut [iovec_t], flags: i32) -> Result<i32, Errno> {
+    let iov_ptr = iov.as_mut_ptr() as usize;
+    let iov_len = iov.len();
+    let flags = flags as usize;
+    syscall3(SYS_JAIL_GET, iov_ptr, iov_len, flags).map(|val| val as i32)
+}
+
+/// Removes the jail identified by `jid`.
+///
+/// It will kill all processes belonging to the jail, and
+/// remove any children of that jail.
+pub unsafe fn jail_remove(jid: i32) -> Result<(), Errno> {
+    let jid = jid as usize;
+    syscall1(SYS_JAIL_REMOVE, jid).map(drop)
+}
+
+/// Creates a new jail, or modifies an existing one, and optionally
+/// locks the current process in it.
+pub unsafe fn jail_set(iov: &mut [iovec_t], flags: i32) -> Result<i32, Errno> {
+    let iov_ptr = iov.as_mut_ptr() as usize;
+    let iov_len = iov.len();
+    let flags = flags as usize;
+    syscall3(SYS_JAIL_SET, iov_ptr, iov_len, flags).map(|val| val as i32)
 }
 
 /// Send signal to a process.

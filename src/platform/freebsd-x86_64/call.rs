@@ -1217,6 +1217,13 @@ pub unsafe fn fhopen(fh: &fhandle_t, flags: i32) -> Result<i32, Errno> {
     syscall2(SYS_FHOPEN, fh_ptr, flags).map(|val| val as i32)
 }
 
+/// Read value of a symbolic link.
+pub unsafe fn fhreadlink(fh: &mut fhandle_t, buf: &mut [u8]) -> Result<i32, Errno> {
+    let fh_ptr = fh as *mut fhandle_t as usize;
+    let buf_ptr = buf.as_mut_ptr() as usize;
+    syscall2(SYS_FHREADLINK, fh_ptr, buf_ptr).map(|val| val as i32)
+}
+
 /// Get file status referenced by `fh`.
 pub unsafe fn fhstat(fh: &fhandle_t, sb: &mut stat_t) -> Result<(), Errno> {
     let fh_ptr = fh as *const fhandle_t as usize;
@@ -1471,6 +1478,41 @@ pub unsafe fn getegid() -> gid_t {
 pub unsafe fn geteuid() -> uid_t {
     // This function is always successful.
     syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
+}
+
+/// Get file handle.
+pub unsafe fn getfh<P: AsRef<Path>>(path: P, fh: &mut fhandle_t) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let fh_ptr = fh as *mut fhandle_t as usize;
+    syscall2(SYS_GETFH, path_ptr, fh_ptr).map(drop)
+}
+
+/// Get file handle.
+pub unsafe fn getfhat<P: AsRef<Path>>(
+    fd: i32,
+    path: P,
+    fh: &mut fhandle_t,
+    flag: i32,
+) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let fh_ptr = fh as *mut fhandle_t as usize;
+    let flag = flag as usize;
+    syscall4(SYS_GETFHAT, fd, path_ptr, fh_ptr, flag).map(drop)
+}
+
+/// Get list of all mounted file systems.
+///
+/// If buf is None, returns number of mounted file systems.
+pub unsafe fn getfsstat(buf: Option<&mut [statfs_t]>, mode: i32) -> Result<i32, Errno> {
+    let buf_size = buf
+        .as_ref()
+        .map_or(0, |buf| buf.len() * core::mem::size_of::<statfs_t>());
+    let buf_ptr = buf.map_or(0, |buf| buf.as_mut_ptr() as usize);
+    let mode = mode as usize;
+    syscall3(SYS_GETFSSTAT, buf_ptr, buf_size, mode).map(|val| val as i32)
 }
 
 /// Get the real group ID of the calling process.
@@ -1933,6 +1975,59 @@ pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     syscall2(SYS_KILL, pid, signal).map(drop)
 }
 
+/// Returns the fileid of a kld file.
+pub unsafe fn kldfind<P: AsRef<Path>>(file: P) -> Result<i32, Errno> {
+    let file = CString::new(file.as_ref());
+    let file_ptr = file.as_ptr() as usize;
+    syscall1(SYS_KLDFIND, file_ptr).map(|ret| ret as i32)
+}
+
+/// Returns first module id from the kld file specified.
+pub unsafe fn kldfirstmod(file_id: i32) -> Result<i32, Errno> {
+    let file_id = file_id as usize;
+    syscall1(SYS_KLDFIRSTMOD, file_id).map(|ret| ret as i32)
+}
+
+/// Load kld files into the kernel.
+pub unsafe fn kldload<P: AsRef<Path>>(file: P) -> Result<i32, Errno> {
+    let file = CString::new(file.as_ref());
+    let file_ptr = file.as_ptr() as usize;
+    syscall1(SYS_KLDLOAD, file_ptr).map(|ret| ret as i32)
+}
+
+/// Returns the file id of the next kld file.
+pub unsafe fn kldnext(file_id: i32) -> Result<i32, Errno> {
+    let file_id = file_id as usize;
+    syscall1(SYS_KLDNEXT, file_id).map(|ret| ret as i32)
+}
+
+/// Get status of a kld file.
+pub unsafe fn kldstat(file_id: i32, stat: &mut kld_file_stat_t) -> Result<(), Errno> {
+    let file_id = file_id as usize;
+    let stat_ptr = stat as *mut kld_file_stat_t as usize;
+    syscall2(SYS_KLDSTAT, file_id, stat_ptr).map(drop)
+}
+
+/// Look up address by symbol name in a kld file.
+pub unsafe fn kldsym(file_id: i32, cmd: i32, data: usize) -> Result<(), Errno> {
+    let file_id = file_id as usize;
+    let cmd = cmd as usize;
+    syscall3(SYS_KLDSYM, file_id, cmd, data).map(drop)
+}
+
+/// Unload kld files.
+pub unsafe fn kldunload(file_id: i32) -> Result<(), Errno> {
+    let file_id = file_id as usize;
+    syscall1(SYS_KLDUNLOAD, file_id).map(drop)
+}
+
+/// Unload kld files.
+pub unsafe fn kldunloadf(file_id: i32, flags: i32) -> Result<(), Errno> {
+    let file_id = file_id as usize;
+    let flags = flags as usize;
+    syscall2(SYS_KLDUNLOAD, file_id, flags).map(drop)
+}
+
 /// Notify process that a message is available (REALTIME)
 pub unsafe fn kmq_notify(mqd: i32, event: &sigevent_t) -> Result<(), Errno> {
     let mqd = mqd as usize;
@@ -2149,6 +2244,14 @@ pub unsafe fn lchflags<P: AsRef<Path>>(path: P, flags: fflags_t) -> Result<(), E
     syscall2(SYS_LCHFLAGS, path_ptr, flags).map(drop)
 }
 
+/// Change permissions of a file.
+pub unsafe fn lchmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall2(SYS_LCHMOD, filename_ptr, mode).map(drop)
+}
+
 /// Change ownership of a file. Does not deference symbolic link.
 ///
 /// # Example
@@ -2179,6 +2282,14 @@ pub unsafe fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> 
     let user = user as usize;
     let group = group as usize;
     syscall3(SYS_LCHOWN, filename_ptr, user, group).map(drop)
+}
+
+/// Get file handle, without following symbolic link.
+pub unsafe fn lgetfh<P: AsRef<Path>>(path: P, fh: &mut fhandle_t) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let fh_ptr = fh as *mut fhandle_t as usize;
+    syscall2(SYS_LGETFH, path_ptr, fh_ptr).map(drop)
 }
 
 /// Make a new name for a file.

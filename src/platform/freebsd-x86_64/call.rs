@@ -191,6 +191,59 @@ pub unsafe fn bindat(
     syscall4(SYS_BINDAT, fd, sockfd, addr_ptr, addrlen).map(drop)
 }
 
+/// Places the current process into capability mode.
+pub unsafe fn cap_enter() -> Result<(), Errno> {
+    syscall0(SYS_CAP_ENTER).map(drop)
+}
+
+/// Get the list of allowed `fcntl()` commands if a file descriptor
+/// is granted the CAP_FCNTL capability right,
+pub unsafe fn cap_fcntls_get(fd: i32, fcntl_rights: &mut u32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let fcntl_rights_ptr = fcntl_rights as *mut u32 as usize;
+    syscall2(SYS_CAP_FCNTLS_GET, fd, fcntl_rights_ptr).map(drop)
+}
+
+/// Reduce the list of allowed `fcntl()` commands if a file descriptor
+/// is granted the CAP_IOCTL capability right,
+pub unsafe fn cap_fcntls_limit(fd: i32, fcntl_rights: u32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let fcntl_rights = fcntl_rights as usize;
+    syscall2(SYS_CAP_FCNTLS_LIMIT, fd, fcntl_rights).map(drop)
+}
+
+/// Returns a flag indicating whether or not the process is
+/// in a capability mode sandbox.
+pub unsafe fn cap_getmode(mode: &mut u32) -> Result<(), Errno> {
+    let mode_ptr = mode as *mut u32 as usize;
+    syscall1(SYS_CAP_GETMODE, mode_ptr).map(drop)
+}
+
+/// Get the list of allowed `ioctl()` commands if a file descriptor
+/// is granted the CAP_IOCTL capability right,
+pub unsafe fn cap_ioctls_get(fd: i32, cmds: &mut [usize]) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let cmds_ptr = cmds.as_mut_ptr() as usize;
+    let ncmds = cmds.len();
+    syscall3(SYS_CAP_IOCTLS_GET, fd, cmds_ptr, ncmds).map(|val| val as ssize_t)
+}
+
+/// Reduce the list of allowed `ioctl()` commands if a file descriptor
+/// is granted the CAP_IOCTL capability right,
+pub unsafe fn cap_ioctls_limit(fd: i32, cmds: &[usize]) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let cmds_ptr = cmds.as_ptr() as usize;
+    let ncmds = cmds.len();
+    syscall3(SYS_CAP_IOCTLS_LIMIT, fd, cmds_ptr, ncmds).map(drop)
+}
+
+/// Limit capability rights
+pub unsafe fn cap_rights_limit(fd: i32, rights: &cap_rights_t) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let rights_ptr = rights as *const cap_rights_t as usize;
+    syscall2(SYS_CAP_RIGHTS_LIMIT, fd, rights_ptr).map(drop)
+}
+
 /// Change working directory.
 ///
 /// # Example
@@ -305,6 +358,18 @@ pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     syscall1(SYS_CHROOT, filename_ptr).map(drop)
+}
+
+/// Obtain ID of a process CPU-time clock.
+pub unsafe fn clock_getcpuclockid2(
+    id: id_t,
+    which: i32,
+    clock_id: &mut clockid_t,
+) -> Result<(), Errno> {
+    let id = id as usize;
+    let which = which as usize;
+    let clock_id_ptr = clock_id as *mut clockid_t as usize;
+    syscall3(SYS_CLOCK_GETCPUCLOCKID2, id, which, clock_id_ptr).map(drop)
 }
 
 /// Get resolution(precision) of the specific clock.
@@ -1190,6 +1255,24 @@ pub unsafe fn fexecve(fd: i32, argv: &[&str], env: &[&str]) -> Result<(), Errno>
     let argv_ptr = argv.as_ptr() as usize;
     let env_ptr = env.as_ptr() as usize;
     syscall3(SYS_FEXECVE, fd, argv_ptr, env_ptr).map(drop)
+}
+
+/// Retrieve feed-forward counter.
+pub unsafe fn ffclock_getcounter(ffcount: &mut ffcounter_t) -> Result<(), Errno> {
+    let ffcount_ptr = ffcount as *mut ffcounter_t as usize;
+    syscall1(SYS_FFCLOCK_GETCOUNTER, ffcount_ptr).map(drop)
+}
+
+/// Get feed-forward clock estimates.
+pub unsafe fn ffclock_getestimate(cest: &mut ffclock_estimate_t) -> Result<(), Errno> {
+    let cest_ptr = cest as *mut ffclock_estimate_t as usize;
+    syscall1(SYS_FFCLOCK_GETESTIMATE, cest_ptr).map(drop)
+}
+
+/// Set feed-forward clock estimates.
+pub unsafe fn ffclock_setestimate(cest: &mut ffclock_estimate_t) -> Result<(), Errno> {
+    let cest_ptr = cest as *mut ffclock_estimate_t as usize;
+    syscall1(SYS_FFCLOCK_SETESTIMATE, cest_ptr).map(drop)
 }
 
 /// Make a hard link.

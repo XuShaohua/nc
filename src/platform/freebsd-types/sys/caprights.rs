@@ -18,8 +18,8 @@ pub const CAP_RIGHTS_VERSION_00: usize = 0;
 // pub const CAP_RIGHTS_VERSION_03: usize = 3;
 pub const CAP_RIGHTS_VERSION: usize = CAP_RIGHTS_VERSION_00;
 
-#[derive(Debug, Default, Clone)]
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct cap_rights_t {
     pub cr_rights: [u64; CAP_RIGHTS_VERSION_00 + 2],
 }

@@ -7,4 +7,4 @@
 /// The feed-forward clock counter. The fundamental element of a feed-forward
 /// clock is a wide monotonically increasing counter that accumulates at the same
 /// rate as the selected timecounter.
-pub type ffcounter = u64;
+pub type ffcounter_t = u64;

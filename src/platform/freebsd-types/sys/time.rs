@@ -4,7 +4,7 @@
 
 //! From `sys/time.h`
 
-use crate::timeval_t;
+use crate::{time_t, timeval_t};
 
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
@@ -30,6 +30,13 @@ pub const DST_MET: i32 = 4;
 pub const DST_EET: i32 = 5;
 /// Canada
 pub const DST_CAN: i32 = 6;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct bintime_t {
+    pub sec: time_t,
+    pub frac: u64,
+}
 
 /// Names of the interval timers, and structure defining a timer setting.
 pub const ITIMER_REAL: i32 = 0;

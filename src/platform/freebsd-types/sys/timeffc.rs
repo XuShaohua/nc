@@ -4,19 +4,21 @@
 
 //! From `sys/timeffc.h`
 
+use crate::{bintime_t, ffcounter_t};
+
 /// Feed-forward clock estimate
 /// Holds time mark as a ffcounter and conversion to bintime based on current
 /// timecounter period and offset estimate passed by the synchronization daemon.
 /// Provides time of last daemon update, clock status and bound on error.
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct ffclock_estimate_t {
     /// Time of last estimates update.
     pub update_time: bintime_t,
     /// Counter value at last update.
-    pub update_ffcount: ffcounter,
+    pub update_ffcount: ffcounter_t,
     /// Counter value of next leap second.
-    pub leapsec_next: ffcounter,
+    pub leapsec_next: ffcounter_t,
     /// Estimate of counter period.
     pub period: u64,
     /// Bound on absolute clock error [ns].

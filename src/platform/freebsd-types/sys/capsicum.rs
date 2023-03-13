@@ -16,7 +16,7 @@
 //! mmap() and aio*() system calls will need special attention as they may
 //! involve reads or writes depending a great deal on context.
 
-use crate::cap_rights_t;
+use crate::{cap_rights_t, CAP_RIGHTS_VERSION, F_GETFL, F_GETOWN, F_SETFL, F_SETOWN, SSIZE_MAX};
 
 pub const fn CAPRIGHT(idx: usize, bit: u64) -> u64 {
     (1_u64 << (57 + idx)) | bit
@@ -242,12 +242,12 @@ pub const CAP_UNUSED1_57: u64 = CAPRIGHT(1, 0x0100000000000000);
 /// Backward compatibility.
 pub const CAP_POLL_EVENT: u64 = CAP_EVENT;
 
-pub const fn CAP_ALL(rights: &mut cap_rights_t) {
+pub fn CAP_ALL(rights: &mut cap_rights_t) {
     rights.cr_rights[0] = ((CAP_RIGHTS_VERSION as u64) << 62) | CAP_ALL0;
     rights.cr_rights[1] = CAP_ALL1;
 }
 
-pub const fn CAP_NONE(rights: &mut cap_rights_t) {
+pub fn CAP_NONE(rights: &mut cap_rights_t) {
     rights.cr_rights[0] = ((CAP_RIGHTS_VERSION as u64) << 62) | CAPRIGHT(0, 0);
     rights.cr_rights[1] = CAPRIGHT(1, 0);
 }
@@ -276,4 +276,4 @@ pub const CAP_FCNTL_SETOWN: u64 = 1 << F_SETOWN;
 pub const CAP_FCNTL_ALL: u64 =
     CAP_FCNTL_GETFL | CAP_FCNTL_SETFL | CAP_FCNTL_GETOWN | CAP_FCNTL_SETOWN;
 
-pub const CAP_IOCTLS_ALL: u64 = SSIZE_MAX;
+pub const CAP_IOCTLS_ALL: u64 = SSIZE_MAX as u64;

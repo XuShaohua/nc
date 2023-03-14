@@ -43,6 +43,7 @@ mod timeffc;
 mod timespec;
 #[allow(clippy::module_inception)]
 mod types;
+mod umtx;
 mod unistd;
 mod uuid;
 
@@ -86,5 +87,6 @@ pub use time::*;
 pub use timeffc::*;
 pub use timespec::*;
 pub use types::*;
+pub use umtx::*;
 pub use unistd::*;
 pub use uuid::*;

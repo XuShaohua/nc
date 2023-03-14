@@ -4,10 +4,10 @@
 
 //! From `sys/_ucontext.h`
 
-use crate::{__stack_t, mcontext_t, sigset_t};
+use crate::{mcontext_t, sigset_t, stack_t};
 
 #[repr(C)]
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct ucontext_t {
     /// Keep the order of the first two fields.
     ///
@@ -20,7 +20,20 @@ pub struct ucontext_t {
     pub uc_mcontext: mcontext_t,
 
     pub uc_link: *mut ucontext_t,
-    pub uc_stack: __stack_t,
+    pub uc_stack: stack_t,
     pub uc_flags: i32,
     __spare__: [i32; 4],
+}
+
+impl Default for ucontext_t {
+    fn default() -> Self {
+        Self {
+            uc_sigmask: sigset_t::default(),
+            uc_mcontext: mcontext_t::default(),
+            uc_link: 0 as *mut ucontext_t,
+            uc_stack: stack_t::default(),
+            uc_flags: 0,
+            __spare__: [0, 0, 0, 0],
+        }
+    }
 }

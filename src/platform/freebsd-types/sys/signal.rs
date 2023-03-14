@@ -510,6 +510,7 @@ pub const SIGSTKSZ: usize = MINSIGSTKSZ + 32768;
 /// Structure used in sigaltstack call.  Its definition is always
 /// needed for `__ucontext`.  If `__BSD_VISIBLE` is defined, the structure
 /// tag is actually sigaltstack.
+#[derive(Debug, Default, Clone)]
 pub struct stack_t {
     /// signal stack base
     pub ss_sp: usize,

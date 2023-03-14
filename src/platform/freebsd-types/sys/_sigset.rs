@@ -29,7 +29,7 @@ pub const fn _SIG_VALID(sig: i32) -> bool {
 
 /// `sigset_t` macros.
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 #[allow(clippy::module_name_repetitions)]
 pub struct sigset_t {
     pub bits: [u32; _SIG_WORDS],

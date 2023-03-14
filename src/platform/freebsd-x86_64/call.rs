@@ -1363,6 +1363,11 @@ pub unsafe fn fork() -> Result<pid_t, Errno> {
     syscall0(SYS_FORK).map(|ret| ret as pid_t)
 }
 
+/// Create a pipe.
+pub unsafe fn freebsd10_pipe() -> Result<(), Errno> {
+    syscall0(SYS_FREEBSD10_PIPE).map(drop)
+}
+
 /// Get file status about a file descriptor.
 ///
 /// # example
@@ -1495,6 +1500,20 @@ pub unsafe fn funlinkat<P: AsRef<Path>>(
     let fd = fd as usize;
     let flag = flag as usize;
     syscall4(SYS_FUNLINKAT, dfd, filename_ptr, fd, flag).map(drop)
+}
+
+/// Change timestamp of a file.
+pub unsafe fn futimens(fd: i32, times: &[timespec_t; 2]) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let times_ptr = times.as_ptr() as usize;
+    syscall2(SYS_FUTIMENS, fd, times_ptr).map(drop)
+}
+
+/// Change timestamp of a file.
+pub unsafe fn futimes(fd: i32, times: &[timeval_t; 2]) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let times_ptr = times.as_ptr() as usize;
+    syscall2(SYS_FUTIMES, fd, times_ptr).map(drop)
 }
 
 /// Change timestamp of a file relative to a directory file discriptor.
@@ -4471,6 +4490,69 @@ pub unsafe fn symlinkat<P: AsRef<Path>>(
 /// ```
 pub unsafe fn sync() -> Result<(), Errno> {
     syscall0(SYS_SYNC).map(drop)
+}
+
+/// Crate a new thread.
+pub unsafe fn thr_craete(ctx: &mut ucontext_t, id: &mut isize, flags: i32) -> Result<(), Errno> {
+    let ctx_ptr = ctx as *mut ucontext_t as usize;
+    let id_ptr = id as *mut isize as usize;
+    let flags = flags as usize;
+    syscall3(SYS_THR_CREATE, ctx_ptr, id_ptr, flags).map(drop)
+}
+
+/// Terminate thread.
+pub unsafe fn thr_exit(state: Option<&mut isize>) -> ! {
+    let state_ptr = state.map_or(0, |state| state as *mut isize as usize);
+    let _ret = syscall1(SYS_THR_EXIT, state_ptr).map(drop);
+    unreachable!();
+}
+
+/// Send signal to specific thread.
+pub unsafe fn thr_kill(id: isize, sig: i32) -> Result<(), Errno> {
+    let id = id as usize;
+    let sig = sig as usize;
+    syscall2(SYS_THR_KILL, id, sig).map(drop)
+}
+
+/// Send signal to specific thread.
+pub unsafe fn thr_kill2(pid: pid_t, id: isize, sig: i32) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let id = id as usize;
+    let sig = sig as usize;
+    syscall3(SYS_THR_KILL2, pid, id, sig).map(drop)
+}
+
+/// Creates a new kernel-scheduled thread of execution in the context of the current process.
+pub unsafe fn thr_new(param: &mut thr_param_t) -> Result<(), Errno> {
+    let param_ptr = param as *mut thr_param_t as usize;
+    let param_size = core::mem::size_of::<thr_param_t>();
+    syscall2(SYS_THR_NEW, param_ptr, param_size).map(drop)
+}
+
+/// Get thread id of current thread.
+pub unsafe fn thr_self(id: &mut isize) -> Result<(), Errno> {
+    let id_ptr = id as *mut isize as usize;
+    syscall1(SYS_THR_SELF, id_ptr).map(drop)
+}
+
+/// Update visible name of specific thread.
+pub unsafe fn thr_set_name(id: isize, name: &str) -> Result<(), Errno> {
+    let id = id as usize;
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall2(SYS_THR_SET_NAME, id, name_ptr).map(drop)
+}
+
+/// Suspend current thread for some time.
+pub unsafe fn thr_suspend(timeout: &timespec_t) -> Result<(), Errno> {
+    let timeout_ptr = timeout as *const timespec_t as usize;
+    syscall1(SYS_THR_SUSPEND, timeout_ptr).map(drop)
+}
+
+/// Notify thread wakeup from suspend state.
+pub unsafe fn thr_wake(id: isize) -> Result<(), Errno> {
+    let id = id as usize;
+    syscall1(SYS_THR_WAKE, id).map(drop)
 }
 
 /// Truncate a file to a specified length.

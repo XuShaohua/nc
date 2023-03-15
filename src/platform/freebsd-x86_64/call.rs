@@ -1363,6 +1363,13 @@ pub unsafe fn fork() -> Result<pid_t, Errno> {
     syscall0(SYS_FORK).map(|ret| ret as pid_t)
 }
 
+/// Get configurable pathname variables
+pub unsafe fn fpathconf(fd: i32, name: i32) -> Result<isize, Errno> {
+    let fd = fd as usize;
+    let name = name as usize;
+    syscall2(SYS_FPATHCONF, fd, name).map(|val| val as isize)
+}
+
 /// Create a pipe.
 pub unsafe fn freebsd10_pipe() -> Result<(), Errno> {
     syscall0(SYS_FREEBSD10_PIPE).map(drop)
@@ -1705,6 +1712,22 @@ pub unsafe fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Er
     let which = which as usize;
     let curr_val_ptr = curr_val as *mut itimerval_t as usize;
     syscall2(SYS_GETITIMER, which, curr_val_ptr).map(drop)
+}
+
+/// Get login name.
+pub unsafe fn getlogin(name: &mut [u8]) -> Result<(), Errno> {
+    // TODO(Shaohua): Convert to CString
+    let name_ptr = name.as_mut_ptr() as usize;
+    let len = name.len();
+    syscall2(SYS_GETLOGIN, name_ptr, len).map(drop)
+}
+
+/// Get login class.
+pub unsafe fn getloginclass(name: &mut [u8]) -> Result<(), Errno> {
+    // TODO(Shaohua): Convert to CString
+    let name_ptr = name.as_mut_ptr() as usize;
+    let len = name.len();
+    syscall2(SYS_GETLOGINCLASS, name_ptr, len).map(drop)
 }
 
 /// Get name of connected peer socket.
@@ -2480,6 +2503,14 @@ pub unsafe fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
     syscall2(SYS_LISTEN, sockfd, backlog).map(drop)
 }
 
+/// Get configurable pathname variables without following symbolic link.
+pub unsafe fn lpathconf<P: AsRef<Path>>(path: P, name: i32) -> Result<isize, Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let name = name as usize;
+    syscall2(SYS_LPATHCONF, path_ptr, name).map(|val| val as isize)
+}
+
 /// Reposition file offset.
 ///
 /// # Example
@@ -2594,6 +2625,23 @@ pub unsafe fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> 
     syscall3(SYS_MKDIRAT, dirfd, filename_ptr, mode).map(drop)
 }
 
+/// Create a fifo file.
+pub unsafe fn mkfifo<P: AsRef<Path>>(path: P, mode: mode_t) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall2(SYS_MKFIFO, path_ptr, mode).map(drop)
+}
+
+/// Create a fifo file.
+pub unsafe fn mkfifoat<P: AsRef<Path>>(dfd: i32, path: P, mode: mode_t) -> Result<(), Errno> {
+    let dfd = dfd as usize;
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let mode = mode as usize;
+    syscall3(SYS_MKFIFOAT, dfd, path_ptr, mode).map(drop)
+}
+
 /// Create a special or ordinary file.
 ///
 /// # Example
@@ -2701,6 +2749,32 @@ pub unsafe fn mmap(
     let fd = fd as usize;
     let offset = offset as usize;
     syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
+}
+
+/// Return the modid of a kernel module.
+pub unsafe fn modfind(name: &str) -> Result<i32, Errno> {
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS_MODFIND, name_ptr).map(|ret| ret as i32)
+}
+
+/// Return the modid of the next kernel module
+pub unsafe fn modfnext(modid: i32) -> Result<i32, Errno> {
+    let modid = modid as usize;
+    syscall1(SYS_MODFNEXT, modid).map(|ret| ret as i32)
+}
+
+/// Return the modid of the next kernel module
+pub unsafe fn modnext(modid: i32) -> Result<i32, Errno> {
+    let modid = modid as usize;
+    syscall1(SYS_MODNEXT, modid).map(|ret| ret as i32)
+}
+
+/// Get status of a kernel module.
+pub unsafe fn modstat(modid: i32, stat: &mut module_stat_t) -> Result<(), Errno> {
+    let modid = modid as usize;
+    let stat_ptr = stat as *mut module_stat_t as usize;
+    syscall2(SYS_MODSTAT, modid, stat_ptr).map(drop)
 }
 
 /// Mount filesystem.
@@ -3136,6 +3210,35 @@ pub unsafe fn openat<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
+}
+
+/// Get configurable pathname variables
+pub unsafe fn pathconf<P: AsRef<Path>>(path: P, name: i32) -> Result<isize, Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let name = name as usize;
+    syscall2(SYS_PATHCONF, path_ptr, name).map(|val| val as isize)
+}
+
+/// Create a child process and returns a process descriptor.
+pub unsafe fn pdfork(fd: &mut i32, flags: i32) -> Result<pid_t, Errno> {
+    let fd_ptr = fd as *mut i32 as usize;
+    let flags = flags as usize;
+    syscall2(SYS_PDFORK, fd_ptr, flags).map(|ret| ret as pid_t)
+}
+
+/// Get the process ID (PID) in the process descriptor fd.
+pub unsafe fn pdgetpid(fd: i32, pid: &mut pid_t) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let pid_ptr = pid as *mut pid_t as usize;
+    syscall2(SYS_PDGETPID, fd, pid_ptr).map(drop)
+}
+
+/// Send a signal to specific process, based on process descriptor.
+pub unsafe fn pdkill(fd: i32, sig: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let sig = sig as usize;
+    syscall2(SYS_PDKILL, fd, sig).map(drop)
 }
 
 /// Create a pipe.
@@ -3924,6 +4027,20 @@ pub unsafe fn setitimer(
     let new_val_ptr = new_val as *const itimerval_t as usize;
     let old_val_ptr = old_val as *mut itimerval_t as usize;
     syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr).map(drop)
+}
+
+/// Set login name.
+pub unsafe fn setlogin(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS_SETLOGIN, name_ptr).map(drop)
+}
+
+/// Set login class.
+pub unsafe fn setloginclass(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS_SETLOGINCLASS, name_ptr).map(drop)
 }
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.

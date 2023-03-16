@@ -12,10 +12,12 @@ pub type c_char = u8;
 mod arch;
 pub use arch::*;
 
+mod bsm;
 mod netinet;
 mod netinet6;
 mod sys;
 
+pub use bsm::*;
 pub use netinet::*;
 pub use netinet6::*;
 pub use sys::*;

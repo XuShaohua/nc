@@ -7,6 +7,7 @@ mod _types;
 mod linux;
 mod param;
 mod pmap;
+mod sysarch;
 mod ucontext;
 
 pub use _limits::*;
@@ -14,4 +15,5 @@ pub use _types::*;
 pub use linux::*;
 pub use param::*;
 pub use pmap::*;
+pub use sysarch::*;
 pub use ucontext::*;

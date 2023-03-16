@@ -169,6 +169,28 @@ pub unsafe fn aio_writev(job: &mut aiocb_t) -> Result<(), Errno> {
     syscall1(SYS_AIO_WRITEV, job_ptr).map(drop)
 }
 
+/// Commit BSM audit record to audit log
+pub unsafe fn audit(record: &[u8]) -> Result<(), Errno> {
+    let record_ptr = record.as_ptr() as usize;
+    let length = record.len();
+    syscall2(SYS_AUDIT, record_ptr, length).map(drop)
+}
+
+/// Configure system audit parameters
+pub unsafe fn auditctl<P: AsRef<Path>>(path: P) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    syscall1(SYS_AUDITCTL, path_ptr).map(drop)
+}
+
+/// Configure system audit parameters
+pub unsafe fn auditon(cmd: i32, data: &[u8]) -> Result<(), Errno> {
+    let cmd = cmd as usize;
+    let data_ptr = data.as_ptr() as usize;
+    let length = data.len();
+    syscall3(SYS_AUDITON, cmd, data_ptr, length).map(drop)
+}
+
 /// Bind a name to a socket.
 pub unsafe fn bind(sockfd: i32, addr: *const sockaddr_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -1561,6 +1583,31 @@ pub unsafe fn futimesat<P: AsRef<Path>>(
     syscall3(SYS_FUTIMESAT, dirfd, filename_ptr, times_ptr).map(drop)
 }
 
+/// Retrieve audit session state
+pub unsafe fn getaudit(info: &mut auditinfo_t) -> Result<(), Errno> {
+    let info_ptr = info as *mut auditinfo_t as usize;
+    syscall1(SYS_GETAUDIT, info_ptr).map(drop)
+}
+
+/// Retrieve audit session state
+pub unsafe fn getaudit_addr(info: &mut auditinfo_addr_t, length: u32) -> Result<(), Errno> {
+    let info_ptr = info as *mut auditinfo_addr_t as usize;
+    let length = length as usize;
+    syscall2(SYS_GETAUDIT_ADDR, info_ptr, length).map(drop)
+}
+
+/// Retrieve audit session ID
+pub unsafe fn getauid(auid: &mut au_id_t) -> Result<(), Errno> {
+    let auid_ptr = auid as *mut au_id_t as usize;
+    syscall1(SYS_GETAUID, auid_ptr).map(drop)
+}
+
+/// Get user thread context.
+pub unsafe fn getcontext(ctx: &mut ucontext_t) -> Result<(), Errno> {
+    let ctx_ptr = ctx as *mut ucontext_t as usize;
+    syscall1(SYS_GETCONTEXT, ctx_ptr).map(drop)
+}
+
 /// Get the effective group ID of the calling process.
 ///
 /// # Example
@@ -2532,6 +2579,14 @@ pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
     syscall3(SYS_LSEEK, fd, offset, whence).map(drop)
 }
 
+/// Change file last access and modification time.
+pub unsafe fn lutimes<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let times_ptr = times.as_ptr() as usize;
+    syscall2(SYS_LUTIMES, filename_ptr, times_ptr).map(drop)
+}
+
 /// Give advice about use of memory.
 ///
 /// # Example
@@ -3062,6 +3117,16 @@ pub unsafe fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Res
     let msqid = msqid as usize;
     let msgflg = msgflg as usize;
     syscall4(SYS_MSGSND, msqid, msgq, msgsz, msgflg).map(drop)
+}
+
+pub unsafe fn msgsys(which: i32, a2: i32, a3: i32, a4: i32, a5: i32, a6: i32) -> Result<(), Errno> {
+    let which = which as usize;
+    let a2 = a2 as usize;
+    let a3 = a3 as usize;
+    let a4 = a4 as usize;
+    let a5 = a5 as usize;
+    let a6 = a6 as usize;
+    syscall6(SYS_MSGSYS, which, a2, a3, a4, a5, a6).map(drop)
 }
 
 /// Synchronize a file with memory map.
@@ -3701,6 +3766,12 @@ pub unsafe fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_RMDIR, filename_ptr).map(drop)
 }
 
+/// Change data segment size.
+pub unsafe fn sbrk(incr: intptr_t) -> Result<usize, Errno> {
+    let incr = incr as usize;
+    syscall1(SYS_SBRK, incr)
+}
+
 /// Get scheduling paramters.
 ///
 /// # Example
@@ -3865,6 +3936,15 @@ pub unsafe fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
     syscall3(SYS_SEMOP, semid, sops_ptr, nops).map(drop)
 }
 
+pub unsafe fn semsys(which: i32, a2: i32, a3: i32, a4: i32, a5: i32) -> Result<(), Errno> {
+    let which = which as usize;
+    let a2 = a2 as usize;
+    let a3 = a3 as usize;
+    let a4 = a4 as usize;
+    let a5 = a5 as usize;
+    syscall5(SYS_SEMSYS, which, a2, a3, a4, a5).map(drop)
+}
+
 /// Transfer data between two file descriptors.
 pub unsafe fn sendfile(
     out_fd: i32,
@@ -3910,6 +3990,31 @@ pub unsafe fn sendto(
         addrlen,
     )
     .map(|ret| ret as ssize_t)
+}
+
+/// Set audit session state
+pub unsafe fn setaudit(info: &mut auditinfo_t) -> Result<(), Errno> {
+    let info_ptr = info as *mut auditinfo_t as usize;
+    syscall1(SYS_SETAUDIT, info_ptr).map(drop)
+}
+
+/// Set audit session state
+pub unsafe fn setaudit_addr(info: &mut auditinfo_addr_t, length: u32) -> Result<(), Errno> {
+    let info_ptr = info as *mut auditinfo_addr_t as usize;
+    let length = length as usize;
+    syscall2(SYS_SETAUDIT_ADDR, info_ptr, length).map(drop)
+}
+
+/// Set audit session ID
+pub unsafe fn setauid(auid: &mut au_id_t) -> Result<(), Errno> {
+    let auid_ptr = auid as *mut au_id_t as usize;
+    syscall1(SYS_SETAUID, auid_ptr).map(drop)
+}
+
+/// Set user thread context.
+pub unsafe fn setcontext(ctx: &ucontext_t) -> Result<(), Errno> {
+    let ctx_ptr = ctx as *const ucontext_t as usize;
+    syscall1(SYS_SETCONTEXT, ctx_ptr).map(drop)
 }
 
 /// Set the effective group ID of the calling process to `gid`.
@@ -4334,6 +4439,14 @@ pub unsafe fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno
     syscall3(SYS_SHMGET, key, size, shmflg).map(|ret| ret as i32)
 }
 
+pub unsafe fn shmsys(which: i32, a2: i32, a3: i32, a4: i32) -> Result<(), Errno> {
+    let which = which as usize;
+    let a2 = a2 as usize;
+    let a3 = a3 as usize;
+    let a4 = a4 as usize;
+    syscall4(SYS_SHMSYS, which, a2, a3, a4).map(drop)
+}
+
 /// Opens (or optionally creates) a POSIX shared memory object named `path`.
 pub unsafe fn shm_open2<P: AsRef<Path>>(
     path: P,
@@ -4519,6 +4632,13 @@ pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<
     syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(drop)
 }
 
+/// Exchange user thread context.
+pub unsafe fn swapcontext(old_ctx: &mut ucontext_t, ctx: &ucontext_t) -> Result<(), Errno> {
+    let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
+    let ctx_ptr = ctx as *const ucontext_t as usize;
+    syscall2(SYS_SWAPCONTEXT, old_ctx_ptr, ctx_ptr).map(drop)
+}
+
 /// Stop swapping to file/device.
 ///
 /// # Example
@@ -4607,6 +4727,12 @@ pub unsafe fn symlinkat<P: AsRef<Path>>(
 /// ```
 pub unsafe fn sync() -> Result<(), Errno> {
     syscall0(SYS_SYNC).map(drop)
+}
+
+/// Architecture dependent system call.
+pub unsafe fn sysarch(number: i32, args: usize) -> Result<usize, Errno> {
+    let number = number as usize;
+    syscall2(SYS_SYSARCH, number, args)
 }
 
 /// Crate a new thread.
@@ -4945,4 +5071,9 @@ pub unsafe fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let iov_ptr = iov.as_ptr() as usize;
     let len = iov.len();
     syscall3(SYS_WRITEV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
+}
+
+/// Yield the processor.
+pub unsafe fn r#yield() -> Result<(), Errno> {
+    syscall0(SYS_YIELD).map(drop)
 }

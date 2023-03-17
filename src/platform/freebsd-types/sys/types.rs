@@ -32,7 +32,7 @@ pub type kvaddr_t = u64;
 pub type ksize_t = u64;
 pub type kssize_t = i64;
 
-pub type vm_offset_t = u64;
+pub type vm_ooffset_t = u64;
 pub type vm_pindex_t = u64;
 
 /// Interrupt mask (spl, `xxx_imask`...).

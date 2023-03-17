@@ -48,6 +48,7 @@ mod thr;
 mod time;
 mod timeffc;
 mod timespec;
+mod timex;
 #[allow(clippy::module_inception)]
 mod types;
 mod ucontext;
@@ -101,6 +102,7 @@ pub use thr::*;
 pub use time::*;
 pub use timeffc::*;
 pub use timespec::*;
+pub use timex::*;
 pub use types::*;
 pub use ucontext::*;
 pub use umtx::*;

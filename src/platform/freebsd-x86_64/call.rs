@@ -18,6 +18,16 @@ use crate::syscalls::*;
 use crate::sysno::*;
 use crate::types::*;
 
+/// Abort process with diagnostics
+pub unsafe fn abort2(why: &str, args_len: i32, args: usize) -> ! {
+    let why = CString::new(why);
+    let why_ptr = why.as_ptr() as usize;
+    let args_len = args_len as usize;
+    let _ = syscall3(SYS_ABORT2, why_ptr, args_len, args);
+    // Never returns
+    unreachable!();
+}
+
 /// Accept a connection on a socket.
 ///
 /// On success, `accept()` return a file descriptor for the accepted socket.
@@ -211,6 +221,10 @@ pub unsafe fn bindat(
     let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
     syscall4(SYS_BINDAT, fd, sockfd, addr_ptr, addrlen).map(drop)
+}
+
+pub unsafe fn r#break(addr: usize) -> Result<(), Errno> {
+    syscall1(SYS_BREAK, addr).map(drop)
 }
 
 /// Places the current process into capability mode.
@@ -803,6 +817,33 @@ pub unsafe fn exit(status: i32) -> ! {
     unreachable!();
 }
 
+/// Manage UFS1 extended attributes
+pub unsafe fn extattrctl<P: AsRef<Path>>(
+    path: P,
+    cmd: i32,
+    filename: P,
+    attr_namespace: i32,
+    attr_name: &str,
+) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let cmd = cmd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let attr_namespace = attr_namespace as usize;
+    let attr_name = CString::new(attr_name);
+    let attr_name_ptr = attr_name.as_ptr() as usize;
+    syscall5(
+        SYS_EXTATTRCTL,
+        path_ptr,
+        cmd,
+        filename_ptr,
+        attr_namespace,
+        attr_name_ptr,
+    )
+    .map(drop)
+}
+
 /// Deletes the VFS extended attribute specified.
 pub unsafe fn extattr_delete_fd(
     fd: i32,
@@ -886,6 +927,7 @@ pub unsafe fn extattr_get_file<P: AsRef<Path>>(
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let attr_namespace = attr_namespace as usize;
+    let attr_name = CString::new(attr_name);
     let attr_name_ptr = attr_name.as_ptr() as usize;
     let data_ptr = data.as_mut_ptr() as usize;
     let nbytes = data.len();
@@ -1013,6 +1055,7 @@ pub unsafe fn extattr_set_file<P: AsRef<Path>>(
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let attr_namespace = attr_namespace as usize;
+    let attr_name = CString::new(attr_name);
     let attr_name_ptr = attr_name.as_ptr() as usize;
     let data_ptr = data.as_ptr() as usize;
     let nbytes = data.len();
@@ -1608,6 +1651,20 @@ pub unsafe fn getcontext(ctx: &mut ucontext_t) -> Result<(), Errno> {
     syscall1(SYS_GETCONTEXT, ctx_ptr).map(drop)
 }
 
+/// Get directory entries in a file system independent format
+pub unsafe fn getdirentries(fd: i32, buf: &mut [c_char], off: off_t) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let buf_ptr = buf.as_mut_ptr() as usize;
+    let buf_len = buf.len();
+    let off = off as usize;
+    syscall4(SYS_GETDIRENTRIES, fd, buf_ptr, buf_len, off).map(|ret| ret as ssize_t)
+}
+
+/// Get file descriptor limit
+pub unsafe fn getdtablesize() -> Result<i32, Errno> {
+    syscall0(SYS_GETDTABLESIZE).map(|val| val as i32)
+}
+
 /// Get the effective group ID of the calling process.
 ///
 /// # Example
@@ -2120,6 +2177,15 @@ pub unsafe fn jail_set(iov: &mut [iovec_t], flags: i32) -> Result<i32, Errno> {
     syscall3(SYS_JAIL_SET, iov_ptr, iov_len, flags).map(|val| val as i32)
 }
 
+/// Manipulate kernel environment.
+pub unsafe fn kenv(action: i32, name: &str, value: Option<&mut [u8]>) -> Result<i32, Errno> {
+    let action = action as usize;
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    let value_ptr = value.map_or(0, |value| value.as_mut_ptr() as usize);
+    syscall3(SYS_KENV, action, name_ptr, value_ptr).map(|val| val as i32)
+}
+
 /// Send signal to a process.
 ///
 /// # Example
@@ -2287,6 +2353,11 @@ pub unsafe fn kmq_unlink<P: AsRef<Path>>(path: P) -> Result<(), Errno> {
     syscall1(SYS_KMQ_UNLINK, path_ptr).map(drop)
 }
 
+/// Creates a new kernel event queue and returns a descriptor.
+pub unsafe fn kqueue() -> Result<i32, Errno> {
+    syscall0(SYS_KQUEUE).map(|val| val as i32)
+}
+
 /// Close an semaphore.
 pub unsafe fn ksem_close(id: semid_t) -> Result<(), Errno> {
     let id = id as usize;
@@ -2406,6 +2477,21 @@ pub unsafe fn ktimer_settime(
     let value_ptr = value as *const itimerspec_t as usize;
     let ovalue_ptr = ovalue as *mut itimerspec_t as usize;
     syscall4(SYS_KTIMER_SETTIME, timer_id, flags, value_ptr, ovalue_ptr).map(drop)
+}
+
+/// Enables or disables tracing of one or more processes.
+pub unsafe fn ktrace<P: AsRef<Path>>(
+    tracefile: P,
+    ops: i32,
+    facs: i32,
+    pid: i32,
+) -> Result<(), Errno> {
+    let tracefile = CString::new(tracefile.as_ref());
+    let tracefile_ptr = tracefile.as_ptr() as usize;
+    let ops = ops as usize;
+    let facs = facs as usize;
+    let pid = pid as usize;
+    syscall4(SYS_KTRACE, tracefile_ptr, ops, facs, pid).map(drop)
 }
 
 /// Set file flags.
@@ -2641,6 +2727,12 @@ pub unsafe fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno
 pub unsafe fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
     let vec_ptr = vec as usize;
     syscall3(SYS_MINCORE, start, len, vec_ptr).map(drop)
+}
+
+/// Control the inheritance of pages
+pub unsafe fn minherit(addr: usize, len: size_t, inherit: i32) -> Result<(), Errno> {
+    let inherit = inherit as usize;
+    syscall3(SYS_MINHERIT, addr, len, inherit).map(drop)
 }
 
 /// Create a directory.
@@ -3231,6 +3323,19 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 
+/// Used by the NTP daemon to adjust the system clock to an externally derived time.
+pub unsafe fn ntp_adjtime(time: &mut timex_t) -> Result<i32, Errno> {
+    let time_ptr = time as *mut timex_t as usize;
+    syscall1(SYS_NTP_ADJTIME, time_ptr).map(|val| val as i32)
+}
+
+/// Provides the time, maximum error (sync distance) and estimated error (dispersion)
+/// to client user application programs.
+pub unsafe fn ntp_gettime(time: &mut ntptimeval_t) -> Result<i32, Errno> {
+    let time_ptr = time as *mut ntptimeval_t as usize;
+    syscall1(SYS_NTP_GETTIME, time_ptr).map(|val| val as i32)
+}
+
 /// Open and possibly create a file.
 ///
 /// # Example
@@ -3376,6 +3481,33 @@ pub unsafe fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<i32, Errno> {
     let nfds = fds.len();
     let timeout = timeout as usize;
     syscall3(SYS_POLL, fds_ptr, nfds, timeout).map(|ret| ret as i32)
+}
+
+/// Give advice about use of file data
+pub unsafe fn posix_fadvise(
+    fd: i32,
+    offset: loff_t,
+    len: size_t,
+    advice: i32,
+) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let offset = offset as usize;
+    let advice = advice as usize;
+    syscall4(SYS_POSIX_FADVISE, fd, offset, len, advice).map(drop)
+}
+
+/// Pre-allocate storage for a range in a file
+pub unsafe fn posix_fallocate(fd: i32, offset: off_t, len: off_t) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let offset = offset as usize;
+    let len = len as usize;
+    syscall3(SYS_POSIX_FALLOCATE, fd, offset, len).map(drop)
+}
+
+/// Open a pseudo-terminal device
+pub unsafe fn posix_openpt(flags: i32) -> Result<i32, Errno> {
+    let flags = flags as usize;
+    syscall1(SYS_POSIX_OPENPT, flags).map(|ret| ret as i32)
 }
 
 /// Wait for some event on a file descriptor.

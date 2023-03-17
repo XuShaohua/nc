@@ -8,6 +8,7 @@ pub unsafe fn extattr_get_file<P: AsRef<Path>>(
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let attr_namespace = attr_namespace as usize;
+    let attr_name = CString::new(attr_name);
     let attr_name_ptr = attr_name.as_ptr() as usize;
     let data_ptr = data.as_mut_ptr() as usize;
     let nbytes = data.len();

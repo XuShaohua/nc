@@ -81,7 +81,8 @@ pub struct ktr_header_t {
 
 pub const KTR_VERSION0: i32 = 0;
 pub const KTR_VERSION1: i32 = 1;
-pub const KTR_OFFSET_V0: usize = size_of::<ktr_header_v0_t>() - size_of::<ktr_header_t>();
+pub const KTR_OFFSET_V0: i32 =
+    size_of::<ktr_header_v0_t>() as i32 - size_of::<ktr_header_t>() as i32;
 
 /// KTR_SYSCALL - system call record
 pub const KTR_SYSCALL: i32 = 1;
@@ -281,6 +282,7 @@ pub const KTRFAC_STRUCT_ARRAY: i32 = 1 << KTR_STRUCT_ARRAY;
 
 /// trace flags (also in p_traceflags)
 /// root set this trace
+#[allow(overflowing_literals)]
 pub const KTRFAC_ROOT: i32 = 0x80000000;
 /// pass trace flags to children
 pub const KTRFAC_INHERIT: i32 = 0x40000000;

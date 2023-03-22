@@ -20,6 +20,7 @@ mod time;
 mod timespec;
 mod types;
 mod uio;
+mod uuid;
 
 pub use ansi::*;
 pub use common_ansi::*;
@@ -39,3 +40,4 @@ pub use time::*;
 pub use timespec::*;
 pub use types::*;
 pub use uio::*;
+pub use uuid::*;

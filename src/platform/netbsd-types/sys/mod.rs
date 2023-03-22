@@ -21,6 +21,7 @@ mod time;
 mod timespec;
 mod timex;
 mod types;
+mod ucontext;
 mod uio;
 mod uuid;
 
@@ -43,5 +44,6 @@ pub use time::*;
 pub use timespec::*;
 pub use timex::*;
 pub use types::*;
+pub use ucontext::*;
 pub use uio::*;
 pub use uuid::*;

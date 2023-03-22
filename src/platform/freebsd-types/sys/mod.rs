@@ -58,6 +58,7 @@ mod ucontext;
 mod umtx;
 mod unistd;
 mod uuid;
+mod wait;
 
 pub use _bitset::*;
 pub use _cpuset::*;
@@ -114,3 +115,4 @@ pub use ucontext::*;
 pub use umtx::*;
 pub use unistd::*;
 pub use uuid::*;
+pub use wait::*;

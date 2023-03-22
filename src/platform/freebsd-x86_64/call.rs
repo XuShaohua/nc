@@ -3537,6 +3537,29 @@ pub unsafe fn ppoll(
 /// # Example
 ///
 /// ```
+/// let path = "/etc/passwd";
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0) };
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let mut buf = [0_u8; 128];
+/// let read_count = 64;
+/// let ret = unsafe { nc::pread(fd, buf.as_mut_ptr() as usize, read_count, 0) };
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(read_count as nc::ssize_t));
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// ```
+pub unsafe fn pread(fd: i32, buf: usize, count: usize, offset: off_t) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let offset = offset as usize;
+    syscall4(SYS_PREAD, fd, buf, count, offset).map(|ret| ret as ssize_t)
+}
+
+/// Read from a file descriptor without changing file offset.
+///
+/// # Example
+///
+/// ```
 /// use core::ffi::c_void;
 ///
 /// let path = "/etc/passwd";
@@ -3571,11 +3594,43 @@ pub unsafe fn preadv(
     syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
 }
 
+/// Control process
+pub unsafe fn procctl(idtype: idtype_t, id: id_t, cmd: i32, data: usize) -> Result<(), Errno> {
+    let idtype = idtype as usize;
+    let id = id as usize;
+    let cmd = cmd as usize;
+    syscall4(SYS_PROCCTL, idtype, id, cmd, data).map(drop)
+}
+
 /// Process trace.
 pub unsafe fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Result<isize, Errno> {
     let request = request as usize;
     let pid = pid as usize;
     syscall4(SYS_PTRACE, request, pid, addr, data).map(|ret| ret as isize)
+}
+
+/// Write to a file descriptor without changing file offset.
+///
+/// # Example
+///
+/// ```
+/// let path = "/tmp/nc-pwrite64";
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let buf = "Hello, Rust";
+/// let ret = unsafe { nc::pwrite64(fd, buf.as_ptr() as usize, buf.len(), 0) };
+/// assert!(ret.is_ok());
+/// assert_eq!(ret, Ok(buf.len() as nc::ssize_t));
+/// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
+/// assert!(ret.is_ok());
+/// ```
+pub unsafe fn pwrite(fd: i32, buf: usize, count: size_t, offset: off_t) -> Result<ssize_t, Errno> {
+    let fd = fd as usize;
+    let offset = offset as usize;
+    syscall4(SYS_PWRITE, fd, buf, count, offset).map(|ret| ret as ssize_t)
 }
 
 /// Write to a file descriptor without changing file offset.
@@ -3881,6 +3936,12 @@ pub unsafe fn renameat<P: AsRef<Path>>(
     .map(drop)
 }
 
+/// Manipulate process resources
+pub unsafe fn rfork(flags: i32) -> Result<pid_t, Errno> {
+    let flags = flags as usize;
+    syscall1(SYS_RFORK, flags).map(|ret| ret as pid_t)
+}
+
 /// Delete a directory.
 ///
 /// # Example
@@ -3898,10 +3959,33 @@ pub unsafe fn rmdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_RMDIR, filename_ptr).map(drop)
 }
 
+/// Lookup or change the realtime or idle priority of a process,
+/// or the calling thread
+pub unsafe fn rtprio(function: i32, pid: pid_t, rt: &mut rtprio_t) -> Result<(), Errno> {
+    let function = function as usize;
+    let pid = pid as usize;
+    let rt_ptr = rt as *mut rtprio_t as usize;
+    syscall3(SYS_RTPRIO, function, pid, rt_ptr).map(drop)
+}
+
+/// Lookup or change the realtime or idle priority of a process,
+/// or the calling thread
+pub unsafe fn rtprio_thread(function: i32, lwpid: lwpid_t, rt: &mut rtprio_t) -> Result<(), Errno> {
+    let function = function as usize;
+    let lwpid = lwpid as usize;
+    let rt_ptr = rt as *mut rtprio_t as usize;
+    syscall3(SYS_RTPRIO_THREAD, function, lwpid, rt_ptr).map(drop)
+}
+
 /// Change data segment size.
 pub unsafe fn sbrk(incr: intptr_t) -> Result<usize, Errno> {
     let incr = incr as usize;
     syscall1(SYS_SBRK, incr)
+}
+
+/// Determine CPU and NUMA node on which the calling thread is running.
+pub unsafe fn sched_getcpu() -> Result<i32, Errno> {
+    syscall0(SYS_SCHED_GETCPU).map(|val| val as i32)
 }
 
 /// Get scheduling paramters.
@@ -5135,6 +5219,33 @@ pub unsafe fn wait4(
     let options = options as usize;
     let rusage_ptr = rusage as *mut rusage_t as usize;
     syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t)
+}
+
+/// Wait for process to change state.
+pub unsafe fn wait6(
+    idtype: idtype_t,
+    id: id_t,
+    status: &mut i32,
+    options: i32,
+    wrusage: &mut __wrusage_t,
+    info: &mut siginfo_t,
+) -> Result<pid_t, Errno> {
+    let idtype = idtype as usize;
+    let id = id as usize;
+    let status_ptr = status as *mut i32 as usize;
+    let options = options as usize;
+    let wrusage_ptr = wrusage as *mut __wrusage_t as usize;
+    let info_ptr = info as *mut siginfo_t as usize;
+    syscall6(
+        SYS_WAIT6,
+        idtype,
+        id,
+        status_ptr,
+        options,
+        wrusage_ptr,
+        info_ptr,
+    )
+    .map(|ret| ret as pid_t)
 }
 
 /// Write to a file descriptor.

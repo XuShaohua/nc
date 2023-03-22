@@ -5,6 +5,7 @@
 mod ansi;
 mod common_ansi;
 mod fcntl;
+mod idtype;
 mod ipc;
 mod mqueue;
 mod poll;
@@ -23,6 +24,7 @@ mod uio;
 pub use ansi::*;
 pub use common_ansi::*;
 pub use fcntl::*;
+pub use idtype::*;
 pub use ipc::*;
 pub use mqueue::*;
 pub use poll::*;

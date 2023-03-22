@@ -5,6 +5,7 @@
 //! From `sys/sigtypes.h`
 
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct sigset_t {
     pub __bits: [u32; 4],
 }

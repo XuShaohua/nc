@@ -7,7 +7,7 @@
 use crate::{mcontext_t, sigset_t, stack_t, _UC_MACHINE_PAD};
 
 #[repr(C)]
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct ucontext_t {
     /// properties
     pub uc_flags: u32,

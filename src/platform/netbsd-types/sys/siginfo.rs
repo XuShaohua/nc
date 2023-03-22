@@ -6,11 +6,26 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-#[derive(Clone, Copy)]
+use core::fmt;
+
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigval_t {
     sival_int: i32,
     sival_ptr: usize,
+}
+
+impl Default for sigval_t {
+    fn default() -> Self {
+        Self { sival_ptr: 0 }
+    }
+}
+
+impl fmt::Debug for sigval_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let ptr = unsafe { self.sival_ptr };
+        write!(f, "sival_ptr: {}", ptr)
+    }
 }
 
 /// signal caused by trap
@@ -22,8 +37,8 @@ pub const KSI_QUEUED: i32 = 0x04;
 /// allocated from the ksiginfo pool
 pub const KSI_FROMPOOL: i32 = 0x08;
 
-#[derive(Clone, Copy)]
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union siginfo_t {
     /// Total size; for future expansion
     si_pad: [u8; 128],

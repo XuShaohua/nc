@@ -43,3 +43,6 @@ pub type psetid_t = i32;
 pub const NBBY: i32 = 8;
 
 pub type pri_t = i32;
+
+// NOTE(Shaohua): Copied from types.h in freebsd
+pub type fflags_t = u32;

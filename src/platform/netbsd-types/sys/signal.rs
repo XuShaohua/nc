@@ -158,6 +158,7 @@ pub const SIGSTKSZ: i32 = MINSIGSTKSZ + 32768;
 
 /// Structure used in sigstack call.
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct sigstack_t {
     /// signal stack pointer
     pub ss_sp: usize,
@@ -170,6 +171,7 @@ pub const BADSIG: sighandler_t = SIG_ERR;
 pub type sigev_notify_fn = fn(sigval_t);
 
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct sigevent_t {
     pub sigev_notify: i32,
     pub sigev_signo: i32,

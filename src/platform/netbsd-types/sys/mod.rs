@@ -2,6 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+mod aio;
 mod ansi;
 mod common_ansi;
 mod fcntl;
@@ -23,6 +24,7 @@ mod types;
 mod uio;
 mod uuid;
 
+pub use aio::*;
 pub use ansi::*;
 pub use common_ansi::*;
 pub use fcntl::*;

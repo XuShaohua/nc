@@ -23,7 +23,7 @@ pub const RUSAGE_CHILDREN: i32 = -1;
 pub const RUSAGE_THREAD: i32 = 1;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct rusage_t {
     /// user time used
     pub ru_utime: timeval_t,
@@ -72,6 +72,13 @@ pub struct rusage_t {
 
     /// involuntary
     pub ru_nivcsw: isize,
+}
+
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct __wrusage_t {
+    pub wru_self: rusage_t,
+    pub wru_children: rusage_t,
 }
 
 /// Resource limits

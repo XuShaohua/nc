@@ -76,7 +76,7 @@ pub struct rusage_t {
 
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
-pub struct __wrusage_t {
+pub struct wrusage_t {
     pub wru_self: rusage_t,
     pub wru_children: rusage_t,
 }

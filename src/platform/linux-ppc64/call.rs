@@ -48,6 +48,8 @@ pub unsafe fn accept4(
 
 /// Check user's permission for a file.
 ///
+/// It uses the real user ID and the group access list to authorize the request.
+///
 /// # Example
 ///
 /// ```
@@ -168,9 +170,9 @@ pub unsafe fn bdflush() {
 }
 
 /// Bind a name to a socket.
-pub unsafe fn bind(sockfd: i32, addr: *const sockaddr_t, addrlen: socklen_t) -> Result<(), Errno> {
+pub unsafe fn bind(sockfd: i32, addr: &sockaddr_t, addrlen: socklen_t) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as usize;
+    let addr_ptr = addr as *const sockaddr_t as usize;
     let addrlen = addrlen as usize;
     syscall3(SYS_BIND, sockfd, addr_ptr, addrlen).map(drop)
 }
@@ -181,6 +183,10 @@ pub unsafe fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Err
     let attr_ptr = attr as *mut bpf_attr_t as usize;
     let size = size as usize;
     syscall3(SYS_BPF, cmd, attr_ptr, size).map(|ret| ret as i32)
+}
+
+pub unsafe fn r#break(addr: usize) -> Result<(), Errno> {
+    syscall1(SYS_BREAK, addr).map(drop)
 }
 
 /// Change data segment size.
@@ -7036,6 +7042,13 @@ pub unsafe fn stime(t: &time_t) -> Result<(), Errno> {
 pub unsafe fn subpage_prot(addr: usize, len: usize, map: &mut u32) -> Result<(), Errno> {
     let map_ptr = map as *mut u32 as usize;
     syscall3(SYS_SUBPAGE_PROT, addr, len, map_ptr).map(drop)
+}
+
+/// Exchange user thread context.
+pub unsafe fn swapcontext(old_ctx: &mut ucontext_t, ctx: &ucontext_t) -> Result<(), Errno> {
+    let old_ctx_ptr = old_ctx as *mut ucontext_t as usize;
+    let ctx_ptr = ctx as *const ucontext_t as usize;
+    syscall2(SYS_SWAPCONTEXT, old_ctx_ptr, ctx_ptr).map(drop)
 }
 
 /// Stop swapping to file/device.

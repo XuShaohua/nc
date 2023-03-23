@@ -2,16 +2,21 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use core::mem::size_of;
+#![allow(unreachable_code)]
+
+use core::mem::{size_of, transmute};
 use nc::Errno;
+
+fn htons(host: u16) -> u16 {
+    host.to_be()
+}
 
 fn main() -> Result<(), Errno> {
     let listen_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0)? };
 
     let addr = nc::sockaddr_in_t {
         sin_family: nc::AF_INET as nc::sa_family_t,
-        // TODO(Shaohua): Add htons()
-        sin_port: 4200,
+        sin_port: htons(80),
         sin_addr: nc::in_addr_t {
             s_addr: nc::INADDR_ANY as u32,
         },
@@ -19,7 +24,11 @@ fn main() -> Result<(), Errno> {
     };
 
     unsafe {
-        nc::bind(listen_fd, &addr, size_of::<nc::sockaddr_in_t>() as u32)?;
+        let addr_alias = transmute::<&nc::sockaddr_in_t, &nc::sockaddr_t>(&addr);
+        let ret = nc::bind(listen_fd, addr_alias, size_of::<nc::sockaddr_in_t>() as u32);
+        assert_eq!(ret, Err(nc::EACCES));
+        return Ok(());
+
         nc::listen(listen_fd, nc::SOCK_STREAM)?;
     }
 

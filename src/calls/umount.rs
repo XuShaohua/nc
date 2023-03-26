@@ -1,4 +1,4 @@
-/// Umount filesystem.
+/// Unmount filesystem.
 ///
 /// # Example
 ///

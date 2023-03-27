@@ -38,37 +38,36 @@ pub const OLDACL_MAX_ENTRIES: i32 = 32;
 
 /// Current "struct acl".
 #[derive(Clone)]
-pub struct acl_entry {
+pub struct acl_entry_t {
     pub ae_tag: acl_tag_t,
     pub ae_id: uid_t,
     pub ae_perm: acl_perm_t,
 
     /// NFSv4 entry type, "allow" or "deny".  Unused in POSIX.1e ACLs.
-    pub ae_entry_type: acl_entry_type_t,
+    pub ae_entry_type: *mut acl_entry_type_t,
 
     /// NFSv4 ACL inheritance.  Unused in POSIX.1e ACLs.
     pub ae_flags: acl_flag_t,
 }
-pub type acl_entry_t = *mut acl_entry;
 
 /// Internal ACL structure, used in libc, kernel APIs and for on-disk
 /// storage of NFSv4 ACLs.  POSIX.1e ACLs use "struct oldacl" for on-disk
 /// storage.
 #[derive(Clone)]
-pub struct acl {
+pub struct acl_t {
     pub acl_maxcnt: u32,
     pub acl_cnt: u32,
 
     // Will be required e.g. to implement NFSv4.1 ACL inheritance.
     acl_spare: [i32; 4],
 
-    pub acl_entry: [acl_entry; ACL_MAX_ENTRIES],
+    pub acl_entry: [acl_entry_t; ACL_MAX_ENTRIES],
 }
 
 /// ACL structure internal to libc.
 #[derive(Clone)]
 pub struct acl_t_struct_t {
-    pub ats_acl: *mut acl,
+    pub ats_acl: *mut acl_t,
     pub ats_cur_entry: i32,
 
     /// ats_brand is for libc internal bookkeeping only.
@@ -79,7 +78,7 @@ pub struct acl_t_struct_t {
     /// ACL, ACL_TYPE_NFS4 means NFSv4 ACL.
     pub ats_brand: i32,
 }
-pub type acl_t = *mut acl_t_struct_t;
+//pub type acl_t = *mut acl_t_struct_t;
 
 /// Possible valid values for ats_brand field.
 pub const ACL_BRAND_UNKNOWN: i32 = 0;

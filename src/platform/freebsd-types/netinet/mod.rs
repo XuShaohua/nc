@@ -3,7 +3,9 @@
 // in the LICENSE file.
 
 mod r#in;
+mod sctp_uio;
 mod tcp;
 
 pub use r#in::*;
+pub use sctp_uio::*;
 pub use tcp::*;

@@ -13,13 +13,13 @@ pub const fn _SIG_IDX(sig: i32) -> i32 {
 }
 
 #[must_use]
-pub const fn _SIG_WORD(sig: i32) -> i32 {
-    _SIG_IDX(sig) >> 5
+pub const fn _SIG_WORD(sig: i32) -> usize {
+    (_SIG_IDX(sig) >> 5) as usize
 }
 
 #[must_use]
-pub const fn _SIG_BIT(sig: i32) -> i32 {
-    1 << (_SIG_IDX(sig) & 31)
+pub const fn _SIG_BIT(sig: i32) -> u32 {
+    (1 << (_SIG_IDX(sig) & 31)) as u32
 }
 
 #[must_use]

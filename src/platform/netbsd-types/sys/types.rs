@@ -46,3 +46,8 @@ pub type pri_t = i32;
 
 // NOTE(Shaohua): Copied from types.h in freebsd
 pub type fflags_t = u32;
+pub type intptr_t = isize;
+pub type intfptr = isize;
+pub type uintptr = usize;
+pub type vm_offset_t = usize;
+pub type vm_size_t = usize;

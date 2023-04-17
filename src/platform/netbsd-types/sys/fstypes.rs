@@ -56,6 +56,7 @@ pub const MNT_SYMPERM: i32 = 0x2000_0000;
 /// Never update mod times for devs
 pub const MNT_NODEVMTIME: i32 = 0x4000_0000;
 /// Use soft dependencies
+#[allow(overflowing_literals)]
 pub const MNT_SOFTDEP: i32 = 0x8000_0000;
 
 pub const MNT_BASIC_FLAGS: i32 = MNT_ASYNC
@@ -164,9 +165,6 @@ pub const IMNT_MPSAFE: i32 = 0x0000_0100;
 pub const IMNT_CAN_RWTORO: i32 = 0x0000_0200;
 /// on syncer worklist
 pub const IMNT_ONWORKLIST: i32 = 0x0000_0400;
-
-pub const __MNT_FLAGS: i32 =
-    __MNT_BASIC_FLAGS | __MNT_EXPORTED_FLAGS | __MNT_INTERNAL_FLAGS | __MNT_EXTERNAL_FLAGS;
 
 // Flags for various system call interfaces.
 //

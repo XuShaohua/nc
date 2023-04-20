@@ -4,13 +4,13 @@
 
 //! From `sys/ars.h`
 
-use crate::uintptr;
+use crate::uintptr_t;
 
 #[repr(C)]
 pub struct ras_t {
     pub ras_next: *mut ras_t,
-    pub ras_startaddr: uintptr,
-    pub ras_endaddr: uintptr,
+    pub ras_startaddr: uintptr_t,
+    pub ras_endaddr: uintptr_t,
 }
 
 pub const RAS_INSTALL: i32 = 0;

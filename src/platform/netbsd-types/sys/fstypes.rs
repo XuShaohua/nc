@@ -4,11 +4,40 @@
 
 //! From `sys/fstypes.h`
 
+use crate::c_char;
+
 /// file system id type
-#[derive(Debug, Clone, PartialEq, Eq)]
 #[repr(C)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct fsid_t {
     pub __fsid_val: [i32; 2],
+}
+
+/// File identifier.
+///
+/// These are unique per filesystem on a single machine.
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct fid_t {
+    /// length of data in bytes
+    pub fid_len: u16,
+
+    /// compat: historic align
+    pub fid_reserved: u16,
+
+    /// data (variable length)
+    pub fid_data: [c_char; 0],
+}
+
+/// Generic file handle
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct fhandle_t {
+    /// File system id of mount point
+    pub fh_fsid: fsid_t,
+
+    /// File sys specific id
+    pub fh_fid: fid_t,
 }
 
 /// Mount flags.

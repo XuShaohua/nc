@@ -12,8 +12,10 @@ pub type c_char = u8;
 mod arch;
 pub use arch::*;
 
+mod libc;
 mod netinet;
 mod sys;
 
+pub use libc::*;
 pub use netinet::*;
 pub use sys::*;

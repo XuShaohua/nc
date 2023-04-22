@@ -13,7 +13,7 @@ pub unsafe fn __sysctl(
         SYS___SYSCTL,
         name_ptr,
         name_len,
-        ld_val,
+        old_val,
         old_len,
         new_val,
         new_len,

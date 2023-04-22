@@ -4,7 +4,7 @@
 
 //! From `sys/quotactl.h`
 
-use crate::c_char;
+use crate::{c_char, quotakey_t, quotaval_t};
 
 /// Size of random quota strings
 pub const QUOTA_NAMELEN: usize = 32;

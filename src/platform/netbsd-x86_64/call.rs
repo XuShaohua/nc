@@ -4333,6 +4333,75 @@ pub unsafe fn _ksem_wait(id: intptr_t) -> Result<(), Errno> {
     syscall1(SYS__KSEM_WAIT, id).map(drop)
 }
 
+pub unsafe fn _lwp_continue(target: lwpid_t) -> Result<(), Errno> {
+    let target = target as usize;
+    syscall1(SYS__LWP_CONTINUE, target).map(drop)
+}
+
+/// Crate a new thread.
+pub unsafe fn _lwp_craete(
+    ctx: &mut ucontext_t,
+    flags: usize,
+    id: &mut lwpid_t,
+) -> Result<(), Errno> {
+    let ctx_ptr = ctx as *mut ucontext_t as usize;
+    let id_ptr = id as *mut lwpid_t as usize;
+    syscall3(SYS__LWP_CREATE, ctx_ptr, flags, id_ptr).map(drop)
+}
+
+pub unsafe fn _lwp_detach(target: lwpid_t) -> Result<(), Errno> {
+    let target = target as usize;
+    syscall1(SYS__LWP_DETACH, target).map(drop)
+}
+
+/// Terminate thread.
+pub unsafe fn _lwp_exit() -> Result<i32, Errno> {
+    syscall0(SYS__LWP_EXIT).map(|val| val as i32)
+}
+
+pub unsafe fn _lwp_getname(target: lwpid_t, buf: &mut [u8]) -> Result<i32, Errno> {
+    let target = target as usize;
+    let buf_ptr = buf.as_mut_ptr() as usize;
+    let buf_len = buf.len();
+    syscall3(SYS__LWP_GETNAME, target, buf_ptr, buf_len).map(|val| val as i32)
+}
+
+pub unsafe fn _lwp_getprivate() -> Result<uintptr_t, Errno> {
+    syscall0(SYS__LWP_GETPRIVATE)
+}
+
+pub unsafe fn _lwp_kill(target: lwpid_t, signo: i32) -> Result<(), Errno> {
+    let target = target as usize;
+    let signo = signo as usize;
+    syscall2(SYS__LWP_KILL, target, signo).map(drop)
+}
+
+/// Get thread id of current thread.
+pub unsafe fn _lwp_self() -> Result<lwpid_t, Errno> {
+    syscall0(SYS__LWP_SELF).map(|val| val as lwpid_t)
+}
+
+pub unsafe fn _lwp_setname(target: lwpid_t, name: &str) -> Result<(), Errno> {
+    let target = target as usize;
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall2(SYS__LWP_SETNAME, target, name_ptr).map(drop)
+}
+
+pub unsafe fn _lwp_setprivate(ptr: uintptr_t) -> Result<(), Errno> {
+    syscall1(SYS__LWP_SETPRIVATE, ptr).map(drop)
+}
+
+pub unsafe fn _lwp_suspend(target: lwpid_t) -> Result<(), Errno> {
+    let target = target as usize;
+    syscall1(SYS__LWP_SUSPEND, target).map(drop)
+}
+
+pub unsafe fn _lwp_wakeup(target: lwpid_t) -> Result<(), Errno> {
+    let target = target as usize;
+    syscall1(SYS__LWP_WAKEUP, target).map(drop)
+}
+
 /// Get a thread's CPU affinity mask.
 pub unsafe fn _sched_getaffinity(
     pid: pid_t,
@@ -4428,6 +4497,12 @@ pub unsafe fn __clock_settime50(which_clock: clockid_t, tp: &timespec_t) -> Resu
     syscall2(SYS___CLOCK_SETTIME50, which_clock, tp_ptr).map(drop)
 }
 
+/// Create a child process.
+pub unsafe fn __clone(flags: i32, stack: uintptr_t) -> Result<pid_t, Errno> {
+    let flags = flags as usize;
+    syscall2(SYS___CLONE, flags, stack).map(|ret| ret as pid_t)
+}
+
 /// Opens the file referenced by `fh` for reading and/or writing,
 /// and returns the file descriptor to the calling process.
 pub unsafe fn __fhopen40(fhp: uintptr_t, fh_size: size_t, flags: i32) -> Result<i32, Errno> {
@@ -4501,12 +4576,155 @@ pub unsafe fn __getfh30<P: AsRef<Path>>(
     syscall3(SYS___GETFH30, path_ptr, fhp, fh_size).map(drop)
 }
 
+/// Get value of an interval timer.
+pub unsafe fn __getitimer50(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
+    let which = which as usize;
+    let curr_val_ptr = curr_val as *mut itimerval_t as usize;
+    syscall2(SYS___GETITIMER50, which, curr_val_ptr).map(drop)
+}
+
 /// Get login name.
 pub unsafe fn __getlogin(name: &mut [u8]) -> Result<(), Errno> {
     // TODO(Shaohua): Convert to CString
     let name_ptr = name.as_mut_ptr() as usize;
     let len = name.len();
     syscall2(SYS___GETLOGIN, name_ptr, len).map(drop)
+}
+
+/// Get resource usage.
+pub unsafe fn __getrusage50(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
+    let who = who as usize;
+    let usage_ptr = usage as *mut rusage_t as usize;
+    syscall2(SYS___GETRUSAGE50, who, usage_ptr).map(drop)
+}
+
+/// Get time.
+pub unsafe fn __gettimeofday590(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
+    let timeval_ptr = timeval as *mut timeval_t as usize;
+    let tz_ptr = tz as *mut timezone_t as usize;
+    syscall2(SYS___GETTIMEOFDAY50, timeval_ptr, tz_ptr).map(drop)
+}
+
+/// Get file status about a file, without following symbolic.
+pub unsafe fn __lstat50<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let statbuf_ptr = statbuf as *mut stat_t as usize;
+    syscall2(SYS___LSTAT50, filename_ptr, statbuf_ptr).map(drop)
+}
+
+/// Change file last access and modification time.
+pub unsafe fn __lutimes50<P: AsRef<Path>>(
+    filename: P,
+    times: &[timeval_t; 2],
+) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let times_ptr = times.as_ptr() as usize;
+    syscall2(SYS___LUTIMES50, filename_ptr, times_ptr).map(drop)
+}
+
+/// Create a special or ordinary file.
+pub unsafe fn __mknod50<P: AsRef<Path>>(
+    filename: P,
+    mode: mode_t,
+    dev: dev_t,
+) -> Result<(), Errno> {
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let mode = mode as usize;
+    let dev = dev as usize;
+    syscall3(SYS___MKNOD50, filename_ptr, mode, dev).map(drop)
+}
+
+/// Mount filesystem.
+pub unsafe fn mount<P: AsRef<Path>>(
+    fs_type: P,
+    dir_name: P,
+    flags: i32,
+    data: usize,
+) -> Result<(), Errno> {
+    let fs_type = CString::new(fs_type.as_ref());
+    let fs_type_ptr = fs_type.as_ptr() as usize;
+    let dir_name = CString::new(dir_name.as_ref());
+    let dir_name_ptr = dir_name.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall4(SYS___MOUNT50, fs_type_ptr, dir_name_ptr, flags, data).map(drop)
+}
+
+pub unsafe fn __mq_timedreceive50(
+    mqdes: mqd_t,
+    msg: &mut [u8],
+    msg_len: usize,
+    msg_prio: &mut u32,
+    abs_timeout: &timespec_t,
+) -> Result<ssize_t, Errno> {
+    let mqdes = mqdes as usize;
+    let msg = CString::new(msg);
+    let msg_ptr = msg.as_ptr() as usize;
+    let msg_prio = msg_prio as *mut u32 as usize;
+    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+    syscall5(
+        SYS___MQ_TIMEDRECEIVE50,
+        mqdes,
+        msg_ptr,
+        msg_len,
+        msg_prio,
+        abs_timeout_ptr,
+    )
+    .map(|ret| ret as ssize_t)
+}
+
+/// Send message to a message queue.
+pub unsafe fn __mq_timedsend50(
+    mqdes: mqd_t,
+    msg: &[u8],
+    msg_len: usize,
+    msg_prio: u32,
+    abs_timeout: &timespec_t,
+) -> Result<(), Errno> {
+    let mqdes = mqdes as usize;
+    let msg = CString::new(msg);
+    let msg_ptr = msg.as_ptr() as usize;
+    let msg_prio = msg_prio as usize;
+    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+    syscall5(
+        SYS___MQ_TIMEDSEND50,
+        mqdes,
+        msg_ptr,
+        msg_len,
+        msg_prio,
+        abs_timeout_ptr,
+    )
+    .map(drop)
+}
+
+/// System V message control operations.
+pub unsafe fn __msgctl50(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
+    let msqid = msqid as usize;
+    let cmd = cmd as usize;
+    let buf_ptr = buf as *mut msqid_ds_t as usize;
+    syscall3(SYS___MSGCTL50, msqid, cmd, buf_ptr).map(|ret| ret as i32)
+}
+
+/// Synchronize a file with memory map.
+pub unsafe fn __msync13(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+    let flags = flags as usize;
+    syscall3(SYS___MSYNC13, addr, len, flags).map(drop)
+}
+
+/// High resolution sleep.
+pub unsafe fn __nanosleep50(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
+    let req_ptr = req as *const timespec_t as usize;
+    let rem_ptr = rem.map_or(0, |rem| rem as *mut timespec_t as usize);
+    syscall2(SYS___NANOSLEEP50, req_ptr, rem_ptr).map(drop)
+}
+
+/// Provides the time, maximum error (sync distance) and estimated error (dispersion)
+/// to client user application programs.
+pub unsafe fn __ntp_gettime50(time: &mut ntptimeval_t) -> Result<i32, Errno> {
+    let time_ptr = time as *mut ntptimeval_t as usize;
+    syscall1(SYS___NTP_GETTIME50, time_ptr).map(|val| val as i32)
 }
 
 /// Change ownership of a file.
@@ -4568,12 +4786,172 @@ pub unsafe fn __posix_rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> 
     syscall2(SYS___POSIX_RENAME, oldfilename_ptr, newfilename_ptr).map(drop)
 }
 
+/// Sychronous I/O multiplexing.
+///
+/// Most architectures can't handle 7-argument syscalls. So we provide a
+/// 6-argument version where the sixth argument is a pointer to a structure
+/// which has a pointer to the `sigset_t` itself followed by a `size_t` containing
+/// the sigset size.
+pub unsafe fn pselect6(
+    nfds: i32,
+    readfds: &mut fd_set_t,
+    writefds: &mut fd_set_t,
+    exceptfds: &mut fd_set_t,
+    timeout: &timespec_t,
+    sigmask: &sigset_t,
+) -> Result<i32, Errno> {
+    let nfds = nfds as usize;
+    let readfds_ptr = readfds as *mut fd_set_t as usize;
+    let writefds_ptr = writefds as *mut fd_set_t as usize;
+    let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
+    let timeout_ptr = timeout as *const timespec_t as usize;
+    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    syscall6(
+        SYS___PSELECT50,
+        nfds,
+        readfds_ptr,
+        writefds_ptr,
+        exceptfds_ptr,
+        timeout_ptr,
+        sigmask_ptr,
+    )
+    .map(|ret| ret as i32)
+}
+
+/// Manipulate disk quotes.
+pub unsafe fn __quotactl<P: AsRef<Path>>(path: P, args: &mut quotactl_args_t) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let args_ptr = args as *mut quotactl_args_t as usize;
+    syscall2(SYS___QUOTACTL, path_ptr, args_ptr).map(drop)
+}
+
+/// Sychronous I/O multiplexing.
+pub unsafe fn __select50(
+    nfds: i32,
+    readfds: &mut fd_set_t,
+    writefds: &mut fd_set_t,
+    exceptfds: &mut fd_set_t,
+    timeout: &mut timeval_t,
+) -> Result<i32, Errno> {
+    let nfds = nfds as usize;
+    let readfds_ptr = readfds as *mut fd_set_t as usize;
+    let writefds_ptr = writefds as *mut fd_set_t as usize;
+    let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
+    let timeout_ptr = timeout as *mut timeval_t as usize;
+    syscall5(
+        SYS___SELECT50,
+        nfds,
+        readfds_ptr,
+        writefds_ptr,
+        exceptfds_ptr,
+        timeout_ptr,
+    )
+    .map(|ret| ret as i32)
+}
+
+/// Set value of an interval timer.
+pub unsafe fn __setitimer50(
+    which: i32,
+    new_val: &itimerval_t,
+    old_val: &mut itimerval_t,
+) -> Result<(), Errno> {
+    let which = which as usize;
+    let new_val_ptr = new_val as *const itimerval_t as usize;
+    let old_val_ptr = old_val as *mut itimerval_t as usize;
+    syscall3(SYS___SETITIMER50, which, new_val_ptr, old_val_ptr).map(drop)
+}
+
+/// Set login name.
+pub unsafe fn __setlogin(name: &str) -> Result<(), Errno> {
+    let name = CString::new(name);
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS___SETLOGIN, name_ptr).map(drop)
+}
+
+/// Set system time and timezone.
+pub unsafe fn __settimeofday50(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
+    let timeval_ptr = timeval as *const timeval_t as usize;
+    let tz_ptr = tz as *const timezone_t as usize;
+    syscall2(SYS___SETTIMEOFDAY50, timeval_ptr, tz_ptr).map(drop)
+}
+
+/// System V shared memory control.
+pub unsafe fn __shmctl50(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
+    let shmid = shmid as usize;
+    let cmd = cmd as usize;
+    let buf_ptr = buf as *mut shmid_ds_t as usize;
+    syscall3(SYS___SHMCTL50, shmid, cmd, buf_ptr).map(|ret| ret as i32)
+}
+
+/// Get/set signal stack context.
+pub unsafe fn __sigaltstack14(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Result<(), Errno> {
+    let uss_ptr = uss as *const sigaltstack_t as usize;
+    let uoss_ptr = uoss as *mut sigaltstack_t as usize;
+    syscall2(SYS___SIGALTSTACK14, uss_ptr, uoss_ptr).map(drop)
+}
+
+/// Examine pending signals.
+pub unsafe fn __sigpending14(set: &mut sigset_t) -> Result<(), Errno> {
+    let set_ptr = set as *mut sigset_t as usize;
+    syscall1(SYS___SIGPENDING14, set_ptr).map(drop)
+}
+
+/// Examine and change blocked signals.
+pub unsafe fn __sigprocmask14(
+    how: i32,
+    newset: &mut sigset_t,
+    oldset: &mut sigset_t,
+) -> Result<(), Errno> {
+    let how = how as usize;
+    let newset_ptr = newset as *mut sigset_t as usize;
+    let oldset_ptr = oldset as *mut sigset_t as usize;
+    syscall3(SYS___SIGPROCMASK14, how, newset_ptr, oldset_ptr).map(drop)
+}
+
+/// Wait for a signal.
+pub unsafe fn __sigsuspend14(mask: &sigset_t) -> Result<(), Errno> {
+    let mask_ptr = mask as *const sigset_t as usize;
+    syscall1(SYS___SIGSUSPEND14, mask_ptr).map(drop)
+}
+
+/// Create an endpoint for communication.
+pub unsafe fn __socket30(domain: i32, sock_type: i32, protocol: i32) -> Result<i32, Errno> {
+    let domain = domain as usize;
+    let sock_type = sock_type as usize;
+    let protocol = protocol as usize;
+    syscall3(SYS___SOCKET30, domain, sock_type, protocol).map(|ret| ret as i32)
+}
+
 /// Get file status about a file.
 pub unsafe fn __stat50<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let statbuf_ptr = statbuf as *mut stat_t as usize;
     syscall2(SYS___STAT50, filename_ptr, statbuf_ptr).map(drop)
+}
+
+/// Read/write system parameters.
+pub unsafe fn __sysctl(
+    name: &i32,
+    name_len: u32,
+    old_val: usize,
+    old_len: size_t,
+    new_val: usize,
+    new_len: size_t,
+) -> Result<(), Errno> {
+    let name_ptr = name as *const i32 as usize;
+    let name_len = name_len as usize;
+    syscall6(
+        SYS___SYSCTL,
+        name_ptr,
+        name_len,
+        old_val,
+        old_len,
+        new_val,
+        new_len,
+    )
+    .map(drop)
 }
 
 /// Fetch state of per-process timer>
@@ -4610,4 +4988,23 @@ pub unsafe fn __utimes50<P: AsRef<Path>>(filename: P, times: &[timeval_t; 2]) ->
     let filename_ptr = filename.as_ptr() as usize;
     let times_ptr = times.as_ptr() as usize;
     syscall2(SYS___UTIMES50, filename_ptr, times_ptr).map(drop)
+}
+
+/// Create a child process and wait until it is terminated.
+pub unsafe fn __vfork14() -> Result<pid_t, Errno> {
+    syscall0(SYS___VFORK14).map(|ret| ret as pid_t)
+}
+
+/// Wait for process to change state.
+pub unsafe fn __wait450(
+    pid: pid_t,
+    wstatus: &mut i32,
+    options: i32,
+    rusage: &mut rusage_t,
+) -> Result<pid_t, Errno> {
+    let pid = pid as usize;
+    let wstatus_ptr = wstatus as *mut i32 as usize;
+    let options = options as usize;
+    let rusage_ptr = rusage as *mut rusage_t as usize;
+    syscall4(SYS___WAIT450, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t)
 }

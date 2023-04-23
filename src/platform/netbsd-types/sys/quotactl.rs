@@ -4,7 +4,7 @@
 
 //! From `sys/quotactl.h`
 
-use crate::{c_char, quotakey_t, quotaval_t};
+use crate::{c_char, quotakey_t, quotaval_t, uintmax_t};
 
 /// Size of random quota strings
 pub const QUOTA_NAMELEN: usize = 32;
@@ -67,62 +67,66 @@ pub const QUOTACTL_QUOTAON: i32 = 12;
 pub const QUOTACTL_QUOTAOFF: i32 = 13;
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_stat_t {
     pub qc_info: *mut quotastat_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_idtypestat_t {
     pub qc_idetype: i32,
     pub qc_info: *mut quotaidtypestat_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
-struct quotactl_args_objtypestat_t {
+#[derive(Debug, Clone, Copy)]
+pub struct quotactl_args_objtypestat_t {
     pub qc_objtype: i32,
     pub qc_info: *mut quotaobjtypestat_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_get_t {
     pub qc_key: *const quotakey_t,
     pub qc_val: *mut quotaval_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_put_t {
     pub qc_key: *const quotakey_t,
     pub qc_val: *const quotaval_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_del_t {
     pub qc_key: *const quotakey_t,
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_cursoropen_t {
     pub qc_cursor: *mut quotakcursor_t,
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_cursorclose_t {
     pub qc_cursor: *mut quotakcursor_t,
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_cursorskipidtype_t {
     pub qc_cursor: *mut quotakcursor_t,
     pub qc_idtype: i32,
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_cursorget_t {
     pub qc_cursor: *mut quotakcursor_t,
     pub qc_keys: *mut quotakey_t,
@@ -132,6 +136,7 @@ pub struct quotactl_args_cursorget_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_cursoratend_t {
     pub qc_cursor: *mut quotakcursor_t,
     // really boolean
@@ -139,19 +144,20 @@ pub struct quotactl_args_cursoratend_t {
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_cursorrewind_t {
     pub qc_cursor: *mut quotakcursor_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_quotaon_t {
     pub qc_idtype: i32,
     pub qc_quotafile: *const c_char,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct quotactl_args_quotaoff_t {
     pub qc_idtype: i32,
 }

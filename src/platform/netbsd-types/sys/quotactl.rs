@@ -40,13 +40,11 @@ pub struct quotaobjtypestat_t {
 /// expansion without being unduly bloated, as it will need to be
 /// copied in and out for every call using it.
 #[repr(C)]
-#[derive(Clone)]
 pub struct quotakcursor_t {
     pub u: quotakcursor_union,
 }
 
 #[repr(C)]
-#[derive(Clone)]
 pub union quotakcursor_union {
     pub qkc_space: [c_char; 64],
     __qkc_forcealign: uintmax_t,
@@ -109,26 +107,22 @@ pub struct quotactl_args_del_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
 pub struct quotactl_args_cursoropen_t {
     pub qc_cursor: *mut quotakcursor_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
 pub struct quotactl_args_cursorclose_t {
     pub qc_cursor: *mut quotakcursor_t,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
 pub struct quotactl_args_cursorskipidtype_t {
     pub qc_cursor: *mut quotakcursor_t,
     pub qc_idtype: i32,
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
 pub struct quotactl_args_cursorget_t {
     pub qc_cursor: *mut quotakcursor_t,
     pub qc_keys: *mut quotakey_t,
@@ -138,7 +132,6 @@ pub struct quotactl_args_cursorget_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
 pub struct quotactl_args_cursoratend_t {
     pub qc_cursor: *mut quotakcursor_t,
     // really boolean
@@ -146,7 +139,6 @@ pub struct quotactl_args_cursoratend_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
 pub struct quotactl_args_cursorrewind_t {
     pub qc_cursor: *mut quotakcursor_t,
 }
@@ -165,7 +157,6 @@ pub struct quotactl_args_quotaoff_t {
 }
 
 #[repr(C)]
-#[derive(Clone)]
 pub union quotactl_args_union {
     pub stat: quotactl_args_stat_t,
     pub idtypestat: quotactl_args_idtypestat_t,
@@ -188,7 +179,6 @@ pub union quotactl_args_union {
 
 /// Argument encoding.
 #[repr(C)]
-#[derive(Clone)]
 pub struct quotactl_args_t {
     pub qc_op: u32,
     pub u: quotactl_args_union,

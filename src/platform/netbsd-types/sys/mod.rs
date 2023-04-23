@@ -5,6 +5,7 @@
 mod aio;
 mod ansi;
 mod common_ansi;
+mod common_int_mwgwtypes;
 mod fcntl;
 mod fd_set;
 mod fstypes;
@@ -40,6 +41,7 @@ mod uuid;
 pub use aio::*;
 pub use ansi::*;
 pub use common_ansi::*;
+pub use common_int_mwgwtypes::*;
 pub use fcntl::*;
 pub use fd_set::*;
 pub use fstypes::*;

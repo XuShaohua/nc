@@ -1,3 +1,4 @@
 pub unsafe fn _lwp_continue(target: lwpid_t) -> Result<(), Errno> {
-    syscall0(SYS__LWP_CONTINUE).map(drop)
+    let target = target as usize;
+    syscall1(SYS__LWP_CONTINUE, target).map(drop)
 }

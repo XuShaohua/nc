@@ -1632,6 +1632,19 @@ pub unsafe fn linkat<P: AsRef<Path>>(
     .map(drop)
 }
 
+/// List directed I/O (REALTIME)
+pub unsafe fn lio_listio(
+    mode: i32,
+    acb_list: &mut [aiocb_t],
+    sig: &mut sigevent_t,
+) -> Result<(), Errno> {
+    let mode = mode as usize;
+    let acb_list_ptr = acb_list.as_mut_ptr() as usize;
+    let acb_list_len = acb_list.len();
+    let sig_ptr = sig as *mut sigevent_t as usize;
+    syscall4(SYS_LIO_LISTIO, mode, acb_list_ptr, acb_list_len, sig_ptr).map(drop)
+}
+
 /// Listen for connections on a socket.
 pub unsafe fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
@@ -1952,47 +1965,18 @@ pub unsafe fn mmap(
 }
 
 /// Mount filesystem.
-///
-/// # Example
-///
-/// ```
-/// let target_dir = "/tmp/nc-mount";
-/// let ret = unsafe { nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755) };
-/// assert!(ret.is_ok());
-///
-/// let src_dir = "/etc";
-/// let fs_type = "";
-/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
-/// let data = 0;
-/// let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
-/// assert!(ret.is_err());
-/// assert_eq!(ret, Err(nc::EPERM));
-///
-/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR) };
-/// assert!(ret.is_ok());
-/// ```
 pub unsafe fn mount<P: AsRef<Path>>(
-    dev_name: P,
-    dir_name: P,
     fs_type: P,
-    flags: usize,
+    dir_name: P,
+    flags: i32,
     data: usize,
 ) -> Result<(), Errno> {
-    let dev_name = CString::new(dev_name.as_ref());
-    let dev_name_ptr = dev_name.as_ptr() as usize;
-    let dir_name = CString::new(dir_name.as_ref());
-    let dir_name_ptr = dir_name.as_ptr() as usize;
     let fs_type = CString::new(fs_type.as_ref());
     let fs_type_ptr = fs_type.as_ptr() as usize;
-    syscall5(
-        SYS_MOUNT,
-        dev_name_ptr,
-        dir_name_ptr,
-        fs_type_ptr,
-        flags,
-        data,
-    )
-    .map(drop)
+    let dir_name = CString::new(dir_name.as_ref());
+    let dir_name_ptr = dir_name.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall4(SYS_MOUNT, fs_type_ptr, dir_name_ptr, flags, data).map(drop)
 }
 
 /// Set protection on a region of memory.
@@ -2330,6 +2314,13 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// ```
 pub unsafe fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
     syscall2(SYS_MUNMAP, addr, len).map(drop)
+}
+
+/// Used by the NFS daemons to pass information into and out of the kernel and
+/// also to enter the kernel as a server daemon.
+pub unsafe fn nfssvc(fd: i32, args: usize) -> Result<(), Errno> {
+    let fd = fd as usize;
+    syscall2(SYS_NFSSVC, fd, args).map(drop)
 }
 
 /// Used by the NTP daemon to adjust the system clock to an externally derived time.
@@ -2910,6 +2901,13 @@ pub unsafe fn renameat<P: AsRef<Path>>(
         newfilename_ptr,
     )
     .map(drop)
+}
+
+/// Revoke file access
+pub unsafe fn revoke<P: AsRef<Path>>(path: P) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    syscall1(SYS_REVOKE, path_ptr).map(drop)
 }
 
 /// Delete a directory.
@@ -3540,34 +3538,8 @@ pub unsafe fn sigreturn() {
 }
 
 /// Wait for a signal.
-///
-/// # Example
-/// ```
-/// let pid = unsafe { nc::fork() };
-/// assert!(pid.is_ok());
-/// let pid = pid.unwrap();
-/// assert!(pid >= 0);
-///
-/// if pid == 0 {
-///     // child process.
-///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::sigsuspend(&mask) };
-///     assert!(ret.is_ok());
-/// } else {
-///     // parent process.
-///     let t = nc::timespec_t {
-///         tv_sec: 1,
-///         tv_nsec: 0,
-///     };
-///     let ret = unsafe { nc::nanosleep(&t, None) };
-///     assert!(ret.is_ok());
-///
-///     let ret = unsafe { nc::kill(pid, nc::SIGTERM) };
-///     assert!(ret.is_ok());
-/// }
-/// ```
-pub unsafe fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
-    let mask_ptr = mask as *const old_sigset_t as usize;
+pub unsafe fn sigsuspend(mask: &sigset_t) -> Result<(), Errno> {
+    let mask_ptr = mask as *const sigset_t as usize;
     syscall1(SYS_SIGSUSPEND, mask_ptr).map(drop)
 }
 
@@ -3793,6 +3765,13 @@ pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
 }
 
+/// Attempt to recover a deleted file
+pub unsafe fn undelete<P: AsRef<Path>>(path: P) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    syscall1(SYS_UNDELETE, path_ptr).map(drop)
+}
+
 /// Delete a name and possibly the file it refers to.
 ///
 /// # Example
@@ -3836,6 +3815,14 @@ pub unsafe fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Resu
     let filename_ptr = filename.as_ptr() as usize;
     let flag = flag as usize;
     syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag).map(drop)
+}
+
+/// Unmount filesystem.
+pub unsafe fn unmount<P: AsRef<Path>>(path: P, flags: i32) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall2(SYS_UNMOUNT, path_ptr, flags).map(drop)
 }
 
 /// Change file last access and modification time.

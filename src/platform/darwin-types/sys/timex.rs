@@ -4,6 +4,8 @@
 
 //! From `sys/timex.h`
 
+use crate::timespec_t;
+
 /// NTP API version
 pub const NTP_API: i32 = 4;
 

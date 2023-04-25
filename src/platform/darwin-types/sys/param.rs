@@ -3,8 +3,9 @@
 // in the LICENSE file.
 
 //! From `sys/param.h`
+use core::mem::size_of;
 
-use crate::{gid_t, ARG_MAX, CHILD_MAX, MAXPHYS, NGROUPS_MAX, PATH_MAX};
+use crate::{dev_t, gid_t, ARG_MAX, CHILD_MAX, MAXPHYS, NGROUPS_MAX, PATH_MAX};
 
 /// System version (year & month).
 pub const BSD: i32 = 199506;

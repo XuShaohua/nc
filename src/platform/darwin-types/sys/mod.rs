@@ -6,6 +6,7 @@
 #![allow(non_snake_case)]
 
 mod _types;
+mod aio;
 mod fcntl;
 mod ipc;
 mod mount;
@@ -23,6 +24,7 @@ mod time;
 mod timex;
 
 pub use _types::*;
+pub use aio::*;
 pub use fcntl::*;
 pub use ipc::*;
 pub use mount::*;

@@ -6,6 +6,8 @@
 
 mod _types;
 mod param;
+mod types;
 
 pub use _types::*;
 pub use param::*;
+pub use types::*;

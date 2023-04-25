@@ -8,6 +8,7 @@
 mod _types;
 mod fcntl;
 mod ipc;
+mod mount;
 mod msg;
 mod poll;
 mod resource;
@@ -21,6 +22,7 @@ mod time;
 pub use _types::*;
 pub use fcntl::*;
 pub use ipc::*;
+pub use mount::*;
 pub use msg::*;
 pub use poll::*;
 pub use resource::*;

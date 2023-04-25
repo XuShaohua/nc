@@ -4,7 +4,7 @@
 
 //! From `bsm/audit.h`
 
-use crate::{dev_t, pid_t, size_t, time_t, uid_t};
+use crate::{au_token_t, dev_t, pid_t, size_t, time_t, uid_t};
 
 pub const AUDIT_RECORD_MAGIC: i32 = 0x828a0f1b;
 pub const MAX_AUDIT_RECORDS: usize = 20;
@@ -145,7 +145,7 @@ pub type au_asid_t = pid_t;
 pub type au_event_t = u16;
 pub type au_emod_t = u16;
 pub type au_class_t = u32;
-pub type au_asflags_t = u64;
+pub type au_asflgs_t = u64;
 pub type au_ctlmode_t = u8;
 
 #[repr(C)]
@@ -164,7 +164,7 @@ pub struct au_tid_addr_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct au_mask_t {
     /// Success bits.
     pub am_success: u32,
@@ -281,7 +281,7 @@ pub type token_t = au_token_t;
 /// aq_bufsz:	AQ_BUFSZ (32767)	AQ_MAXBUFSZ (1048576)
 /// aq_delay:	20			20000 (not used)
 #[repr(C)]
-#[deive(Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct au_qctrl_t {
     /// Max # of audit recs in queue when threads with new ARs get blocked.
     pub aq_hiwater: i32,
@@ -301,7 +301,7 @@ pub struct au_qctrl_t {
 
 /// Structure for the audit statistics.
 #[repr(C)]
-#[deive(Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct audit_stat_t {
     pub as_version: u32,
     pub as_numevent: u32,
@@ -321,7 +321,7 @@ pub struct audit_stat_t {
 
 /// Structure for the audit file statistics.
 #[repr(C)]
-#[deive(Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct audit_fstat_t {
     pub af_filesz: u64,
     pub af_currsz: u64,
@@ -329,7 +329,7 @@ pub struct audit_fstat_t {
 
 /// Audit to event class mapping.
 #[repr(C)]
-#[deive(Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct au_evclass_map_t {
     pub ec_number: au_event_t,
     pub ec_class: au_class_t,

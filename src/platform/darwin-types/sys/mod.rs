@@ -17,6 +17,7 @@ mod shm;
 mod signal;
 mod socket;
 mod stat;
+mod syslimits;
 mod time;
 
 pub use _types::*;
@@ -31,4 +32,5 @@ pub use shm::*;
 pub use signal::*;
 pub use socket::*;
 pub use stat::*;
+pub use syslimits::*;
 pub use time::*;

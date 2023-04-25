@@ -5,6 +5,8 @@
 //! From `sys/signal.h`
 
 use core::ffi::c_void;
+use core::fmt;
+use core::ptr::null_mut;
 
 use crate::{pid_t, sigset_t, uid_t};
 
@@ -90,10 +92,24 @@ pub const SIG_HOLD: sighandler_t = 5;
 pub const SIG_ERR: sighandler_t = -1_isize as sighandler_t;
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub union sigval_u {
     /// Members as suggested by Annex C of POSIX 1003.1b.
     sival_int: i32,
     sival_ptr: *mut c_void,
+}
+
+impl Default for sigval_u {
+    fn default() -> Self {
+        Self { sival_int: 0 }
+    }
+}
+
+impl fmt::Debug for sigval_u {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let flags = unsafe { self.sival_int };
+        write!(f, "sival_int: {}", flags)
+    }
 }
 
 /// No async notification
@@ -107,6 +123,7 @@ pub const SIGEV_THREAD: i32 = 3;
 pub type sigev_notify_fn = fn(sigval_u);
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct sigevent_t {
     /// Notification type
     pub sigev_notify: i32,
@@ -117,9 +134,23 @@ pub struct sigevent_t {
     /// Notification function
     pub sigev_notify_function: sigev_notify_fn,
     /// Notification attributes
-    /// TODO(Shaohua): Add pthread_attr_t
+    // TODO(Shaohua): Add pthread_attr_t
     //pthread_attr_t *sigev_notify_attributes;
     pub sigev_notify_attributes: *mut c_void,
+}
+
+impl Default for sigevent_t {
+    fn default() -> Self {
+        Self {
+            sigev_notify: 0,
+            sigev_signo: 0,
+            sigev_value: sigval_u::default(),
+            sigev_notify_function: unsafe {
+                core::mem::transmute::<*mut c_void, sigev_notify_fn>(null_mut())
+            },
+            sigev_notify_attributes: null_mut(),
+        }
+    }
 }
 
 #[repr(C)]

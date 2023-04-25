@@ -218,6 +218,23 @@ pub unsafe fn chmod<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<(), Err
     syscall2(SYS_CHMOD, filename_ptr, mode).map(drop)
 }
 
+/// Change permissions of a file.
+pub unsafe fn chmod_extended<P: AsRef<Path>>(
+    path: P,
+    uid: uid_t,
+    gid: gid_t,
+    mode: i32,
+    xsecurity: user_addr_t,
+) -> Result<(), Errno> {
+    let path = CString::new(path.as_ref());
+    let path_ptr = path.as_ptr() as usize;
+    let uid = uid as usize;
+    let gid = gid as usize;
+    let mode = mode as usize;
+    let xsecurity = xsecurity as usize;
+    syscall5(SYS_CHMOD_EXTENDED, path_ptr, uid, gid, mode, xsecurity).map(drop)
+}
+
 /// Change ownership of a file.
 ///
 /// # Example
@@ -271,6 +288,12 @@ pub unsafe fn close(fd: i32) -> Result<(), Errno> {
     syscall1(SYS_CLOSE, fd).map(drop)
 }
 
+/// Close a file descriptor.
+pub unsafe fn close_nocancel(fd: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    syscall1(SYS_CLOSE_NOCANCEL, fd).map(drop)
+}
+
 /// Initialize a connection on a socket.
 pub unsafe fn connect(
     sockfd: i32,
@@ -281,6 +304,34 @@ pub unsafe fn connect(
     let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
     syscall3(SYS_CONNECT, sockfd, addr_ptr, addrlen).map(drop)
+}
+
+/// Initialize a connection on a socket.
+pub unsafe fn connect_nocancel(
+    sockfd: i32,
+    name: caddr_t,
+    addrlen: socklen_t,
+) -> Result<(), Errno> {
+    let sockfd = sockfd as usize;
+    let name_ptr = name as usize;
+    let addrlen = addrlen as usize;
+    syscall3(SYS_CONNECT_NOCANCEL, sockfd, name_ptr, addrlen).map(drop)
+}
+
+/// Copy a file.
+pub unsafe fn copyfile<P: AsRef<Path>>(from: P, to: P, mode: i32, flags: u32) -> Result<(), Errno> {
+    let from = CString::new(from.as_ref());
+    let from_ptr = from.as_ptr() as usize;
+    let to = CString::new(to.as_ref());
+    let to_ptr = to.as_ptr() as usize;
+    let mode = mode as usize;
+    let flags = flags as usize;
+    syscall4(SYS_COPYFILE, from_ptr, to_ptr, mode, flags).map(drop)
+}
+
+pub unsafe fn delete(path: user_addr_t) -> Result<(), Errno> {
+    let path = path as usize;
+    syscall1(SYS_DELETE, path).map(drop)
 }
 
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
@@ -980,6 +1031,12 @@ pub unsafe fn fstatfs64(fd: i32, buf: &mut statfs64_t) -> Result<(), Errno> {
 pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     syscall1(SYS_FSYNC, fd).map(drop)
+}
+
+/// Flush all modified in-core data refered by `fd` to disk.
+pub unsafe fn fsync_nocancel(fd: i32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    syscall1(SYS_FSYNC_NOCANCEL, fd).map(drop)
 }
 
 /// Truncate an opened file to a specified length.

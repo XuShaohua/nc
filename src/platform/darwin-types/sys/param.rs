@@ -3,6 +3,9 @@
 // in the LICENSE file.
 
 //! From `sys/param.h`
+
+#![allow(non_upper_case_globals)]
+
 use core::mem::size_of;
 
 use crate::{dev_t, gid_t, ARG_MAX, CHILD_MAX, MAXPHYS, NGROUPS_MAX, PATH_MAX};

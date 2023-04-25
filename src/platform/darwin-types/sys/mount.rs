@@ -6,6 +6,8 @@
 //!
 //! file system statistics
 
+#![allow(overflowing_literals)]
+
 use crate::{c_char, fsid_t, uid_t, MAXPATHLEN};
 
 /// length of fs type name, not inc. null

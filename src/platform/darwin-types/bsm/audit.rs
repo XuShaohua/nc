@@ -3,6 +3,8 @@
 // in the LICENSE file.
 
 //! From `bsm/audit.h`
+#![allow(non_upper_case_globals)]
+#![allow(overflowing_literals)]
 
 use crate::{au_token_t, dev_t, pid_t, size_t, time_t, uid_t};
 

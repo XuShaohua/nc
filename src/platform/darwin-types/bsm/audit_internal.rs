@@ -4,6 +4,8 @@
 
 //! From `bsdm/audit_internal.h`
 
+use crate::size_t;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct au_token_t {

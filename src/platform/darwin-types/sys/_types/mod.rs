@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+pub type fflags_t = u32;
+
 mod _blkcnt_t;
 mod _blksize_t;
 mod _clock_t;

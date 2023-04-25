@@ -17,9 +17,11 @@ mod arch;
 pub use arch::*;
 
 mod bsm;
+mod copyfile;
 mod netinet;
 mod sys;
 
 pub use bsm::*;
+pub use copyfile::*;
 pub use netinet::*;
 pub use sys::*;

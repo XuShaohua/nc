@@ -5,5 +5,7 @@
 #![allow(non_camel_case_types)]
 
 mod _types;
+mod param;
 
 pub use _types::*;
+pub use param::*;

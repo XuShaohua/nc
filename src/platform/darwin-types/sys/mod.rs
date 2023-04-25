@@ -20,6 +20,7 @@ mod socket;
 mod stat;
 mod syslimits;
 mod time;
+mod timex;
 
 pub use _types::*;
 pub use fcntl::*;
@@ -36,3 +37,4 @@ pub use socket::*;
 pub use stat::*;
 pub use syslimits::*;
 pub use time::*;
+pub use timex::*;

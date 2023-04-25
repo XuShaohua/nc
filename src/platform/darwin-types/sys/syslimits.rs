@@ -12,7 +12,7 @@ pub const ARG_MAX: usize = 1024 * 1024;
 /// max simultaneous processes
 pub const CHILD_MAX: usize = 266;
 /// max value for a gid_t (2^31-2)
-pub const GID_MAX: gid_t = 2147483647U;
+pub const GID_MAX: gid_t = 2147483647;
 /// max file link count
 pub const LINK_MAX: usize = 32767;
 /// max bytes in term canon input line

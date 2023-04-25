@@ -6,6 +6,7 @@ pub type fflags_t = u32;
 
 mod _blkcnt_t;
 mod _blksize_t;
+mod _caddr_t;
 mod _clock_t;
 mod _dev_t;
 mod _fd_def;
@@ -49,6 +50,7 @@ mod _uuid_t;
 
 pub use _blkcnt_t::*;
 pub use _blksize_t::*;
+pub use _caddr_t::*;
 pub use _clock_t::*;
 pub use _dev_t::*;
 pub use _fd_def::*;

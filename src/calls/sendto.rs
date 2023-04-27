@@ -8,7 +8,7 @@ pub unsafe fn sendto(
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let buf_ptr = buf.as_ptr() as usize;
-    let len = buf.len(),
+    let len = buf.len();
     let flags = flags as usize;
     let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
     let addrlen = addrlen as usize;

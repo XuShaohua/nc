@@ -32,6 +32,18 @@ pub unsafe fn accept(
     syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32)
 }
 
+/// Accept a connection on a socket.
+pub unsafe fn accept_nocancel(
+    sockfd: i32,
+    addr: &mut sockaddr_in_t,
+    addrlen: &mut socklen_t,
+) -> Result<i32, Errno> {
+    let sockfd = sockfd as usize;
+    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    syscall3(SYS_ACCEPT_NOCANCEL, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32)
+}
+
 /// Check user's permission for a file.
 ///
 /// It uses the real user ID and the group access list to authorize the request.
@@ -762,6 +774,20 @@ pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let operation = operation as usize;
     syscall2(SYS_FLOCK, fd, operation).map(drop)
+}
+
+/// Mount filesystem.
+pub unsafe fn fmount<P: AsRef<Path>>(
+    fs_type: P,
+    fd: i32,
+    flags: i32,
+    data: usize,
+) -> Result<(), Errno> {
+    let fs_type = CString::new(fs_type.as_ref());
+    let fs_type_ptr = fs_type.as_ptr() as usize;
+    let fd = fd as usize;
+    let flags = flags as usize;
+    syscall4(SYS_FMOUNT, fs_type_ptr, fd, flags, data).map(drop)
 }
 
 /// Create a child process.
@@ -2439,12 +2465,52 @@ pub unsafe fn openat<P: AsRef<Path>>(
     syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
 }
 
+/// Open and possibly create a file within a directory.
+pub unsafe fn openat_nocancel<P: AsRef<Path>>(
+    dirfd: i32,
+    filename: P,
+    flags: i32,
+    mode: mode_t,
+) -> Result<i32, Errno> {
+    let dirfd = dirfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let flags = flags as usize;
+    let mode = mode as usize;
+    syscall4(SYS_OPENAT_NOCANCEL, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
+}
+
 /// Get configurable pathname variables
 pub unsafe fn pathconf<P: AsRef<Path>>(path: P, name: i32) -> Result<isize, Errno> {
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let name = name as usize;
     syscall2(SYS_PATHCONF, path_ptr, name).map(|val| val as isize)
+}
+
+/// Freeze the specified process (provided in args->pid), or find and freeze a PID.
+///
+/// When a process is specified, this call is blocking, otherwise we wake up the
+/// freezer thread and do not block on a process being frozen.
+pub unsafe fn pid_hibernate(pid: pid_t) -> Result<(), Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_PID_HIBERNATE, pid).map(drop)
+}
+
+pub unsafe fn pid_resume(pid: pid_t) -> Result<(), Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_PID_RESUME, pid).map(drop)
+}
+
+pub unsafe fn pid_shutdown_sockets(pid: pid_t, level: i32) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let level = level as usize;
+    syscall2(SYS_PID_SHUTDOWN_SOCKETS, pid, level).map(drop)
+}
+
+pub unsafe fn pid_suspend(pid: pid_t) -> Result<(), Errno> {
+    let pid = pid as usize;
+    syscall1(SYS_PID_SUSPEND, pid).map(drop)
 }
 
 /// Create a pipe.
@@ -3008,6 +3074,30 @@ pub unsafe fn select(
     .map(|ret| ret as i32)
 }
 
+/// Sychronous I/O multiplexing.
+pub unsafe fn select_nocancel(
+    nfds: i32,
+    readfds: *mut u32,
+    writefds: *mut u32,
+    exceptfds: *mut u32,
+    timeout: &mut timeval_t,
+) -> Result<i32, Errno> {
+    let nfds = nfds as usize;
+    let readfds_ptr = readfds as usize;
+    let writefds_ptr = writefds as usize;
+    let exceptfds_ptr = exceptfds as usize;
+    let timeout_ptr = timeout as *mut timeval_t as usize;
+    syscall5(
+        SYS_SELECT_NOCANCEL,
+        nfds,
+        readfds_ptr,
+        writefds_ptr,
+        exceptfds_ptr,
+        timeout_ptr,
+    )
+    .map(|ret| ret as i32)
+}
+
 /// System V semaphore control operations
 pub unsafe fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let semid = semid as usize;
@@ -3041,6 +3131,58 @@ pub unsafe fn semsys(which: i32, a2: i32, a3: i32, a4: i32, a5: i32) -> Result<(
     syscall5(SYS_SEMSYS, which, a2, a3, a4, a5).map(drop)
 }
 
+/// Close an semaphore.
+pub unsafe fn sem_close(sem: &mut sem_t) -> Result<(), Errno> {
+    let sem_ptr = sem as *mut sem_t as usize;
+    syscall1(SYS_SEM_CLOSE, sem_ptr).map(drop)
+}
+
+/// Creates or opens the named semaphore specified by `name`.
+pub unsafe fn sem_open<P: AsRef<Path>>(
+    name: P,
+    flags: i32,
+    mode: mode_t,
+    value: u32,
+) -> Result<user_addr_t, Errno> {
+    let name = CString::new(name.as_ref());
+    let name_ptr = name.as_ptr() as usize;
+    let flags = flags as usize;
+    let mode = mode as usize;
+    let value = value as usize;
+    syscall4(SYS_SEM_OPEN, name_ptr, flags, mode, value).map(|ret| ret as user_addr_t)
+}
+
+/// Increment (unlock) a semaphore.
+pub unsafe fn sem_post(sem: &mut sem_t) -> Result<(), Errno> {
+    let sem_ptr = sem as *mut sem_t as usize;
+    syscall1(SYS_SEM_POST, sem_ptr).map(drop)
+}
+
+/// Decrement (lock) a semaphore.
+pub unsafe fn sem_trywait(sem: &mut sem_t) -> Result<(), Errno> {
+    let sem_ptr = sem as *mut sem_t as usize;
+    syscall1(SYS_SEM_TRYWAIT, sem_ptr).map(drop)
+}
+
+/// Remove an semaphore.
+pub unsafe fn sem_unlink<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
+    let name = CString::new(name.as_ref());
+    let name_ptr = name.as_ptr() as usize;
+    syscall1(SYS_SEM_UNLINK, name_ptr).map(drop)
+}
+
+/// Decrement (lock) a semaphore.
+pub unsafe fn sem_wait(sem: &mut sem_t) -> Result<(), Errno> {
+    let sem_ptr = sem as *mut sem_t as usize;
+    syscall1(SYS_SEM_WAIT, sem_ptr).map(drop)
+}
+
+/// Decrement (lock) a semaphore.
+pub unsafe fn sem_wait_nocancel(sem: &mut sem_t) -> Result<(), Errno> {
+    let sem_ptr = sem as *mut sem_t as usize;
+    syscall1(SYS_SEM_WAIT_NOCANCEL, sem_ptr).map(drop)
+}
+
 /// Transfer data between two file descriptors.
 pub unsafe fn sendfile(
     out_fd: i32,
@@ -3062,22 +3204,56 @@ pub unsafe fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t
     syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t)
 }
 
+/// Send a message on a socket. Allow sending ancillary data.
+pub unsafe fn sendmsg_nocancel(sockfd: i32, msg: caddr_t, flags: i32) -> Result<ssize_t, Errno> {
+    let sockfd = sockfd as usize;
+    let msg_ptr = msg as usize;
+    let flags = flags as usize;
+    syscall3(SYS_SENDMSG_NOCANCEL, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t)
+}
+
 /// Send a message on a socket.
 pub unsafe fn sendto(
     sockfd: i32,
     buf: &[u8],
-    len: size_t,
     flags: i32,
     dest_addr: &sockaddr_in_t,
     addrlen: socklen_t,
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let buf_ptr = buf.as_ptr() as usize;
+    let len = buf.len();
     let flags = flags as usize;
     let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
     let addrlen = addrlen as usize;
     syscall6(
         SYS_SENDTO,
+        sockfd,
+        buf_ptr,
+        len,
+        flags,
+        dest_addr_ptr,
+        addrlen,
+    )
+    .map(|ret| ret as ssize_t)
+}
+
+/// Send a message on a socket.
+pub unsafe fn sendto_nocancel(
+    sockfd: i32,
+    buf: &[u8],
+    flags: i32,
+    dest_addr: caddr_t,
+    addrlen: socklen_t,
+) -> Result<ssize_t, Errno> {
+    let sockfd = sockfd as usize;
+    let buf_ptr = buf.as_ptr() as usize;
+    let len = buf.len();
+    let flags = flags as usize;
+    let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
+    let addrlen = addrlen as usize;
+    syscall6(
+        SYS_SENDTO_NOCANCEL,
         sockfd,
         buf_ptr,
         len,
@@ -3355,6 +3531,20 @@ pub unsafe fn setsockopt(
     syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen).map(drop)
 }
 
+/// Set the per-thread override identity.
+pub unsafe fn settid(uid: uid_t, gid: gid_t) -> Result<(), Errno> {
+    let uid = uid as usize;
+    let gid = gid as usize;
+    syscall2(SYS_SETTID, uid, gid).map(drop)
+}
+
+/// Set the per-thread override identity.
+pub unsafe fn settid_with_pid(pid: pid_t, assume: i32) -> Result<(), Errno> {
+    let pid = pid as usize;
+    let assume = assume as usize;
+    syscall2(SYS_SETTID_WITH_PID, pid, assume).map(drop)
+}
+
 /// Set system time and timezone.
 ///
 /// ```
@@ -3535,6 +3725,15 @@ pub unsafe fn shmsys(which: i32, a2: i32, a3: i32, a4: i32) -> Result<(), Errno>
     let a3 = a3 as usize;
     let a4 = a4 as usize;
     syscall4(SYS_SHMSYS, which, a2, a3, a4).map(drop)
+}
+
+/// Opens (or optionally creates) a POSIX shared memory object named `path`.
+pub unsafe fn shm_open<P: AsRef<Path>>(name: P, flags: i32, mode: i32) -> Result<i32, Errno> {
+    let name = CString::new(name.as_ref());
+    let name_ptr = name.as_ptr() as usize;
+    let flags = flags as usize;
+    let mode = mode as usize;
+    syscall3(SYS_SHM_OPEN, name_ptr, flags, mode).map(|val| val as i32)
 }
 
 /// Removes a shared memory object named `path`.

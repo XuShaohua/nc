@@ -39,7 +39,7 @@ impl File {
 impl Drop for File {
     fn drop(&mut self) {
         if self.fd > -1 {
-            let _ = unsafe { crate::close(self.fd) };
+            let _ret = unsafe { crate::close(self.fd) };
             self.fd = -1;
         }
     }

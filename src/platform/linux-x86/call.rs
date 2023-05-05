@@ -3650,47 +3650,18 @@ pub unsafe fn mmap2(
 }
 
 /// Mount filesystem.
-///
-/// # Example
-///
-/// ```
-/// let target_dir = "/tmp/nc-mount";
-/// let ret = unsafe { nc::mkdirat(nc::AT_FDCWD, target_dir, 0o755) };
-/// assert!(ret.is_ok());
-///
-/// let src_dir = "/etc";
-/// let fs_type = "";
-/// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
-/// let data = 0;
-/// let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
-/// assert!(ret.is_err());
-/// assert_eq!(ret, Err(nc::EPERM));
-///
-/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR) };
-/// assert!(ret.is_ok());
-/// ```
 pub unsafe fn mount<P: AsRef<Path>>(
-    dev_name: P,
-    dir_name: P,
     fs_type: P,
-    flags: usize,
+    dir_name: P,
+    flags: i32,
     data: usize,
 ) -> Result<(), Errno> {
-    let dev_name = CString::new(dev_name.as_ref());
-    let dev_name_ptr = dev_name.as_ptr() as usize;
-    let dir_name = CString::new(dir_name.as_ref());
-    let dir_name_ptr = dir_name.as_ptr() as usize;
     let fs_type = CString::new(fs_type.as_ref());
     let fs_type_ptr = fs_type.as_ptr() as usize;
-    syscall5(
-        SYS_MOUNT,
-        dev_name_ptr,
-        dir_name_ptr,
-        fs_type_ptr,
-        flags,
-        data,
-    )
-    .map(drop)
+    let dir_name = CString::new(dir_name.as_ref());
+    let dir_name_ptr = dir_name.as_ptr() as usize;
+    let flags = flags as usize;
+    syscall4(SYS_MOUNT, fs_type_ptr, dir_name_ptr, flags, data).map(drop)
 }
 
 /// Move a mount from one place to another.
@@ -5058,6 +5029,14 @@ pub unsafe fn process_vm_writev(
     .map(|ret| ret as ssize_t)
 }
 
+/// Control process profiling
+pub unsafe fn profil(samples: &mut [u8], offset: vm_offset_t, scale: i32) -> Result<(), Errno> {
+    let samples_ptr = samples.as_mut_ptr() as usize;
+    let size = samples.len();
+    let scale = scale as usize;
+    syscall4(SYS_PROFIL, samples_ptr, size, offset, scale).map(drop)
+}
+
 /// Sychronous I/O multiplexing.
 ///
 /// Most architectures can't handle 7-argument syscalls. So we provide a
@@ -5730,7 +5709,7 @@ pub unsafe fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Re
 ///
 /// Never returns.
 pub unsafe fn rt_sigreturn() {
-    let _ = syscall0(SYS_RT_SIGRETURN);
+    let _ret = syscall0(SYS_RT_SIGRETURN);
 }
 
 /// Wait for a signal.
@@ -6234,13 +6213,13 @@ pub unsafe fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t
 pub unsafe fn sendto(
     sockfd: i32,
     buf: &[u8],
-    len: size_t,
     flags: i32,
     dest_addr: &sockaddr_in_t,
     addrlen: socklen_t,
 ) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let buf_ptr = buf.as_ptr() as usize;
+    let len = buf.len();
     let flags = flags as usize;
     let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
     let addrlen = addrlen as usize;
@@ -7866,7 +7845,7 @@ pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
 }
 
-/// Umount filesystem.
+/// Unmount filesystem.
 ///
 /// # Example
 ///
@@ -7895,7 +7874,7 @@ pub unsafe fn umount<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
     syscall1(SYS_UMOUNT, name_ptr).map(drop)
 }
 
-/// Umount filesystem.
+/// Unmount filesystem.
 ///
 /// # Example
 ///

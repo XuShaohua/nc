@@ -15,7 +15,7 @@ def check_system(expected_system):
     expected_lower = expected_system.lower()
     real_system = platform.system().lower()
     if real_system != expected_lower:
-        print(f"system not match, expected running on `{expected_lower}`")
+        print(f"system not match, expected `{expected_lower}`, real `{real_system}`")
         return False
     return True
 

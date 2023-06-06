@@ -9,7 +9,7 @@ use std::process::Command;
 
 fn build_syscalls() {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
-    let syscall_file = format!("src/syscalls/syscall_{target_arch}.c");
+    let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
     cc::Build::new().file(syscall_file).compile("syscall");
 }
 
@@ -24,7 +24,7 @@ fn get_page_size() {
     let dest_path = Path::new(&out_dir).join("page_size.rs");
     fs::write(
         dest_path,
-        format!("pub const PAGE_SIZE: usize = {page_size_val};"),
+        format!("pub const PAGE_SIZE: usize = {};", page_size_val),
     )
     .unwrap();
 }

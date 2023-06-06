@@ -5,11 +5,11 @@
 //! From `include/linux/quota.h`
 
 /// element used for user quotas
-pub const USRQUOTA: i32 = 0;
+const USRQUOTA: i32 = 0;
 /// element used for group quotas
-pub const GRPQUOTA: i32 = 1;
+const GRPQUOTA: i32 = 1;
 /// element used for project quotas
-pub const PRJQUOTA: i32 = 2;
+const PRJQUOTA: i32 = 2;
 
 /// Masks for quota types when used as a bitmask
 pub const QTYPE_MASK_USR: i32 = 1 << USRQUOTA;

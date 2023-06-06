@@ -5,11 +5,11 @@
 //! From `include/linux/timex.h`
 
 /// switch between adjtime/adjtimex modes
-pub const ADJ_ADJTIME: i32 = 0x8000;
+const ADJ_ADJTIME: i32 = 0x8000;
 /// old-fashioned adjtime
-pub const ADJ_OFFSET_SINGLESHOT: i32 = 0x0001;
+const ADJ_OFFSET_SINGLESHOT: i32 = 0x0001;
 /// read-only adjtime
-pub const ADJ_OFFSET_READONLY: i32 = 0x2000;
+const ADJ_OFFSET_READONLY: i32 = 0x2000;
 
 /// `SHIFT_PLL` is used as a dampening factor to define how much we
 /// adjust the frequency correction for a given offset in PLL mode.
@@ -42,11 +42,11 @@ pub const ADJ_OFFSET_READONLY: i32 = 0x2000;
 /// MAXTC establishes the maximum time constant of the PLL.
 
 /// PLL frequency factor (shift)
-pub const SHIFT_PLL: i32 = 2;
+const SHIFT_PLL: i32 = 2;
 /// FLL frequency factor (shift)
-pub const SHIFT_FLL: i32 = 2;
+const SHIFT_FLL: i32 = 2;
 /// maximum time constant (shift)
-pub const MAXTC: i32 = 10;
+const MAXTC: i32 = 10;
 
 /// `SHIFT_USEC` defines the scaling (shift) of the `time_freq` and
 /// `time_tolerance` variables, which represent the current frequency

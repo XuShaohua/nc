@@ -10,6 +10,7 @@ import sys
 
 DEFINES = {
     "aarch64": {
+        "ignored": False,
         "compiler": "aarch64-linux-gnu-gcc",
         "deb": ["linux-libc-dev-arm64-cross", "gcc-aarch64-linux-gnu"],
         "include": "/usr/aarch64-linux-gnu/include",
@@ -20,6 +21,7 @@ DEFINES = {
         "sysno": "/usr/aarch64-linux-gnu/include/asm/unistd.h",
     },
     "arm": {
+        "ignored": False,
         "compiler": "arm-linux-gnueabihf-gcc",
         "deb": ["linux-libc-dev-armhf-cross", "gcc-arm-linux-gnueabihf"],
         "include": "/usr/arm-linux-gnueabihf/include",
@@ -31,6 +33,7 @@ DEFINES = {
     },
     # debian sid does not contain gcc mips version in multiarch
     "mips": {
+        "ignored": False,
         "compiler": "gcc",
         "deb": ["linux-libc-dev-mips-cross", "gcc"],
         "include": "/usr/mips-linux-gnu/include",
@@ -42,6 +45,7 @@ DEFINES = {
         "defines": "-D_MIPS_SIM=_MIPS_SIM_ABI32",
     },
     "mips64": {
+        "ignored": False,
         "compiler": "mips64-linux-gnuabi64-gcc",
         "deb": ["linux-libc-dev-mips64-cross", "gcc-mips64-linux-gnuabi64"],
         "include": "/usr/mips64-linux-gnuabi64/include",
@@ -52,6 +56,7 @@ DEFINES = {
         "sysno": "/usr/mips64-linux-gnuabi64/include/asm/unistd.h",
     },
     "ppc64": {
+        "ignored": False,
         "compiler": "powerpc64-linux-gnu-gcc",
         "deb": ["linux-libc-dev-ppc64-cross", "gcc-powerpc64-linux-gnu"],
         "include": "/usr/powerpc64-linux-gnu/include",
@@ -62,6 +67,7 @@ DEFINES = {
         "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
     },
     "s390x": {
+        "ignored": False,
         "compiler": "s390x-linux-gnu-gcc",
         "deb": ["linux-libc-dev-s390x-cross", "gcc-s390x-linux-gnu"],
         "include": "/usr/s390x-linux-gnu/include",
@@ -72,6 +78,7 @@ DEFINES = {
         "sysno": "/usr/s390x-linux-gnu/include/asm/unistd.h",
     },
     "x86": {
+        "ignored": False,
         "compiler": "i686-linux-gnu-gcc",
         "deb": ["linux-libc-dev-i386-cross", "gcc-i686-linux-gnu"],
         "include": "/usr/i686-linux-gnu/include",
@@ -82,6 +89,7 @@ DEFINES = {
         "sysno": "/usr/i686-linux-gnu/include/asm/unistd.h",
     },
     "x86_64": {
+        "ignored": False,
         "compiler": "gcc",
         "deb": ["linux-libc-dev-amd64-cross", "gcc"],
         "include": "/usr/x86_64-linux-gnu/include",
@@ -92,6 +100,7 @@ DEFINES = {
         "sysno": "/usr/x86_64-linux-gnu/include/asm/unistd.h",
     },
     "loongarch64": {
+        "ignored": True,
         "compiler": "gcc",
         "deb": ["linux-libc-dev", "gcc"],
         "include": "/usr/include",
@@ -256,7 +265,7 @@ def get_defines(arch_name):
     return DEFINES[arch_name].get("defines", "")
 
 def get_arch_names():
-    return DEFINES.keys()
+    return [key for (key, value) in DEFINES.items() if not value["ignored"]]
 
 def rust_fmt(filename):
     subprocess.run(["rustfmt", filename])

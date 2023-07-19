@@ -354,3 +354,5 @@ pub const SYS_LANDLOCK_CREATE_RULESET: Sysno = 5444;
 pub const SYS_LANDLOCK_ADD_RULE: Sysno = 5445;
 pub const SYS_LANDLOCK_RESTRICT_SELF: Sysno = 5446;
 pub const SYS_PROCESS_MRELEASE: Sysno = 5448;
+pub const SYS_FUTEX_WAITV: Sysno = 5449;
+pub const SYS_SET_MEMPOLICY_HOME_NODE: Sysno = 5450;

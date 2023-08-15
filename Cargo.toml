@@ -15,7 +15,7 @@ keywords = ["syscall", "linux"]
 categories = ["os", "no-std", "external-ffi-bindings"]
 
 [build-dependencies]
-cc = "1.0.79"
+cc = "1.0.82"
 
 [features]
 default = ["std"]

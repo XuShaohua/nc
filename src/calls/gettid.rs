@@ -9,5 +9,5 @@
 #[must_use]
 pub unsafe fn gettid() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
+    syscall0(SYS_GETTID).unwrap_or_default() as pid_t
 }

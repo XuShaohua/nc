@@ -9,5 +9,5 @@
 #[must_use]
 pub unsafe fn getuid() -> uid_t {
     // This function is always successful.
-    syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
+    syscall0(SYS_GETUID).unwrap_or_default() as uid_t
 }

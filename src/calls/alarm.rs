@@ -26,5 +26,5 @@
 pub unsafe fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
     // This function is always successful.
-    syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32
+    syscall1(SYS_ALARM, seconds).unwrap_or_default() as u32
 }

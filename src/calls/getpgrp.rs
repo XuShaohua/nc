@@ -9,5 +9,5 @@
 #[must_use]
 pub unsafe fn getpgrp() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
+    syscall0(SYS_GETPGRP).unwrap_or_default() as pid_t
 }

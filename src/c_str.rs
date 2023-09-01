@@ -184,7 +184,7 @@ impl fmt::Debug for CString {
 impl fmt::Debug for CStr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "\"")?;
-        for byte in self.to_bytes().iter() {
+        for byte in self.to_bytes() {
             f.write_char(*byte as char)?;
         }
         write!(f, "\"")

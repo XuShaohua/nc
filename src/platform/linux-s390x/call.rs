@@ -140,7 +140,7 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 pub unsafe fn alarm(seconds: u32) -> u32 {
     let seconds = seconds as usize;
     // This function is always successful.
-    syscall1(SYS_ALARM, seconds).expect("alarm() failed") as u32
+    syscall1(SYS_ALARM, seconds).unwrap_or_default() as u32
 }
 
 /// Start, flush or tune buffer-dirty-flush daemon.
@@ -1883,7 +1883,7 @@ pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t,
 #[must_use]
 pub unsafe fn getegid() -> gid_t {
     // This function is always successful.
-    syscall0(SYS_GETEGID).expect("getegid() failed") as gid_t
+    syscall0(SYS_GETEGID).unwrap_or_default() as gid_t
 }
 
 /// Get the effective user ID of the calling process.
@@ -1897,7 +1897,7 @@ pub unsafe fn getegid() -> gid_t {
 #[must_use]
 pub unsafe fn geteuid() -> uid_t {
     // This function is always successful.
-    syscall0(SYS_GETEUID).expect("geteuid() failed") as uid_t
+    syscall0(SYS_GETEUID).unwrap_or_default() as uid_t
 }
 
 /// Get the real group ID of the calling process.
@@ -1911,7 +1911,7 @@ pub unsafe fn geteuid() -> uid_t {
 #[must_use]
 pub unsafe fn getgid() -> gid_t {
     // This function is always successful.
-    syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
+    syscall0(SYS_GETGID).unwrap_or_default() as gid_t
 }
 
 /// Get list of supplementary group Ids.
@@ -2027,7 +2027,7 @@ pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 #[must_use]
 pub unsafe fn getpgrp() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETPGRP).expect("getpgrp() failed") as pid_t
+    syscall0(SYS_GETPGRP).unwrap_or_default() as pid_t
 }
 
 /// Get the process ID (PID) of the calling process.
@@ -2041,7 +2041,7 @@ pub unsafe fn getpgrp() -> pid_t {
 #[must_use]
 pub unsafe fn getpid() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETPID).expect("getpid() failed") as pid_t
+    syscall0(SYS_GETPID).unwrap_or_default() as pid_t
 }
 
 /// Get the process ID of the parent of the calling process.
@@ -2055,7 +2055,7 @@ pub unsafe fn getpid() -> pid_t {
 #[must_use]
 pub unsafe fn getppid() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETPPID).expect("getppid() failed") as pid_t
+    syscall0(SYS_GETPPID).unwrap_or_default() as pid_t
 }
 
 /// Get program scheduling priority.
@@ -2185,7 +2185,7 @@ pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 pub unsafe fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     // This function is always successful.
-    syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
+    syscall1(SYS_GETSID, pid).unwrap_or_default() as pid_t
 }
 
 /// Get current address to which the socket `sockfd` is bound.
@@ -2235,7 +2235,7 @@ pub unsafe fn getsockopt(
 #[must_use]
 pub unsafe fn gettid() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETTID).expect("getpid() failed") as pid_t
+    syscall0(SYS_GETTID).unwrap_or_default() as pid_t
 }
 
 /// Get time.
@@ -2266,7 +2266,7 @@ pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Resu
 #[must_use]
 pub unsafe fn getuid() -> uid_t {
     // This function is always successful.
-    syscall0(SYS_GETUID).expect("getuid() failed") as uid_t
+    syscall0(SYS_GETUID).unwrap_or_default() as uid_t
 }
 
 /// Get extended attribute value.

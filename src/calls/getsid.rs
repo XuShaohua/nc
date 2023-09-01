@@ -11,5 +11,5 @@
 pub unsafe fn getsid(pid: pid_t) -> pid_t {
     let pid = pid as usize;
     // This function is always successful.
-    syscall1(SYS_GETSID, pid).expect("getsid() failed") as pid_t
+    syscall1(SYS_GETSID, pid).unwrap_or_default() as pid_t
 }

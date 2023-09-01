@@ -9,5 +9,5 @@
 #[must_use]
 pub unsafe fn getgid() -> gid_t {
     // This function is always successful.
-    syscall0(SYS_GETGID).expect("getgid() failed") as gid_t
+    syscall0(SYS_GETGID).unwrap_or_default() as gid_t
 }

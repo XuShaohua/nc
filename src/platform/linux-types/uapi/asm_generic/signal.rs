@@ -52,7 +52,9 @@ pub const SIGRTMIN: i32 = 32;
 #[allow(clippy::cast_possible_wrap)]
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
+#[cfg(not(target_arch = "aarch64"))]
 pub const MINSIGSTKSZ: usize = 2048;
+#[cfg(not(target_arch = "aarch64"))]
 pub const SIGSTKSZ: usize = 8192;
 
 #[repr(C)]

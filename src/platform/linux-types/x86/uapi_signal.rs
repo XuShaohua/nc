@@ -6,11 +6,7 @@
 
 use core::fmt;
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
-
-pub const NSIG: usize = 32;
-
-pub type sigset_t = usize;
+use crate::{sighandler_t, siginfo_t, sigrestore_t, sigset_t, size_t, SIG_DFL, _NSIG};
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
@@ -86,7 +82,7 @@ impl fmt::Debug for sigaction_u_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaction_t {
     /// Actually its type is `sigaction_u_t`.
     /// Keep synched with rust-lang/libc.
@@ -97,7 +93,7 @@ pub struct sigaction_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

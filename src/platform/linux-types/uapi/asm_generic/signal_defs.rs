@@ -24,8 +24,11 @@
 ///
 /// - `SA_ONESHOT` and `SA_NOMASK` are the historical Linux names for the Single
 /// Unix names RESETHAND and NODEFER respectively.
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_NOCLDSTOP: usize = 0x0000_0001;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_NOCLDWAIT: usize = 0x0000_0002;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_SIGINFO: usize = 0x0000_0004;
 /* 0x00000008 used on alpha, mips, parisc */
 /* 0x00000010 used on alpha, parisc */
@@ -41,19 +44,28 @@ pub const SA_EXPOSE_TAGBITS: usize = 0x0000_0800;
 /* 0x02000000 used on x86 */
 /// New architectures should not define the obsolete
 /// `SA_RESTORER` 0x04000000
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_ONSTACK: usize = 0x0800_0000;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_RESTART: usize = 0x1000_0000;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_NODEFER: usize = 0x4000_0000;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_RESETHAND: usize = 0x8000_0000;
 
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_NOMASK: usize = SA_NODEFER;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_ONESHOT: usize = SA_RESETHAND;
 
 /// for blocking signals
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SIG_BLOCK: i32 = 0;
 /// for unblocking signals
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SIG_UNBLOCK: i32 = 1;
 /// for setting the signal mask
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SIG_SETMASK: i32 = 2;
 
 pub type signalfn_t = fn(i32);

@@ -4,11 +4,7 @@
 
 //! From `arch/x86/include/uapi/asm/signal.h`
 
-use crate::{sighandler_t, sigrestore_t, size_t, _NSIG};
-
-pub const NSIG: usize = 32;
-
-pub type sigset_t = usize;
+use crate::{sighandler_t, sigrestore_t, sigset_t, size_t, _NSIG};
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;

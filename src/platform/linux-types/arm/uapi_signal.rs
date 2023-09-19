@@ -6,11 +6,7 @@
 
 use core::fmt;
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, size_t, SIG_DFL, _NSIG};
-
-/// Here we must cater to libcs that poke about in kernel headers.
-pub const NSIG: usize = 32;
-pub type sigset_t = usize;
+use crate::{sighandler_t, siginfo_t, sigrestore_t, sigset_t, size_t, SIG_DFL, _NSIG};
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;

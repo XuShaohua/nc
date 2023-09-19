@@ -66,6 +66,14 @@ pub struct sigset_t {
 /// not actually used, but required for linux/syscalls.h
 pub type old_sigset_t = usize;
 
+impl From<old_sigset_t> for sigset_t {
+    fn from(val: old_sigset_t) -> Self {
+        let mut s = Self::default();
+        s.sig[0] = val;
+        s
+    }
+}
+
 // No SA_RESTORER
 #[repr(C)]
 #[derive(Debug, Default, Clone)]

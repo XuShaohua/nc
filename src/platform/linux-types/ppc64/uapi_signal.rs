@@ -19,6 +19,14 @@ pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS],
 }
 
+impl From<old_sigset_t> for sigset_t {
+    fn from(val: old_sigset_t) -> Self {
+        let mut s = Self::default();
+        s.sig[0] = val;
+        s
+    }
+}
+
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
 pub const SIGQUIT: i32 = 3;

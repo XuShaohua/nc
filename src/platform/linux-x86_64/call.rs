@@ -5508,7 +5508,7 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
 ///
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_sigterm as nc::sighandler_t,
-///     sa_mask: nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK,
+///     sa_mask: (nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK).into(),
 ///     ..nc::sigaction_t::default()
 /// };
 /// let mut old_sa = nc::sigaction_t::default();

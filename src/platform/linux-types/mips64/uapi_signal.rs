@@ -21,6 +21,14 @@ pub struct sigset_t {
 // at least 32 bits
 pub type old_sigset_t = usize;
 
+impl From<old_sigset_t> for sigset_t {
+    fn from(val: old_sigset_t) -> Self {
+        let mut s = Self::default();
+        s.sig[0] = val;
+        s
+    }
+}
+
 /// Hangup (POSIX).
 pub const SIGHUP: i32 = 1;
 /// Interrupt (ANSI).

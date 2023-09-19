@@ -20,8 +20,14 @@ pub struct sigset_t {
     pub sig: [usize; _NSIG_WORDS],
 }
 
+impl From<old_sigset_t> for sigset_t {
+    fn from(val: old_sigset_t) -> Self {
+        let mut s = Self::default();
+        s.sig[0] = val;
+        s
+    }
+}
+
 /// non-uapi in-kernel `SA_FLAGS` for those indicates ABI for a signal frame.
 pub const SA_IA32_ABI: u32 = 0x0200_0000;
 pub const SA_X32_ABI: u32 = 0x0100_0000;
-
-pub type compat_sigset_t = sigset_t;

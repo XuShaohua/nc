@@ -1,7 +1,7 @@
 
 cross-all: cross-aarch64 cross-arm cross-i686 \
 	cross-mips cross-mips64 cross-mips64el cross-mipsel \
-	cross-powerpc64le cross-x86_64
+	cross-powerpc64le cross-s390x cross-x86_64
 
 define run-cross
 	cross build --target $(1)

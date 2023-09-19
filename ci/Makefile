@@ -48,9 +48,6 @@ cross-mipsel:
 	$(call run-cross, mipsel-unknown-linux-gnu)
 	$(call run-cross, mipsel-unknown-linux-musl)
 
-cross-powerpc:
-	$(call run-cross, powerpc-unknown-linux-gnu)
-
 cross-powerpc64:
 	$(call run-cross, powerpc64-unknown-linux-gnu)
 
@@ -71,6 +68,5 @@ cross-thumbv7neon:
 
 cross-x86_64:
 	$(call run-cross, x86_64-unknown-linux-gnu)
-	$(call run-cross, x86_64-unknown-linux-gnux32)
 	$(call run-cross, x86_64-unknown-linux-musl)
 

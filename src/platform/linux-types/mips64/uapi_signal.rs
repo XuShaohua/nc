@@ -92,23 +92,21 @@ pub const SIGXFSZ: i32 = 31;
 pub const SIGRTMIN: i32 = 32;
 pub const SIGRTMAX: i32 = _NSIG as i32;
 
-/*
- * SA_RESTORER used to be defined as 0x04000000 but only the O32 ABI ever
- * supported its use and no libc was using it, so the entire sa-restorer
- * functionality was removed with lmo commit 39bffc12c3580ab for 2.5.48
- * retaining only the SA_RESTORER definition as a reminder to avoid
- * accidental reuse of the mask bit.
- */
-pub const SA_ONSTACK: usize = 0x08000000;
-pub const SA_RESETHAND: usize = 0x80000000;
-pub const SA_RESTART: usize = 0x10000000;
-pub const SA_SIGINFO: usize = 0x00000008;
-pub const SA_NODEFER: usize = 0x40000000;
-pub const SA_NOCLDWAIT: usize = 0x00010000;
-pub const SA_NOCLDSTOP: usize = 0x00000001;
+/// SA_RESTORER used to be defined as 0x04000000 but only the O32 ABI ever
+/// supported its use and no libc was using it, so the entire sa-restorer
+/// functionality was removed with lmo commit 39bffc12c3580ab for 2.5.48
+/// retaining only the SA_RESTORER definition as a reminder to avoid
+/// accidental reuse of the mask bit.
+pub const SA_ONSTACK: u32 = 0x0800_0000;
+pub const SA_RESETHAND: u32 = 0x8000_0000;
+pub const SA_RESTART: u32 = 0x1000_0000;
+pub const SA_SIGINFO: u32 = 0x0000_0008;
+pub const SA_NODEFER: u32 = 0x4000_0000;
+pub const SA_NOCLDWAIT: u32 = 0x0001_0000;
+pub const SA_NOCLDSTOP: u32 = 0x0000_0001;
 
-pub const SA_NOMASK: usize = SA_NODEFER;
-pub const SA_ONESHOT: usize = SA_RESETHAND;
+pub const SA_NOMASK: u32 = SA_NODEFER;
+pub const SA_ONESHOT: u32 = SA_RESETHAND;
 
 pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;
@@ -121,7 +119,7 @@ pub const SIG_UNBLOCK: i32 = 2;
 pub const SIG_SETMASK: i32 = 3;
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaction_t {
     pub sa_flags: u32,
     pub sa_handler: sighandler_t,
@@ -130,7 +128,7 @@ pub struct sigaction_t {
 
 /// IRIX compatible stack_t
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_size: size_t,

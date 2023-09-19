@@ -393,6 +393,7 @@ pub const R_PPC64_NUM: i32 = 253;
 
 /// There's actually a third entry here, but it's unused
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct ppc64_opd_entry_t {
 	pub funcaddr: usize,
 	pub r2: usize,

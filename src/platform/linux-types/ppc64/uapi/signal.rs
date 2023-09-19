@@ -73,7 +73,7 @@ pub const MINSIGSTKSZ: usize = 2048;
 pub const SIGSTKSZ: usize = 8192;
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct old_sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_mask: old_sigset_t,
@@ -82,7 +82,7 @@ pub struct old_sigaction_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
@@ -93,7 +93,7 @@ pub struct sigaction_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

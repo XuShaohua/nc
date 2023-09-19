@@ -9,7 +9,7 @@ use crate::{gid_t, ino_t, mode_t, off_t, uid_t};
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct stat_t {
     pub st_dev: usize,
     pub st_ino: ino_t,
@@ -34,6 +34,7 @@ pub struct stat_t {
 
 /// This matches struct stat64 in glibc2.1. Only used for 32 bit.
 #[repr(C)]
+#[derive(Debug, Default, Clone)]
 pub struct stat64_t {
     /// Device.  
     pub st_dev: u64,

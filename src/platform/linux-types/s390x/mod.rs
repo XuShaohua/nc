@@ -4,8 +4,10 @@
 
 mod signal;
 mod stat;
+mod uapi_sigcontext;
 mod uapi_signal;
 
 pub use signal::*;
 pub use stat::*;
+pub use uapi_sigcontext::*;
 pub use uapi_signal::*;

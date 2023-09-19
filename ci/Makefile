@@ -33,19 +33,20 @@ cross-i686:
 	$(call run-cross, i686-unknown-linux-musl)
 
 cross-mips:
-	$(call run-cross, mips-unknown-linux-gnu)
+# See: https://github.com/rust-lang/rust/issues/115218
+#$(call run-cross, mips-unknown-linux-gnu)
 	$(call run-cross, mips-unknown-linux-musl)
 
 cross-mips64:
-	$(call run-cross, mips64-unknown-linux-gnuabi64)
+#$(call run-cross, mips64-unknown-linux-gnuabi64)
 	$(call run-cross, mips64-unknown-linux-muslabi64)
 
 cross-mips64el:
-	$(call run-cross, mips64el-unknown-linux-gnuabi64)
+#$(call run-cross, mips64el-unknown-linux-gnuabi64)
 	$(call run-cross, mips64el-unknown-linux-muslabi64)
 
 cross-mipsel:
-	$(call run-cross, mipsel-unknown-linux-gnu)
+#$(call run-cross, mipsel-unknown-linux-gnu)
 	$(call run-cross, mipsel-unknown-linux-musl)
 
 cross-powerpc64:

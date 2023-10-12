@@ -153,7 +153,8 @@ pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
     #[cfg(any(
         target_arch = "aarch64",
         target_arch = "arm",
-        target_arch = "loongarch64"
+        target_arch = "loongarch64",
+        target_arch = "riscv64",
     ))]
     let remaining = {
         let mut it = crate::itimerval_t::default();
@@ -166,7 +167,8 @@ pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
     #[cfg(not(any(
         target_arch = "aarch64",
         target_arch = "arm",
-        target_arch = "loongarch64"
+        target_arch = "loongarch64",
+        target_arch = "riscv64",
     )))]
     let remaining = unsafe { crate::alarm(seconds) };
 

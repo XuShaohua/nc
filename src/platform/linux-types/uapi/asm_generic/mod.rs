@@ -2,14 +2,22 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
+#[cfg(any(
+    target_arch = "aarch64",
+    target_arch = "loongarch64",
+    target_arch = "riscv64"
+))]
 mod signal;
-#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
+#[cfg(any(
+    target_arch = "aarch64",
+    target_arch = "loongarch64",
+    target_arch = "riscv64"
+))]
 pub use signal::*;
 
-#[cfg(test_arch = "loongarch64")]
+#[cfg(any(test_arch = "loongarch64", target_arch = "riscv64"))]
 mod stat;
-#[cfg(test_arch = "loongarch64")]
+#[cfg(any(test_arch = "loongarch64", target_arch = "riscv64"))]
 pub use stat::*;
 
 mod fcntl;

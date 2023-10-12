@@ -2,6 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-mod uapi;
+mod fcntl;
+mod posix_types;
+mod ptrace;
+mod stat;
+mod uapi_signal;
 
-pub use uapi::*;
+pub use fcntl::*;
+pub use posix_types::*;
+pub use ptrace::*;
+pub use stat::*;
+pub use uapi_signal::*;

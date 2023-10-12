@@ -93,17 +93,18 @@
 //!
 //! ## Supported Operating Systems and Architectures
 //! - linux
-//!   - x86
-//!   - x86-64
-//!   - arm
 //!   - aarch64
+//!   - arm
 //!   - loongarch64
 //!   - mips
-//!   - mipsel
 //!   - mips64
 //!   - mips64el
+//!   - mipsel
 //!   - powerpc64
+//!   - riscv64
 //!   - s390x
+//!   - x86
+//!   - x86-64
 //! - android
 //!   - aarch64
 //! - freebsd
@@ -185,6 +186,10 @@ mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "powerpc64"))]
 #[path = "platform/linux-ppc64/mod.rs"]
+mod platform;
+
+#[cfg(all(target_os = "linux", target_arch = "riscv64"))]
+#[path = "platform/linux-riscv64/mod.rs"]
 mod platform;
 
 #[cfg(all(target_os = "linux", target_arch = "s390x"))]

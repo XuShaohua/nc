@@ -18,6 +18,7 @@ SUPPORTED_ARCHES = {
         "mips",
         "mips64",
         "ppc64",
+        "riscv64",
         "s390x",
         "x86",
         "x86_64",

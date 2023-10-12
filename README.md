@@ -97,17 +97,18 @@ As `llvm_asm!` feature is unavailable in stable version.
 
 ## Supported Operating Systems and Architectures
 - linux
-  - x86
-  - x86-64
-  - arm
   - aarch64
+  - arm
   - loongarch64
   - mips
-  - mipsel
   - mips64
   - mips64el
+  - mipsel
   - powerpc64
+  - riscv64
   - s390x
+  - x86
+  - x86-64
 - android
   - aarch64
 - freebsd

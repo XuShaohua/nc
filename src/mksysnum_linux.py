@@ -66,6 +66,17 @@ DEFINES = {
         ],
         "sysno": "/usr/powerpc64-linux-gnu/include/asm/unistd.h",
     },
+    "riscv64": {
+        "ignored": False,
+        "compiler": "riscv64-linux-gnu-gcc",
+        "deb": ["linux-libc-dev-riscv64-cross", "gcc-riscv64-linux-gnu"],
+        "include": "/usr/riscv64-linux-gnu/include",
+        "errno": [
+            "/usr/riscv64-linux-gnu/include/asm-generic/errno-base.h",
+            "/usr/riscv64-linux-gnu/include/asm-generic/errno.h",
+        ],
+        "sysno": "/usr/riscv64-linux-gnu/include/asm/unistd.h",
+    },
     "s390x": {
         "ignored": False,
         "compiler": "s390x-linux-gnu-gcc",

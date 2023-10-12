@@ -6,10 +6,18 @@ fn main() {
     run_main();
 }
 
-#[cfg(any(target_arch = "aarch64", target_arch = "loongarch64"))]
+#[cfg(any(
+    target_arch = "aarch64",
+    target_arch = "loongarch64",
+    target_arch = "riscv64"
+))]
 fn run_main() {}
 
-#[cfg(not(any(target_arch = "aarch64", target_arch = "loongarch64")))]
+#[cfg(not(any(
+    target_arch = "aarch64",
+    target_arch = "loongarch64",
+    target_arch = "riscv64"
+)))]
 fn run_main() {
     const STDOUT_FD: i32 = 1;
 

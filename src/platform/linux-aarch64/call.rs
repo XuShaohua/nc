@@ -5278,7 +5278,7 @@ pub unsafe fn semget(key: key_t, nsems: i32, semflg: i32) -> Result<i32, Errno> 
 /// System V semphore operations.
 pub unsafe fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
     let semid = semid as usize;
-    let sops_ptr = sops.as_ptr() as usize;
+    let sops_ptr = sops.as_mut_ptr() as usize;
     let nops = sops.len();
     syscall3(SYS_SEMOP, semid, sops_ptr, nops).map(drop)
 }
@@ -5290,7 +5290,7 @@ pub unsafe fn semtimedop(
     timeout: &timespec_t,
 ) -> Result<(), Errno> {
     let semid = semid as usize;
-    let sops_ptr = sops.as_ptr() as usize;
+    let sops_ptr = sops.as_mut_ptr() as usize;
     let nops = sops.len();
     let timeout_ptr = timeout as *const timespec_t as usize;
     syscall4(SYS_SEMTIMEDOP, semid, sops_ptr, nops, timeout_ptr).map(drop)

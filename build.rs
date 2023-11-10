@@ -7,10 +7,26 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+#[cfg(not(any(
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "arm",
+    target_arch = "aarch64"
+)))]
 fn build_syscalls() {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
     let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
     cc::Build::new().file(syscall_file).compile("syscall");
+}
+
+#[cfg(any(
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "arm",
+    target_arch = "aarch64"
+))]
+fn build_syscalls() {
+    // Do nothing.
 }
 
 fn get_page_size() {
@@ -31,7 +47,19 @@ fn get_page_size() {
 
 fn main() {
     let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_string());
-    if rustc_toolchain.starts_with("nightly") {
+    let has_asm = if rustc_toolchain.starts_with("nightly") {
+        true
+    } else if cfg!(any(
+        target_arch = "aarch64",
+        target_arch = "arm",
+        target_arch = "x86_64",
+        target_arch = "x86"
+    )) {
+        true
+    } else {
+        false
+    };
+    if has_asm {
         println!("cargo:rustc-cfg=has_asm");
     } else {
         build_syscalls();

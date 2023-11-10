@@ -47,18 +47,13 @@ fn get_page_size() {
 
 fn main() {
     let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_string());
-    let has_asm = if rustc_toolchain.starts_with("nightly") {
-        true
-    } else if cfg!(any(
-        target_arch = "aarch64",
-        target_arch = "arm",
-        target_arch = "x86_64",
-        target_arch = "x86"
-    )) {
-        true
-    } else {
-        false
-    };
+    let has_asm = rustc_toolchain.starts_with("nightly")
+        || cfg!(any(
+            target_arch = "aarch64",
+            target_arch = "arm",
+            target_arch = "x86_64",
+            target_arch = "x86"
+        ));
     if has_asm {
         println!("cargo:rustc-cfg=has_asm");
     } else {

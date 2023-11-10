@@ -11,51 +11,43 @@ pub type c_char = u8;
 #[cfg(target_arch = "aarch64")]
 #[path = "aarch64/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "arm")]
 #[path = "arm/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "loongarch64")]
 #[path = "loongarch64/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "mips")]
 #[path = "mips/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "mips64")]
 #[path = "mips64/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "powerpc64")]
 #[path = "ppc64/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "riscv64")]
 #[path = "riscv64/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "s390x")]
 #[path = "s390x/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "x86")]
 #[path = "x86/mod.rs"]
 mod arch;
-pub use arch::*;
 
 #[cfg(target_arch = "x86_64")]
 #[path = "x86_64/mod.rs"]
 mod arch;
+
 pub use arch::*;
 
 mod asm_generic;

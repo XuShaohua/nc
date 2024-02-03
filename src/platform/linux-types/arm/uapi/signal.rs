@@ -88,7 +88,7 @@ impl fmt::Debug for sigaction_u_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_mask: sigset_t,
@@ -97,7 +97,7 @@ pub struct sigaction_t {
 }
 
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
     pub ss_sp: usize,
     pub ss_flags: i32,

@@ -1,6 +1,6 @@
 /// Move a mount from one place to another.
 ///
-/// In combination with fsopen()/fsmount() this is used to install a new mount
+/// In combination with `fsopen()/fsmount()` this is used to install a new mount
 /// and in combination with `open_tree(OPEN_TREE_CLONE [| AT_RECURSIVE])`
 /// it can be used to copy a mount subtree.
 ///

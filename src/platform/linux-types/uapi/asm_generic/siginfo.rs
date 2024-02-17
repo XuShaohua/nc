@@ -41,7 +41,7 @@ pub type arch_si_band_t = isize;
 
 pub type arch_si_clock_t = clock_t;
 
-/// kill()
+/// `kill()`
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct si_kill_t {

@@ -66,8 +66,8 @@ pub const CLONE_CLEAR_SIGHAND: u64 = 0x0001_0000_0000;
 /// Clone into a specific cgroup given the right permissions.
 pub const CLONE_INTO_CGROUP: u64 = 0x0002_0000_0000;
 
-/// cloning flags intersect with CSIGNAL so can be used with unshare and clone3()
-/// syscalls only:
+/// cloning flags intersect with CSIGNAL so can be used with unshare and
+/// `clone3()` syscalls only:
 /// New time namespace
 pub const CLONE_NEWTIME: i32 = 0x0000_0080;
 

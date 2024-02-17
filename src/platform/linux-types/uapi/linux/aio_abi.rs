@@ -24,7 +24,7 @@ pub const IOCB_CMD_PWRITEV: i32 = 8;
 pub const IOCB_FLAG_RESFD: i32 = 1;
 pub const IOCB_FLAG_IOPRIO: i32 = 1 << 1;
 
-/// read() from `/dev/aio` returns these structures.
+/// `read()` from `/dev/aio` returns these structures.
 #[repr(C)]
 #[derive(Debug, Default)]
 pub struct io_event_t {

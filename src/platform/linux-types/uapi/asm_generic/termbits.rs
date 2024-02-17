@@ -238,13 +238,13 @@ pub const PENDIN: i32 = 0o040_000;
 pub const IEXTEN: i32 = 0o100_000;
 pub const EXTPROC: i32 = 0o200_000;
 
-/// tcflow() and TCXONC use these
+/// `tcflow()` and TCXONC use these
 pub const TCOOFF: i32 = 0;
 pub const TCOON: i32 = 1;
 pub const TCIOFF: i32 = 2;
 pub const TCION: i32 = 3;
 
-/// tcflush() and TCFLSH use these
+/// `tcflush()` and TCFLSH use these
 pub const TCIFLUSH: i32 = 0;
 pub const TCOFLUSH: i32 = 1;
 pub const TCIOFLUSH: i32 = 2;

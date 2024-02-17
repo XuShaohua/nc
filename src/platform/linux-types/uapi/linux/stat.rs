@@ -57,8 +57,7 @@ pub struct statx_timestamp_t {
     reserved: i32,
 }
 
-/// Structures for the extended file attribute retrieval system call
-/// (statx()).
+/// Structures for the extended file attribute retrieval system call (`statx()`).
 ///
 /// The caller passes a mask of what they're specifically interested in as a
 /// parameter to `statx()`.  What `statx()` actually got will be indicated in
@@ -90,7 +89,7 @@ pub struct statx_timestamp_t {
 /// - otherwise the field and the bit will be cleared before returning.
 ///
 /// Items in `STATX_BASIC_STATS` may be marked unavailable on return, but they
-/// will have values installed for compatibility purposes so that stat() and
+/// will have values installed for compatibility purposes so that `stat()` and
 /// co. can be emulated in userspace.
 #[repr(C)]
 #[derive(Debug, Default, Clone)]

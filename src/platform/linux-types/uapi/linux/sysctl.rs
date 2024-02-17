@@ -205,7 +205,7 @@ pub const KERN_MAX_LOCK_DEPTH: i32 = 74;
 pub const KERN_NMI_WATCHDOG: i32 = 75;
 /// int: whether we will panic on an unrecovered
 pub const KERN_PANIC_ON_NMI: i32 = 76;
-/// int: call panic() in WARN() functions
+/// int: call `panic()` in `WARN()` functions
 pub const KERN_PANIC_ON_WARN: i32 = 77;
 /// ulong: bitmask to print system info on panic
 pub const KERN_PANIC_PRINT: i32 = 78;
@@ -214,7 +214,7 @@ pub const KERN_PANIC_PRINT: i32 = 78;
 ///
 /// was: struct: Set vm swapping control
 pub const VM_UNUSED1: i32 = 1;
-/// was; int: Linear or sqrt() swapout for hogs
+/// was; int: Linear or `sqrt()` swapout for hogs
 pub const VM_UNUSED2: i32 = 2;
 /// was: struct: Set free page thresholds
 pub const VM_UNUSED3: i32 = 3;

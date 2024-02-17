@@ -216,7 +216,7 @@ pub const CAP_SYS_PACCT: i32 = 20;
 /// Allow setting zone reclaim policy
 pub const CAP_SYS_ADMIN: i32 = 21;
 
-/// Allow use of reboot()
+/// Allow use of `reboot()`
 pub const CAP_SYS_BOOT: i32 = 22;
 
 /// Allow raising priority and setting priority on other (different UID) processes.

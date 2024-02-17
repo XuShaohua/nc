@@ -57,7 +57,7 @@ pub const KTIME_MAX: i64 = (!(1_u64 << 63)) as i64;
 /// ```
 pub const KTIME_SEC_MAX: i64 = KTIME_MAX / NSEC_PER_SEC;
 
-/// Limits for settimeofday():
+/// Limits for `settimeofday()`:
 ///
 /// To prevent setting the time close to the wraparound point time setting
 /// is limited so a reasonable uptime can be accomodated. Uptime of 30 years

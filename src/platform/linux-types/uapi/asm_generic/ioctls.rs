@@ -53,7 +53,7 @@ pub const FIONBIO: i32 = 0x5421;
 pub const TIOCNOTTY: i32 = 0x5422;
 pub const TIOCSETD: i32 = 0x5423;
 pub const TIOCGETD: i32 = 0x5424;
-/// Needed for POSIX tcsendbreak()
+/// Needed for POSIX `tcsendbreak()`
 pub const TCSBRKP: i32 = 0x5425;
 /// BSD compatibility
 pub const TIOCSBRK: i32 = 0x5427;

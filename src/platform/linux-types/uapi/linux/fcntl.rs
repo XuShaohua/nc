@@ -93,9 +93,9 @@ pub const AT_NO_AUTOMOUNT: i32 = 0x800;
 /// Allow empty relative pathname
 pub const AT_EMPTY_PATH: i32 = 0x1000;
 
-/// Type of synchronisation required from statx()
+/// Type of synchronisation required from `statx()`
 pub const AT_STATX_SYNC_TYPE: i32 = 0x6000;
-/// - Do whatever stat() does
+/// - Do whatever `stat()` does
 pub const AT_STATX_SYNC_AS_STAT: i32 = 0x0000;
 /// - Force the attributes to be sync'd with the server
 pub const AT_STATX_FORCE_SYNC: i32 = 0x2000;

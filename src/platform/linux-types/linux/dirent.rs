@@ -6,6 +6,7 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+#[cfg(not(feature = "std"))]
 use alloc::string::String;
 use core::fmt;
 

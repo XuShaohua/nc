@@ -5,7 +5,9 @@
 extern crate alloc;
 extern crate core;
 
+#[cfg(not(feature = "std"))]
 use alloc::boxed::Box;
+#[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 use core::fmt;
 use core::fmt::Write;

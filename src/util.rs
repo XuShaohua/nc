@@ -6,7 +6,9 @@
 #![allow(clippy::cast_sign_loss)]
 
 use alloc::collections::BTreeSet;
+#[cfg(not(feature = "std"))]
 use alloc::string::{String, ToString};
+#[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 
 use crate::Errno;

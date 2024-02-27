@@ -26,7 +26,8 @@ fn get_page_size() {
 fn main() {
     let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_owned());
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_else(|_| "x86_64".to_owned());
-    if rustc_toolchain.starts_with("nightly")
+    // esi and ebp registers are not allowed in inline asm in x86/i686.
+    if (rustc_toolchain.starts_with("nightly") && target_arch != "x86")
         || target_arch == "aarch64"
         || target_arch == "arm"
         || target_arch == "x86_64"

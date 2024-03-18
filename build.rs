@@ -35,7 +35,6 @@ fn main() {
         println!("cargo:rustc-cfg=has_asm");
     } else {
         let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
-        eprintln!("syscall file: {syscall_file}");
         cc::Build::new().file(syscall_file).compile("syscall");
     }
     get_page_size();

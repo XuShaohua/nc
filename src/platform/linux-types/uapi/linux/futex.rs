@@ -57,7 +57,7 @@ pub struct futex_waitv_t {
     /// Flags for this waiter.
     pub flags: u32,
     /// Reserved member to preserve data alignment. Should be 0.
-    pub __reserved: u32,
+    __reserved: u32,
 }
 
 /// Support for robust futexes: the kernel cleans up held futexes at thread exit time.

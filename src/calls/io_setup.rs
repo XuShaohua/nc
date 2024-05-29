@@ -10,9 +10,9 @@
 /// # Errors
 ///
 /// - May fail with `-EINVAL` if `*ctxp` is not initialized,
-/// if the specified `nr_events` exceeds internal limits.
+///   if the specified `nr_events` exceeds internal limits.
 /// - May fail with `-EAGAIN` if the specified `nr_events` exceeds the user's limit
-/// of available events.
+///   of available events.
 /// - May fail with `-ENOMEM` if insufficient kernel resources are available.
 /// - May fail with `-EFAULT` if an invalid pointer is passed for ctxp.
 /// - Will fail with `-ENOSYS` if not implemented.

@@ -6,11 +6,12 @@
 /// # Errors
 ///
 /// - May fail with `-EINVAL` if `ctx_id` is invalid, if `min_nr` is out of range,
-/// if `nr` is out of range, if `timeout` is out of range.
+///   if `nr` is out of range, if `timeout` is out of range.
 /// - May fail with `-EFAULT` if any of the memory specified is invalid.
 /// - May return 0 or < `min_nr` if the timeout specified by timeout has elapsed
-/// before sufficient events are available, where timeout == NULL
-/// specifies an infinite timeout. Note that the timeout pointed to by timeout is relative.
+///   before sufficient events are available, where timeout == NULL
+///   specifies an infinite timeout. Note that the timeout pointed to by timeout
+///   is relative.
 /// - Will fail with `-ENOSYS` if not implemented.
 pub unsafe fn io_getevents(
     ctx_id: aio_context_t,

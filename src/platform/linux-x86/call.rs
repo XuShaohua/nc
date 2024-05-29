@@ -24,12 +24,12 @@ pub unsafe fn accept4(
     addr: &mut sockaddr_in_t,
     addrlen: &mut socklen_t,
     flags: i32,
-) -> Result<(), Errno> {
+) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
     let addr_ptr = addr as *mut sockaddr_in_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     let flags = flags as usize;
-    syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(drop)
+    syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32)
 }
 
 /// Check user's permission for a file.
@@ -2710,11 +2710,12 @@ pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
 /// # Errors
 ///
 /// - May fail with `-EINVAL` if `ctx_id` is invalid, if `min_nr` is out of range,
-/// if `nr` is out of range, if `timeout` is out of range.
+///   if `nr` is out of range, if `timeout` is out of range.
 /// - May fail with `-EFAULT` if any of the memory specified is invalid.
 /// - May return 0 or < `min_nr` if the timeout specified by timeout has elapsed
-/// before sufficient events are available, where timeout == NULL
-/// specifies an infinite timeout. Note that the timeout pointed to by timeout is relative.
+///   before sufficient events are available, where timeout == NULL
+///   specifies an infinite timeout. Note that the timeout pointed to by timeout
+///   is relative.
 /// - Will fail with `-ENOSYS` if not implemented.
 pub unsafe fn io_getevents(
     ctx_id: aio_context_t,
@@ -2776,9 +2777,9 @@ pub unsafe fn io_pgetevents(
 /// # Errors
 ///
 /// - May fail with `-EINVAL` if `*ctxp` is not initialized,
-/// if the specified `nr_events` exceeds internal limits.
+///   if the specified `nr_events` exceeds internal limits.
 /// - May fail with `-EAGAIN` if the specified `nr_events` exceeds the user's limit
-/// of available events.
+///   of available events.
 /// - May fail with `-ENOMEM` if insufficient kernel resources are available.
 /// - May fail with `-EFAULT` if an invalid pointer is passed for ctxp.
 /// - Will fail with `-ENOSYS` if not implemented.
@@ -2795,11 +2796,10 @@ pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(),
 /// # Errors
 ///
 /// - May return `-EINVAL` if the `aio_context` specified by `ctx_id` is invalid,
-/// if `nr` is < 0, if the `iocb` at `*iocbpp[0]` is not properly initialized,
-/// if the operation specified is invalid for the file descriptor in the `iocb`.
+///   if `nr` is < 0, if the `iocb` at `*iocbpp[0]` is not properly initialized,
+///   if the operation specified is invalid for the file descriptor in the `iocb`.
 /// - May fail with `-EFAULT` if any of the data structures point to invalid data.
-/// - May fail with `-EBADF` if the file descriptor specified in the first
-/// `iocb` is invalid.
+/// - May fail with `-EBADF` if the file descriptor specified in the first `iocb` is invalid.
 /// - May fail with `-EAGAIN` if insufficient resources are available to queue any iocbs.
 /// - Will return 0 if nr is 0.
 /// - Will fail with `-ENOSYS` if not implemented.

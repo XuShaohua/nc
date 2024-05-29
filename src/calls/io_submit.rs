@@ -5,11 +5,10 @@
 /// # Errors
 ///
 /// - May return `-EINVAL` if the `aio_context` specified by `ctx_id` is invalid,
-/// if `nr` is < 0, if the `iocb` at `*iocbpp[0]` is not properly initialized,
-/// if the operation specified is invalid for the file descriptor in the `iocb`.
+///   if `nr` is < 0, if the `iocb` at `*iocbpp[0]` is not properly initialized,
+///   if the operation specified is invalid for the file descriptor in the `iocb`.
 /// - May fail with `-EFAULT` if any of the data structures point to invalid data.
-/// - May fail with `-EBADF` if the file descriptor specified in the first
-/// `iocb` is invalid.
+/// - May fail with `-EBADF` if the file descriptor specified in the first `iocb` is invalid.
 /// - May fail with `-EAGAIN` if insufficient resources are available to queue any iocbs.
 /// - Will return 0 if nr is 0.
 /// - Will fail with `-ENOSYS` if not implemented.

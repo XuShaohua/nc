@@ -15,9 +15,9 @@ mod signal;
 ))]
 pub use signal::*;
 
-#[cfg(any(test_arch = "loongarch64", target_arch = "riscv64"))]
+#[cfg(any(target_arch = "loongarch64", target_arch = "riscv64"))]
 mod stat;
-#[cfg(any(test_arch = "loongarch64", target_arch = "riscv64"))]
+#[cfg(any(target_arch = "loongarch64", target_arch = "riscv64"))]
 pub use stat::*;
 
 mod fcntl;

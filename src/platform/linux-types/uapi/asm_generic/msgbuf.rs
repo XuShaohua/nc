@@ -46,7 +46,7 @@ pub struct msqid64_ds_t {
     unused5: usize,
 }
 
-#[cfg(target_pointer_size = "32")]
+#[cfg(target_pointer_width = "32")]
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct msqid64_ds_t {

@@ -26,7 +26,7 @@ pub struct umutex_t {
     pub m_ceilings: [u32; 2],
     /// Robust linkage
     pub m_rb_lnk: uintptr,
-    #[cfg(target_pointer_size = "32")]
+    #[cfg(target_pointer_width = "32")]
     pub m_pad: u32,
     m_spare: [u32; 2],
 }

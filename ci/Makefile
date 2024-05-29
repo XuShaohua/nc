@@ -61,9 +61,6 @@ cross-riscv64gc:
 cross-s390x:
 	$(call run-cross, s390x-unknown-linux-gnu)
 
-cross-sparc64:
-	$(call run-cross, sparc64-unknown-linux-gnu)
-
 cross-thumbv7neon:
 	$(call run-cross, thumbv7neon-unknown-linux-gnueabihf)
 

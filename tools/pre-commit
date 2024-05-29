@@ -4,5 +4,9 @@
 # in the LICENSE file.
 
 # Make sure each commit is linted
+# Install this script to `.git/hooks/pre-commit`
 
-cargo clippy
+set -xe
+
+cargo clippy --all-targets --all-features --fix --allow-dirty --allow-staged
+cargo fmt --all

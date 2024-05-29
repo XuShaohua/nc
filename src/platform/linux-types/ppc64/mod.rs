@@ -3,7 +3,9 @@
 // in the LICENSE file.
 
 mod asm;
+mod boot;
 mod uapi;
 
 pub use asm::*;
+pub use boot::*;
 pub use uapi::*;

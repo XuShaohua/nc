@@ -82,8 +82,7 @@ pub struct file_dedupe_range_info_t {
     /// status of this dedupe operation:
     /// - `< 0` for error
     /// - `== FILE_DEDUPE_RANGE_SAME` if dedupe succeeds
-    /// - `== FILE_DEDUPE_RANGE_DIFFERS` if data differs
-    /// out - see above description
+    /// - `== FILE_DEDUPE_RANGE_DIFFERS` if data differs out, see above description
     pub status: i32,
     /// must be zero
     pub reserved: u32,
@@ -141,7 +140,7 @@ pub struct fsxattr_t {
     pub fsx_nextents: u32,
     /// project identifier (get/set)
     pub fsx_projid: u32,
-    /// CoW extsize field value (get/set)
+    /// `CoW` extsize field value (get/set)
     pub fsx_cowextsize: u32,
     fsx_pad: [u8; 8],
 }

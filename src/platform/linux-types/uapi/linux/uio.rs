@@ -13,9 +13,9 @@ use crate::size_t;
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct iovec_t {
-    /// BSD uses caddr_t (1003.1g requires void *)
+    /// BSD uses `caddr_t` (1003.1g requires void *)
     pub iov_base: *const c_void,
-    /// Must be size_t (1003.1g)
+    /// Must be `size_t` (1003.1g)
     pub iov_len: size_t,
 }
 

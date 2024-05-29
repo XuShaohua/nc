@@ -22,8 +22,7 @@ pub const KEXEC_ARCH_MASK: i32 = 0xffff_0000;
 ///
 /// - `KEXEC_FILE_UNLOAD` : Unload already loaded kexec/kdump image.
 /// - `KEXEC_FILE_ON_CRASH` : Load/unload operation belongs to kdump image.
-/// - `KEXEC_FILE_NO_INITRAMFS` : No initramfs is being loaded. Ignore the initrd
-/// fd field.
+/// - `KEXEC_FILE_NO_INITRAMFS` : No initramfs is being loaded. Ignore the initrd fd field.
 pub const KEXEC_FILE_UNLOAD: i32 = 0x0000_0001;
 pub const KEXEC_FILE_ON_CRASH: i32 = 0x0000_0002;
 pub const KEXEC_FILE_NO_INITRAMFS: i32 = 0x0000_0004;

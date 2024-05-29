@@ -303,7 +303,7 @@ pub struct io_uring_probe_op_t {
     pub op: u8,
     pub resv: u8,
 
-    /// IO_URING_OP_* flags
+    /// `IO_URING_OP`_* flags
     pub flags: u16,
 
     pub resv2: u32,

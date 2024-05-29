@@ -363,10 +363,10 @@ pub union perf_event_attr_wakeup_t {
 pub union perf_event_attr_config1_t {
     pub bp_addr: u64,
 
-    /// for perf_kprobe
+    /// for `perf_kprobe`
     pub kprobe_func: u64,
 
-    /// for perf_uprobe
+    /// for `perf_uprobe`
     pub uprobe_path: u64,
 
     /// extension of config
@@ -377,10 +377,10 @@ pub union perf_event_attr_config1_t {
 pub union perf_event_attr_config2_t {
     pub bp_len: u64,
 
-    /// when kprobe_func == NULL
+    /// when `kprobe_func` == NULL
     pub kprobe_addr: u64,
 
-    /// for perf_k/u probe
+    /// for `perf_k/u` probe
     pub probe_offset: u64,
 
     /// extension of config1
@@ -450,24 +450,24 @@ pub struct perf_event_attr_t {
     /// trace fork/exit
     //pub task           :  1,
     pub task: u8,
-    /// wakeup_watermark
+    /// `wakeup_watermark`
     //pub watermark      :  1,
     pub watermark: u8,
 
-    /// precise_ip:
-    /// 0 - SAMPLE_IP can have arbitrary skid
-    /// 1 - SAMPLE_IP must have constant skid
-    /// 2 - SAMPLE_IP requested to have 0 skid
-    /// 3 - SAMPLE_IP must have 0 skid
+    /// `precise_ip`:
+    /// 0 - `SAMPLE_IP` can have arbitrary skid
+    /// 1 - `SAMPLE_IP` must have constant skid
+    /// 2 - `SAMPLE_IP` requested to have 0 skid
+    /// 3 - `SAMPLE_IP` must have 0 skid
     ///
-    /// See also PERF_RECORD_MISC_EXACT_IP
+    /// See also `PERF_RECORD_MISC_EXACT_IP`
     /// skid constraint
     //pub precise_ip     :  2,
     pub precise_ip: u8,
     /// non-exec mmap data
     //pub mmap_data      :  1,
     pub mmap_data: u8,
-    /// sample_type all events
+    /// `sample_type` all events
     //pub sample_id_all  :  1,
     pub sample_id_all: u8,
 
@@ -512,11 +512,11 @@ pub struct perf_event_attr_t {
     pub config1: perf_event_attr_config1_t,
     pub config2: perf_event_attr_config2_t,
 
-    /// enum perf_branch_sample_type
+    /// enum `perf_branch_sample_type`
     pub branch_sample_type: u64,
 
     /// Defines set of user regs to dump on samples.
-    /// See asm/perf_regs.h for details.
+    /// See `asm/perf_regs.h` for details.
     pub sample_regs_user: u64,
 
     /// Defines size of the user stack to dump on samples.
@@ -529,7 +529,7 @@ pub struct perf_event_attr_t {
     /// - precise = 0: PMU interrupt
     /// - precise > 0: sampled instruction
     ///
-    /// See asm/perf_regs.h for details.
+    /// See `asm/perf_regs.h` for details.
     pub sample_regs_intr: u64,
 
     /// Wakeup watermark for AUX area
@@ -595,7 +595,7 @@ pub struct perf_event_mmap_page_cap_detail_t {
     //pub cap_user_time		: 1,
     pub cap_user_time: u8,
 
-    /// The time_zero field is used
+    /// The `time_zero` field is used
     //pub cap_user_time_zero	: 1,
     pub cap_user_time_zero: u8,
 
@@ -666,8 +666,8 @@ pub struct perf_event_mmap_page_t {
 
     pub cap: perf_event_mmap_page_cap_t,
 
-    /// If cap_user_rdpmc this field provides the bit-width of the value
-    /// read using the rdpmc() or equivalent instruction. This can be used
+    /// If `cap_user_rdpmc` this field provides the bit-width of the value
+    /// read using the `rdpmc()` or equivalent instruction. This can be used
     /// to sign extend the result like:
     ///
     ///   pmc <<= 64 - width;
@@ -675,18 +675,18 @@ pub struct perf_event_mmap_page_t {
     ///   count += pmc;
     pub pmc_width: u16,
 
-    /// If cap_usr_time the below fields can be used to compute the time
-    /// delta since time_enabled (in ns) using rdtsc or similar.
+    /// If `cap_usr_time` the below fields can be used to compute the time
+    /// delta since `time_enabled` (in ns) using rdtsc or similar.
     ///
     ///   u64 quot, rem;
     ///   u64 delta;
     ///
-    ///   quot = (cyc >> time_shift);
-    ///   rem = cyc & (((u64)1 << time_shift) - 1);
-    ///   delta = time_offset + quot * time_mult +
-    ///              ((rem * time_mult) >> time_shift);
+    ///   quot = (cyc >> `time_shift`);
+    ///   rem = cyc & (((u64)1 << `time_shift`) - 1);
+    ///   delta = `time_offset` + quot * `time_mult` +
+    ///              ((rem * `time_mult`) >> `time_shift`);
     ///
-    /// Where time_offset,time_mult,time_shift and cyc are read in the
+    /// Where `time_offset,time_mult,time_shift` and cyc are read in the
     /// seqcount loop described above. This delta can then be added to
     /// enabled and possible running (if index), improving the scaling:
     ///
@@ -701,20 +701,20 @@ pub struct perf_event_mmap_page_t {
     pub time_mult: u32,
     pub time_offset: u64,
 
-    /// If cap_usr_time_zero, the hardware clock (e.g. TSC) can be calculated
+    /// If `cap_usr_time_zero`, the hardware clock (e.g. TSC) can be calculated
     /// from sample timestamps.
     ///
-    ///   time = timestamp - time_zero;
-    ///   quot = time / time_mult;
-    ///   rem  = time % time_mult;
-    ///   cyc = (quot << time_shift) + (rem << time_shift) / time_mult;
+    ///   time = timestamp - `time_zero`;
+    ///   quot = time / `time_mult`;
+    ///   rem  = time % `time_mult`;
+    ///   cyc = (quot << `time_shift`) + (rem << `time_shift`) / `time_mult`;
     ///
     /// And vice versa:
     ///
-    ///   quot = cyc >> time_shift;
-    ///   rem  = cyc & (((u64)1 << time_shift) - 1);
-    ///   timestamp = time_zero + quot * time_mult +
-    ///               ((rem * time_mult) >> time_shift);
+    ///   quot = cyc >> `time_shift`;
+    ///   rem  = cyc & (((u64)1 << `time_shift`) - 1);
+    ///   timestamp = `time_zero` + quot * `time_mult` +
+    ///               ((rem * `time_mult`) >> `time_shift`);
     pub time_zero: u64,
     /// Header size up to __reserved[] fields.
     pub size: u32,
@@ -723,17 +723,17 @@ pub struct perf_event_mmap_page_t {
     /// align to 1k.
     reserved: [u8; 118 * 8 + 4],
 
-    /// Control data for the mmap() data buffer.
+    /// Control data for the `mmap()` data buffer.
     ///
-    /// User-space reading the @data_head value should issue an smp_rmb()
+    /// User-space reading the @`data_head` value should issue an `smp_rmb()`
     /// after reading this value.
     ///
-    /// When the mapping is PROT_WRITE the @data_tail value should be
+    /// When the mapping is `PROT_WRITE` the @`data_tail` value should be
     /// written by userspace to reflect the last read data, after issueing
-    /// an smp_mb() to separate the data read from the ->data_tail store.
+    /// an `smp_mb()` to separate the data read from the ->`data_tail` store.
     /// In this case the kernel will not over-write unread data.
     ///
-    /// See perf_output_put_handle() for the data ordering.
+    /// See `perf_output_put_handle()` for the data ordering.
     ///
     /// data_{offset,size} indicate the location and size of the perf record
     /// buffer within the mmapped area.
@@ -749,9 +749,9 @@ pub struct perf_event_mmap_page_t {
     /// AUX area is defined by aux_{offset,size} fields that should be set
     /// by the userspace, so that
     ///
-    /// aux_offset >= data_offset + data_size
+    /// `aux_offset` >= `data_offset` + `data_size`
     ///
-    /// prior to mmap()ing it. Size of the mmap()ed area should be aux_size.
+    /// prior to mmap()ing it. Size of the mmap()ed area should be `aux_size`.
     ///
     /// Ring buffer pointers aux_{head,tail} have the same semantics as
     /// data_{head,tail} and same ordering rules apply.
@@ -829,48 +829,48 @@ pub const NR_NAMESPACES: i32 = 7;
 /// `perf_event_type`
 pub enum perf_event_type_t {
     /// If `perf_event_attr.sample_id_all` is set then all event types will
-    /// have the sample_type selected fields related to where/when
-    /// (identity) an event took place (TID, TIME, ID, STREAM_ID, CPU
-    /// IDENTIFIER) described in PERF_RECORD_SAMPLE below, it will be stashed
-    /// just after the perf_event_header and the fields already present for
+    /// have the `sample_type` selected fields related to where/when
+    /// (identity) an event took place (TID, TIME, ID, `STREAM_ID`, CPU
+    /// IDENTIFIER) described in `PERF_RECORD_SAMPLE` below, it will be stashed
+    /// just after the `perf_event_header` and the fields already present for
     /// the existing fields, i.e. at the end of the payload. That way a newer
     /// perf.data file will be supported by older perf tools, with these new
     /// optional fields being ignored.
     ///
-    /// struct sample_id {
-    ///   { u32 pid, tid; } && PERF_SAMPLE_TID
-    ///   { u64 time; } && PERF_SAMPLE_TIME
-    ///   { u64 id; } && PERF_SAMPLE_ID
-    ///   { u64 stream_id;} && PERF_SAMPLE_STREAM_ID
-    ///   { u32 cpu, res; } && PERF_SAMPLE_CPU
-    ///   { u64 id; } && PERF_SAMPLE_IDENTIFIER
-    /// } && perf_event_attr::sample_id_all
+    /// struct `sample_id` {
+    ///   { u32 pid, tid; } && `PERF_SAMPLE_TID`
+    ///   { u64 time; } && `PERF_SAMPLE_TIME`
+    ///   { u64 id; } && `PERF_SAMPLE_ID`
+    ///   { u64 `stream_id`;} && `PERF_SAMPLE_STREAM_ID`
+    ///   { u32 cpu, res; } && `PERF_SAMPLE_CPU`
+    ///   { u64 id; } && `PERF_SAMPLE_IDENTIFIER`
+    /// } && `perf_event_attr::sample_id_all`
     ///
-    /// Note that PERF_SAMPLE_IDENTIFIER duplicates PERF_SAMPLE_ID.  The
-    /// advantage of PERF_SAMPLE_IDENTIFIER is that its position is fixed
+    /// Note that `PERF_SAMPLE_IDENTIFIER` duplicates `PERF_SAMPLE_ID`.  The
+    /// advantage of `PERF_SAMPLE_IDENTIFIER` is that its position is fixed
     /// relative to header.size.
     ///
     ///
-    /// The MMAP events record the PROT_EXEC mappings so that we can
+    /// The MMAP events record the `PROT_EXEC` mappings so that we can
     /// correlate userspace IPs to code. They have the following structure:
     ///
     /// struct {
-    ///   struct perf_event_header header;
+    ///   struct `perf_event_header` header;
     ///
     ///   u32 pid, tid;
     ///   u64 addr;
     ///   u64 len;
     ///   u64 pgoff;
     ///   char filename[];
-    ///   struct sample_id sample_id;
+    ///   struct `sample_id` `sample_id`;
     /// };
     PERF_RECORD_MMAP = 1,
 
     /// struct {
-    ///   struct perf_event_header header;
+    ///   struct `perf_event_header` header;
     ///   u64 id;
     ///   u64 lost;
-    ///   struct sample_id sample_id;
+    ///   struct `sample_id` `sample_id`;
     /// };
     PERF_RECORD_LOST = 2,
 
@@ -886,11 +886,11 @@ pub enum perf_event_type_t {
     PERF_RECORD_COMM = 3,
 
     /// struct {
-    ///   struct perf_event_header header;
+    ///   struct `perf_event_header` header;
     ///   u32 pid, ppid;
     ///   u32 tid, ptid;
     ///   u64 time;
-    ///   struct sample_id sample_id;
+    ///   struct `sample_id` `sample_id`;
     /// };
     PERF_RECORD_EXIT = 4,
 
@@ -991,7 +991,7 @@ pub enum perf_event_type_t {
     /// maj, min, ino numbers to be used to uniquely identify each mapping
     ///
     /// struct {
-    ///   struct perf_event_header header;
+    ///   struct `perf_event_header` header;
     ///   u32 pid, tid;
     ///   u64 addr;
     ///   u64 len;
@@ -999,10 +999,10 @@ pub enum perf_event_type_t {
     ///   u32 maj;
     ///   u32 min;
     ///   u64 ino;
-    ///   u64 ino_generation;
+    ///   u64 `ino_generation`;
     ///   u32 prot, flags;
     ///   char filename[];
-    ///   struct sample_id sample_id;
+    ///   struct `sample_id` `sample_id`;
     /// };
     PERF_RECORD_MMAP2 = 10,
 
@@ -1045,8 +1045,8 @@ pub enum perf_event_type_t {
     PERF_RECORD_LOST_SAMPLES = 13,
 
     /// Records a context switch in or out (flagged by
-    /// PERF_RECORD_MISC_SWITCH_OUT). See also
-    /// PERF_RECORD_SWITCH_CPU_WIDE.
+    /// `PERF_RECORD_MISC_SWITCH_OUT`). See also
+    /// `PERF_RECORD_SWITCH_CPU_WIDE`.
     ///
     /// ```c
     /// struct {
@@ -1056,8 +1056,8 @@ pub enum perf_event_type_t {
     /// ```
     PERF_RECORD_SWITCH = 14,
 
-    /// CPU-wide version of PERF_RECORD_SWITCH with next_prev_pid and
-    /// next_prev_tid that are the next (switching out) or previous
+    /// CPU-wide version of `PERF_RECORD_SWITCH` with `next_prev_pid` and
+    /// `next_prev_tid` that are the next (switching out) or previous
     /// (switching in) pid/tid.
     ///
     /// ```c
@@ -1126,9 +1126,9 @@ pub enum perf_event_type_t {
     /// ```
     PERF_RECORD_CGROUP = 19,
 
-    /// Records changes to kernel text i.e. self-modified code. 'old_len' is
-    /// the number of old bytes, 'new_len' is the number of new bytes. Either
-    /// 'old_len' or 'new_len' may be zero to indicate, for example, the
+    /// Records changes to kernel text i.e. self-modified code. '`old_len`' is
+    /// the number of old bytes, '`new_len`' is the number of new bytes. Either
+    /// '`old_len`' or '`new_len`' may be zero to indicate, for example, the
     /// addition or removal of a trampoline. 'bytes' contains the old bytes
     /// followed immediately by the new bytes.
     ///

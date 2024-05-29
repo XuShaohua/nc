@@ -49,7 +49,7 @@ pub struct in6_addr_t {
 #[repr(C)]
 #[derive(Default, Debug, Clone)]
 pub struct sockaddr_in6_t {
-    /// AF_INET6
+    /// `AF_INET6`
     pub sin6_family: u16,
     /// Transport layer port
     pub sin6_port: be16_t,

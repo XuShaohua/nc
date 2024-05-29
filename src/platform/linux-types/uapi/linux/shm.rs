@@ -26,9 +26,9 @@ pub const SHMMIN: i32 = 1;
 /// max num of segs system wide
 pub const SHMMNI: i32 = 4096;
 /// max shared seg size (bytes)
-pub const SHMMAX: usize = core::usize::MAX - (1_usize << 24);
+pub const SHMMAX: usize = usize::MAX - (1_usize << 24);
 /// max shm system wide (pages)
-pub const SHMALL: usize = core::usize::MAX - (1_usize << 24);
+pub const SHMALL: usize = usize::MAX - (1_usize << 24);
 /// max shared segs per process
 pub const SHMSEG: i32 = SHMMNI;
 

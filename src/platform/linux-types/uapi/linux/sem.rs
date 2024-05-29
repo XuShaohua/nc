@@ -41,7 +41,7 @@ pub struct semid_ds_t {
     /// last semop time
     pub sem_otime: time_t,
 
-    /// create/last semctl() time
+    /// create/last `semctl()` time
     pub sem_ctime: time_t,
 
     /// ptr to first semaphore in array
@@ -82,11 +82,11 @@ pub struct sembuf_t {
 pub union semun_t {
     /// value for SETVAL
     pub val: i32,
-    /// buffer for IPC_STAT & IPC_SET
+    /// buffer for `IPC_STAT` & `IPC_SET`
     pub buf: *mut semid_ds_t,
     /// array for GETALL & SETALL
     pub array: *mut u16,
-    /// buffer for IPC_INFO
+    /// buffer for `IPC_INFO`
     pub info_buf: seminfo_t,
     pad: usize,
 }

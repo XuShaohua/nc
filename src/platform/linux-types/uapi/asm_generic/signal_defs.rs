@@ -14,16 +14,16 @@
 /// - `SA_NODEFER` prevents the current signal from being masked in the handler.
 /// - `SA_RESETHAND` clears the handler when the signal is delivered.
 /// - `SA_UNSUPPORTED` is a flag bit that will never be supported. Kernels from
-/// before the introduction of `SA_UNSUPPORTED` did not clear unknown bits from
-/// `sa_flags` when read using the oldact argument to sigaction and `rt_sigaction`,
-/// so this bit allows flag bit support to be detected from userspace while
-/// allowing an old kernel to be distinguished from a kernel that supports every
-/// flag bit.
+///   before the introduction of `SA_UNSUPPORTED` did not clear unknown bits from
+///   `sa_flags` when read using the oldact argument to sigaction and `rt_sigaction`,
+///   so this bit allows flag bit support to be detected from userspace while
+///   allowing an old kernel to be distinguished from a kernel that supports every
+///   flag bit.
 /// - `SA_EXPOSE_TAGBITS` exposes an architecture-defined set of tag bits in
-/// `siginfo.si_addr`.
+///   `siginfo.si_addr`.
 ///
 /// - `SA_ONESHOT` and `SA_NOMASK` are the historical Linux names for the Single
-/// Unix names RESETHAND and NODEFER respectively.
+///   Unix names RESETHAND and NODEFER respectively.
 #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_NOCLDSTOP: usize = 0x0000_0001;
 #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]

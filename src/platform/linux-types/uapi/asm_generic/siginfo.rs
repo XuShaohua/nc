@@ -94,7 +94,7 @@ pub struct si_sigchld_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
 pub struct si_sigpoll_t {
-    /// POLL_IN, POLL_OUT, POLL_MSG
+    /// `POLL_IN`, `POLL_OUT`, `POLL_MSG`
     pub band: arch_si_band_t,
     pub fd: i32,
 }
@@ -107,7 +107,7 @@ pub struct si_sigsys_t {
     pub call_addr: usize,
     /// triggering system call number
     pub syscall: i32,
-    /// AUDIT_ARCH_* of syscall
+    /// `AUDIT_ARCH`_* of syscall
     pub arch: u32,
 }
 
@@ -391,7 +391,7 @@ pub const SIGEV_PAD_SIZE: usize = (SIGEV_MAX_SIZE - ARCH_SIGEV_PREAMBLE_SIZE) / 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct sigev_thread_t {
     pub function: usize,
-    /// really pthread_attr_t
+    /// really `pthread_attr_t`
     pub attribute: usize,
 }
 

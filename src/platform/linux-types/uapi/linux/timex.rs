@@ -33,7 +33,7 @@ pub struct timex_t {
     pub precision: isize,
     /// clock frequency tolerance (ppm) (read only)
     pub tolerance: isize,
-    /// (read only, except for ADJ_SETOFFSET)
+    /// (read only, except for `ADJ_SETOFFSET`)
     pub time: timeval_t,
     /// (modified) usecs between clock ticks
     pub tick: isize,
@@ -94,7 +94,7 @@ pub struct kernel_timex_t {
     /// clock frequency tolerance (ppm) (read only)
     pub tolerance: i64,
 
-    /// (read only, except for ADJ_SETOFFSET)
+    /// (read only, except for `ADJ_SETOFFSET`)
     pub time: kernel_timex_timeval_t,
     /// (modified) usecs between clock ticks
     pub tick: i64,

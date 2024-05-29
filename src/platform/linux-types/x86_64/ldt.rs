@@ -41,7 +41,7 @@ pub struct user_desc_t {
 
     /// Because this bit is not present in 32-bit user code, user
     /// programs can pass uninitialized values here.  Therefore, in
-    /// any context in which a user_desc comes from a 32-bit program,
+    /// any context in which a `user_desc` comes from a 32-bit program,
     /// the kernel must act as though lm == 0, regardless of the actual value.
     //pub lm:1,
     pub lm: u8,

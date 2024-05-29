@@ -54,9 +54,9 @@ pub const SCHED_ATTR_SIZE_VER1: i32 = 56;
 /// In such a model a task is specified by:
 /// - the activation period or minimum instance inter-arrival time;
 /// - the maximum (or average, depending on the actual scheduling
-/// discipline) computation time of all instances, a.k.a. runtime;
-/// - the deadline (relative to the actual activation time) of each
-/// instance.
+///   discipline) computation time of all instances, a.k.a. runtime;
+/// - the deadline (relative to the actual activation time) of each instance.
+///
 /// Very briefly, a periodic (sporadic) task asks for the execution of
 /// some specific computation --which is typically called an instance--
 /// (at most) every period. Moreover, each instance typically lasts no more
@@ -107,13 +107,13 @@ pub struct sched_attr_t {
     pub sched_policy: u32,
     pub sched_flags: u64,
 
-    /// SCHED_NORMAL, SCHED_BATCH
+    /// `SCHED_NORMAL`, `SCHED_BATCH`
     pub sched_nice: i32,
 
-    /// SCHED_FIFO, SCHED_RR
+    /// `SCHED_FIFO`, `SCHED_RR`
     pub sched_priority: u32,
 
-    /// SCHED_DEADLINE
+    /// `SCHED_DEADLINE`
     pub sched_runtime: u64,
     pub sched_deadline: u64,
     pub sched_period: u64,

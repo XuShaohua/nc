@@ -94,7 +94,7 @@ pub struct clone_args_t {
     /// will be returned in the parent's memory.
     pub parent_tid: u64,
 
-    /// The exit_signal the parent process will be sent when the child exits.
+    /// The `exit_signal` the parent process will be sent when the child exits.
     pub exit_signal: u64,
 
     /// Specify the location of the stack for the child process.
@@ -110,7 +110,7 @@ pub struct clone_args_t {
     /// If `CLONE_SETTLS` is set, the tls descriptor is set to tls.
     pub tls: u64,
 
-    /// Pointer to an array of type *pid_t.
+    /// Pointer to an array of type *`pid_t`.
     ///
     /// The size of the array is defined using `set_tid_size`.
     /// This array is used to select PIDs/TIDs for newly created processes.

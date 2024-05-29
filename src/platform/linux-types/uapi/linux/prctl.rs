@@ -6,8 +6,6 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-use core::u64;
-
 /// Values to pass as first argument to `prctl()`
 
 /// Second arg is a signal
@@ -158,7 +156,7 @@ pub struct prctl_mm_map_t {
     /// data section bounds
     pub start_data: u64,
     pub end_data: u64,
-    /// heap for brk() syscall
+    /// heap for `brk()` syscall
     pub start_brk: u64,
     pub brk: u64,
     /// stack starts at

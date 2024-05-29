@@ -17,8 +17,8 @@ pub const MSG_EXCEPT: i32 = 0o20000;
 /// copy (not remove) all queue messages
 pub const MSG_COPY: i32 = 0o40000;
 
-/// Obsolete, used only for backwards compatibility and libc5 compiles
-#[repr(C)]
+// TODO(Shaohua): Add compact mode
+// Obsolete, used only for backwards compatibility and libc5 compiles
 //pub struct msqid_ds_t {
 //    pub msg_perm: ipc_perm_t,
 //    /// first message on queue,unused

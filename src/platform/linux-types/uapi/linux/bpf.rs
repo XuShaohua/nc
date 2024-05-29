@@ -350,7 +350,7 @@ pub struct bpf_attr_map_create_t {
     pub value_size: u32,
     /// max number of entries in a map
     pub max_entries: u32,
-    /// BPF_MAP_CREATE related flags defined above.
+    /// `BPF_MAP_CREATE` related flags defined above.
     pub map_flags: u32,
     /// fd pointing to the inner map
     pub inner_map_fd: u32,
@@ -447,9 +447,9 @@ pub struct bpf_attr_prog_attach_t {
 pub struct bpf_attr_prog_test_t {
     pub prog_fd: u32,
     pub retval: u32,
-    /// input: len of data_in
+    /// input: len of `data_in`
     pub data_size_in: u32,
-    /// input/output: len of data_out returns ENOSPC if data_out is too small.
+    /// input/output: len of `data_out` returns ENOSPC if `data_out` is too small.
     pub data_size_out: u32,
     pub data_in: u64,
     pub data_out: u64,
@@ -527,7 +527,7 @@ pub struct bpf_attr_task_fd_query_t {
     /// input/output: buf len
     pub buf_len: u32,
     /// input/output:
-    ///   tp_name for tracepoint symbol for kprobe filename for uprobe
+    ///   `tp_name` for tracepoint symbol for kprobe filename for uprobe
     pub buf: u64,
     /// output: `prod_id`
     pub prog_id: u32,
@@ -783,7 +783,7 @@ pub struct bpf_tcp_sock_t {
     /// SACK'd packets
     pub sacked_out: u32,
     /// RFC4898 tcpEStatsAppHCThruOctetsReceived
-    /// sum(delta(rcv_nxt)), or how many bytes were acked.
+    /// `sum(delta(rcv_nxt`)), or how many bytes were acked.
     bytes_received: u64,
     /// RFC4898 tcpEStatsAppHCThruOctetsAcked
     /// `sum(delta(snd_una))`, or how many bytes were acked.
@@ -876,7 +876,7 @@ pub struct sk_msg_md_t {
     pub remote_port: u32,
     /// stored in host byte order
     pub local_port: u32,
-    /// Total size of sk_msg
+    /// Total size of `sk_msg`
     pub size: u32,
 }
 
@@ -1180,7 +1180,7 @@ pub const BPF_DEVCG_DEV_CHAR: i32 = 1 << 1;
 
 #[repr(C)]
 pub struct bpf_cgroup_dev_ctx_t {
-    /// access_type encoded as `(BPF_DEVCG_ACC_* << 16) | BPF_DEVCG_DEV_*`
+    /// `access_type` encoded as `(BPF_DEVCG_ACC_* << 16) | BPF_DEVCG_DEV_*`
     pub access_type: u32,
     pub major: u32,
     pub minor: u32,

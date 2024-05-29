@@ -256,7 +256,7 @@ pub struct sockaddr_in_t {
     /// Internet address
     pub sin_addr: in_addr_t,
 
-    /// Pad to size of `struct sockaddr'.
+    /// Pad to size of `struct sockaddr`.
     pub pad: [u8; SOCK_SIZE - size_of::<i16>() - size_of::<u16>() - size_of::<in_addr_t>()],
 }
 

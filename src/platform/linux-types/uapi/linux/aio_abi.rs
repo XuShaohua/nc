@@ -73,7 +73,7 @@ pub struct iocb_t {
     /// flags for the `struct iocb`
     pub aio_flags: u32,
 
-    /// If the IOCB_FLAG_RESFD` flag of `aio_flags` is set, this is an eventfd
+    /// If the `IOCB_FLAG_RESFD` flag of `aio_flags` is set, this is an eventfd
     /// to signal AIO readiness to
     pub aio_resfd: u32,
 }

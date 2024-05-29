@@ -31,12 +31,12 @@ pub struct rseq_cs_t {
     /// Version of this structure.
     pub version: u32,
 
-    /// enum rseq_cs_flags
+    /// enum `rseq_cs_flags`
     pub flags: u32,
 
     pub start_ip: u64,
 
-    /// Offset from start_ip.
+    /// Offset from `start_ip`.
     pub post_commit_offset: u64,
 
     pub abort_ip: u64,
@@ -80,44 +80,44 @@ pub union rseq_cs_union_t {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct rseq_t {
-    /// Restartable sequences cpu_id_start field. Updated by the
+    /// Restartable sequences `cpu_id_start` field. Updated by the
     /// kernel. Read by user-space with single-copy atomicity
     /// semantics. This field should only be read by the thread which
     /// registered this data structure. Aligned on 32-bit. Always
     /// contains a value in the range of possible CPUs, although the
     /// value may not be the actual current CPU (e.g. if rseq is not
     /// initialized). This CPU number value should always be compared
-    /// against the value of the cpu_id field before performing a rseq
+    /// against the value of the `cpu_id` field before performing a rseq
     /// commit or returning a value read from a data structure indexed
-    /// using the cpu_id_start value.
+    /// using the `cpu_id_start` value.
     pub cpu_id_start: u32,
 
-    /// Restartable sequences cpu_id field. Updated by the kernel.
+    /// Restartable sequences `cpu_id` field. Updated by the kernel.
     /// Read by user-space with single-copy atomicity semantics. This
     /// field should only be read by the thread which registered this
     /// data structure. Aligned on 32-bit. Values
-    /// RSEQ_CPU_ID_UNINITIALIZED and RSEQ_CPU_ID_REGISTRATION_FAILED
+    /// `RSEQ_CPU_ID_UNINITIALIZED` and `RSEQ_CPU_ID_REGISTRATION_FAILED`
     /// have a special semantic: the former means "rseq uninitialized",
     /// and latter means "rseq initialization failed". This value is
     /// meant to be read within rseq critical sections and compared
-    /// with the cpu_id_start value previously read, before performing
+    /// with the `cpu_id_start` value previously read, before performing
     /// the commit instruction, or read and compared with the
-    /// cpu_id_start value before returning a value loaded from a data
-    /// structure indexed using the cpu_id_start value.
+    /// `cpu_id_start` value before returning a value loaded from a data
+    /// structure indexed using the `cpu_id_start` value.
     pub cpu_id: u32,
 
-    /// Restartable sequences rseq_cs field.
+    /// Restartable sequences `rseq_cs` field.
     ///
     /// Contains NULL when no critical section is active for the current
-    /// thread, or holds a pointer to the currently active struct rseq_cs.
+    /// thread, or holds a pointer to the currently active struct `rseq_cs`.
     ///
     /// Updated by user-space, which sets the address of the currently
-    /// active rseq_cs at the beginning of assembly instruction sequence
+    /// active `rseq_cs` at the beginning of assembly instruction sequence
     /// block, and set to NULL by the kernel when it restarts an assembly
     /// instruction sequence block, as well as when the kernel detects that
     /// it is preempting or delivering a signal outside of the range
-    /// targeted by the rseq_cs. Also needs to be set to NULL by user-space
-    /// before reclaiming memory that contains the targeted struct rseq_cs.
+    /// targeted by the `rseq_cs`. Also needs to be set to NULL by user-space
+    /// before reclaiming memory that contains the targeted struct `rseq_cs`.
     ///
     /// Read and set by the kernel. Set by user-space with single-copy
     /// atomicity semantics. This field should only be updated by the
@@ -131,13 +131,13 @@ pub struct rseq_t {
     /// Mainly used for single-stepping through rseq critical sections
     /// with debuggers.
     ///
-    /// - RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT
+    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT`
     ///     Inhibit instruction sequence block restart on preemption
     ///     for this thread.
-    /// - RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL
+    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL`
     ///     Inhibit instruction sequence block restart on signal
     ///     delivery for this thread.
-    /// - RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE
+    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE`
     ///     Inhibit instruction sequence block restart on migration for
     ///     this thread.
     pub flags: u32,

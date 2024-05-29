@@ -26,7 +26,7 @@ pub struct ipc64_perm_t {
     pub gid: gid_t,
     pub cuid: uid_t,
     pub cgid: gid_t,
-    /// pad if mode_t is u16:
+    /// pad if `mode_t` is u16:
     pub mode: mode_t,
     pad1: [u8; 4_usize - core::mem::size_of::<mode_t>()],
     pub seq: u16,

@@ -126,7 +126,7 @@ pub union ptrace_syscall_info_seccomp_t {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct ptrace_syscall_info_t {
-    /// PTRACE_SYSCALL_INFO_*
+    /// `PTRACE_SYSCALL_INFO`_*
     pub op: u8,
 
     //__u32 arch __attribute__((__aligned__(sizeof(__u32))));

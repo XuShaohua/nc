@@ -22,7 +22,7 @@ pub struct kernel_sockaddr_storage_t {
     pub ss_family: kernel_sa_family_t,
     /// Following field(s) are implementation specific
     /// space to achieve desired size,
-    /// _SS_MAXSIZE value minus size of ss_family
+    /// _`SS_MAXSIZE` value minus size of `ss_family`
     pub data: [u8; (K_SS_MAXSIZE - 2) as usize],
 }
 

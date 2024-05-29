@@ -120,7 +120,7 @@ pub struct statx_t {
     pub stx_size: u64,
     /// Number of 512-byte blocks allocated
     pub stx_blocks: u64,
-    /// Mask to show what's supported in stx_attributes
+    /// Mask to show what's supported in `stx_attributes`
     pub stx_attributes_mask: u64,
 
     // 0x40

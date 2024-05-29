@@ -12,7 +12,7 @@ pub type sa_family_t = kernel_sa_family_t;
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sockaddr_t {
-    /// address family, AF_xxx
+    /// address family, `AF_xxx`
     pub sa_family: sa_family_t,
     /// 14 bytes of protocol address
     pub sa_data: [u8; 14],
@@ -62,7 +62,7 @@ pub struct msghdr_t {
     pub msg_namelen: i32,
     /// scatter/gather array
     pub msg_iov: *mut iovec_t,
-    /// # elements in msg_iov
+    /// # elements in `msg_iov`
     pub msg_iovlen: size_t,
     /// ancillary data
     pub msg_control: usize,

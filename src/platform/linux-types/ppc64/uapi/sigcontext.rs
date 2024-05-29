@@ -4,6 +4,8 @@
 
 //! From `arch/powerpc/include/uapi/asm/sigcontext.h`
 
+use super::{elf_fpregset_t, elf_gregset_t, elf_vrreg_t, user_pt_regs_t, ELF_NVRREG};
+
 #[repr(C)]
 pub struct sigcontext_t {
     unused: [usize; 4],
@@ -13,7 +15,7 @@ pub struct sigcontext_t {
     pub handler: usize,
     pub oldmask: usize,
 
-    pub regs: *mut pt_regs_t,
+    pub regs: *mut user_pt_regs_t,
 
     pub gp_regs: elf_gregset_t,
     pub fp_regs: elf_fpregset_t,
@@ -41,6 +43,7 @@ pub struct sigcontext_t {
     /// the VSR registers and how they overlap on top of the legacy FPR and
     /// VR registers is shown below:
     ///
+    /// ```text
     ///                    VSR doubleword 0               VSR doubleword 1
     ///           ----------------------------------------------------------------
     ///   VSR[0]  |             FPR[0]            |                              |
@@ -65,6 +68,7 @@ pub struct sigcontext_t {
     ///           ----------------------------------------------------------------
     ///   VSR[63] |                             VR[31]                           |
     ///           ----------------------------------------------------------------
+    /// ```
     ///
     /// FPR/VSR 0-31 doubleword 0 is stored in fp_regs, and VMX/VSR 32-63
     /// is stored at the start of vmx_reserve.  vmx_reserve is extended for

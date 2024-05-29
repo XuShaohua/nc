@@ -2,9 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-//! From `arch/powerpc/include/uapi/asm/ucontext.h`
+//! From arch/powerpc/include/uapi/asm/ucontext.h
 
-use crate::sigset_t;
+use super::{sigcontext_t, sigset_t, stack_t};
 
 #[repr(C)]
 pub struct ucontext_t {
@@ -13,11 +13,6 @@ pub struct ucontext_t {
     pub uc_stack: stack_t,
 
     pub uc_sigmask: sigset_t,
-
-    /// glibc has 1024-bit signal masks, ours are 64-bit
-    /// Allow for uc_sigmask growth
-    pub unused: [sigset_t; 15],
-
-    /// last for extensibility
-    pub uc_mcontext: sigcontext_t,
+    __unused: [sigset_t; 15],      // Allow for uc_sigmask growth
+    pub uc_mcontext: sigcontext_t, // last for extensibility
 }

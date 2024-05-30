@@ -6686,7 +6686,6 @@ pub unsafe fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Resu
 /// ```
 pub unsafe fn signal(sig: i32, handler: sighandler_t) -> Result<sighandler_t, Errno> {
     let sig = sig as usize;
-    let handler = handler as usize;
     syscall2(SYS_SIGNAL, sig, handler).map(|ret| ret as sighandler_t)
 }
 

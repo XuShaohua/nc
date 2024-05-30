@@ -6233,7 +6233,6 @@ pub unsafe fn sendfile64(
     let out_fd = out_fd as usize;
     let in_fd = in_fd as usize;
     let offset = offset as usize;
-    let count = count as usize;
     syscall4(SYS_SENDFILE64, out_fd, in_fd, offset, count).map(|ret| ret as ssize_t)
 }
 
@@ -6853,7 +6852,6 @@ pub unsafe fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Resu
 /// ```
 pub unsafe fn signal(sig: i32, handler: sighandler_t) -> Result<sighandler_t, Errno> {
     let sig = sig as usize;
-    let handler = handler as usize;
     syscall2(SYS_SIGNAL, sig, handler).map(|ret| ret as sighandler_t)
 }
 

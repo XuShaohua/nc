@@ -4,6 +4,8 @@
 
 //! From `arch/arm/include/uapi/asm/stat.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 pub const STAT_HAVE_NSEC: i32 = 0;
 
 #[repr(C)]
@@ -25,21 +27,21 @@ pub struct stat_t {
     pub st_mtime_nsec: usize,
     pub st_ctime: usize,
     pub st_ctime_nsec: usize,
-    unused4: usize,
-    unused5: usize,
+    __unused4: usize,
+    __unused5: usize,
 }
 
 /// This matches struct stat64 in glibc2.1, hence the absolutely
-/// insane amounts of padding around dev_t's.
+/// insane amounts of padding around `dev_t`.
 /// Note: The kernel zero's the padded region because glibc might read them
 /// in the hope that the kernel has stretched to using larger sizes.
 #[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone)]
 pub struct stat64_t {
     pub st_dev: u64,
-    pad0: [u8; 4],
+    __pad0: [u8; 4],
 
-    pub __st_ino: usize,
+    __st_ino: usize,
     pub st_mode: u32,
     pub st_nlink: u32,
 
@@ -47,7 +49,7 @@ pub struct stat64_t {
     pub st_gid: usize,
 
     pub st_rdev: u64,
-    pad3: [u8; 4],
+    __pad3: [u8; 4],
 
     pub st_size: i64,
     pub st_blksize: usize,

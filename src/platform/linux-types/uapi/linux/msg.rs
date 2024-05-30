@@ -4,6 +4,8 @@
 
 //! From `include/uapi/linux/msg.h`
 
+use crate::{ipc_perm_t, ipc_pid_t, time_t};
+
 /// ipcs ctl commands
 pub const MSG_STAT: i32 = 11;
 pub const MSG_INFO: i32 = 12;
@@ -17,35 +19,36 @@ pub const MSG_EXCEPT: i32 = 0o20000;
 /// copy (not remove) all queue messages
 pub const MSG_COPY: i32 = 0o40000;
 
-// TODO(Shaohua): Add compact mode
 // Obsolete, used only for backwards compatibility and libc5 compiles
-//pub struct msqid_ds_t {
-//    pub msg_perm: ipc_perm_t,
-//    /// first message on queue,unused
-//    pub msg_first: *mut msg_t,
-//    /// last message in queue,unused
-//    pub msg_last: *mut msg_t,
-//    /// last msgsnd time
-//    pub msg_stime: time_t,
-//    /// last msgrcv time
-//    pub msg_rtime: time_t,
-//    /// last change time
-//    pub msg_ctime: time_t,
-//    /// Reuse junk fields for 32 bit
-//    pub msg_lcbytes: usize,
-//    /// ditto
-//    pub msg_lqbytes: usize,
-//    /// current number of bytes on queue
-//    pub msg_cbytes: u16,
-//    /// number of messages in queue
-//    pub msg_qnum: u16,
-//    /// max number of bytes on queue
-//    pub msg_qbytes: u16,
-//    /// pid of last msgsnd
-//    pub msg_lspid: ipc_pid_t,
-//    /// last receive pid
-//    pub msg_lrpid: ipc_pid_t,
-//}
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct msqid_ds_t {
+    pub msg_perm: ipc_perm_t,
+    /// first message on queue,unused
+    pub msg_first: usize,
+    /// last message in queue,unused
+    pub msg_last: usize,
+    /// last msgsnd time
+    pub msg_stime: time_t,
+    /// last msgrcv time
+    pub msg_rtime: time_t,
+    /// last change time
+    pub msg_ctime: time_t,
+    /// Reuse junk fields for 32 bit
+    pub msg_lcbytes: usize,
+    /// ditto
+    pub msg_lqbytes: usize,
+    /// current number of bytes on queue
+    pub msg_cbytes: u16,
+    /// number of messages in queue
+    pub msg_qnum: u16,
+    /// max number of bytes on queue
+    pub msg_qbytes: u16,
+    /// pid of last msgsnd
+    pub msg_lspid: ipc_pid_t,
+    /// last receive pid
+    pub msg_lrpid: ipc_pid_t,
+}
 
 /// message buffer for msgsnd and msgrcv calls
 #[repr(C)]
@@ -108,4 +111,3 @@ pub const MSGMAP: i32 = MSGMNB;
 pub const MSGSSZ: i32 = 16;
 /// max no. of segments
 pub const MSGSEG: i32 = (MSGPOOL * 1024) / MSGSSZ;
-//pub const MSGSEG: i32 = (MSGSEG <= 0xffff ? MSGSEG : 0xffff)

@@ -4,7 +4,7 @@
 
 //! From `include/uapi/asm-generic/msgbuf.h`
 
-use crate::{ipc_perm_t, pid_t, time_t};
+use crate::{ipc64_perm_t, pid_t};
 
 /// Generic `msqid64_ds` structure.
 ///
@@ -22,16 +22,19 @@ use crate::{ipc_perm_t, pid_t, time_t};
 /// Pad space is left for:
 /// - 2 miscellaneous 32-bit values
 
+#[cfg(target_pointer_width = "64")]
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct msqid64_ds_t {
-    pub msg_perm: ipc_perm_t,
+    pub msg_perm: ipc64_perm_t,
+
     /// last msgsnd time
-    pub msg_stime: time_t,
+    pub msg_stime: isize,
     /// last msgrcv time
-    pub msg_rtime: time_t,
+    pub msg_rtime: isize,
     /// last change time
-    pub msg_ctime: time_t,
+    pub msg_ctime: isize,
+
     /// current number of bytes on queue
     pub msg_cbytes: usize,
     /// number of messages in queue
@@ -50,7 +53,8 @@ pub struct msqid64_ds_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct msqid64_ds_t {
-    pub msg_perm: ipc_perm_t,
+    pub msg_perm: ipc64_perm_t,
+
     /// last msgsnd time
     pub msg_stime: usize,
     pub msg_stime_high: usize,
@@ -60,6 +64,7 @@ pub struct msqid64_ds_t {
     /// last change time
     pub msg_ctime: usize,
     pub msg_ctime_high: usize,
+
     /// current number of bytes on queue
     pub msg_cbytes: usize,
     /// number of messages in queue
@@ -70,8 +75,6 @@ pub struct msqid64_ds_t {
     pub msg_lspid: pid_t,
     /// last receive pid
     pub msg_lrpid: pid_t,
-    unused4: u64,
-    unused5: u64,
+    unused4: usize,
+    unused5: usize,
 }
-
-pub type msqid_ds_t = msqid64_ds_t;

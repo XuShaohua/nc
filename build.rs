@@ -24,9 +24,18 @@ fn get_page_size() {
 }
 
 fn main() {
+    // Switch to new syntax in rust 1.77
+    //println!("cargo::rustc-check-cfg=cfg(has_asm)");
+    println!("cargo:rustc-check-cfg=cfg(has_asm)");
+
     let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_owned());
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_else(|_| "x86_64".to_owned());
-    // esi and ebp registers are not allowed in inline asm in x86/i686.
+    // - x86_64/aarch64/arm: support inline assembly in stable version
+    // - x86/i686: esi and ebp registers are not allowed in inline asm in x86/i686, so always
+    //   disable inline assembly
+    // - others: enable inline assembly in nightly version.
+    //
+    // Note that RUSTUP_TOOLCHAIN is not set in cross-rs docker.
     if (rustc_toolchain.starts_with("nightly") && target_arch != "x86")
         || target_arch == "aarch64"
         || target_arch == "arm"

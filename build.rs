@@ -30,7 +30,7 @@ fn main() {
 
     let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_owned());
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_else(|_| "x86_64".to_owned());
-    // - x86_64/aarch64/arm: support inline assembly in stable version
+    // - x86_64/aarch64/arm/riscv64: support inline assembly in stable version
     // - x86/i686: esi and ebp registers are not allowed in inline asm in x86/i686, so always
     //   disable inline assembly
     // - others: enable inline assembly in nightly version.
@@ -39,6 +39,7 @@ fn main() {
     if (rustc_toolchain.starts_with("nightly") && target_arch != "x86")
         || target_arch == "aarch64"
         || target_arch == "arm"
+        || target_arch == "riscv64"
         || target_arch == "x86_64"
     {
         println!("cargo:rustc-cfg=has_asm");

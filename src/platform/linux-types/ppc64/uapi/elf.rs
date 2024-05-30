@@ -6,7 +6,12 @@
 //!
 //! ELF register definitions..
 
-use crate::{__vector128_t, ELFCLASS64, ELFDATA2LSB, EM_PPC64};
+use crate::{__vector128_t, ELFCLASS64, EM_PPC64};
+
+#[cfg(target_endian = "little")]
+use crate::ELFDATA2LSB;
+#[cfg(target_endian = "big")]
+use crate::ELFDATA2MSB;
 
 /// PowerPC relocations defined by the ABIs
 pub const R_PPC_NONE: usize = 0;

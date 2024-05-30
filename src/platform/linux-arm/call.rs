@@ -6090,7 +6090,6 @@ pub unsafe fn semtimedop(
 pub unsafe fn send(sockfd: i32, buf: &[u8], len: size_t, flags: i32) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let buf_ptr = buf.as_ptr() as usize;
-    let len = len as usize;
     let flags = flags as usize;
     syscall4(SYS_SEND, sockfd, buf_ptr, len, flags).map(|ret| ret as ssize_t)
 }

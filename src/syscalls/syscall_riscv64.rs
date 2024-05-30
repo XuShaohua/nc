@@ -12,55 +12,47 @@ use super::types::{check_errno, Errno, Sysno};
 
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
-    let mut a7: usize = n;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), 
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
-    let mut a7: usize = n;
-    let mut a0: usize = a1;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), "r{a0}"(a0)
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         in("a0") a1,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
-    let mut a7: usize = n;
-    let mut a0: usize = a1;
-    let mut a1: usize = a2;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), "r{a0}"(a0), "r{a1}"(a1)
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         in("a0") a1,
+         in("a1") a2,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
-    let mut a7: usize = n;
-    let mut a0: usize = a1;
-    let mut a1: usize = a2;
-    let mut a2: usize = a3;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), "r{a0}"(a0), "r{a1}"(a1), "r{a2}"(a2)
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         in("a0") a1,
+         in("a1") a2,
+         in("a2") a3,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }
 
@@ -72,17 +64,15 @@ pub unsafe fn syscall4(
     a3: usize,
     a4: usize,
 ) -> Result<usize, Errno> {
-    let mut a7: usize = n;
-    let mut a0: usize = a1;
-    let mut a1: usize = a2;
-    let mut a2: usize = a3;
-    let mut a3: usize = a4;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), "r{a0}"(a0), "r{a1}"(a1), "r{a2}"(a2), "r{a3}"(a3)
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         in("a0") a1,
+         in("a1") a2,
+         in("a2") a3,
+         in("a3") a4,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }
 
@@ -95,18 +85,16 @@ pub unsafe fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    let mut a7: usize = n;
-    let mut a0: usize = a1;
-    let mut a1: usize = a2;
-    let mut a2: usize = a3;
-    let mut a3: usize = a4;
-    let mut a4: usize = a5;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), "r{a0}"(a0), "r{a1}"(a1), "r{a2}"(a2), "r{a3}"(a3), "r{a4}"(a4)
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         in("a0") a1,
+         in("a1") a2,
+         in("a2") a3,
+         in("a3") a4,
+         in("a4") a5,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }
 
@@ -120,18 +108,16 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    let mut a7: usize = n;
-    let mut a0: usize = a1;
-    let mut a1: usize = a2;
-    let mut a2: usize = a3;
-    let mut a3: usize = a4;
-    let mut a4: usize = a5;
-    let mut a5: usize = a6;
     let ret: usize;
-    llvm_asm!("ecall",
-        : "=r{a0}")(ret)
-        : "r{a7}"(a7), "r{a0}"(a0), "r{a1}"(a1), "r{a2}"(a2), "r{a3}"(a3), "r{a4}"(a4), "r{a5}"(a5)
-        : "memory"
-        : "volatile");
+    asm!("ecall",
+         in("a7") n,
+         in("a0") a1,
+         in("a1") a2,
+         in("a2") a3,
+         in("a3") a4,
+         in("a4") a5,
+         in("a5") a6,
+         lateout("a0") ret
+    );
     check_errno(ret)
 }

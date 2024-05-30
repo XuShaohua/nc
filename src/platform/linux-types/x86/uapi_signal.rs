@@ -77,7 +77,7 @@ impl Default for sigaction_u_t {
 impl fmt::Debug for sigaction_u_t {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let ptr = unsafe { self.sa_handler };
-        write!(f, "sigaction_u_t: {}", ptr)
+        write!(f, "sigaction_u_t: {ptr}")
     }
 }
 

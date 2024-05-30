@@ -6670,7 +6670,7 @@ pub unsafe fn sigaltstack(uss: &sigaltstack_t, uoss: &mut sigaltstack_t) -> Resu
 
 /// Signal handling.
 ///
-/// Deprecated. Use sigaction() instead.
+/// Deprecated. Use `sigaction()` instead.
 ///
 /// # Example
 ///

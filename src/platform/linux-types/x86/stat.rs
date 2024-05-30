@@ -39,9 +39,9 @@ pub const STAT64_HAS_BROKEN_ST_INO: i32 = 1;
 #[derive(Clone, Default, Debug)]
 pub struct stat64_t {
     pub st_dev: u64,
-    pad0: [u8; 4],
+    __pad0: [u8; 4],
 
-    pub __st_ino: usize,
+    __st_ino: usize,
 
     pub st_mode: u32,
     pub st_nlink: u32,
@@ -50,7 +50,7 @@ pub struct stat64_t {
     pub st_gid: usize,
 
     pub st_rdev: u64,
-    pad3: [u8; 4],
+    __pad3: [u8; 4],
 
     pub st_size: i64,
     pub st_blksize: usize,

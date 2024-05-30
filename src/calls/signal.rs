@@ -1,6 +1,6 @@
 /// Signal handling.
 ///
-/// Deprecated. Use sigaction() instead.
+/// Deprecated. Use `sigaction()` instead.
 ///
 /// # Example
 ///

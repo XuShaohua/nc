@@ -1,13 +1,12 @@
 
 cross-all: cross-aarch64 cross-arm cross-i686 \
-	cross-mips cross-mips64 cross-mips64el cross-mipsel \
 	cross-powerpc64le cross-s390x cross-x86_64
 
 define run-cross
-	cross build --target $(1)
+	cross -v +nightly build --target $(1)
 	cross doc --target $(1)
 	cross test --target $(1) || true
-	cross +nightly build --target $(1)
+	cross -v +nightly build --target $(1)
 	cross +nightly doc --target $(1)
 	cross +nightly test --target $(1) || true
 endef
@@ -34,19 +33,19 @@ cross-i686:
 
 cross-mips:
 # See: https://github.com/rust-lang/rust/issues/115218
-#$(call run-cross, mips-unknown-linux-gnu)
+	$(call run-cross, mips-unknown-linux-gnu)
 	$(call run-cross, mips-unknown-linux-musl)
 
 cross-mips64:
-#$(call run-cross, mips64-unknown-linux-gnuabi64)
+	$(call run-cross, mips64-unknown-linux-gnuabi64)
 	$(call run-cross, mips64-unknown-linux-muslabi64)
 
 cross-mips64el:
-#$(call run-cross, mips64el-unknown-linux-gnuabi64)
+	$(call run-cross, mips64el-unknown-linux-gnuabi64)
 	$(call run-cross, mips64el-unknown-linux-muslabi64)
 
 cross-mipsel:
-#$(call run-cross, mipsel-unknown-linux-gnu)
+	$(call run-cross, mipsel-unknown-linux-gnu)
 	$(call run-cross, mipsel-unknown-linux-musl)
 
 cross-powerpc64:

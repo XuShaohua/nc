@@ -105,6 +105,7 @@ As `llvm_asm!` feature is unavailable in stable version.
   - mips64el
   - mipsel
   - powerpc64
+  - powerpc64el
   - riscv64
   - s390x
   - x86

@@ -46,6 +46,7 @@ mod socket;
 mod sockios;
 mod statfs;
 mod termbits;
+mod termbits_common;
 mod termios;
 
 pub use fcntl::*;
@@ -66,4 +67,5 @@ pub use socket::*;
 pub use sockios::*;
 pub use statfs::*;
 pub use termbits::*;
+pub use termbits_common::*;
 pub use termios::*;

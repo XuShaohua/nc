@@ -101,6 +101,7 @@
 //!   - mips64el
 //!   - mipsel
 //!   - powerpc64
+//!   - powerpc64le
 //!   - riscv64
 //!   - s390x
 //!   - x86

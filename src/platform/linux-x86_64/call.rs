@@ -3274,6 +3274,11 @@ pub unsafe fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno
     syscall3(SYS_MADVISE, addr, len, advice).map(drop)
 }
 
+pub unsafe fn map_shadow_stack(addr: usize, size: usize, flags: u32) -> Result<usize, Errno> {
+    let flags = flags as usize;
+    syscall3(SYS_MAP_SHADOW_STACK, addr, size, flags)
+}
+
 /// Set memory policy for a memory range.
 pub unsafe fn mbind(
     start: usize,

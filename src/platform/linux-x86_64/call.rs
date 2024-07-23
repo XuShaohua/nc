@@ -184,7 +184,7 @@ pub unsafe fn brk(addr: usize) -> Result<(), Errno> {
     syscall1(SYS_BRK, addr).map(drop)
 }
 
-/// cachestat() returns the page cache statistics of a file in the
+/// `cachestat()` returns the page cache statistics of a file in the
 /// bytes range specified by `off` and `len`: number of cached pages,
 /// number of dirty pages, number of pages marked for writeback,
 /// number of evicted pages, and number of recently evicted pages.
@@ -204,13 +204,13 @@ pub unsafe fn brk(addr: usize) -> Result<(), Errno> {
 ///
 /// Currently, hugetlbfs is not supported.
 ///
-/// Because the status of a page can change after cachestat() checks it
+/// Because the status of a page can change after `cachestat()` checks it
 /// but before it returns to the application, the returned values may
 /// contain stale information.
 ///
 /// return values:
 ///   - zero       - success
-///   - EFAULT     - cstat or cstat_range points to an illegal address
+///   - EFAULT     - cstat or `cstat_range` points to an illegal address
 ///   - EINVAL     - invalid flags
 ///   - EBADF      - invalid file descriptor
 ///   - EOPNOTSUPP - file descriptor is of a hugetlbfs file
@@ -6953,6 +6953,18 @@ pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<
     let filename_ptr = filename.as_ptr() as usize;
     let buf_ptr = buf as *mut statfs_t as usize;
     syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(drop)
+}
+
+pub unsafe fn statmount(
+    req: &mnt_id_req_t,
+    buf: &mut [statmount_t],
+    flags: u32,
+) -> Result<(), Errno> {
+    let req_ptr = req as *const mnt_id_req_t as usize;
+    let buf_ptr = buf.as_mut_ptr() as usize;
+    let buf_size = buf.len();
+    let flags = flags as usize;
+    syscall4(SYS_STATMOUNT, req_ptr, buf_ptr, buf_size, flags).map(drop)
 }
 
 /// Get file status about a file (extended).

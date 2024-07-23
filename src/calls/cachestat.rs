@@ -1,4 +1,4 @@
-/// cachestat() returns the page cache statistics of a file in the
+/// `cachestat()` returns the page cache statistics of a file in the
 /// bytes range specified by `off` and `len`: number of cached pages,
 /// number of dirty pages, number of pages marked for writeback,
 /// number of evicted pages, and number of recently evicted pages.
@@ -18,13 +18,13 @@
 ///
 /// Currently, hugetlbfs is not supported.
 ///
-/// Because the status of a page can change after cachestat() checks it
+/// Because the status of a page can change after `cachestat()` checks it
 /// but before it returns to the application, the returned values may
 /// contain stale information.
 ///
 /// return values:
 ///   - zero       - success
-///   - EFAULT     - cstat or cstat_range points to an illegal address
+///   - EFAULT     - cstat or `cstat_range` points to an illegal address
 ///   - EINVAL     - invalid flags
 ///   - EBADF      - invalid file descriptor
 ///   - EOPNOTSUPP - file descriptor is of a hugetlbfs file

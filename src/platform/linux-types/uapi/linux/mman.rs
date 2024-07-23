@@ -47,3 +47,20 @@ pub const MAP_HUGE_512MB: usize = HUGETLB_FLAG_ENCODE_512MB;
 pub const MAP_HUGE_1GB: usize = HUGETLB_FLAG_ENCODE_1GB;
 pub const MAP_HUGE_2GB: usize = HUGETLB_FLAG_ENCODE_2GB;
 pub const MAP_HUGE_16GB: usize = HUGETLB_FLAG_ENCODE_16GB;
+
+#[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
+pub struct cachestat_range_t {
+    pub off: u64,
+    pub len: u64,
+}
+
+#[repr(C)]
+#[derive(Debug, Default, Clone, Copy)]
+pub struct cachestat_t {
+    pub nr_cache: u64,
+    pub nr_dirty: u64,
+    pub nr_writeback: u64,
+    pub nr_evicted: u64,
+    pub nr_recently_evicted: u64,
+}

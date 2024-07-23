@@ -9,6 +9,10 @@ use crate::{cc_t, speed_t};
 pub type tcflag_t = u32;
 
 pub const NCCS: usize = 19;
+// NOTE(Shaohua): It's strange that NCCS is defined in glibc and musl with
+// value 32, which is not present in kernel header.
+// See: https://github.com/dcuddeback/termios-rs/issues/9
+//pub const NCCS: usize = 32;
 
 #[allow(clippy::module_name_repetitions)]
 #[repr(C)]

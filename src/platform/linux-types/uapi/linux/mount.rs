@@ -4,6 +4,10 @@
 
 //! From `include/uapi/linux/mount.h`
 
+#![allow(clippy::module_name_repetitions)]
+
+use crate::O_CLOEXEC;
+
 /// These are the fs-independent mount-flags: up to 32 flags are supported
 ///
 /// Usage of these is restricted within the kernel to core mount(2) code and
@@ -72,3 +76,194 @@ pub const MS_RMT_MASK: usize =
 /// Old magic mount flag and mask
 pub const MS_MGC_VAL: usize = 0xC0ED_0000;
 pub const MS_MGC_MSK: usize = 0xffff_0000;
+
+/// `open_tree()` flags.
+/// Clone the target tree and attach the clone
+pub const OPEN_TREE_CLONE: i32 = 1;
+/// Close the file on `execve()`
+pub const OPEN_TREE_CLOEXEC: i32 = O_CLOEXEC;
+
+/// `move_mount()` flags.
+/// Follow symlinks on from path
+pub const MOVE_MOUNT_F_SYMLINKS: i32 = 0x0000_0001;
+/// Follow automounts on from path
+pub const MOVE_MOUNT_F_AUTOMOUNTS: i32 = 0x0000_0002;
+/// Empty from path permitted
+pub const MOVE_MOUNT_F_EMPTY_PATH: i32 = 0x0000_0004;
+/// Follow symlinks on to path
+pub const MOVE_MOUNT_T_SYMLINKS: i32 = 0x0000_0010;
+/// Follow automounts on to path
+pub const MOVE_MOUNT_T_AUTOMOUNTS: i32 = 0x0000_0020;
+/// Empty to path permitted
+pub const MOVE_MOUNT_T_EMPTY_PATH: i32 = 0x0000_0040;
+/// Set sharing group instead
+pub const MOVE_MOUNT_SET_GROUP: i32 = 0x0000_0100;
+/// Mount beneath top mount
+pub const MOVE_MOUNT_BENEATH: i32 = 0x0000_0200;
+pub const MOVE_MOUNT__MASK: i32 = 0x0000_0377;
+
+/// `fsopen()` flags.
+pub const FSOPEN_CLOEXEC: i32 = 0x0000_0001;
+
+/// `fspick()` flags.
+pub const FSPICK_CLOEXEC: i32 = 0x0000_0001;
+pub const FSPICK_SYMLINK_NOFOLLOW: i32 = 0x0000_0002;
+pub const FSPICK_NO_AUTOMOUNT: i32 = 0x0000_0004;
+pub const FSPICK_EMPTY_PATH: i32 = 0x0000_0008;
+
+/// The type of `fsconfig()` call made.
+//pub enum fsconfig_command_e {
+/// Set parameter, supplying no value
+pub const FSCONFIG_SET_FLAG: i32 = 0;
+/// Set parameter, supplying a string value
+pub const FSCONFIG_SET_STRING: i32 = 1;
+/// Set parameter, supplying a binary blob value
+pub const FSCONFIG_SET_BINARY: i32 = 2;
+/// Set parameter, supplying an object by path
+pub const FSCONFIG_SET_PATH: i32 = 3;
+/// Set parameter, supplying an object by (empty) path
+pub const FSCONFIG_SET_PATH_EMPTY: i32 = 4;
+/// Set parameter, supplying an object by fd
+pub const FSCONFIG_SET_FD: i32 = 5;
+/// Create new or reuse existing superblock
+pub const FSCONFIG_CMD_CREATE: i32 = 6;
+/// Invoke superblock reconfiguration
+pub const FSCONFIG_CMD_RECONFIGURE: i32 = 7;
+/// Create new superblock, fail if reusing existing superblock
+pub const FSCONFIG_CMD_CREATE_EXCL: i32 = 8;
+
+/// `fsmount()` flags.
+pub const FSMOUNT_CLOEXEC: i32 = 0x0000_0001;
+
+/// Mount attributes.
+/// Mount read-only
+pub const MOUNT_ATTR_RDONLY: i32 = 0x0000_0001;
+/// Ignore suid and sgid bits
+pub const MOUNT_ATTR_NOSUID: i32 = 0x0000_0002;
+/// Disallow access to device special files
+pub const MOUNT_ATTR_NODEV: i32 = 0x0000_0004;
+/// Disallow program execution
+pub const MOUNT_ATTR_NOEXEC: i32 = 0x0000_0008;
+/// Setting on how atime should be updated
+pub const MOUNT_ATTR__ATIME: i32 = 0x0000_0070;
+/// - Update atime relative to mtime/ctime.
+pub const MOUNT_ATTR_RELATIME: i32 = 0x0000_0000;
+/// - Do not update access times.
+pub const MOUNT_ATTR_NOATIME: i32 = 0x0000_0010;
+/// - Always perform atime updates
+pub const MOUNT_ATTR_STRICTATIME: i32 = 0x0000_0020;
+/// Do not update directory access times
+pub const MOUNT_ATTR_NODIRATIME: i32 = 0x0000_0080;
+/// Idmap mount to @`userns_fd` in struct `mount_attr`.
+pub const MOUNT_ATTR_IDMAP: i32 = 0x0010_0000;
+/// Do not follow symlinks
+pub const MOUNT_ATTR_NOSYMFOLLOW: i32 = 0x0020_0000;
+
+/// `mount_setattr()`
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct mount_attr_t {
+    pub attr_set: u64,
+    pub attr_clr: u64,
+    pub program: u64,
+    pub userns_fd: u64,
+}
+
+/// List of all `mount_attr` versions.
+/// sizeof first published struct
+pub const MOUNT_ATTR_SIZE_VER0: i32 = 32;
+
+/// Structure for getting mount/superblock/filesystem info with `statmount(2)`.
+///
+/// The interface is similar to `statx(2)`: individual fields or groups can be
+/// selected with the `mask` argument of `statmount()`.
+/// Kernel will set the `mask` field according to the supported fields.
+///
+/// If string fields are selected, then the caller needs to pass a buffer that
+/// has space after the fixed part of the structure.
+/// Nul terminated strings are copied there and offsets relative to `str_` are stored
+/// in the relevant fields.
+///
+/// If the buffer is too small, then `EOVERFLOW` is returned.
+/// The actually used size is returned in `size`.
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct statmount_t {
+    /// Total size, including strings
+    pub size: u32,
+    __spare1: u32,
+
+    /// What results were written
+    pub mask: u64,
+    /// Device ID
+    pub sb_dev_major: u32,
+    pub sb_dev_minor: u32,
+
+    /// ...`_SUPER_MAGIC`
+    pub sb_magic: u64,
+    /// `SB_{RDONLY,SYNCHRONOUS,DIRSYNC,LAZYTIME}`
+    pub sb_flags: u32,
+    /// `[str]` Filesystem type
+    pub fs_type: u32,
+    /// Unique ID of mount
+    pub mnt_id: u64,
+    /// Unique ID of parent (for `root == mnt_id`)
+    pub mnt_parent_id: u64,
+    /// Reused IDs used in proc/.../mountinfo
+    pub mnt_id_old: u32,
+    pub mnt_parent_id_old: u32,
+    /// `MOUNT_ATTR`_...
+    pub mnt_attr: u64,
+    /// `MS_{SHARED,SLAVE,PRIVATE,UNBINDABLE}`
+    pub mnt_propagation: u64,
+    /// ID of shared peer group
+    pub mnt_peer_group: u64,
+    /// Mount receives propagation from this ID
+    pub mnt_master: u64,
+    /// Propagation from in current namespace
+    pub propagate_from: u64,
+    /// [str] Root of mount relative to root of fs
+    pub mnt_root: u32,
+    /// [str] Mountpoint relative to current root
+    pub mnt_point: u32,
+    //__spare2: [u64; 50],
+    __spare2: [u128; 25],
+    /// Variable size part containing strings
+    pub str_: [u8; 1],
+}
+
+/// Structure for passing mount ID and miscellaneous parameters to `statmount(2)`
+/// and `listmount(2)`.
+///
+/// For `statmount(2)` `param` represents the request mask.
+/// For `listmount(2)` `param` represents the last listed mount id (or zero).
+#[repr(C)]
+#[derive(Debug, Default, Clone)]
+pub struct mnt_id_req_t {
+    pub size: u32,
+    pub spare: u32,
+    pub mnt_id: u64,
+    pub param: u64,
+}
+
+/// List of all `mnt_id_req` versions.
+/// sizeof first published struct
+pub const MNT_ID_REQ_SIZE_VER0: i32 = 24;
+
+/// `mask` bits for `statmount(2)`
+/// Want/got sb_...
+pub const STATMOUNT_SB_BASIC: u32 = 0x0000_0001;
+/// Want/got mnt_...
+pub const STATMOUNT_MNT_BASIC: u32 = 0x0000_0002;
+/// Want/got `propagate_from`
+pub const STATMOUNT_PROPAGATE_FROM: u32 = 0x0000_0004;
+/// Want/got `mnt_root`
+pub const STATMOUNT_MNT_ROOT: u32 = 0x0000_0008;
+/// Want/got `mnt_point`
+pub const STATMOUNT_MNT_POINT: u32 = 0x0000_0010;
+/// Want/got `fs_type`
+pub const STATMOUNT_FS_TYPE: u32 = 0x0000_0020;
+
+/// Special `mnt_id` values that can be passed to listmount
+/// root mount
+pub const LSMT_ROOT: u64 = 0xffff_ffff_ffff_ffff;

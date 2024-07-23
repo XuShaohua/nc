@@ -2,7 +2,7 @@
 pub unsafe fn add_key<P: AsRef<Path>>(
     type_: P,
     description: P,
-    payload: usize,
+    payload: uintptr_t,
     plen: size_t,
     dest_keyring: key_serial_t,
 ) -> Result<key_serial_t, Errno> {

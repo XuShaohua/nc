@@ -91,7 +91,7 @@ pub unsafe fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 pub unsafe fn add_key<P: AsRef<Path>>(
     type_: P,
     description: P,
-    payload: usize,
+    payload: uintptr_t,
     plen: size_t,
     dest_keyring: key_serial_t,
 ) -> Result<key_serial_t, Errno> {
@@ -432,13 +432,12 @@ pub unsafe fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(
 
 /// Create a child process.
 pub unsafe fn clone(
-    clone_flags: i32,
+    clone_flags: usize,
     newsp: usize,
     parent_tid: &mut i32,
     child_tid: &mut i32,
     tls: usize,
 ) -> Result<pid_t, Errno> {
-    let clone_flags = clone_flags as usize;
     let parent_tid_ptr = parent_tid as *mut i32 as usize;
     let child_tid_ptr = child_tid as *mut i32 as usize;
     syscall5(
@@ -462,11 +461,12 @@ pub unsafe fn clone(
 /// args.exit_signal = nc::SIGCHLD as u64;
 /// args.pidfd = &mut pid_fd as *mut i32 as usize as u64;
 /// args.flags = nc::CLONE_PIDFD as u64 | nc::CLONE_PARENT_SETTID as u64;
-/// let pid = unsafe { nc::clone3(&mut args, core::mem::size_of::<nc::clone_args_t>()) };
+/// let pid = unsafe { nc::clone3(&mut args) };
 /// assert!(pid.is_ok());
 /// ```
-pub unsafe fn clone3(cl_args: &mut clone_args_t, size: size_t) -> Result<pid_t, Errno> {
+pub unsafe fn clone3(cl_args: &mut clone_args_t) -> Result<pid_t, Errno> {
     let cl_args_ptr = cl_args as *mut clone_args_t as usize;
+    let size = core::mem::size_of::<clone_args_t>();
     syscall2(SYS_CLONE3, cl_args_ptr, size).map(|ret| ret as pid_t)
 }
 

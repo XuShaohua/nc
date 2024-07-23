@@ -163,9 +163,9 @@ def read_errno(arch_name):
 
 def parse_errno(content):
     # For `define    EKEYEXPIRED     127     /* Key has expired */`
-    errno_pattern = re.compile("^#define\s+(E\w+)\s+(\d+)\s+/\\*([^\\*]+)\\*/")
+    errno_pattern = re.compile(r"^#define\s+(E\w+)\s+(\d+)\s+/\*([^\*]+)\*/")
     # For `define   EDEADLOCK       EDEADLK`
-    alias_pattern = re.compile("^#define\s+(E\w+)\s+(E\w+)")
+    alias_pattern = re.compile(r"^#define\s+(E\w+)\s+(E\w+)")
     errors = []
     for line in content.split('\n'):
         m = errno_pattern.match(line)
@@ -214,11 +214,11 @@ def parse_sysno(content):
         "",
     ]
 
-    pattern0 = re.compile("^#define __NR_Linux\s+([0-9]+)")
-    pattern1 = re.compile("^#define __NR_(\w+)\s+(\d+)")
-    pattern2 = re.compile("^#define __NR_(\w+)\s+\(__NR_Linux \+ ([0-9]+)")
-    pattern3 = re.compile("^#define __NR3264_(\w+)\s+([0-9]+)")
-    pattern4 = re.compile("^#define __NR_(\w+)\s+\(\w+\s+\+\s+([0-9]+)\)")
+    pattern0 = re.compile(r"^#define __NR_Linux\s+([0-9]+)")
+    pattern1 = re.compile(r"^#define __NR_(\w+)\s+(\d+)")
+    pattern2 = re.compile(r"^#define __NR_(\w+)\s+\(__NR_Linux \+ ([0-9]+)")
+    pattern3 = re.compile(r"^#define __NR3264_(\w+)\s+([0-9]+)")
+    pattern4 = re.compile(r"^#define __NR_(\w+)\s+\(\w+\s+\+\s+([0-9]+)\)")
     prev = 0
     offset = 0
 

@@ -585,19 +585,15 @@ pub unsafe fn epoll_ctl(
 /// let ret = unsafe { nc::write(fds[1], msg.as_ptr() as usize, msg.len()) };
 /// assert!(ret.is_ok());
 ///
-/// let mut events = vec![nc::epoll_event_t::default(); 4];
-/// let events_len = events.len();
+/// let mut events = [nc::epoll_event_t::default(); 4];
 /// let timeout = 0;
-/// let sigmask = nc::sigset_t::default();
-/// let sigmask_size = core::mem::size_of_val(&sigmask);
+/// let sigmask = [nc::sigset_t::default(); 4];
 /// let ret = unsafe {
 ///     nc::epoll_pwait(
 ///         epfd,
 ///         &mut events,
-///         events_len as i32,
 ///         timeout,
 ///         &sigmask,
-///         sigmask_size,
 ///     )
 /// };
 /// assert!(ret.is_ok());
@@ -608,9 +604,8 @@ pub unsafe fn epoll_ctl(
 ///     if event.events == nc::EPOLLIN {
 ///         let ready_fd = unsafe { event.data.fd };
 ///         assert_eq!(ready_fd, fds[0]);
-///         let mut buf = vec![0_u8; 64];
-///         let buf_len = buf.len();
-///         let ret = unsafe { nc::read(ready_fd, buf.as_mut_ptr() as usize, buf_len) };
+///         let mut buf = [0_u8; 64];
+///         let ret = unsafe { nc::read(ready_fd, buf.as_mut_ptr() as usize, buf.len()) };
 ///         assert!(ret.is_ok());
 ///         let n_read = ret.unwrap() as usize;
 ///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
@@ -627,16 +622,15 @@ pub unsafe fn epoll_ctl(
 pub unsafe fn epoll_pwait(
     epfd: i32,
     events: &mut [epoll_event_t],
-    max_events: i32,
     timeout: i32,
-    sigmask: &sigset_t,
-    sigset_size: usize,
+    sigmask: &[sigset_t],
 ) -> Result<i32, Errno> {
     let epfd = epfd as usize;
     let events_ptr = events.as_mut_ptr() as usize;
-    let max_events = max_events as usize;
+    let max_events = events.len();
     let timeout = timeout as usize;
-    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let sigmask_ptr = sigmask.as_ptr() as usize;
+    let sigset_size = sigmask.len();
     syscall6(
         SYS_EPOLL_PWAIT,
         epfd,

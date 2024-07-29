@@ -9,7 +9,7 @@
 /// assert!(ret.is_ok());
 ///
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
-/// let ret = unsafe { nc::getcwd(buf.as_mut_ptr() as usize, buf.len()) };
+/// let ret = unsafe { nc::getcwd(&mut buf) };
 /// assert!(ret.is_ok());
 /// // Remove null-terminal char.
 /// let path_len = ret.unwrap() as usize - 1;

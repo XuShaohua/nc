@@ -4,7 +4,7 @@
 
 use core::mem::{size_of, size_of_val};
 
-#[no_mango]
+#[no_mangle]
 fn handle_alarm(signum: i32) {
     println!("handle alarm");
     assert_eq!(signum, nc::SIGALRM);

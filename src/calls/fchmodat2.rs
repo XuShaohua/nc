@@ -18,7 +18,7 @@
 /// let fd = fd.unwrap();
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// let ret = unsafe { nc::fchmodat2(nc::AT_FDCWD, filename, 0o600, nc::AT_SYMLINK_NOFOLLOW) };
+/// let ret = unsafe { nc::fchmodat2(nc::AT_FDCWD, filename, 0o600, nc::AT_SYMLINK_NOFOLLOW as u32) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
 /// assert!(ret.is_ok());

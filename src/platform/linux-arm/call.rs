@@ -232,7 +232,7 @@ pub unsafe fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Re
 /// assert!(ret.is_ok());
 ///
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
-/// let ret = unsafe { nc::getcwd(buf.as_mut_ptr() as usize, buf.len()) };
+/// let ret = unsafe { nc::getcwd(&mut buf) };
 /// assert!(ret.is_ok());
 /// // Remove null-terminal char.
 /// let path_len = ret.unwrap() as usize - 1;
@@ -1142,7 +1142,7 @@ pub unsafe fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) ->
 /// let fd = fd.unwrap();
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
-/// let ret = unsafe { nc::fchmodat2(nc::AT_FDCWD, filename, 0o600, nc::AT_SYMLINK_NOFOLLOW) };
+/// let ret = unsafe { nc::fchmodat2(nc::AT_FDCWD, filename, 0o600, nc::AT_SYMLINK_NOFOLLOW as u32) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
 /// assert!(ret.is_ok());

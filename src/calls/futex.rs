@@ -1,4 +1,11 @@
 /// Fast user-space locking.
+///
+/// Parameters
+/// - `uaddr`: futex user address
+/// - `op`: futex operations
+/// - `val`: expected value
+/// - `utime`: waiting timeout
+/// - `uaddr2`: target futext user address used for requeue
 pub unsafe fn futex(
     uaddr: &AtomicU32,
     op: i32,

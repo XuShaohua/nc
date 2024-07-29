@@ -23,15 +23,17 @@
 /// refer to any one of them. (It is not necessaryily the futex with the
 /// smallest index, nor the one most recently woken, nor...)
 pub unsafe fn futex_waitv(
-    waiters: &mut [futex_waitv_t],
+    waiters: &[futex_waitv_t],
     flags: u32,
-    timeout: &mut timespec_t,
+    timeout: Option<&timespec_t>,
     clockid: clockid_t,
 ) -> Result<i32, Errno> {
-    let waiters_ptr = waiters.as_mut_ptr() as usize;
+    let waiters_ptr = waiters.as_ptr() as usize;
     let waiters_len = waiters.len();
     let flags = flags as usize;
-    let timeout_ptr = timeout as *mut timespec_t as usize;
+    let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
+        timeout as *const timespec_t as usize
+    });
     let clockid = clockid as usize;
     syscall5(
         SYS_FUTEX_WAITV,

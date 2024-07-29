@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Copyright (c) 2024 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
@@ -11,6 +11,7 @@
 #![allow(clippy::wildcard_imports)]
 
 extern crate alloc;
+use core::sync::atomic::AtomicU32;
 
 use crate::c_str::CString;
 use crate::path::Path;
@@ -1814,30 +1815,76 @@ pub unsafe fn ftruncate64(fd: i32, len: loff_t) -> Result<(), Errno> {
 }
 
 /// Fast user-space locking.
+///
+/// Parameters
+/// - `uaddr`: futex user address
+/// - `op`: futex operations
+/// - `val`: expected value
+/// - `utime`: waiting timeout
+/// - `uaddr2`: target futext user address used for requeue
+///
+/// # Examples
+///
+/// ```rust
+/// use std::sync::atomic::{AtomicU32, Ordering};
+/// use std::thread;
+/// use std::time::Duration;
+///
+/// const NOTIFY_WAIT: u32 = 0;
+/// const NOTIFY_WAKE: u32 = 1;
+///
+/// fn wake_one(count: &AtomicU32) {
+///     let ret = unsafe { nc::futex(count, nc::FUTEX_WAKE, NOTIFY_WAKE, None, None, 0) };
+///     assert!(ret.is_ok());
+/// }
+///
+/// fn wait(count: &AtomicU32, expected: u32) {
+///     let ret = unsafe { nc::futex(count, nc::FUTEX_WAIT, expected, None, None, 0) };
+///     assert!(ret.is_ok());
+/// }
+///
+/// fn main() {
+///     let notify = AtomicU32::new(0);
+///
+///     thread::scope(|s| {
+///         // Create the notify thread.
+///         s.spawn(|| {
+///             // Wake up some other threads after one second.
+///             println!("[notify] Sleep for 1s");
+///             thread::sleep(Duration::from_secs(1));
+///             println!("[notify] Wake up main thread");
+///             notify.store(NOTIFY_WAKE, Ordering::Relaxed);
+///             wake_one(&notify);
+///         });
+///
+///         // Main thread will wait until the notify thread wakes it up.
+///         println!("[main] Waiting for notification..");
+///         while notify.load(Ordering::Relaxed) == NOTIFY_WAIT {
+///             wait(&notify, NOTIFY_WAIT);
+///         }
+///         println!("[main] Got wake up");
+///     });
+/// }
+/// ```
 pub unsafe fn futex(
-    uaddr: &mut i32,
-    futex_op: i32,
+    uaddr: &AtomicU32,
+    op: i32,
     val: u32,
-    timeout: &mut timespec_t,
-    uaddr2: &mut i32,
-    val3: i32,
+    utime: Option<&timespec_t>,
+    uaddr2: Option<&AtomicU32>,
+    val3: u32,
 ) -> Result<i32, Errno> {
-    let uaddr_ptr = uaddr as *mut i32 as usize;
-    let futex_op = futex_op as usize;
+    let uaddr_ptr = uaddr as *const AtomicU32 as usize;
+    let op = op as usize;
     let val = val as usize;
-    let timeout_ptr = timeout as *mut timespec_t as usize;
-    let uaddr2_ptr = uaddr2 as *mut i32 as usize;
+    let utime_ptr = utime.map_or(core::ptr::null::<timespec_t>() as usize, |time_ref| {
+        time_ref as *const timespec_t as usize
+    });
+    let uaddr2_ptr = uaddr2.map_or(core::ptr::null::<AtomicU32>() as usize, |uaddr2_ref| {
+        uaddr2_ref as *const AtomicU32 as usize
+    });
     let val3 = val3 as usize;
-    syscall6(
-        SYS_FUTEX,
-        uaddr_ptr,
-        futex_op,
-        val,
-        timeout_ptr,
-        uaddr2_ptr,
-        val3,
-    )
-    .map(|ret| ret as i32)
+    syscall6(SYS_FUTEX, uaddr_ptr, op, val, utime_ptr, uaddr2_ptr, val3).map(|ret| ret as i32)
 }
 
 /// Requeue a waiter from one futex to another.
@@ -1869,21 +1916,23 @@ pub unsafe fn futex_requeue(
 /// - `mask`: bitmask
 /// - `flags`: `FUTEX2` flags
 /// - `timeout`: Optional absolute timeout
-/// `clockid`: Clock to be used for the timeout, realtime or monotonic
+/// - `clockid`: Clock to be used for the timeout, realtime or monotonic
 ///
 /// Identical to the traditional `FUTEX_WAIT_BITSET` op, except it is part of the
 /// futex2 familiy of calls.
 pub unsafe fn futex_wait(
-    uaddr: *mut (),
+    uaddr: *const (),
     val: usize,
     mask: usize,
     flags: u32,
-    timeout: &mut timespec_t,
+    timeout: Option<&timespec_t>,
     clockid: clockid_t,
 ) -> Result<(), Errno> {
     let uaddr = uaddr as usize;
     let flags = flags as usize;
-    let timeout_ptr = timeout as *mut timespec_t as usize;
+    let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
+        timeout as *const timespec_t as usize
+    });
     let clockid = clockid as usize;
     syscall6(
         SYS_FUTEX_WAIT,
@@ -1922,15 +1971,17 @@ pub unsafe fn futex_wait(
 /// refer to any one of them. (It is not necessaryily the futex with the
 /// smallest index, nor the one most recently woken, nor...)
 pub unsafe fn futex_waitv(
-    waiters: &mut [futex_waitv_t],
+    waiters: &[futex_waitv_t],
     flags: u32,
-    timeout: &mut timespec_t,
+    timeout: Option<&timespec_t>,
     clockid: clockid_t,
 ) -> Result<i32, Errno> {
-    let waiters_ptr = waiters.as_mut_ptr() as usize;
+    let waiters_ptr = waiters.as_ptr() as usize;
     let waiters_len = waiters.len();
     let flags = flags as usize;
-    let timeout_ptr = timeout as *mut timespec_t as usize;
+    let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
+        timeout as *const timespec_t as usize
+    });
     let clockid = clockid as usize;
     syscall5(
         SYS_FUTEX_WAITV,

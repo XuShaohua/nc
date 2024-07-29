@@ -11,6 +11,7 @@
 #![allow(clippy::wildcard_imports)]
 
 extern crate alloc;
+use core::ffi::c_void;
 use core::sync::atomic::AtomicU32;
 
 use crate::c_str::CString;

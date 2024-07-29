@@ -77,7 +77,7 @@ pub type sighandler_t = usize;
 pub type restorefn_t = fn();
 
 /// `restorefn_t` as usize
-pub type sigrestore_t = usize;
+pub type sigrestore_t = Option<restorefn_t>;
 
 /// default signal handling
 pub const SIG_DFL: sighandler_t = 0;

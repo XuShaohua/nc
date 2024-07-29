@@ -1,6 +1,6 @@
 /// Get overrun count for a per-process timer.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

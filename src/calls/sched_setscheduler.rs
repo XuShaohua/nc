@@ -1,6 +1,6 @@
 /// Set scheduling parameter.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };

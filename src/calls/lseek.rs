@@ -1,6 +1,6 @@
 /// Reposition file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

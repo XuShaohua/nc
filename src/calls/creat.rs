@@ -2,7 +2,7 @@
 ///
 /// equals to call `open()` with flags `O_CREAT|O_WRONLY|O_TRUNC`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-creat-file";

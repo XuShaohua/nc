@@ -1,6 +1,6 @@
 /// Apply or remove an advisory lock on an open file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-flock";

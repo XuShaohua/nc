@@ -1,6 +1,6 @@
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setpgid(nc::getpid(), 1) };

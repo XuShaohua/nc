@@ -1,6 +1,6 @@
 /// Change the priority of current process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::nice(5) };

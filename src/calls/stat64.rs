@@ -1,6 +1,6 @@
 /// Get file status about a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

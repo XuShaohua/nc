@@ -1,6 +1,6 @@
 /// Change timestamp of a file relative to a directory file discriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-futimesat";

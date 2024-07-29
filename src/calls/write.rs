@@ -1,6 +1,6 @@
 /// Write to a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-write";

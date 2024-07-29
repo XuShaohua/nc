@@ -1,6 +1,6 @@
 /// Set group identify used for filesystem checkes.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setfsgid(0) };

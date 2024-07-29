@@ -1,6 +1,6 @@
 /// Give advice about use of memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.

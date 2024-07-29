@@ -1,6 +1,6 @@
 /// Get the process ID of the parent of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ppid = unsafe { nc::getppid() };

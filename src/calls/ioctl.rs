@@ -1,6 +1,6 @@
 /// Control device.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-ioctl";

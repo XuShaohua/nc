@@ -1,6 +1,6 @@
 /// Write to a file descriptor from multiple buffers.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;

@@ -1,6 +1,6 @@
 /// Change file last access and modification time.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-utime";

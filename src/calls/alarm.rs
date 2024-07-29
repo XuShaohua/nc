@@ -1,6 +1,6 @@
 /// Set an alarm clock for delivery of a signal.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

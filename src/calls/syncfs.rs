@@ -1,6 +1,6 @@
 /// Commit filesystem cache related to `fd` to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

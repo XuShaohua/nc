@@ -1,6 +1,6 @@
 /// Detach the System V shared memory segment.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;

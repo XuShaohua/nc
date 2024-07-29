@@ -1,6 +1,6 @@
 /// Set scheduling paramters.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // This call always returns error because default scheduler is SCHED_NORMAL.

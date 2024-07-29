@@ -1,6 +1,6 @@
 /// Get resource limit.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut rlimit = nc::rlimit_t::default();

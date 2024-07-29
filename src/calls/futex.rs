@@ -7,7 +7,7 @@
 /// - `utime`: waiting timeout
 /// - `uaddr2`: target futext user address used for requeue
 ///
-/// # Examples
+/// # Exampless
 ///
 /// ```rust
 /// use std::sync::atomic::{AtomicU32, Ordering};

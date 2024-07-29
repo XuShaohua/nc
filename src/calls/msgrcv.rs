@@ -1,6 +1,6 @@
 /// Receive messages from a System V message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const MAX_MTEXT: usize = 1024;

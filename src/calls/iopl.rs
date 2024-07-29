@@ -1,6 +1,6 @@
 /// Change I/O privilege level.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::iopl(1) };

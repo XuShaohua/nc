@@ -1,6 +1,6 @@
 /// Control interface for an epoll file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let epfd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };

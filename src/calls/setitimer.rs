@@ -1,6 +1,6 @@
 /// Set value of an interval timer.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

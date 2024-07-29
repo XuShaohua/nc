@@ -1,6 +1,6 @@
 /// Remove an existing watch from an inotify instance.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };

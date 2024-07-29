@@ -1,6 +1,6 @@
 /// Exit all threads in a process's thread group.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// unsafe { nc::exit_group(0); }

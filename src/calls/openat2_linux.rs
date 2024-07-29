@@ -1,6 +1,6 @@
 /// Open and possibly create a file (extended)
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

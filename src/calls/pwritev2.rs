@@ -1,6 +1,6 @@
 /// Write to a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;

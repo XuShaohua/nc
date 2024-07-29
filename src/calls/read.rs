@@ -1,6 +1,6 @@
 /// Read from a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

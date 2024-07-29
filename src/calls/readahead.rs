@@ -1,6 +1,6 @@
 /// Initialize file head into page cache.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

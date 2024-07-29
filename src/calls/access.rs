@@ -2,7 +2,7 @@
 ///
 /// It uses the real user ID and the group access list to authorize the request.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::access("/etc/passwd", nc::F_OK) };

@@ -1,6 +1,6 @@
 /// Get the process ID (PID) of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::getpid() };

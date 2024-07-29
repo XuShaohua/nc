@@ -1,6 +1,6 @@
 /// Set resource limit.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let rlimit = nc::rlimit_t {

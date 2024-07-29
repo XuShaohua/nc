@@ -1,6 +1,6 @@
 /// Get the effective group ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let egid = unsafe { nc::getegid() };

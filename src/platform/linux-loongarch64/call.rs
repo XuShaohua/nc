@@ -49,7 +49,7 @@ pub unsafe fn accept4(
 
 /// Switch process accounting.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-acct";
@@ -95,7 +95,7 @@ pub unsafe fn add_key<P: AsRef<Path>>(
 
 /// Tune kernel clock. Returns clock state on success.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tm = nc::timex_t::default();
@@ -148,7 +148,7 @@ pub unsafe fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Re
 
 /// Change working directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp";
@@ -172,7 +172,7 @@ pub unsafe fn chdir<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 
 /// Change the root directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::chroot("/") };
@@ -186,7 +186,7 @@ pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 
 /// Tune kernel clock. Returns clock state on success.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tm = nc::timex_t::default();
@@ -202,7 +202,7 @@ pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<
 
 /// Get resolution(precision) of the specific clock.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tp = nc::timespec_t::default();
@@ -218,7 +218,7 @@ pub unsafe fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Resul
 
 /// Get time of specific clock.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tp = nc::timespec_t::default();
@@ -234,7 +234,7 @@ pub unsafe fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Resu
 
 /// High resolution sleep with a specific clock.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let t = nc::timespec_t {
@@ -260,7 +260,7 @@ pub unsafe fn clock_nanosleep(
 
 /// Set time of specific clock.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tp = nc::timespec_t::default();
@@ -300,7 +300,7 @@ pub unsafe fn clone(
 
 /// New api to create child process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut args = nc::clone_args_t::default();
@@ -319,7 +319,7 @@ pub unsafe fn clone3(cl_args: &mut clone_args_t) -> Result<pid_t, Errno> {
 
 /// Close a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const STDERR_FD: i32 = 2;
@@ -345,7 +345,7 @@ pub unsafe fn connect(
 
 /// Copy a range of data from one file to another.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path_in = "/etc/passwd";
@@ -405,7 +405,7 @@ pub unsafe fn delete_module<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), E
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-dup-file";
@@ -429,7 +429,7 @@ pub unsafe fn dup(oldfd: i32) -> Result<i32, Errno> {
 
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-dup3-file";
@@ -455,7 +455,7 @@ pub unsafe fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
 
 /// Open an epoll file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let poll_fd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };
@@ -471,7 +471,7 @@ pub unsafe fn epoll_create1(flags: i32) -> Result<i32, Errno> {
 
 /// Control interface for an epoll file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let epfd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };
@@ -507,7 +507,7 @@ pub unsafe fn epoll_ctl(
 
 /// Wait for an I/O event on an epoll file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let epfd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };
@@ -596,7 +596,7 @@ pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let args = [""];
@@ -618,7 +618,7 @@ pub unsafe fn execve<P: AsRef<Path>>(
 
 /// Execute a new program relative to a directory file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let args = [""];
@@ -648,7 +648,7 @@ pub unsafe fn execveat<P: AsRef<Path>>(
 
 /// Terminate current process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// unsafe { nc::exit(0); }
@@ -661,7 +661,7 @@ pub unsafe fn exit(status: i32) -> ! {
 
 /// Exit all threads in a process's thread group.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// unsafe { nc::exit_group(0); }
@@ -674,7 +674,7 @@ pub unsafe fn exit_group(status: i32) -> ! {
 
 /// Check user's permission for a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::faccessat(nc::AT_FDCWD, "/etc/passwd", nc::F_OK) };
@@ -690,7 +690,7 @@ pub unsafe fn faccessat<P: AsRef<Path>>(dfd: i32, filename: P, mode: i32) -> Res
 
 /// Predeclare an access pattern for file data.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -711,7 +711,7 @@ pub unsafe fn fadvise64(fd: i32, offset: loff_t, len: size_t, advice: i32) -> Re
 
 /// Manipulate file space.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fallocate";
@@ -767,7 +767,7 @@ pub unsafe fn fanotify_mark<P: AsRef<Path>>(
 
 /// Change working directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp";
@@ -787,7 +787,7 @@ pub unsafe fn fchdir(fd: i32) -> Result<(), Errno> {
 
 /// Change permissions of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchmod";
@@ -816,7 +816,7 @@ pub unsafe fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
 
 /// Change permissions of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchmodat";
@@ -847,7 +847,7 @@ pub unsafe fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) ->
 
 /// Change ownership of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchown";
@@ -878,7 +878,7 @@ pub unsafe fn fchown(fd: i32, user: uid_t, group: gid_t) -> Result<(), Errno> {
 
 /// Change ownership of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchown";
@@ -917,7 +917,7 @@ pub unsafe fn fchownat<P: AsRef<Path>>(
 
 /// manipulate file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -941,7 +941,7 @@ pub unsafe fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fdatasync";
@@ -964,7 +964,7 @@ pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
 
 /// Get extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fgetxattr";
@@ -1024,7 +1024,7 @@ pub unsafe fn finit_module<P: AsRef<Path>>(
 
 /// List extended attribute names.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-flistxattr";
@@ -1062,7 +1062,7 @@ pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, 
 
 /// Apply or remove an advisory lock on an open file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-flock";
@@ -1090,7 +1090,7 @@ pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 
 /// Remove an extended attribute.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fremovexattr";
@@ -1126,7 +1126,7 @@ pub unsafe fn fremovexattr<P: AsRef<Path>>(fd: i32, name: P) -> Result<(), Errno
 
 /// Set extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fsetxattr";
@@ -1192,7 +1192,7 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 
 /// Get file status.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -1217,7 +1217,7 @@ pub unsafe fn fstatat<P: AsRef<Path>>(
 
 /// Get filesystem statistics.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/usr";
@@ -1241,7 +1241,7 @@ pub unsafe fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
 
 /// Flush all modified in-core data refered by `fd` to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fsync";
@@ -1265,7 +1265,7 @@ pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
 
 /// Truncate an opened file to a specified length.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-ftruncate";
@@ -1294,7 +1294,7 @@ pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
 /// - `utime`: waiting timeout
 /// - `uaddr2`: target futext user address used for requeue
 ///
-/// # Examples
+/// # Exampless
 ///
 /// ```rust
 /// use std::sync::atomic::{AtomicU32, Ordering};
@@ -1360,7 +1360,7 @@ pub unsafe fn futex(
 
 /// Determine CPU and NUMA node on which the calling thread is running.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut cpu = 0;
@@ -1382,7 +1382,7 @@ pub unsafe fn getcpu(
 
 /// Get current working directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
@@ -1401,7 +1401,7 @@ pub unsafe fn getcwd(buf: &mut [u8]) -> Result<ssize_t, Errno> {
 
 /// Get directory entries.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc";
@@ -1452,7 +1452,7 @@ pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t,
 
 /// Get the effective group ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let egid = unsafe { nc::getegid() };
@@ -1466,7 +1466,7 @@ pub unsafe fn getegid() -> gid_t {
 
 /// Get the effective user ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let euid = unsafe { nc::geteuid() };
@@ -1480,7 +1480,7 @@ pub unsafe fn geteuid() -> uid_t {
 
 /// Get the real group ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let gid = unsafe { nc::getgid() };
@@ -1494,7 +1494,7 @@ pub unsafe fn getgid() -> gid_t {
 
 /// Get list of supplementary group Ids.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut groups = vec![];
@@ -1515,7 +1515,7 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 
 /// Get value of an interval timer.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -1582,7 +1582,7 @@ pub unsafe fn getpeername(
 
 /// Returns the PGID(process group ID) of the process specified by `pid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ppid = unsafe { nc::getppid() };
@@ -1596,7 +1596,7 @@ pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
 
 /// Get the process ID (PID) of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::getpid() };
@@ -1610,7 +1610,7 @@ pub unsafe fn getpid() -> pid_t {
 
 /// Get the process ID of the parent of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ppid = unsafe { nc::getppid() };
@@ -1624,7 +1624,7 @@ pub unsafe fn getppid() -> pid_t {
 
 /// Get program scheduling priority.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::getpriority(nc::PRIO_PROCESS, nc::getpid()) };
@@ -1644,7 +1644,7 @@ pub unsafe fn getpriority(which: i32, who: i32) -> Result<i32, Errno> {
 
 /// Obtain a series of random bytes.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut buf = [0_u8; 32];
@@ -1662,7 +1662,7 @@ pub unsafe fn getrandom(buf: &mut [u8], buf_len: usize, flags: u32) -> Result<ss
 
 /// Get real, effect and saved group ID.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut rgid = 0;
@@ -1683,7 +1683,7 @@ pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) ->
 
 /// Get real, effect and saved user ID.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut ruid = 0;
@@ -1704,7 +1704,7 @@ pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) ->
 
 /// Get resource limit.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut rlimit = nc::rlimit_t::default();
@@ -1721,7 +1721,7 @@ pub unsafe fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno>
 
 /// Get resource usage.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut usage = nc::rusage_t::default();
@@ -1738,7 +1738,7 @@ pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
 
 /// Get session Id.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ppid = unsafe { nc::getppid() };
@@ -1790,7 +1790,7 @@ pub unsafe fn getsockopt(
 
 /// Get the caller's thread ID (TID).
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let tid = unsafe { nc::gettid() };
@@ -1804,7 +1804,7 @@ pub unsafe fn gettid() -> pid_t {
 
 /// Get time.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tv = nc::timeval_t::default();
@@ -1821,7 +1821,7 @@ pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Resu
 
 /// Get the real user ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let uid = unsafe { nc::getuid() };
@@ -1835,7 +1835,7 @@ pub unsafe fn getuid() -> uid_t {
 
 /// Get extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-getxattr";
@@ -1920,7 +1920,7 @@ pub unsafe fn init_module<P: AsRef<Path>>(
 
 /// Add a watch to an initialized inotify instance.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };
@@ -1947,7 +1947,7 @@ pub unsafe fn inotify_add_watch<P: AsRef<Path>>(
 
 /// Initialize an inotify instance.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };
@@ -1963,7 +1963,7 @@ pub unsafe fn inotify_init1(flags: i32) -> Result<i32, Errno> {
 
 /// Remove an existing watch from an inotify instance.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::inotify_init1(nc::IN_NONBLOCK | nc::IN_CLOEXEC) };
@@ -1987,7 +1987,7 @@ pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 
 /// Control device.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-ioctl";
@@ -2013,7 +2013,7 @@ pub unsafe fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
 
 /// Get I/O scheduling class and priority.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::ioprio_get(nc::IOPRIO_WHO_PROCESS, nc::getpid()) };
@@ -2032,7 +2032,7 @@ pub unsafe fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
 ///
 /// See [ioprio](https://www.kernel.org/doc/Documentation/block/ioprio.txt)
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // Change priority to lowest.
@@ -2227,7 +2227,7 @@ pub unsafe fn keyctl(
 
 /// Send signal to a process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::fork() };
@@ -2254,7 +2254,7 @@ pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
 
 /// Get extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-lgetxattr";
@@ -2302,7 +2302,7 @@ pub unsafe fn lgetxattr<P: AsRef<Path>>(
 
 /// Make a new name for a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let old_filename = "/tmp/nc-linkat-src";
@@ -2354,7 +2354,7 @@ pub unsafe fn listen(sockfd: i32, backlog: i32) -> Result<(), Errno> {
 
 /// List extended attribute names.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-listxattr";
@@ -2397,7 +2397,7 @@ pub unsafe fn listxattr<P: AsRef<Path>>(
 
 /// List extended attribute names.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-llistxattr";
@@ -2449,7 +2449,7 @@ pub unsafe fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> 
 
 /// Remove an extended attribute.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-lremovexattr";
@@ -2485,7 +2485,7 @@ pub unsafe fn lremovexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), E
 
 /// Reposition file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -2506,7 +2506,7 @@ pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 
 /// Set extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-lsetxattr";
@@ -2549,7 +2549,7 @@ pub unsafe fn lsetxattr<P: AsRef<Path>>(
 
 /// Give advice about use of memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
@@ -2675,7 +2675,7 @@ pub unsafe fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), E
 
 /// Create a directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-mkdir";
@@ -2694,7 +2694,7 @@ pub unsafe fn mkdirat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) -> 
 
 /// Create a special or ordinary file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-mknodat";
@@ -2720,7 +2720,7 @@ pub unsafe fn mknodat<P: AsRef<Path>>(
 
 /// Lock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
@@ -2733,7 +2733,7 @@ pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 
 /// Lock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
@@ -2747,7 +2747,7 @@ pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> 
 
 /// Lock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
@@ -2761,7 +2761,7 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 
 /// Map files or devices into memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -2817,7 +2817,7 @@ pub unsafe fn mmap(
 
 /// Mount filesystem.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let target_dir = "/tmp/nc-mount";
@@ -2886,7 +2886,7 @@ pub unsafe fn move_pages(
 
 /// Set protection on a region of memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
@@ -2918,7 +2918,7 @@ pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno>
 
 /// Get/set message queue attributes
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-getsetattr";
@@ -2964,7 +2964,7 @@ pub unsafe fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Resu
 
 /// Open a message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-posix-mq";
@@ -2999,7 +2999,7 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 
 /// Receive a message from a message queue
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-timedreceive";
@@ -3077,7 +3077,7 @@ pub unsafe fn mq_timedreceive(
 
 /// Send message to a message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-timedsend";
@@ -3139,7 +3139,7 @@ pub unsafe fn mq_timedsend(
 
 /// Remove a message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-unlink";
@@ -3177,7 +3177,7 @@ pub unsafe fn mremap(
 
 /// System V message control operations.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let key = nc::IPC_PRIVATE;
@@ -3199,7 +3199,7 @@ pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, 
 
 /// Get a System V message queue identifier.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let key = nc::IPC_PRIVATE;
@@ -3220,7 +3220,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 
 /// Receive messages from a System V message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const MAX_MTEXT: usize = 1024;
@@ -3308,7 +3308,7 @@ pub unsafe fn msgrcv(
 
 /// Append the message to a System V message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const MAX_MTEXT: usize = 1024;
@@ -3394,7 +3394,7 @@ pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
 
 /// Unlock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];
@@ -3413,7 +3413,7 @@ pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
 
 /// Unlock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };
@@ -3427,7 +3427,7 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 
 /// Unmap files or devices from memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -3497,7 +3497,7 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
 
 /// High resolution sleep.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let t = nc::timespec_t {
@@ -3515,7 +3515,7 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
 
 /// Open and possibly create a file within a directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -3574,7 +3574,7 @@ pub unsafe fn personality(persona: u32) -> Result<u32, Errno> {
 
 /// Create a pipe.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut fds = [-1_i32, 2];
@@ -3658,7 +3658,7 @@ pub unsafe fn prctl(
 
 /// Read from a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -3681,7 +3681,7 @@ pub unsafe fn pread64(fd: i32, buf: usize, count: usize, offset: off_t) -> Resul
 
 /// Read from a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;
@@ -3720,7 +3720,7 @@ pub unsafe fn preadv(
 
 /// Read from a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;
@@ -3762,7 +3762,7 @@ pub unsafe fn preadv2(
 
 /// Get/set the resource limits of an arbitary process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut old_limit = nc::rlimit64_t::default();
@@ -3875,7 +3875,7 @@ pub unsafe fn ptrace(request: i32, pid: pid_t, addr: usize, data: usize) -> Resu
 
 /// Write to a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-pwrite64";
@@ -3904,7 +3904,7 @@ pub unsafe fn pwrite64(
 
 /// Write to a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;
@@ -3954,7 +3954,7 @@ pub unsafe fn pwritev(
 
 /// Write to a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;
@@ -4021,7 +4021,7 @@ pub unsafe fn quotactl<P: AsRef<Path>>(
 
 /// Read from a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -4043,7 +4043,7 @@ pub unsafe fn read(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, Er
 
 /// Initialize file head into page cache.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -4062,7 +4062,7 @@ pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Err
 
 /// Read value of a symbolic link.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let oldname = "/etc/passwd";
@@ -4094,7 +4094,7 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 
 /// Read from a file descriptor into multiple buffers.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;
@@ -4128,7 +4128,7 @@ pub unsafe fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
 
 /// Reboot or enable/disable Ctrl-Alt-Del.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe {
@@ -4215,7 +4215,7 @@ pub unsafe fn remap_file_pages(
 
 /// Remove an extended attribute.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-removexattr";
@@ -4252,7 +4252,7 @@ pub unsafe fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Er
 
 /// Change name or location of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-renameat2";
@@ -4402,7 +4402,7 @@ pub unsafe fn rt_sigreturn() {
 ///
 /// Always returns Errno, normally EINTR.
 ///
-/// # Example
+/// # Examples
 /// ```
 /// use core::mem::size_of;
 ///
@@ -4470,7 +4470,7 @@ pub unsafe fn rt_tgsigqueueinfo(
 
 /// Get a thread's CPU affinity mask.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -4581,7 +4581,7 @@ pub unsafe fn sched_getattr(
 
 /// Get scheduling paramters.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut param = nc::sched_param_t::default();
@@ -4597,7 +4597,7 @@ pub unsafe fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<()
 
 /// Get scheduling parameter.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_getscheduler(0) };
@@ -4610,7 +4610,7 @@ pub unsafe fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
 
 /// Get static priority max value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_get_priority_max(nc::SCHED_RR) };
@@ -4625,7 +4625,7 @@ pub unsafe fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
 
 /// Get static priority min value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_get_priority_min(nc::SCHED_RR) };
@@ -4640,7 +4640,7 @@ pub unsafe fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
 
 /// Get the `SCHED_RR` interval for the named process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut ts = nc::timespec_t::default();
@@ -4655,7 +4655,7 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 
 /// Set a thread's CPU affinity mask.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -4756,7 +4756,7 @@ pub unsafe fn sched_setattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> 
 
 /// Set scheduling paramters.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // This call always returns error because default scheduler is SCHED_NORMAL.
@@ -4774,7 +4774,7 @@ pub unsafe fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Er
 
 /// Set scheduling parameter.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let sched_param = nc::sched_param_t { sched_priority: 12 };
@@ -4794,7 +4794,7 @@ pub unsafe fn sched_setscheduler(
 
 /// Yield the processor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_yield() };
@@ -4906,7 +4906,7 @@ pub unsafe fn sendto(
 
 /// Set NIS domain name.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "local-rust-domain";
@@ -4923,7 +4923,7 @@ pub unsafe fn setdomainname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 
 /// Set group identify used for filesystem checkes.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setfsgid(0) };
@@ -4938,7 +4938,7 @@ pub unsafe fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
 
 /// Set user identify used for filesystem checkes.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setfsuid(0) };
@@ -4953,7 +4953,7 @@ pub unsafe fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
 
 /// Set the group ID of the calling process to `gid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setgid(0) };
@@ -4967,7 +4967,7 @@ pub unsafe fn setgid(gid: gid_t) -> Result<(), Errno> {
 
 /// Set list of supplementary group Ids.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let list = [0, 1, 2];
@@ -4983,7 +4983,7 @@ pub unsafe fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
 
 /// Set hostname.
 ///
-/// # Example
+/// # Exampless
 ///
 /// ```
 /// let name = "rust-machine";
@@ -5000,7 +5000,7 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 
 /// Set value of an interval timer.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -5067,7 +5067,7 @@ pub unsafe fn setns(fd: i32, nstype: i32) -> Result<(), Errno> {
 
 /// Set the process group ID (PGID) of the process specified by `pid` to `pgid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setpgid(nc::getpid(), 1) };
@@ -5082,7 +5082,7 @@ pub unsafe fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
 
 /// Set program scheduling priority.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setpriority(nc::PRIO_PROCESS, nc::getpid(), -19) };
@@ -5098,7 +5098,7 @@ pub unsafe fn setpriority(which: i32, who: i32, prio: i32) -> Result<(), Errno> 
 
 /// Set real and effective group IDs of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setregid(0, 0) };
@@ -5112,7 +5112,7 @@ pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
 
 /// Set real, effective and saved group Ids of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setresgid(0, 0, 0) };
@@ -5127,7 +5127,7 @@ pub unsafe fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Err
 
 /// Set real, effective and saved user Ids of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setresuid(0, 0, 0) };
@@ -5142,7 +5142,7 @@ pub unsafe fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Err
 
 /// Set real and effective user IDs of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setreuid(0, 0) };
@@ -5156,7 +5156,7 @@ pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 
 /// Set resource limit.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let rlimit = nc::rlimit_t {
@@ -5174,7 +5174,7 @@ pub unsafe fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
 
 /// Create a new session if the calling process is not a process group leader.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setsid() };
@@ -5188,7 +5188,7 @@ pub unsafe fn setsid() -> Result<pid_t, Errno> {
 
 /// Set options on sockets.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) };
@@ -5245,7 +5245,7 @@ pub unsafe fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), E
 
 /// Set user ID of the calling process to `uid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setuid(0) };
@@ -5258,7 +5258,7 @@ pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
 
 /// Set extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-setxattr";
@@ -5321,7 +5321,7 @@ pub unsafe fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
 
 /// Attach the System V shared memory segment.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
@@ -5353,7 +5353,7 @@ pub unsafe fn shmat(shmid: i32, shmaddr: usize, shmflg: i32) -> Result<usize, Er
 
 /// System V shared memory control.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
@@ -5374,7 +5374,7 @@ pub unsafe fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, 
 
 /// Detach the System V shared memory segment.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
@@ -5404,7 +5404,7 @@ pub unsafe fn shmdt(shmaddr: usize) -> Result<(), Errno> {
 
 /// Allocates a System V shared memory segment.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;
@@ -5444,7 +5444,7 @@ pub unsafe fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, E
 
 /// Create an endpoint for communication.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) };
@@ -5476,7 +5476,7 @@ pub unsafe fn socketpair(
 
 /// Splice data to/from pipe.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut fds_left = [0, 0];
@@ -5549,7 +5549,7 @@ pub unsafe fn splice(
 
 /// Get filesystem statistics.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/usr";
@@ -5568,7 +5568,7 @@ pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<
 
 /// Get file status about a file (extended).
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -5596,7 +5596,7 @@ pub unsafe fn statx<P: AsRef<Path>>(
 
 /// Stop swapping to file/device.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/dev/sda-no-exist";
@@ -5612,7 +5612,7 @@ pub unsafe fn swapoff<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 
 /// Start swapping to file/device.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/dev/sda-no-exist";
@@ -5629,7 +5629,7 @@ pub unsafe fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errn
 
 /// Make a new name for a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let oldname = "/etc/passwd";
@@ -5654,7 +5654,7 @@ pub unsafe fn symlinkat<P: AsRef<Path>>(
 
 /// Commit filesystem caches to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sync() };
@@ -5666,7 +5666,7 @@ pub unsafe fn sync() -> Result<(), Errno> {
 
 /// Commit filesystem cache related to `fd` to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";
@@ -5685,7 +5685,7 @@ pub unsafe fn syncfs(fd: i32) -> Result<(), Errno> {
 
 /// Sync a file segment to disk
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-sync-file-range";
@@ -5731,7 +5731,7 @@ pub unsafe fn sync_file_range(
 
 /// Return system information.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut info = nc::sysinfo_t::default();
@@ -5755,7 +5755,7 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 
 /// Duplicate pipe content.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut fds_left = [0, 0];
@@ -5801,7 +5801,7 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
 
 /// Send a signal to a thread.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -5838,7 +5838,7 @@ pub unsafe fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
 
 /// Create a timer that notifies via a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC) };
@@ -5862,7 +5862,7 @@ pub unsafe fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<
 
 /// Set current timer via a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::timerfd_create(nc::CLOCK_MONOTONIC, nc::TFD_CLOEXEC) };
@@ -5905,7 +5905,7 @@ pub unsafe fn timerfd_settime(
 
 /// Create a per-process timer
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut timerid = nc::timer_t::default();
@@ -5925,7 +5925,7 @@ pub unsafe fn timer_create(
 
 /// Delete a per-process timer
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut timer_id = nc::timer_t::default();
@@ -5941,7 +5941,7 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 
 /// Get overrun count for a per-process timer.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -6016,7 +6016,7 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 
 /// Fetch state of per-process timer>
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -6088,7 +6088,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 
 /// Arm/disarm state of per-process timer.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -6174,7 +6174,7 @@ pub unsafe fn timer_settime(
 
 /// Get process times.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tms = nc::tms_t::default();
@@ -6190,7 +6190,7 @@ pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 
 /// Send a signal to a thread (obsolete).
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;
@@ -6226,7 +6226,7 @@ pub unsafe fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
 
 /// Truncate a file to a specified length.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-truncate";
@@ -6249,7 +6249,7 @@ pub unsafe fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(),
 
 /// Set file mode creation mask.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let new_mask = 0o077;
@@ -6266,7 +6266,7 @@ pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
 
 /// Unmount filesystem.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let target_dir = "/tmp/nc-umount2";
@@ -6298,7 +6298,7 @@ pub unsafe fn umount2<P: AsRef<Path>>(name: P, flags: i32) -> Result<(), Errno> 
 
 /// Get name and information about current kernel.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut buf = nc::utsname_t::default();
@@ -6314,7 +6314,7 @@ pub unsafe fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
 
 /// Delete a name and possibly the file it refers to.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-unlinkat";
@@ -6351,7 +6351,7 @@ pub unsafe fn userfaultfd(flags: i32) -> Result<i32, Errno> {
 
 /// Change time timestamps with nanosecond precision.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-utimesat";
@@ -6410,7 +6410,7 @@ pub unsafe fn vmsplice(
 
 /// Wait for process to change state.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::fork() };
@@ -6446,7 +6446,7 @@ pub unsafe fn wait4(
 
 /// Wait for process to change state.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::fork() };
@@ -6488,7 +6488,7 @@ pub unsafe fn waitid(
 
 /// Write to a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-write";
@@ -6511,7 +6511,7 @@ pub unsafe fn write(fd: i32, buf_ptr: usize, count: size_t) -> Result<ssize_t, E
 
 /// Write to a file descriptor from multiple buffers.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;

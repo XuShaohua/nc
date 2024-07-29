@@ -1,6 +1,6 @@
 /// Create a directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-mkdir";

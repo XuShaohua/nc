@@ -1,6 +1,6 @@
 /// Unmap files or devices from memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

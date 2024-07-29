@@ -1,6 +1,6 @@
 /// Set user ID of the calling process to `uid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setuid(0) };

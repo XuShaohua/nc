@@ -1,6 +1,6 @@
 /// Wait for a signal.
 ///
-/// # Example
+/// # Examples
 /// ```
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());

@@ -1,6 +1,6 @@
 /// Open and possibly create a file within a directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

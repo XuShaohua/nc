@@ -1,6 +1,6 @@
 /// Make a new name for a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let old_filename = "/tmp/nc-linkat-src";

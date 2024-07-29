@@ -1,6 +1,6 @@
 /// Fetch state of per-process timer>
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

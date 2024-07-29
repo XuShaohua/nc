@@ -1,6 +1,6 @@
 /// Execute a new program relative to a directory file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let args = [""];

@@ -1,6 +1,6 @@
 /// Tune kernel clock. Returns clock state on success.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tm = nc::timex_t::default();

@@ -1,7 +1,7 @@
 /// Create a copy of the file descriptor `oldfd`, using the speficified file
 /// descriptor `newfd`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-dup2-file";

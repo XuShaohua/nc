@@ -1,6 +1,6 @@
 /// Get list of supplementary group Ids.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut groups = vec![];

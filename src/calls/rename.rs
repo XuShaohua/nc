@@ -1,6 +1,6 @@
 /// Change name or location of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-rename";

@@ -1,6 +1,6 @@
 /// Set user identify used for filesystem checkes.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setfsuid(0) };

@@ -1,6 +1,6 @@
 /// Determine CPU and NUMA node on which the calling thread is running.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut cpu = 0;

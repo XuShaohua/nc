@@ -1,6 +1,6 @@
 /// Change ownership of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchown";

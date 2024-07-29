@@ -1,6 +1,6 @@
 /// Set the group ID of the calling process to `gid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setgid(0) };

@@ -1,6 +1,6 @@
 /// Get directory entries.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc";

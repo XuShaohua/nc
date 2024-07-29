@@ -1,6 +1,6 @@
 /// Wait for process to change state.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::fork() };

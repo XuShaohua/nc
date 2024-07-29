@@ -1,6 +1,6 @@
 /// Get real, effect and saved group ID.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut rgid = 0;

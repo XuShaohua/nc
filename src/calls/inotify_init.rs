@@ -1,6 +1,6 @@
 /// Initialize an inotify instance.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::inotify_init() };

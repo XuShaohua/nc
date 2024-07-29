@@ -1,6 +1,6 @@
 /// Yield the processor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_yield() };

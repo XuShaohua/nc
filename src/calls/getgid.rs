@@ -1,6 +1,6 @@
 /// Get the real group ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let gid = unsafe { nc::getgid() };

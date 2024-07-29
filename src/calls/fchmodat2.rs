@@ -2,7 +2,7 @@
 ///
 /// Like `fchmodat()`, with specifying extra `flags`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchmodat2";

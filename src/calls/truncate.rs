@@ -1,6 +1,6 @@
 /// Truncate a file to a specified length.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-truncate";

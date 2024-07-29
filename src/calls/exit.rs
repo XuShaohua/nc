@@ -1,6 +1,6 @@
 /// Terminate current process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// unsafe { nc::exit(0); }

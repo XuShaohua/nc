@@ -1,6 +1,6 @@
 /// Make a new name for a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let oldname = "/etc/passwd";

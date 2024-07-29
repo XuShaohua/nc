@@ -1,6 +1,6 @@
 /// Set time.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let t = 1611630530;

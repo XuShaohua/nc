@@ -1,6 +1,6 @@
 /// Reboot or enable/disable Ctrl-Alt-Del.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe {

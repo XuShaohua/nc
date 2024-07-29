@@ -1,6 +1,6 @@
 /// Open an epoll file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let poll_fd = unsafe { nc::epoll_create1(nc::EPOLL_CLOEXEC) };

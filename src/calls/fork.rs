@@ -1,6 +1,6 @@
 /// Create a child process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::fork() };

@@ -1,6 +1,6 @@
 /// Append the message to a System V message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const MAX_MTEXT: usize = 1024;

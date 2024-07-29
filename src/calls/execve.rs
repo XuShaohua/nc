@@ -3,7 +3,7 @@
 /// TODO(Shaohua): type of argv and env will be changed.
 /// And return value might be changed too.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let args = [""];

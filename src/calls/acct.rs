@@ -1,6 +1,6 @@
 /// Switch process accounting.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-acct";

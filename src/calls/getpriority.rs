@@ -1,6 +1,6 @@
 /// Get program scheduling priority.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::getpriority(nc::PRIO_PROCESS, nc::getpid()) };

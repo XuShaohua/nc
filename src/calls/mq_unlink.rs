@@ -1,6 +1,6 @@
 /// Remove a message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-unlink";

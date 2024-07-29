@@ -1,6 +1,6 @@
 /// Read value of a symbolic link.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let oldname = "/etc/passwd";

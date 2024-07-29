@@ -1,6 +1,6 @@
 /// Get/set message queue attributes
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-getsetattr";

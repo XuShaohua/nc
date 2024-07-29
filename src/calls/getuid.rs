@@ -1,6 +1,6 @@
 /// Get the real user ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let uid = unsafe { nc::getuid() };

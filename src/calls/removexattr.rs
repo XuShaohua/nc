@@ -1,6 +1,6 @@
 /// Remove an extended attribute.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-removexattr";

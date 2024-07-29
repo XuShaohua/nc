@@ -1,6 +1,6 @@
 /// Sync a file segment to disk
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-sync-file-range";

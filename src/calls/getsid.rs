@@ -1,6 +1,6 @@
 /// Get session Id.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ppid = unsafe { nc::getppid() };

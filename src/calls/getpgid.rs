@@ -1,6 +1,6 @@
 /// Returns the PGID(process group ID) of the process specified by `pid`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ppid = unsafe { nc::getppid() };

@@ -1,6 +1,6 @@
 /// Get the process group ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pgroup = unsafe { nc::getpgrp() };

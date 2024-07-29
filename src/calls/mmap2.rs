@@ -1,6 +1,6 @@
 /// Map files or devices into memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

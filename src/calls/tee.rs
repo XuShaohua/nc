@@ -1,6 +1,6 @@
 /// Duplicate pipe content.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut fds_left = [0, 0];

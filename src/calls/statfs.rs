@@ -1,6 +1,6 @@
 /// Get filesystem statistics.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/usr";

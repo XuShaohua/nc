@@ -1,6 +1,6 @@
 /// Change permissions of a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-fchmodat";

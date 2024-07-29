@@ -1,6 +1,6 @@
 /// Get process times.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tms = nc::tms_t::default();

@@ -1,6 +1,6 @@
 /// Obtain a file descriptor that refers to a process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::fork() };

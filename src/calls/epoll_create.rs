@@ -1,6 +1,6 @@
 /// Open an epoll file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::epoll_create(32) };

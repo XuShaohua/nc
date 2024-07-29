@@ -1,6 +1,6 @@
 /// Predeclare an access pattern for file data.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

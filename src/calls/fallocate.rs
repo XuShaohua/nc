@@ -1,6 +1,6 @@
 /// Manipulate file space.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fallocate";

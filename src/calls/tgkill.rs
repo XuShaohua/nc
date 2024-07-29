@@ -1,6 +1,6 @@
 /// Send a signal to a thread.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

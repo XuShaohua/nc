@@ -1,6 +1,6 @@
 /// Get real, effect and saved user ID.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut ruid = 0;

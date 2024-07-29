@@ -1,6 +1,6 @@
 /// Open a message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-posix-mq";

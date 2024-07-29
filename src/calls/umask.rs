@@ -1,6 +1,6 @@
 /// Set file mode creation mask.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let new_mask = 0o077;

@@ -1,6 +1,6 @@
 /// Change ownership of a file. Does not deference symbolic link.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/tmp/nc-lchown";

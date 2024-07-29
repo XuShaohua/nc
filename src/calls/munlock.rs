@@ -1,6 +1,6 @@
 /// Unlock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut passwd_buf = [0_u8; 64];

@@ -1,6 +1,6 @@
 /// manipulate file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

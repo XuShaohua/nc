@@ -1,6 +1,6 @@
 /// Get the `SCHED_RR` interval for the named process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut ts = nc::timespec_t::default();

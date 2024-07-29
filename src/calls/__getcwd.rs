@@ -1,6 +1,6 @@
 /// Get current working directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];

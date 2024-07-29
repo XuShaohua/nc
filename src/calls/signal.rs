@@ -2,7 +2,7 @@
 ///
 /// Deprecated. Use `sigaction()` instead.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// fn handle_sigterm(signum: i32) {

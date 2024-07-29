@@ -1,6 +1,6 @@
 /// Change time timestamps with nanosecond precision.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-utimesat";

@@ -1,6 +1,6 @@
 /// Pause the calling process to sleep until a signal is delivered.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

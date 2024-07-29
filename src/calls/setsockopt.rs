@@ -1,6 +1,6 @@
 /// Set options on sockets.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) };

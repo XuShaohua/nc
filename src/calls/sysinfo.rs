@@ -1,6 +1,6 @@
 /// Return system information.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut info = nc::sysinfo_t::default();

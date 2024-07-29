@@ -1,6 +1,6 @@
 /// Set extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-lsetxattr";

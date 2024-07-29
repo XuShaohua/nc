@@ -1,6 +1,6 @@
 /// Get resolution(precision) of the specific clock.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tp = nc::timespec_t::default();

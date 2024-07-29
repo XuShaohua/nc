@@ -1,6 +1,6 @@
 /// Save as `dup2()`, but can set the close-on-exec flag on `newfd`.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-dup3-file";

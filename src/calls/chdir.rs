@@ -1,6 +1,6 @@
 /// Change working directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp";

@@ -1,6 +1,6 @@
 /// Unlock memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::mlockall(nc::MCL_CURRENT) };

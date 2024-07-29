@@ -1,6 +1,6 @@
 /// Create a special or ordinary file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-mknod";

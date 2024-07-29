@@ -1,6 +1,6 @@
 /// Set real and effective group IDs of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setregid(0, 0) };

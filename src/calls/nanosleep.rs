@@ -1,6 +1,6 @@
 /// High resolution sleep.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let t = nc::timespec_t {

@@ -1,6 +1,6 @@
 /// Delete a name and possibly the file it refers to.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-unlink";

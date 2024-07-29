@@ -1,6 +1,6 @@
 /// Check user's permission for a file.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::faccessat2(nc::AT_FDCWD, "/etc/passwd", nc::F_OK, nc::AT_SYMLINK_NOFOLLOW) };

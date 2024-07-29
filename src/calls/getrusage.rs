@@ -1,6 +1,6 @@
 /// Get resource usage.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut usage = nc::rusage_t::default();

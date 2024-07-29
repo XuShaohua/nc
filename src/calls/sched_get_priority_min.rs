@@ -1,6 +1,6 @@
 /// Get static priority min value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_get_priority_min(nc::SCHED_RR) };

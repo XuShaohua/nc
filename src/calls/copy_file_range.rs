@@ -1,6 +1,6 @@
 /// Copy a range of data from one file to another.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path_in = "/etc/passwd";

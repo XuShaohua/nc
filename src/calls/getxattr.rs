@@ -1,6 +1,6 @@
 /// Get extended attribute value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-getxattr";

@@ -1,6 +1,6 @@
 /// Start swapping to file/device.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let filename = "/dev/sda-no-exist";

@@ -1,6 +1,6 @@
 /// Splice data to/from pipe.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut fds_left = [0, 0];

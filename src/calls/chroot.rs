@@ -1,6 +1,6 @@
 /// Change the root directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::chroot("/") };

@@ -1,6 +1,6 @@
 /// Send message to a message queue.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-timedsend";

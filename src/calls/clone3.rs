@@ -1,6 +1,6 @@
 /// New api to create child process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut args = nc::clone_args_t::default();

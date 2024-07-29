@@ -1,6 +1,6 @@
 /// Set list of supplementary group Ids.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let list = [0, 1, 2];

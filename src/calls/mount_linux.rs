@@ -1,6 +1,6 @@
 /// Mount filesystem.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let target_dir = "/tmp/nc-mount";

@@ -1,7 +1,7 @@
 /// Create a copy of the file descriptor `oldfd`, using the lowest available
 /// file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-dup-file";

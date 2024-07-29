@@ -1,6 +1,6 @@
 /// Get a System V message queue identifier.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let key = nc::IPC_PRIVATE;

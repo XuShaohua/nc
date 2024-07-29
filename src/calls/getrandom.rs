@@ -1,6 +1,6 @@
 /// Obtain a series of random bytes.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut buf = [0_u8; 32];

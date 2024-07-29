@@ -1,6 +1,6 @@
 /// System V message control operations.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let key = nc::IPC_PRIVATE;

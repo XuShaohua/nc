@@ -1,6 +1,6 @@
 /// Get scheduling parameter.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_getscheduler(0) };

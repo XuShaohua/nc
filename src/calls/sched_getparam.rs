@@ -1,6 +1,6 @@
 /// Get scheduling paramters.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut param = nc::sched_param_t::default();

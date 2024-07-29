@@ -1,6 +1,6 @@
 /// List extended attribute names.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-llistxattr";

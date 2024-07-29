@@ -2,7 +2,7 @@
 ///
 /// Always returns Errno, normally EINTR.
 ///
-/// # Example
+/// # Examples
 /// ```
 /// use core::mem::size_of;
 ///

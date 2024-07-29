@@ -1,6 +1,6 @@
 /// Create a pipe.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut fds = [-1_i32, 2];

@@ -1,6 +1,6 @@
 /// Close all file descriptors in a given range
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const STDOUT_FD: u32 = 1;

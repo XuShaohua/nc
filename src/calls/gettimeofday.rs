@@ -1,6 +1,6 @@
 /// Get time.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tv = nc::timeval_t::default();

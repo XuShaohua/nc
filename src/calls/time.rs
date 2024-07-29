@@ -1,6 +1,6 @@
 /// Get time in seconds.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut t = 0;

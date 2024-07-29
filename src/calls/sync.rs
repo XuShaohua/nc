@@ -1,6 +1,6 @@
 /// Commit filesystem caches to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sync() };

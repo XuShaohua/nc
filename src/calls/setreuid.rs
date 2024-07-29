@@ -1,6 +1,6 @@
 /// Set real and effective user IDs of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setreuid(0, 0) };

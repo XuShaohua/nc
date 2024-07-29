@@ -1,6 +1,6 @@
 /// Receive a message from a message queue
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "nc-mq-timedreceive";

@@ -2,7 +2,7 @@
 ///
 /// See [ioprio](https://www.kernel.org/doc/Documentation/block/ioprio.txt)
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // Change priority to lowest.

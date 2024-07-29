@@ -1,6 +1,6 @@
 /// Set a thread's CPU affinity mask.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::mem::size_of;

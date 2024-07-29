@@ -1,6 +1,6 @@
 /// Read from a file descriptor into multiple buffers.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// use core::ffi::c_void;

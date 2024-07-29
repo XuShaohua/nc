@@ -1,6 +1,6 @@
 /// Create a new session if the calling process is not a process group leader.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::setsid() };

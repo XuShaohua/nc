@@ -9,7 +9,7 @@
 /// On success, it returns a nonnegative value which is the number of events
 /// in the `fds` whose `revents` fields have been set to a nonzero value.
 ///
-/// # Examples
+/// # Exampless
 /// ```rust
 /// use std::thread;
 /// use std::time::Duration;

@@ -1,6 +1,6 @@
 /// Close a file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// const STDERR_FD: i32 = 2;

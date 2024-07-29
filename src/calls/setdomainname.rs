@@ -1,6 +1,6 @@
 /// Set NIS domain name.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let name = "local-rust-domain";

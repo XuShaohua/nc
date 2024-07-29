@@ -1,6 +1,6 @@
 /// Read from a file descriptor without changing file offset.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/etc/passwd";

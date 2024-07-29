@@ -1,6 +1,6 @@
 /// Flush all modified in-core data (exclude metadata) refered by `fd` to disk.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-fdatasync";

@@ -1,6 +1,6 @@
 /// Delete a per-process timer
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut timer_id = nc::timer_t::default();

@@ -2,7 +2,7 @@
 ///
 /// Never returns for process 0, and already returns EPERM for a user process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::idle() };

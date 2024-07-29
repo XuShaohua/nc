@@ -1,6 +1,6 @@
 /// System V shared memory control.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let size = 4 * nc::PAGE_SIZE;

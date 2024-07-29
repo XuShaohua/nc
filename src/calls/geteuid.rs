@@ -1,6 +1,6 @@
 /// Get the effective user ID of the calling process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let euid = unsafe { nc::geteuid() };

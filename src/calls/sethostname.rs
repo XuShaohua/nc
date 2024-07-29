@@ -1,6 +1,6 @@
 /// Set hostname.
 ///
-/// # Example
+/// # Exampless
 ///
 /// ```
 /// let name = "rust-machine";

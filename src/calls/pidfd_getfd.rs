@@ -1,6 +1,6 @@
 /// Obtain a duplicate of another process's file descriptor.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::fork() };

@@ -1,6 +1,6 @@
 /// Delete a directory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp/nc-rmdir";

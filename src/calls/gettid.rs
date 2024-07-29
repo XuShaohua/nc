@@ -1,6 +1,6 @@
 /// Get the caller's thread ID (TID).
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let tid = unsafe { nc::gettid() };

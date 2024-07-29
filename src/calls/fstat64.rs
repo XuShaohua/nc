@@ -1,6 +1,6 @@
 /// Get file status.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let path = "/tmp";

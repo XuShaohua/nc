@@ -1,6 +1,6 @@
 /// Get static priority max value.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::sched_get_priority_max(nc::SCHED_RR) };

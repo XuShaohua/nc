@@ -1,6 +1,6 @@
 /// Get name and information about current kernel.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut buf = nc::utsname_t::default();

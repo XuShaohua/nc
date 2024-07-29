@@ -2,7 +2,7 @@
 ///
 /// It uses the effective user ID and the group access list to authorize the request.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let ret = unsafe { nc::eaccess("/etc/passwd", nc::F_OK) };

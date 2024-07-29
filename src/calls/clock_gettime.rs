@@ -1,6 +1,6 @@
 /// Get time of specific clock.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut tp = nc::timespec_t::default();

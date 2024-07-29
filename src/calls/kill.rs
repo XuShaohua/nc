@@ -1,6 +1,6 @@
 /// Send signal to a process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let pid = unsafe { nc::fork() };

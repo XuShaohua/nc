@@ -1,6 +1,6 @@
 /// Get/set the resource limits of an arbitary process.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// let mut old_limit = nc::rlimit64_t::default();

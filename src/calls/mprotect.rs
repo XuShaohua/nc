@@ -1,6 +1,6 @@
 /// Set protection on a region of memory.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.

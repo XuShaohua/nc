@@ -6,14 +6,13 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-#[cfg(not(feature = "std"))]
-use alloc::string::String;
-use core::fmt;
+use core::{fmt, mem, slice};
 
-use crate::{ino64_t, loff_t, PATH_MAX};
+use crate::{ino64_t, loff_t};
+
+const NAME_MAX_LEN: usize = 256;
 
 #[repr(C)]
-#[derive(Clone)]
 pub struct linux_dirent64_t {
     /// 64-bit inode number.
     pub d_ino: ino64_t,
@@ -28,8 +27,43 @@ pub struct linux_dirent64_t {
     pub d_type: u8,
 
     /// Filename (null-terminated).
-    //pub d_name: [u8; 0],
-    pub d_name: [u8; PATH_MAX as usize],
+    pub d_name: [u8; NAME_MAX_LEN],
+}
+
+impl Default for linux_dirent64_t {
+    fn default() -> Self {
+        Self {
+            d_ino: 0,
+            d_off: 0,
+            d_reclen: 0,
+            d_type: 0,
+            d_name: [0; NAME_MAX_LEN],
+        }
+    }
+}
+
+impl linux_dirent64_t {
+    /// d_name may be smaller than this length value.
+    #[must_use]
+    #[inline]
+    pub const fn name_max_len(&self) -> usize {
+        self.d_reclen as usize - 2 - mem::offset_of!(linux_dirent64_t, d_name)
+    }
+
+    /// Return filename.
+    ///
+    /// name does not contain null-termination.
+    #[must_use]
+    #[inline]
+    pub fn name(&self) -> &[u8] {
+        let max_len = self.name_max_len();
+        for i in 0..max_len {
+            if self.d_name[i] == b'\0' {
+                return &self.d_name[..i];
+            }
+        }
+        &self.d_name[..max_len]
+    }
 }
 
 impl fmt::Debug for linux_dirent64_t {
@@ -39,24 +73,7 @@ impl fmt::Debug for linux_dirent64_t {
             .field("d_off", &self.d_off)
             .field("d_reclen", &self.d_reclen)
             .field("d_type", &self.d_type)
-            .field("d_name", &&self.d_name[0..32])
+            .field("d_name", &&self.d_name[..32])
             .finish()
     }
-}
-
-#[repr(C)]
-#[derive(Debug, Default, Clone)]
-pub struct linux_dirent64_extern_t {
-    /// 64-bit inode number.
-    pub d_ino: ino64_t,
-
-    /// 64-bit offset to next structure.
-    pub d_off: loff_t,
-
-    /// File type.
-    pub d_type: u8,
-
-    // TODO(Shaohua): Replace String with CString
-    /// Filename.
-    pub d_name: String,
 }

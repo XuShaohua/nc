@@ -28,27 +28,27 @@ use crate::{mode_t, S_IFMT};
 /// (ie `(i_mode >> 12) & 15`).
 pub const S_DT_SHIFT: mode_t = 12;
 
-#[inline]
 #[must_use]
-pub const fn S_DT(mode: mode_t) -> mode_t {
-    (mode & S_IFMT) >> S_DT_SHIFT
+#[inline]
+pub const fn s_dt(mode: mode_t) -> u8 {
+    ((mode & S_IFMT) >> S_DT_SHIFT) as u8
 }
 
-pub const S_DT_MASK: mode_t = S_IFMT >> S_DT_SHIFT;
+pub const S_DT_MASK: u8 = (S_IFMT >> S_DT_SHIFT) as u8;
 
 /// these are defined by POSIX and also present in glibc's dirent.h
-pub const DT_UNKNOWN: mode_t = 0;
-pub const DT_FIFO: mode_t = 1;
-pub const DT_CHR: mode_t = 2;
-pub const DT_DIR: mode_t = 4;
-pub const DT_BLK: mode_t = 6;
-pub const DT_REG: mode_t = 8;
-pub const DT_LNK: mode_t = 10;
-pub const DT_SOCK: mode_t = 12;
-pub const DT_WHT: mode_t = 14;
+pub const DT_UNKNOWN: u8 = 0;
+pub const DT_FIFO: u8 = 1;
+pub const DT_CHR: u8 = 2;
+pub const DT_DIR: u8 = 4;
+pub const DT_BLK: u8 = 6;
+pub const DT_REG: u8 = 8;
+pub const DT_LNK: u8 = 10;
+pub const DT_SOCK: u8 = 12;
+pub const DT_WHT: u8 = 14;
 
 /// 16
-pub const DT_MAX: mode_t = S_DT_MASK + 1;
+pub const DT_MAX: u8 = S_DT_MASK + 1;
 
 /// fs on-disk file types.
 ///
@@ -59,12 +59,12 @@ pub const DT_MAX: mode_t = S_DT_MASK + 1;
 ///
 /// Note that no fs currently stores the whiteout type on-disk,
 /// so whiteout dirents are exposed to user as `DT_CHR`.
-pub const FT_UNKNOWN: mode_t = 0;
-pub const FT_REG_FILE: mode_t = 1;
-pub const FT_DIR: mode_t = 2;
-pub const FT_CHRDEV: mode_t = 3;
-pub const FT_BLKDEV: mode_t = 4;
-pub const FT_FIFO: mode_t = 5;
-pub const FT_SOCK: mode_t = 6;
-pub const FT_SYMLINK: mode_t = 7;
-pub const FT_MAX: mode_t = 8;
+pub const FT_UNKNOWN: u8 = 0;
+pub const FT_REG_FILE: u8 = 1;
+pub const FT_DIR: u8 = 2;
+pub const FT_CHRDEV: u8 = 3;
+pub const FT_BLKDEV: u8 = 4;
+pub const FT_FIFO: u8 = 5;
+pub const FT_SOCK: u8 = 6;
+pub const FT_SYMLINK: u8 = 7;
+pub const FT_MAX: u8 = 8;

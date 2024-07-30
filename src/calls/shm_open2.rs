@@ -7,7 +7,6 @@ pub unsafe fn shm_open2<P: AsRef<Path>>(
     fcaps: &mut filecaps_t,
     name: P,
 ) -> Result<(), Errno> {
-    // TODO(Shaohua): Add AsRef<CStr>
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let flags = flags as usize;

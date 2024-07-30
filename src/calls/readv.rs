@@ -13,10 +13,9 @@
 /// let capacity = 4 * 64;
 /// let mut iov = Vec::with_capacity(buf.len());
 /// for ref mut item in (&mut buf).iter() {
-/// // TODO(Shaohua): Replace with as_mut_ptr()
 ///     iov.push(nc::iovec_t {
-///         iov_len: item.len(),
 ///         iov_base: item.as_ptr() as *const c_void,
+///         iov_len: item.len(),
 ///     });
 /// }
 /// let ret = unsafe { nc::readv(fd, &mut iov) };

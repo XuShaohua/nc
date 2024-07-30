@@ -11,8 +11,6 @@
 #![allow(clippy::wildcard_imports)]
 
 extern crate alloc;
-use core::ffi::c_void;
-use core::sync::atomic::AtomicU32;
 
 use crate::c_str::CString;
 use crate::path::Path;
@@ -1345,13 +1343,14 @@ pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
 /// }
 /// ```
 pub unsafe fn futex(
-    uaddr: &AtomicU32,
+    uaddr: &core::sync::atomic::AtomicU32,
     op: i32,
     val: u32,
     utime: Option<&timespec_t>,
-    uaddr2: Option<&AtomicU32>,
+    uaddr2: Option<&core::sync::atomic::AtomicU32>,
     val3: u32,
 ) -> Result<i32, Errno> {
+    use core::sync::atomic::AtomicU32;
     let uaddr_ptr = uaddr as *const AtomicU32 as usize;
     let op = op as usize;
     let val = val as usize;
@@ -4120,10 +4119,9 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
 /// let capacity = 4 * 64;
 /// let mut iov = Vec::with_capacity(buf.len());
 /// for ref mut item in (&mut buf).iter() {
-/// // TODO(Shaohua): Replace with as_mut_ptr()
 ///     iov.push(nc::iovec_t {
-///         iov_len: item.len(),
 ///         iov_base: item.as_ptr() as *const c_void,
+///         iov_len: item.len(),
 ///     });
 /// }
 /// let ret = unsafe { nc::readv(fd, &mut iov) };
@@ -4349,8 +4347,6 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
 /// # example
 ///
 /// ```
-/// use std::mem::size_of;
-///
 /// fn handle_sigterm(sig: i32) {
 ///     assert_eq!(sig, nc::SIGTERM);
 /// }

@@ -8,7 +8,7 @@
 /// Identical to the traditional `FUTEX_WAKE_BITSET` op, except it is part of the
 /// futex2 family of calls.
 pub unsafe fn futex_wake(
-    uaddr: *mut c_void,
+    uaddr: *mut core::ffi::c_void,
     mask: usize,
     nr: i32,
     flags: u32,

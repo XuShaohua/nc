@@ -51,13 +51,14 @@
 /// }
 /// ```
 pub unsafe fn futex(
-    uaddr: &AtomicU32,
+    uaddr: &core::sync::atomic::AtomicU32,
     op: i32,
     val: u32,
     utime: Option<&timespec_t>,
-    uaddr2: Option<&AtomicU32>,
+    uaddr2: Option<&core::sync::atomic::AtomicU32>,
     val3: u32,
 ) -> Result<i32, Errno> {
+    use core::sync::atomic::AtomicU32;
     let uaddr_ptr = uaddr as *const AtomicU32 as usize;
     let op = op as usize;
     let val = val as usize;

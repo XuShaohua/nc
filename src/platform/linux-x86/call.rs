@@ -2678,7 +2678,6 @@ pub unsafe fn get_robust_list(
     syscall3(SYS_GET_ROBUST_LIST, pid, head_ptr, len_ptr).map(drop)
 }
 
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 /// Get thread-local storage information.
 pub unsafe fn get_thread_area(user_desc: &mut user_desc_t) -> Result<(), Errno> {
     let user_desc_ptr = user_desc as *mut user_desc_t as usize;
@@ -5565,9 +5564,8 @@ pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Err
 /// let newname = "/tmp/nc-readlink";
 /// let ret = unsafe { nc::symlinkat(oldname, nc::AT_FDCWD, newname) };
 /// assert!(ret.is_ok());
-/// let mut buf = [0_u8; nc::PATH_MAX as usize];
-/// let buf_len = buf.len();
-/// let ret = unsafe { nc::readlink(newname, &mut buf, buf_len) };
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
+/// let ret = unsafe { nc::readlink(newname, &mut buf) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());
@@ -5575,14 +5573,11 @@ pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Err
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, newname, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn readlink<P: AsRef<Path>>(
-    filename: P,
-    buf: &mut [u8],
-    buf_len: size_t,
-) -> Result<ssize_t, Errno> {
+pub unsafe fn readlink<P: AsRef<Path>>(filename: P, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
+    let buf_len = buf.len();
     syscall3(SYS_READLINK, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t)
 }
 
@@ -5595,9 +5590,9 @@ pub unsafe fn readlink<P: AsRef<Path>>(
 /// let newname = "/tmp/nc-readlinkat";
 /// let ret = unsafe { nc::symlinkat(oldname, nc::AT_FDCWD, newname) };
 /// assert!(ret.is_ok());
-/// let mut buf = [0_u8; nc::PATH_MAX as usize];
+/// let mut buf = [0_u8; nc::PATH_MAX as usize + 1];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::readlinkat(nc::AT_FDCWD, newname, &mut buf, buf_len) };
+/// let ret = unsafe { nc::readlinkat(nc::AT_FDCWD, newname, &mut buf) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as usize;
 /// assert_eq!(n_read, oldname.len());
@@ -5609,12 +5604,12 @@ pub unsafe fn readlinkat<P: AsRef<Path>>(
     dirfd: i32,
     filename: P,
     buf: &mut [u8],
-    buf_len: size_t,
 ) -> Result<ssize_t, Errno> {
     let dirfd = dirfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
+    let buf_len = buf.len();
     syscall4(SYS_READLINKAT, dirfd, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t)
 }
 

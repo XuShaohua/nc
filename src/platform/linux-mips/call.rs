@@ -2101,91 +2101,119 @@ pub unsafe fn getcwd(buf: &mut [u8]) -> Result<ssize_t, Errno> {
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust
+/// use std::mem::offset_of;
+///
+/// const BUF_SIZE: usize = 1 * 1024;
+///
 /// let path = "/etc";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
+/// let mut buf = [0; BUF_SIZE];
 ///
-/// const BUF_SIZE: usize = 4 * 1024;
 /// loop {
-///     // TODO(Shaohua): Only allocate one buf block.
-///     let mut buf: Vec<u8> = vec![0; BUF_SIZE];
-///     let ret = unsafe { nc::getdents(fd, buf.as_mut_ptr() as usize, BUF_SIZE) };
+///     let ret = unsafe { nc::getdents(fd, &mut buf) };
 ///     assert!(ret.is_ok());
-///
-///     let buf_box = buf.into_boxed_slice();
-///     let buf_box_ptr = Box::into_raw(buf_box) as *mut u8 as usize;
 ///     let nread = ret.unwrap() as usize;
 ///     if nread == 0 {
 ///         break;
 ///     }
 ///
+///     let buf_ptr: *const u8 = buf.as_ptr();
 ///     let mut bpos: usize = 0;
+///
+///     println!("--------------- nread={nread} ---------------");
+///     println!("inode#    file type  d_reclen  d_off   d_name");
 ///     while bpos < nread {
-///         let d = (buf_box_ptr + bpos) as *mut nc::linux_dirent_t;
-///         let d_ref = unsafe { &(*d) };
-///         let mut name_vec: Vec<u8> = vec![];
-///         // TODO(Shaohua): Calculate string len of name.
-///         for i in 0..nc::PATH_MAX {
-///             let c = d_ref.d_name[i as usize];
-///             if c == 0 {
-///                 break;
-///             }
-///             name_vec.push(c);
+///         let d = buf_ptr.wrapping_add(bpos) as *mut nc::linux_dirent_t;
+///         let d_ref: &nc::linux_dirent_t = unsafe { &(*d) };
+///         let d_type = match d_ref.d_type() {
+///             nc::DT_REG => "regular",
+///             nc::DT_DIR => "directory",
+///             nc::DT_FIFO => "FIFO",
+///             nc::DT_SOCK => "socket",
+///             nc::DT_LNK => "symlink",
+///             nc::DT_BLK => "block-dev",
+///             nc::DT_CHR => "char-dev",
+///             _ => "unknown",
+///         };
+///
+///         if let Ok(name) = std::str::from_utf8(d_ref.name()) {
+///             println!(
+///                 "{: >8}  {:>10} {: >4} {: >12}  {}",
+///                 d_ref.d_ino, d_type, d_ref.d_reclen, d_ref.d_off as u32, name
+///             );
+///         } else {
+///             eprintln!("Invalid name: {:?}", d_ref.name());
 ///         }
-///         let _name = String::from_utf8(name_vec).unwrap();
 ///
 ///         bpos += d_ref.d_reclen as usize;
 ///     }
+///     break;
 /// }
+/// let offset = offset_of!(nc::linux_dirent_t, d_name);
+/// println!("offset of d_name is: {}", offset);
+/// println!(
+///     "offset of d_reclen is: {}",
+///     offset_of!(nc::linux_dirent_t, d_reclen)
+/// );
 ///
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn getdents(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn getdents(fd: i32, dir_buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    syscall3(SYS_GETDENTS, fd, dirp, count).map(|ret| ret as ssize_t)
+    let count = dir_buf.len();
+    let dir_buf_ptr = dir_buf.as_mut_ptr() as usize;
+    syscall3(SYS_GETDENTS, fd, dir_buf_ptr, count).map(|ret| ret as ssize_t)
 }
 
 /// Get directory entries.
 ///
 /// # Examples
 ///
-/// ```
+/// ```rust
+/// const BUF_SIZE: usize = 1 * 1024;
+///
 /// let path = "/etc";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
+/// let mut buf = [0; BUF_SIZE];
 ///
-/// const BUF_SIZE: usize = 4 * 1024;
 /// loop {
-///     // TODO(Shaohua): Only allocate one buf block.
-///     let mut buf: Vec<u8> = vec![0; BUF_SIZE];
-///     let ret = unsafe { nc::getdents64(fd, buf.as_mut_ptr() as usize, BUF_SIZE) };
+///     let ret = unsafe { nc::getdents64(fd, &mut buf) };
 ///     assert!(ret.is_ok());
-///
-///     let buf_box = buf.into_boxed_slice();
-///     let buf_box_ptr = Box::into_raw(buf_box) as *mut u8 as usize;
 ///     let nread = ret.unwrap() as usize;
 ///     if nread == 0 {
 ///         break;
 ///     }
 ///
+///     let buf_ptr = buf.as_ptr() as usize;
 ///     let mut bpos: usize = 0;
+///
+///     println!("--------------- nread={nread} ---------------");
+///     println!("inode#    file type  d_reclen  d_off   d_name");
 ///     while bpos < nread {
-///         let d = (buf_box_ptr + bpos) as *mut nc::linux_dirent64_t;
-///         let d_ref = unsafe { &(*d) };
-///         let mut name_vec: Vec<u8> = vec![];
-///         // TODO(Shaohua): Calculate string len of name.
-///         for i in 0..nc::PATH_MAX {
-///             let c = d_ref.d_name[i as usize];
-///             if c == 0 {
-///                 break;
-///             }
-///             name_vec.push(c);
-///         }
-///         let _name = String::from_utf8(name_vec).unwrap();
+///         let d = (buf_ptr + bpos) as *mut nc::linux_dirent64_t;
+///         let d_ref: &nc::linux_dirent64_t = unsafe { &(*d) };
+///         let d_type = match d_ref.d_type {
+///             nc::DT_REG => "regular",
+///             nc::DT_DIR => "directory",
+///             nc::DT_FIFO => "FIFO",
+///             nc::DT_SOCK => "socket",
+///             nc::DT_LNK => "symlink",
+///             nc::DT_BLK => "block-dev",
+///             nc::DT_CHR => "char-dev",
+///             _ => "unknown",
+///         };
+///
+///         let name = std::str::from_utf8(d_ref.name()).unwrap();
+///         println!(
+///             "{: >8}  {:>10} {: >4} {: >12}  {}",
+///             d_ref.d_ino, d_type, d_ref.d_reclen, d_ref.d_off as u32, name
+///         );
 ///
 ///         bpos += d_ref.d_reclen as usize;
 ///     }
@@ -2194,9 +2222,11 @@ pub unsafe fn getdents(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, E
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn getdents64(fd: i32, dirp: usize, count: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn getdents64(fd: i32, dir_buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    syscall3(SYS_GETDENTS64, fd, dirp, count).map(|ret| ret as ssize_t)
+    let count = dir_buf.len();
+    let dir_buf_ptr = dir_buf.as_mut_ptr() as usize;
+    syscall3(SYS_GETDENTS64, fd, dir_buf_ptr, count).map(|ret| ret as ssize_t)
 }
 
 /// Get the effective group ID of the calling process.

@@ -534,8 +534,8 @@ pub unsafe fn connect(
 /// let fd_in = unsafe { nc::openat(nc::AT_FDCWD, path_in, nc::O_RDWR | nc::O_CREAT, 0o644) };
 /// assert!(fd_in.is_ok());
 /// let fd_in = fd_in.unwrap();
-/// let msg = "Hello, rust";
-/// let ret = unsafe { nc::write(fd_in, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, rust";
+/// let ret = unsafe { nc::write(fd_in, msg) };
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let path_out = "/tmp/nc-copy-file-range.out";
 /// let fd_out = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
@@ -776,12 +776,12 @@ pub unsafe fn epoll_ctl(
 /// assert!(ctl_ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fds[1], msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fds[1], msg.as_bytes()) };
 /// assert!(ret.is_ok());
 ///
 /// let mut events = [nc::epoll_event_t::default(); 4];
 /// let timeout = 0;
-/// let sigmask = [nc::sigset_t::default(); 4];
+/// let sigmask = nc::sigset_t::default();
 /// let ret = unsafe {
 ///     nc::epoll_pwait(
 ///         epfd,
@@ -799,7 +799,7 @@ pub unsafe fn epoll_ctl(
 ///         let ready_fd = unsafe { event.data.fd };
 ///         assert_eq!(ready_fd, fds[0]);
 ///         let mut buf = [0_u8; 64];
-///         let ret = unsafe { nc::read(ready_fd, buf.as_mut_ptr() as usize, buf.len()) };
+///         let ret = unsafe { nc::read(ready_fd, &mut buf) };
 ///         assert!(ret.is_ok());
 ///         let n_read = ret.unwrap() as usize;
 ///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
@@ -817,14 +817,14 @@ pub unsafe fn epoll_pwait(
     epfd: i32,
     events: &mut [epoll_event_t],
     timeout: i32,
-    sigmask: &[sigset_t],
+    sigmask: &sigset_t,
 ) -> Result<i32, Errno> {
     let epfd = epfd as usize;
     let events_ptr = events.as_mut_ptr() as usize;
     let max_events = events.len();
     let timeout = timeout as usize;
-    let sigmask_ptr = sigmask.as_ptr() as usize;
-    let sigset_size = sigmask.len();
+    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let sigset_size = core::mem::size_of::<sigset_t>();
     syscall6(
         SYS_EPOLL_PWAIT,
         epfd,
@@ -855,7 +855,7 @@ pub unsafe fn epoll_pwait(
 /// assert!(ctl_ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fds[1], msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fds[1], msg.as_bytes()) };
 /// assert!(ret.is_ok());
 ///
 /// let mut events = [nc::epoll_event_t::default(); 4];
@@ -869,7 +869,7 @@ pub unsafe fn epoll_pwait(
 ///         let ready_fd = unsafe { event.data.fd };
 ///         assert_eq!(ready_fd, fds[0]);
 ///         let mut buf = [0_u8; 64];
-///         let ret = unsafe { nc::read(ready_fd, buf.as_mut_ptr() as usize, buf.len()) };
+///         let ret = unsafe { nc::read(ready_fd, &mut buf) };
 ///         assert!(ret.is_ok());
 ///         let n_read = ret.unwrap() as usize;
 ///         assert_eq!(msg.as_bytes(), &buf[..n_read]);
@@ -1327,7 +1327,7 @@ pub unsafe fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let msg = b"Hello, Rust";
-/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fd, msg) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
@@ -1450,7 +1450,7 @@ pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, 
 /// let ret = unsafe { nc::flock(fd, nc::LOCK_EX) };
 /// assert!(ret.is_ok());
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fd, msg.as_bytes()) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let ret = unsafe { nc::flock(fd, nc::LOCK_UN) };
@@ -1683,7 +1683,7 @@ pub unsafe fn fstatfs64(fd: i32, buf: &mut statfs64_t) -> Result<(), Errno> {
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let buf = b"Hello, Rust";
-/// let n_write = unsafe { nc::write(fd, buf.as_ptr() as usize, buf.len()) };
+/// let n_write = unsafe { nc::write(fd, buf) };
 /// assert_eq!(n_write, Ok(buf.len() as isize));
 /// let ret = unsafe { nc::fsync(fd) };
 /// assert!(ret.is_ok());
@@ -2173,8 +2173,9 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 ///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
-///     let msg = "Hello alarm";
-///     let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
+///     let msg = b"Hello alarm\n";
+///     let stderr = 2;
+///     let _ = unsafe { nc::write(stderr, msg) };
 /// }
 ///
 /// let sa = nc::sigaction_t {
@@ -3725,8 +3726,11 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 /// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
-///
-/// let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
+/// let stdout = 1;
+/// // Create the "fat pointer".
+/// let buf =
+///     unsafe { std::mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+/// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
 /// let ret = unsafe { nc::munmap(addr, map_length) };
@@ -4423,8 +4427,12 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
+/// let stdout = 1;
 ///
-/// let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
+/// // Create the "fat pointer".
+/// let buf =
+///     unsafe { std::mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+/// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
 /// let ret = unsafe { nc::munmap(addr, map_length) };
@@ -4755,8 +4763,8 @@ pub unsafe fn personality(persona: u32) -> Result<u32, Errno> {
 ///     return;
 /// }
 /// let child_stdout_fd = child_stdout_fd.unwrap();
-/// let msg = "Hello, msg from parent process\n";
-/// let ret = unsafe { nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, msg from parent process\n";
+/// let ret = unsafe { nc::write(child_stdout_fd, msg) };
 /// assert!(ret.is_ok());
 /// let nwrite = ret.unwrap();
 /// assert_eq!(nwrite as usize, msg.len());
@@ -4832,8 +4840,8 @@ pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32,
 ///     return;
 /// }
 /// let child_stdout_fd = child_stdout_fd.unwrap();
-/// let msg = "Hello, msg from parent process\n";
-/// let ret = unsafe { nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, msg from parent process\n";
+/// let ret = unsafe { nc::write(child_stdout_fd, msg) };
 /// assert!(ret.is_ok());
 /// let nwrite = ret.unwrap();
 /// assert_eq!(nwrite as usize, msg.len());
@@ -6536,8 +6544,9 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
-///     let msg = "Hello alarm";
-///     let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
+///     let msg = b"Hello alarm\n";
+///     let stderr = 2;
+///     let _ = unsafe { nc::write(stderr, msg) };
 /// }
 ///
 /// let sa = nc::sigaction_t {
@@ -7135,7 +7144,7 @@ pub unsafe fn socketpair(
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fds_left[1], msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fds_left[1], msg.as_bytes()) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_write, msg.len());
@@ -7154,7 +7163,7 @@ pub unsafe fn socketpair(
 ///
 /// let mut buf = [0u8; 64];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::read(fds_right[0], &mut buf) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_read, n_write);
@@ -7456,13 +7465,13 @@ pub unsafe fn syncfs(fd: i32) -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
-/// let path = "/tmp/nc-sync-file-range";
+/// let path = "/tmp/nc-sync-file-range2";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
-/// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, Rust";
+/// let ret = unsafe { nc::write(fd, msg) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap();
 /// assert_eq!(n_write, msg.len() as nc::ssize_t);
@@ -7540,7 +7549,7 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fds_left[1], msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fds_left[1], msg.as_bytes()) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_write, msg.len());
@@ -7550,7 +7559,7 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
 ///
 /// let mut buf = [0u8; 64];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::read(fds_right[0], &mut buf) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_read, n_write);
@@ -8438,8 +8447,8 @@ pub unsafe fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_CREAT | nc::O_WRONLY, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let msg = "Hello, Rust!";
-/// let ret = unsafe { nc::write(fd, &msg) };
+/// let msg = b"Hello, Rust!";
+/// let ret = unsafe { nc::write(fd, msg) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };

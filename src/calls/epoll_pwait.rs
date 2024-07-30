@@ -21,7 +21,7 @@
 ///
 /// let mut events = [nc::epoll_event_t::default(); 4];
 /// let timeout = 0;
-/// let sigmask = [nc::sigset_t::default(); 4];
+/// let sigmask = nc::sigset_t::default();
 /// let ret = unsafe {
 ///     nc::epoll_pwait(
 ///         epfd,
@@ -57,14 +57,14 @@ pub unsafe fn epoll_pwait(
     epfd: i32,
     events: &mut [epoll_event_t],
     timeout: i32,
-    sigmask: &[sigset_t],
+    sigmask: &sigset_t,
 ) -> Result<i32, Errno> {
     let epfd = epfd as usize;
     let events_ptr = events.as_mut_ptr() as usize;
     let max_events = events.len();
     let timeout = timeout as usize;
-    let sigmask_ptr = sigmask.as_ptr() as usize;
-    let sigset_size = sigmask.len();
+    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let sigset_size = core::mem::size_of::<sigset_t>();
     syscall6(
         SYS_EPOLL_PWAIT,
         epfd,

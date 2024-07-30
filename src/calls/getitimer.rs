@@ -7,8 +7,9 @@
 ///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
-///     let msg = "Hello alarm";
-///     let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
+///     let msg = b"Hello alarm\n";
+///     let stderr = 2;
+///     let _ = unsafe { nc::write(stderr, msg) };
 /// }
 ///
 /// let sa = nc::sigaction_t {

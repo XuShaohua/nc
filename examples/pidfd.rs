@@ -76,8 +76,8 @@ fn run_main() {
         eprintln!("pidfd_getfd() failed, err: {}", nc::strerror(errno));
     }
     let child_stdout_fd = ret.unwrap();
-    let msg = "Hello, msg from parent process\n";
-    let ret = unsafe { nc::write(child_stdout_fd, msg.as_ptr() as usize, msg.len()) };
+    let msg = b"Hello, msg from parent process\n";
+    let ret = unsafe { nc::write(child_stdout_fd, msg) };
     assert!(ret.is_ok());
     let nwrite = ret.unwrap();
     assert_eq!(nwrite as usize, msg.len());

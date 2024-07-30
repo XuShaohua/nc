@@ -8,7 +8,7 @@
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
 /// let buf = b"Hello, Rust";
-/// let n_write = unsafe { nc::write(fd, buf.as_ptr() as usize, buf.len()) };
+/// let n_write = unsafe { nc::write(fd, buf) };
 /// assert_eq!(n_write, Ok(buf.len() as isize));
 /// let ret = unsafe { nc::fsync(fd) };
 /// assert!(ret.is_ok());

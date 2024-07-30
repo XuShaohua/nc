@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use std::mem;
+
 fn main() {
     let path = "/etc/passwd";
     let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
@@ -43,7 +45,11 @@ fn main() {
     assert!(addr.is_ok());
 
     let addr = addr.unwrap();
-    let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
+    let stdout = 1;
+    // Create the "fat pointer".
+    let buf =
+        unsafe { mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+    let n_write = unsafe { nc::write(stdout, buf) };
     assert!(n_write.is_ok());
     assert_eq!(n_write, Ok(length as nc::ssize_t));
     let ret = unsafe { nc::munmap(addr, map_length) };

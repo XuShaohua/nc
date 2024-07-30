@@ -11,7 +11,7 @@ fn main() -> Result<(), nc::Errno> {
 
     let mut buf: [u8; 256] = [0; 256];
     loop {
-        let n_read = unsafe { nc::read(fd, buf.as_mut_ptr() as usize, buf.len()) };
+        let n_read = unsafe { nc::read(fd, &mut buf) };
         match n_read {
             Ok(n) => {
                 if n == 0 {

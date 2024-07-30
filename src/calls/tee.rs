@@ -12,7 +12,7 @@
 /// assert!(ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fds_left[1], msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fds_left[1], msg.as_bytes()) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_write, msg.len());
@@ -22,7 +22,7 @@
 ///
 /// let mut buf = [0u8; 64];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::read(fds_right[0], buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::read(fds_right[0], &mut buf) };
 /// assert!(ret.is_ok());
 /// let n_read = ret.unwrap() as nc::size_t;
 /// assert_eq!(n_read, n_write);

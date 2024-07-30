@@ -16,7 +16,7 @@
 /// assert!(ctl_ret.is_ok());
 ///
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fds[1], msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fds[1], msg.as_bytes()) };
 /// assert!(ret.is_ok());
 ///
 /// let mut events = [nc::epoll_event_t::default(); 4];
@@ -39,7 +39,7 @@
 ///         let ready_fd = unsafe { event.data.fd };
 ///         assert_eq!(ready_fd, fds[0]);
 ///         let mut buf = [0_u8; 64];
-///         let ret = unsafe { nc::read(ready_fd, buf.as_mut_ptr() as usize, buf.len()) };
+///         let ret = unsafe { nc::read(ready_fd, &mut buf) };
 ///         assert!(ret.is_ok());
 ///         let n_read = ret.unwrap() as usize;
 ///         assert_eq!(msg.as_bytes(), &buf[..n_read]);

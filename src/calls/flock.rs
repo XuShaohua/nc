@@ -10,7 +10,7 @@
 /// let ret = unsafe { nc::flock(fd, nc::LOCK_EX) };
 /// assert!(ret.is_ok());
 /// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+/// let ret = unsafe { nc::write(fd, msg.as_bytes()) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let ret = unsafe { nc::flock(fd, nc::LOCK_UN) };

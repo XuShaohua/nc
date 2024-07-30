@@ -8,8 +8,8 @@
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
-/// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, Rust";
+/// let ret = unsafe { nc::write(fd, msg) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap();
 /// assert_eq!(n_write, msg.len() as nc::ssize_t);

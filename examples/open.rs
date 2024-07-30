@@ -24,9 +24,9 @@ fn main() -> Result<(), nc::Errno> {
         )?
     };
 
-    let msg = "fn main() { println!(\"Hello, world\");}";
+    let msg = b"fn main() { println!(\"Hello, world\");}";
 
-    let n_write = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+    let n_write = unsafe { nc::write(fd, msg) };
     assert!(n_write.is_ok());
     let ret = unsafe { nc::close(fd) };
     assert!(ret.is_ok());

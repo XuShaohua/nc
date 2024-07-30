@@ -30,8 +30,11 @@
 /// };
 /// assert!(addr.is_ok());
 /// let addr = addr.unwrap();
-///
-/// let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
+/// let stdout = 1;
+/// // Create the "fat pointer".
+/// let buf =
+///     unsafe { std::mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+/// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
 /// let ret = unsafe { nc::munmap(addr, map_length) };

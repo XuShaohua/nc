@@ -55,8 +55,7 @@ pub fn syscall_exists(name: &str) -> Result<bool, Errno> {
     let mut buf = [0_u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
-        let buf_ptr = buf.as_mut_ptr() as usize;
-        let n_read = unsafe { crate::read(file.fd(), buf_ptr, BUF_LEN) };
+        let n_read = unsafe { crate::read(file.fd(), &mut buf) };
         match n_read {
             Err(errno) => return Err(errno),
             Ok(0) => break,
@@ -117,8 +116,7 @@ pub fn read_syscall_list() -> Result<Syscalls, Errno> {
     let mut buf = [0_u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
-        let buf_ptr = buf.as_mut_ptr() as usize;
-        let n_read = unsafe { crate::read(file.fd(), buf_ptr, BUF_LEN) };
+        let n_read = unsafe { crate::read(file.fd(), &mut buf) };
         match n_read {
             Err(errno) => return Err(errno),
             Ok(0) => break,

@@ -4,7 +4,7 @@ fn main() {
     fn handle_alarm(signum: i32) {
         assert_eq!(signum, nc::SIGALRM);
         let msg = "Hello alarm";
-        let _ = unsafe { nc::write(2, msg.as_ptr() as usize, msg.len()) };
+        let _ = unsafe { nc::write(2, msg.as_bytes()) };
     }
 
     let sa = nc::sigaction_t {

@@ -4,7 +4,7 @@
 
 fn main() {
     let msg = "hello, world\n";
-    let nwrite = unsafe { nc::write(-1, msg.as_ptr() as usize, msg.len()) };
+    let nwrite = unsafe { nc::write(-1, msg.as_bytes()) };
     match nwrite {
         Ok(n) => {
             println!("nwrite: {}", n);
@@ -17,7 +17,8 @@ fn main() {
         }
     }
 
-    let nwrite = unsafe { nc::write(1, msg.as_ptr() as usize, msg.len()) };
+    let stdout = 1;
+    let nwrite = unsafe { nc::write(stdout, msg.as_bytes()) };
     match nwrite {
         Ok(n) => {
             println!("nwrite: {}", n);

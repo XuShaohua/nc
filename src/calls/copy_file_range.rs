@@ -7,8 +7,8 @@
 /// let fd_in = unsafe { nc::openat(nc::AT_FDCWD, path_in, nc::O_RDWR | nc::O_CREAT, 0o644) };
 /// assert!(fd_in.is_ok());
 /// let fd_in = fd_in.unwrap();
-/// let msg = "Hello, rust";
-/// let ret = unsafe { nc::write(fd_in, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, rust";
+/// let ret = unsafe { nc::write(fd_in, msg) };
 /// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let path_out = "/tmp/nc-copy-file-range.out";
 /// let fd_out = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };

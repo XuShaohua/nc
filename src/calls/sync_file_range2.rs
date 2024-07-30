@@ -3,13 +3,13 @@
 /// # Examples
 ///
 /// ```
-/// let path = "/tmp/nc-sync-file-range";
+/// let path = "/tmp/nc-sync-file-range2";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
-/// let msg = "Hello, Rust";
-/// let ret = unsafe { nc::write(fd, msg.as_ptr() as usize, msg.len()) };
+/// let msg = b"Hello, Rust";
+/// let ret = unsafe { nc::write(fd, msg) };
 /// assert!(ret.is_ok());
 /// let n_write = ret.unwrap();
 /// assert_eq!(n_write, msg.len() as nc::ssize_t);

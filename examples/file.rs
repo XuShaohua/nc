@@ -33,7 +33,7 @@ impl File {
 
 impl Read for File {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-        let n_read = unsafe { nc::read(self.fd, buf.as_mut_ptr() as usize, buf.len()) };
+        let n_read = unsafe { nc::read(self.fd, buf) };
         match n_read {
             Ok(n_read) => Ok(n_read as usize),
             Err(_errno) => Err(io::Error::new(io::ErrorKind::Other, "errno")),

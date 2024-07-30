@@ -3,8 +3,6 @@
 /// # example
 ///
 /// ```
-/// use std::mem::size_of;
-///
 /// fn handle_sigterm(sig: i32) {
 ///     assert_eq!(sig, nc::SIGTERM);
 /// }

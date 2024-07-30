@@ -6,6 +6,8 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+use core::ptr;
+
 /// Values to pass as first argument to `prctl()`
 
 /// Second arg is a signal
@@ -148,7 +150,7 @@ pub const PR_SET_MM_MAP_SIZE: i32 = 15;
 /// output for a task. This mostly done in a
 /// sake of checkpoint/restore functionality.
 #[repr(C)]
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct prctl_mm_map_t {
     /// code section bounds
     pub start_code: u64,
@@ -168,11 +170,32 @@ pub struct prctl_mm_map_t {
     pub env_start: u64,
     pub env_end: u64,
     /// auxiliary vector
-    pub auxv: usize, // *u64 pointer,
+    pub auxv: *mut u64,
     /// vector size
     pub auxv_size: u32,
     /// /proc/$pid/exe link file
     pub exe_fd: u32,
+}
+
+impl Default for prctl_mm_map_t {
+    fn default() -> Self {
+        Self {
+            start_code: 0,
+            end_code: 0,
+            start_data: 0,
+            end_data: 0,
+            start_brk: 0,
+            brk: 0,
+            start_stack: 0,
+            arg_start: 0,
+            arg_end: 0,
+            env_start: 0,
+            env_end: 0,
+            auxv: ptr::null_mut::<u64>(),
+            auxv_size: 0,
+            exe_fd: 0,
+        }
+    }
 }
 
 /// Set specific pid that is allowed to ptrace the current task.

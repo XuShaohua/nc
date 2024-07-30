@@ -3,8 +3,6 @@
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }

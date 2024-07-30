@@ -14,19 +14,20 @@
 ///     sa_mask: (nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK).into(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, &sa, None) };
 /// let ret = unsafe { nc::kill(nc::getpid(), nc::SIGTERM) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn rt_sigaction(
     sig: i32,
     act: &sigaction_t,
-    old_act: &mut sigaction_t,
-    sigsetsize: size_t,
+    old_act: Option<&mut sigaction_t>,
 ) -> Result<(), Errno> {
     let sig = sig as usize;
     let act_ptr = act as *const sigaction_t as usize;
-    let old_act_ptr = old_act as *mut sigaction_t as usize;
-    syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigsetsize).map(drop)
+    let old_act_ptr = old_act.map_or(core::ptr::null_mut::<sigaction_t>() as usize, |old_act| {
+        old_act as *mut sigaction_t as usize
+    });
+    let sigset_size = core::mem::size_of::<sigset_t>();
+    syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigset_size).map(drop)
 }

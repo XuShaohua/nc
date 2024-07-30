@@ -2,8 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use std::mem;
-
 fn handle_segfault(sig: i32) {
     println!("Got segfault");
     assert_eq!(sig, nc::SIGSEGV);
@@ -16,15 +14,7 @@ fn main() {
         sa_flags: nc::SA_SIGINFO,
         ..nc::sigaction_t::default()
     };
-    let mut old_sa = nc::sigaction_t::default();
-    let ret = unsafe {
-        nc::rt_sigaction(
-            nc::SIGSEGV,
-            &sa,
-            &mut old_sa,
-            mem::size_of::<nc::sigset_t>(),
-        )
-    };
+    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, &sa, None) };
     assert!(ret.is_ok());
 
     // Initialize an anonymous mapping with 4 pages.

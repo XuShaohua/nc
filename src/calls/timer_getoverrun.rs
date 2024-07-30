@@ -17,8 +17,7 @@
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
-///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {

@@ -143,8 +143,7 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
 /// assert!(ret.is_ok());
 /// let remaining = unsafe { nc::alarm(1) };
 /// let mask = nc::sigset_t::default();
@@ -2183,8 +2182,7 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 ///     sa_flags: 0,
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
 /// assert!(ret.is_ok());
 ///
 /// // Single shot timer, actived after 1 second.
@@ -4637,8 +4635,7 @@ pub unsafe fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Re
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
 /// assert!(ret.is_ok());
 /// let remaining = unsafe { nc::alarm(1) };
 /// let ret = unsafe { nc::pause() };
@@ -5860,21 +5857,22 @@ pub unsafe fn rtas(args: &mut rtas_args_t) -> Result<(), Errno> {
 ///     sa_mask: (nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK).into(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, &sa, None) };
 /// let ret = unsafe { nc::kill(nc::getpid(), nc::SIGTERM) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn rt_sigaction(
     sig: i32,
     act: &sigaction_t,
-    old_act: &mut sigaction_t,
-    sigsetsize: size_t,
+    old_act: Option<&mut sigaction_t>,
 ) -> Result<(), Errno> {
     let sig = sig as usize;
     let act_ptr = act as *const sigaction_t as usize;
-    let old_act_ptr = old_act as *mut sigaction_t as usize;
-    syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigsetsize).map(drop)
+    let old_act_ptr = old_act.map_or(core::ptr::null_mut::<sigaction_t>() as usize, |old_act| {
+        old_act as *mut sigaction_t as usize
+    });
+    let sigset_size = core::mem::size_of::<sigset_t>();
+    syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigset_size).map(drop)
 }
 
 /// Examine pending signals.
@@ -6554,8 +6552,7 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///     sa_flags: 0,
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
 /// assert!(ret.is_ok());
 ///
 /// // Single shot timer, actived after 1 second.
@@ -7754,8 +7751,7 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
-///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {
@@ -7829,8 +7825,7 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
-///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {
@@ -7901,8 +7896,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         ..nc::sigaction_t::default()
 ///     };
-///     let mut old_sa = nc::sigaction_t::default();
-///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, &sa, None) };
 ///     assert!(ret.is_ok());
 ///
 ///     let tid = nc::itimerspec_t {

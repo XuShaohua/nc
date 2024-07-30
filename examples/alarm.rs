@@ -18,8 +18,7 @@ fn main() {
         ..nc::sigaction_t::default()
     };
     println!("sa size: {}", size_of_val(&sa));
-    let mut old_sa = nc::sigaction_t::default();
-    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
     assert!(ret.is_ok());
 
     let seconds = 1;

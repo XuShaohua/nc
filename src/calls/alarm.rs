@@ -13,8 +13,7 @@
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     ..nc::sigaction_t::default()
 /// };
-/// let mut old_sa = nc::sigaction_t::default();
-/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, &mut old_sa, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
 /// assert!(ret.is_ok());
 /// let remaining = unsafe { nc::alarm(1) };
 /// let mask = nc::sigset_t::default();

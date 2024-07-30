@@ -3,7 +3,6 @@
 // in the LICENSE file.
 
 use std::ffi::CString;
-use std::mem::size_of;
 
 pub fn set_process_name(name: &str) -> Result<(), nc::Errno> {
     let process_name = CString::new(name).unwrap();
@@ -18,5 +17,5 @@ fn main() {
     set_process_name(process_name).unwrap();
 
     let mask = nc::sigset_t::default();
-    let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+    let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 }

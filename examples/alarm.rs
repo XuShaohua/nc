@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use core::mem::{size_of, size_of_val};
+use core::mem::size_of_val;
 
 #[no_mangle]
 fn handle_alarm(signum: i32) {
@@ -25,7 +25,7 @@ fn main() {
     let remaining = nc::util::alarm(seconds);
 
     let mask = nc::sigset_t::default();
-    let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+    let ret = unsafe { nc::rt_sigsuspend(&mask) };
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
 

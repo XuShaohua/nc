@@ -2,8 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use std::mem::size_of;
-
 fn get_file_limit() {
     let pid = unsafe { nc::getpid() };
     let mut res_limit = nc::rlimit64_t::default();
@@ -45,5 +43,5 @@ fn main() {
     get_file_limit();
 
     let mask = nc::sigset_t::default();
-    let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+    let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 }

@@ -4,8 +4,6 @@
 ///
 /// # Examples
 /// ```
-/// use core::mem::size_of;
-///
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -14,7 +12,7 @@
 /// if pid == 0 {
 ///     // child process.
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
 ///     // parent process.
@@ -29,7 +27,8 @@
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub unsafe fn rt_sigsuspend(set: &sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
+pub unsafe fn rt_sigsuspend(set: &sigset_t) -> Result<(), Errno> {
     let set_ptr = set as *const sigset_t as usize;
-    syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigsetsize).map(drop)
+    let sigset_size = core::mem::size_of::<sigset_t>();
+    syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigset_size).map(drop)
 }

@@ -3,8 +3,6 @@
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
@@ -57,7 +55,7 @@
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 ///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());

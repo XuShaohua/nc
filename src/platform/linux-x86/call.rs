@@ -119,8 +119,6 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
@@ -133,7 +131,7 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// let remaining = unsafe { nc::alarm(1) };
 /// let mask = nc::sigset_t::default();
-/// let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigsuspend(&mask) };
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
 /// ```
@@ -2279,8 +2277,6 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 ///     let msg = b"Hello alarm\n";
@@ -2316,7 +2312,7 @@ pub unsafe fn getgroups(size: i32, group_list: &mut [gid_t]) -> Result<i32, Errn
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let mask = nc::sigset_t::default();
-/// let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
@@ -6017,8 +6013,6 @@ pub unsafe fn rt_sigreturn() {
 ///
 /// # Examples
 /// ```
-/// use core::mem::size_of;
-///
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -6027,7 +6021,7 @@ pub unsafe fn rt_sigreturn() {
 /// if pid == 0 {
 ///     // child process.
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
 ///     // parent process.
@@ -6042,9 +6036,10 @@ pub unsafe fn rt_sigreturn() {
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub unsafe fn rt_sigsuspend(set: &sigset_t, sigsetsize: size_t) -> Result<(), Errno> {
+pub unsafe fn rt_sigsuspend(set: &sigset_t) -> Result<(), Errno> {
     let set_ptr = set as *const sigset_t as usize;
-    syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigsetsize).map(drop)
+    let sigset_size = core::mem::size_of::<sigset_t>();
+    syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigset_size).map(drop)
 }
 
 /// Synchronously wait for queued signals.
@@ -6632,8 +6627,6 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 ///     let msg = b"Hello alarm\n";
@@ -6669,7 +6662,7 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let mask = nc::sigset_t::default();
-/// let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
@@ -7666,8 +7659,6 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -7676,7 +7667,7 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
 /// if pid == 0 {
 ///     // child process.
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
 ///     // parent process.
@@ -7820,8 +7811,6 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
@@ -7874,7 +7863,7 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 ///     let ret = unsafe { nc::timer_getoverrun(timer_id) };
 ///     assert!(ret.is_ok());
@@ -7894,8 +7883,6 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
@@ -7948,7 +7935,7 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 ///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());
@@ -7965,8 +7952,6 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
@@ -8019,7 +8004,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///     println!("cur time: {:?}", cur_time);
 ///
 ///     let mask = nc::sigset_t::default();
-///     let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 ///     let ret = unsafe { nc::timer_delete(timer_id) };
 ///     assert!(ret.is_ok());
@@ -8066,8 +8051,6 @@ pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -8076,7 +8059,7 @@ pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 /// if pid == 0 {
 ///     // child process.
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
 ///     // parent process.

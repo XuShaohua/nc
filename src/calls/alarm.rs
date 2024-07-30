@@ -3,8 +3,6 @@
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
@@ -17,7 +15,7 @@
 /// assert!(ret.is_ok());
 /// let remaining = unsafe { nc::alarm(1) };
 /// let mask = nc::sigset_t::default();
-/// let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let ret = unsafe { nc::rt_sigsuspend(&mask) };
 /// assert_eq!(ret, Err(nc::EINTR));
 /// assert_eq!(remaining, 0);
 /// ```

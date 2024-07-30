@@ -3,8 +3,6 @@
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// fn handle_alarm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGALRM);
 ///     let msg = b"Hello alarm\n";
@@ -40,7 +38,7 @@
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 ///
 /// let mask = nc::sigset_t::default();
-/// let _ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+/// let _ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());

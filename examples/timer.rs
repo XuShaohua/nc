@@ -1,6 +1,8 @@
-fn main() {
-    use core::mem::size_of;
+// Copyright (c) 2024 Xu Shaohua <shaohua@biofan.org>. All rights reserved.
+// Use of this source is governed by Apache-2.0 License that can be found
+// in the LICENSE file.
 
+fn main() {
     fn handle_alarm(signum: i32) {
         assert_eq!(signum, nc::SIGALRM);
         let msg = "Hello alarm";
@@ -35,7 +37,7 @@ fn main() {
     assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
 
     let mask = nc::sigset_t::default();
-    let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+    let ret = unsafe { nc::rt_sigsuspend(&mask) };
     assert!(ret.is_err());
 
     let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };

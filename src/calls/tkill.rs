@@ -3,8 +3,6 @@
 /// # Examples
 ///
 /// ```
-/// use core::mem::size_of;
-///
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -13,7 +11,7 @@
 /// if pid == 0 {
 ///     // child process.
 ///     let mask = nc::sigset_t::default();
-///     let ret = unsafe { nc::rt_sigsuspend(&mask, size_of::<nc::sigset_t>()) };
+///     let ret = unsafe { nc::rt_sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
 ///     // parent process.

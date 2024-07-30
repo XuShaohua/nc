@@ -47,7 +47,7 @@ impl linux_dirent64_t {
     #[must_use]
     #[inline]
     pub const fn name_max_len(&self) -> usize {
-        self.d_reclen as usize - 2 - mem::offset_of!(linux_dirent64_t, d_name)
+        self.d_reclen as usize - mem::offset_of!(linux_dirent64_t, d_name)
     }
 
     /// Return filename.

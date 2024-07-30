@@ -512,11 +512,14 @@ pub unsafe fn connect(
 /// # Examples
 ///
 /// ```
-/// let path_in = "/etc/passwd";
-/// let fd_in = unsafe { nc::openat(nc::AT_FDCWD, path_in, nc::O_RDONLY, 0) };
+/// let path_in = "/tmp/nc-copy-file-range.in";
+/// let fd_in = unsafe { nc::openat(nc::AT_FDCWD, path_in, nc::O_RDWR | nc::O_CREAT, 0o644) };
 /// assert!(fd_in.is_ok());
 /// let fd_in = fd_in.unwrap();
-/// let path_out = "/tmp/nc-copy-file-range";
+/// let msg = "Hello, rust";
+/// let ret = unsafe { nc::write(fd_in, msg.as_ptr() as usize, msg.len()) };
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
+/// let path_out = "/tmp/nc-copy-file-range.out";
 /// let fd_out = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(fd_out.is_ok());
 /// let fd_out = fd_out.unwrap();
@@ -524,13 +527,16 @@ pub unsafe fn connect(
 /// let mut off_out = 0;
 /// let copy_len = 64;
 /// let ret = unsafe { nc::copy_file_range(fd_in, &mut off_in, fd_out, &mut off_out, copy_len, 0) };
+/// println!("ret: {ret:?}");
 /// assert!(ret.is_ok());
-/// assert_eq!(ret, Ok(copy_len as nc::ssize_t));
+/// assert_eq!(ret, Ok(msg.len() as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd_in) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::close(fd_out) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_out, 0) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_in, 0) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn copy_file_range(

@@ -14,8 +14,7 @@
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };

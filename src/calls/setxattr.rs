@@ -17,8 +17,7 @@
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -29,14 +28,15 @@
 pub unsafe fn setxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &[u8],
     flags: i32,
 ) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
+    let value_ptr = value.as_ptr() as usize;
+    let size = value.len();
     let flags = flags as usize;
-    syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
+    syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value_ptr, size, flags).map(drop)
 }

@@ -15,15 +15,14 @@
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::flistxattr(fd, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::flistxattr(fd, &mut buf) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// let ret = unsafe { nc::close(fd) };
@@ -31,7 +30,9 @@
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn flistxattr(fd: i32, value: &mut [u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    syscall3(SYS_FLISTXATTR, fd, list, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall3(SYS_FLISTXATTR, fd, value_ptr, size).map(|ret| ret as ssize_t)
 }

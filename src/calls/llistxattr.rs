@@ -17,26 +17,23 @@
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::llistxattr(path, &mut buf) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn llistxattr<P: AsRef<Path>>(
-    filename: P,
-    list: usize,
-    size: size_t,
-) -> Result<ssize_t, Errno> {
+pub unsafe fn llistxattr<P: AsRef<Path>>(filename: P, value: &mut [u8]) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    syscall3(SYS_LLISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall3(SYS_LLISTXATTR, filename_ptr, value_ptr, size).map(|ret| ret as ssize_t)
 }

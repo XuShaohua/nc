@@ -1334,15 +1334,14 @@ pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::fgetxattr(fd, attr_name, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::fgetxattr(fd, attr_name, &mut buf) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
@@ -1355,13 +1354,14 @@ pub unsafe fn fdatasync(fd: i32) -> Result<(), Errno> {
 pub unsafe fn fgetxattr<P: AsRef<Path>>(
     fd: i32,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &mut [u8],
 ) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    syscall4(SYS_FGETXATTR, fd, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall4(SYS_FGETXATTR, fd, name_ptr, value_ptr, size).map(|ret| ret as ssize_t)
 }
 
 /// Load a kernel module.
@@ -1394,15 +1394,14 @@ pub unsafe fn finit_module<P: AsRef<Path>>(
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::flistxattr(fd, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::flistxattr(fd, &mut buf) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// let ret = unsafe { nc::close(fd) };
@@ -1410,9 +1409,11 @@ pub unsafe fn finit_module<P: AsRef<Path>>(
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn flistxattr(fd: i32, list: usize, size: size_t) -> Result<ssize_t, Errno> {
+pub unsafe fn flistxattr(fd: i32, value: &mut [u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    syscall3(SYS_FLISTXATTR, fd, list, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall3(SYS_FLISTXATTR, fd, value_ptr, size).map(|ret| ret as ssize_t)
 }
 
 /// Apply or remove an advisory lock on an open file.
@@ -1473,8 +1474,7 @@ pub unsafe fn fork() -> Result<pid_t, Errno> {
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -1528,8 +1528,7 @@ pub unsafe fn fsconfig<P: AsRef<Path>>(
 ///     nc::fsetxattr(
 ///         fd,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -1542,15 +1541,16 @@ pub unsafe fn fsconfig<P: AsRef<Path>>(
 pub unsafe fn fsetxattr<P: AsRef<Path>>(
     fd: i32,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &[u8],
     flags: i32,
 ) -> Result<(), Errno> {
     let fd = fd as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
+    let value_ptr = value.as_ptr() as usize;
+    let size = value.len();
     let flags = flags as usize;
-    syscall5(SYS_FSETXATTR, fd, name_ptr, value, size, flags).map(drop)
+    syscall5(SYS_FSETXATTR, fd, name_ptr, value_ptr, size, flags).map(drop)
 }
 
 /// Create a kernel mount representation for a new, prepared superblock.
@@ -2523,15 +2523,14 @@ pub unsafe fn getuid() -> uid_t {
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::getxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::getxattr(path, attr_name, &mut buf) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
@@ -2542,14 +2541,15 @@ pub unsafe fn getuid() -> uid_t {
 pub unsafe fn getxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &mut [u8],
 ) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value_ptr, size).map(|ret| ret as ssize_t)
 }
 
 /// Retrieve NUMA memory policy for a thread
@@ -3091,15 +3091,14 @@ pub unsafe fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> 
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::lgetxattr(path, attr_name, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::lgetxattr(path, attr_name, &mut buf) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(attr_value.len() as nc::ssize_t));
 /// let attr_len = ret.unwrap() as usize;
@@ -3110,14 +3109,15 @@ pub unsafe fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> 
 pub unsafe fn lgetxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &mut [u8],
 ) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    syscall4(SYS_LGETXATTR, filename_ptr, name_ptr, value, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall4(SYS_LGETXATTR, filename_ptr, name_ptr, value_ptr, size).map(|ret| ret as ssize_t)
 }
 
 /// Make a new name for a file.
@@ -3233,28 +3233,25 @@ pub unsafe fn listmount(req: &mnt_id_req_t, mnt_ids: &mut [u64], flags: u32) -> 
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::listxattr(path, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::listxattr(path, &mut buf) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn listxattr<P: AsRef<Path>>(
-    filename: P,
-    list: usize,
-    size: size_t,
-) -> Result<ssize_t, Errno> {
+pub unsafe fn listxattr<P: AsRef<Path>>(filename: P, value: &mut [u8]) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    syscall3(SYS_LISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall3(SYS_LISTXATTR, filename_ptr, value_ptr, size).map(|ret| ret as ssize_t)
 }
 
 /// List extended attribute names.
@@ -3276,28 +3273,25 @@ pub unsafe fn listxattr<P: AsRef<Path>>(
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
 /// assert!(ret.is_ok());
 /// let mut buf = [0_u8; 16];
 /// let buf_len = buf.len();
-/// let ret = unsafe { nc::llistxattr(path, buf.as_mut_ptr() as usize, buf_len) };
+/// let ret = unsafe { nc::llistxattr(path, &mut buf) };
 /// let attr_len = ret.unwrap() as usize;
 /// assert_eq!(&buf[..attr_len - 1], attr_name.as_bytes());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn llistxattr<P: AsRef<Path>>(
-    filename: P,
-    list: usize,
-    size: size_t,
-) -> Result<ssize_t, Errno> {
+pub unsafe fn llistxattr<P: AsRef<Path>>(filename: P, value: &mut [u8]) -> Result<ssize_t, Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    syscall3(SYS_LLISTXATTR, filename_ptr, list, size).map(|ret| ret as ssize_t)
+    let value_ptr = value.as_mut_ptr() as usize;
+    let size = value.len();
+    syscall3(SYS_LLISTXATTR, filename_ptr, value_ptr, size).map(|ret| ret as ssize_t)
 }
 
 /// Return a directory entry's path.
@@ -3327,8 +3321,7 @@ pub unsafe fn lookup_dcookie(cookie: u64, buf: &mut [u8]) -> Result<i32, Errno> 
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -3385,8 +3378,7 @@ pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 ///     nc::lsetxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -3397,16 +3389,25 @@ pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
 pub unsafe fn lsetxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &[u8],
     flags: i32,
 ) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
+    let value_ptr = value.as_ptr() as usize;
+    let size = value.len();
     let flags = flags as usize;
-    syscall5(SYS_LSETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
+    syscall5(
+        SYS_LSETXATTR,
+        filename_ptr,
+        name_ptr,
+        value_ptr,
+        size,
+        flags,
+    )
+    .map(drop)
 }
 
 /// Get file status about a file, without following symbolic.
@@ -5598,8 +5599,7 @@ pub unsafe fn remap_file_pages(
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -6735,8 +6735,7 @@ pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
 ///     nc::setxattr(
 ///         path,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -6747,16 +6746,17 @@ pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
 pub unsafe fn setxattr<P: AsRef<Path>>(
     filename: P,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &[u8],
     flags: i32,
 ) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
+    let value_ptr = value.as_ptr() as usize;
+    let size = value.len();
     let flags = flags as usize;
-    syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value, size, flags).map(drop)
+    syscall5(SYS_SETXATTR, filename_ptr, name_ptr, value_ptr, size, flags).map(drop)
 }
 
 /// Set default NUMA memory policy for a thread and its children

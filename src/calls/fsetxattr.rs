@@ -15,8 +15,7 @@
 ///     nc::fsetxattr(
 ///         fd,
 ///         &attr_name,
-///         attr_value.as_ptr() as usize,
-///         attr_value.len(),
+///         attr_value.as_bytes(),
 ///         flags,
 ///     )
 /// };
@@ -29,13 +28,14 @@
 pub unsafe fn fsetxattr<P: AsRef<Path>>(
     fd: i32,
     name: P,
-    value: usize,
-    size: size_t,
+    value: &[u8],
     flags: i32,
 ) -> Result<(), Errno> {
     let fd = fd as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
+    let value_ptr = value.as_ptr() as usize;
+    let size = value.len();
     let flags = flags as usize;
-    syscall5(SYS_FSETXATTR, fd, name_ptr, value, size, flags).map(drop)
+    syscall5(SYS_FSETXATTR, fd, name_ptr, value_ptr, size, flags).map(drop)
 }

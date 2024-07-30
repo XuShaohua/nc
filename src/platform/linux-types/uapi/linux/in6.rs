@@ -42,9 +42,6 @@ impl Default for in6_un_t {
 pub struct in6_addr_t {
     pub in6_u: in6_un_t,
 }
-//#define s6_addr			in6_u.u6_addr8
-//#define s6_addr16		in6_u.u6_addr16
-//#define s6_addr32		in6_u.u6_addr32
 
 #[repr(C)]
 #[derive(Default, Debug, Clone)]

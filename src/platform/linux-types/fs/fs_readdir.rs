@@ -52,6 +52,7 @@ impl linux_dirent_t {
     #[inline]
     pub const fn name_max_len(&self) -> usize {
         // FIXME(Shaohua): offset_of d_name is different from linux_dirent in C, which is 18.
+        // Also `repr(packed)` is ok, which makes it harder to use this struct.
         //self.d_reclen as usize - 2 - mem::offset_of!(Self, d_name)
         self.d_reclen as usize - 2 - mem::offset_of!(Self, d_reclen) - 2
     }
@@ -60,7 +61,6 @@ impl linux_dirent_t {
     #[inline]
     pub fn name(&self) -> &[u8] {
         let max_len = self.name_max_len();
-        // FIXME(Shaohua): Alignment of d_name if wrong in rustc 1.80.
         let d_name_ptr: *const u8 = (ptr::addr_of!(self.d_reclen) as *const u8).wrapping_add(2);
         unsafe { slice::from_raw_parts(d_name_ptr, max_len) }
     }

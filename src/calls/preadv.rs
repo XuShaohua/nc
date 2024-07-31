@@ -19,19 +19,18 @@
 ///     });
 /// }
 /// let iov_len = iov.len();
-/// let ret = unsafe { nc::preadv(fd, &mut iov, 0, iov_len - 1) };
+/// let ret = unsafe { nc::preadv(fd as usize, &mut iov, 0, iov_len - 1) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn preadv(
-    fd: i32,
+    fd: usize,
     vec: &mut [iovec_t],
     pos_l: usize,
     pos_h: usize,
 ) -> Result<ssize_t, Errno> {
-    let fd = fd as usize;
     let vec_ptr = vec.as_mut_ptr() as usize;
     let vec_len = vec.len();
     syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)

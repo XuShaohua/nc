@@ -18,7 +18,7 @@
 ///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
-/// let ret = unsafe { nc::readv(fd, &mut iov) };
+/// let ret = unsafe { nc::readv(fd as usize, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
@@ -28,7 +28,7 @@
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path_out, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = unsafe { nc::writev(fd, &iov) };
+/// let ret = unsafe { nc::writev(fd as usize, &iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
@@ -36,8 +36,7 @@
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path_out, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn writev(fd: i32, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
-    let fd = fd as usize;
+pub unsafe fn writev(fd: usize, iov: &[iovec_t]) -> Result<ssize_t, Errno> {
     let iov_ptr = iov.as_ptr() as usize;
     let len = iov.len();
     syscall3(SYS_WRITEV, fd, iov_ptr, len).map(|ret| ret as ssize_t)

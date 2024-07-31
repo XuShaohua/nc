@@ -18,7 +18,7 @@
 ///         iov_base: item.as_ptr() as *const c_void,
 ///     });
 /// }
-/// let ret = unsafe { nc::readv(fd, &mut iov) };
+/// let ret = unsafe { nc::readv(fd as usize, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
@@ -29,7 +29,7 @@
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let flags = nc::RWF_DSYNC | nc::RWF_APPEND;
-/// let ret = unsafe { nc::pwritev2(fd, &iov, 0, iov.len() - 1, flags) };
+/// let ret = unsafe { nc::pwritev2(fd as usize, &iov, 0, iov.len() - 1, flags) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
@@ -38,13 +38,12 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn pwritev2(
-    fd: i32,
+    fd: usize,
     vec: &[iovec_t],
     pos_l: usize,
     pos_h: usize,
     flags: rwf_t,
 ) -> Result<ssize_t, Errno> {
-    let fd = fd as usize;
     let vec_ptr = vec.as_ptr() as usize;
     let vec_len = vec.len();
     let flags = flags as usize;

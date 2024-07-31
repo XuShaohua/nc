@@ -16,7 +16,7 @@
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn pwrite64(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errno> {
+pub unsafe fn pwrite64(fd: i32, buf: &[u8], offset: loff_t) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let count = buf.len();
     let buf_ptr = buf.as_ptr() as usize;

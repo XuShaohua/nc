@@ -18,14 +18,13 @@
 ///         iov_len: item.len(),
 ///     });
 /// }
-/// let ret = unsafe { nc::readv(fd, &mut iov) };
+/// let ret = unsafe { nc::readv(fd as usize, &mut iov) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn readv(fd: i32, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
-    let fd = fd as usize;
+pub unsafe fn readv(fd: usize, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     let iov_ptr = iov.as_mut_ptr() as usize;
     let len = iov.len();
     syscall3(SYS_READV, fd, iov_ptr, len).map(|ret| ret as ssize_t)

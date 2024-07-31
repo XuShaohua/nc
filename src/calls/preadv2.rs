@@ -20,20 +20,19 @@
 /// }
 /// let iov_len = iov.len();
 /// let flags = 0;
-/// let ret = unsafe { nc::preadv2(fd, &mut iov, 0, iov_len - 1, flags) };
+/// let ret = unsafe { nc::preadv2(fd as usize, &mut iov, 0, iov_len - 1, flags) };
 /// assert!(ret.is_ok());
 /// assert_eq!(ret, Ok(capacity as nc::ssize_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn preadv2(
-    fd: i32,
+    fd: usize,
     vec: &mut [iovec_t],
     pos_l: usize,
     pos_h: usize,
     flags: rwf_t,
 ) -> Result<ssize_t, Errno> {
-    let fd = fd as usize;
     let vec_ptr = vec.as_mut_ptr() as usize;
     let vec_len = vec.len();
     let flags = flags as usize;

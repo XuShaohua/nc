@@ -6491,7 +6491,7 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
 
 /// Examine and change a signal action.
 ///
-/// # example
+/// # Examples
 ///
 /// ```
 /// fn handle_sigterm(sig: i32) {

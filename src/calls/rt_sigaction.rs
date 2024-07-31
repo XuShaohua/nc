@@ -1,6 +1,6 @@
 /// Examine and change a signal action.
 ///
-/// # example
+/// # Examples
 ///
 /// ```
 /// fn handle_sigterm(sig: i32) {

@@ -62,16 +62,7 @@ fn main() -> Result<(), Errno> {
         nc::listen(listen_fd, nc::SOCK_STREAM)?;
     }
 
-    let mut conn_addr = nc::sockaddr_in_t::default();
-    let mut conn_addr_len: nc::socklen_t = 0;
-    let conn_fd = unsafe {
-        nc::accept4(
-            listen_fd,
-            &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-            &mut conn_addr_len,
-            nc::SOCK_CLOEXEC,
-        )?
-    };
+    let conn_fd = unsafe { nc::accept4(listen_fd, None, None, nc::SOCK_CLOEXEC)? };
     println!("conn_fd: {conn_fd}");
 
     unsafe {

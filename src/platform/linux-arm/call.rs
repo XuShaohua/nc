@@ -90,8 +90,8 @@ use crate::types::*;
 ///     let conn_fd = unsafe {
 ///         nc::accept(
 ///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
+///             Some(&mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t),
+///             Some(&mut conn_addr_len),
 ///         )?
 ///     };
 ///     println!("conn_fd: {conn_fd}");
@@ -105,12 +105,16 @@ use crate::types::*;
 /// ```
 pub unsafe fn accept(
     sockfd: i32,
-    addr: *mut sockaddr_t,
-    addrlen: &mut socklen_t,
+    addr: Option<*mut sockaddr_t>,
+    addrlen: Option<&mut socklen_t>,
 ) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    let addr_ptr = addr.map_or(core::ptr::null_mut::<sockaddr_t>() as usize, |addr| {
+        addr as usize
+    });
+    let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
+        addrlen as *mut socklen_t as usize
+    });
     syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32)
 }
 
@@ -184,8 +188,8 @@ pub unsafe fn accept(
 ///     let conn_fd = unsafe {
 ///         nc::accept4(
 ///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
+///             Some(&mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t),
+///             Some(&mut conn_addr_len),
 ///             nc::SOCK_CLOEXEC,
 ///         )?
 ///     };
@@ -200,13 +204,17 @@ pub unsafe fn accept(
 /// ```
 pub unsafe fn accept4(
     sockfd: i32,
-    addr: *mut sockaddr_t,
-    addrlen: &mut socklen_t,
+    addr: Option<*mut sockaddr_t>,
+    addrlen: Option<&mut socklen_t>,
     flags: i32,
 ) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    let addr_ptr = addr.map_or(core::ptr::null_mut::<sockaddr_t>() as usize, |addr| {
+        addr as usize
+    });
+    let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
+        addrlen as *mut socklen_t as usize
+    });
     let flags = flags as usize;
     syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32)
 }
@@ -368,13 +376,11 @@ pub unsafe fn bdflush() {
 ///         nc::listen(listen_fd, nc::SOCK_STREAM)?;
 ///     }
 ///
-///     let mut conn_addr = nc::sockaddr_in_t::default();
-///     let mut conn_addr_len: nc::socklen_t = 0;
 ///     let conn_fd = unsafe {
 ///         nc::accept4(
 ///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
+///             None,
+///             None,
 ///             nc::SOCK_CLOEXEC,
 ///         )?
 ///     };
@@ -799,8 +805,8 @@ pub unsafe fn close_range(fd: u32, max_fd: u32, flags: u32) -> Result<(), Errno>
 ///     let conn_fd = unsafe {
 ///         nc::accept4(
 ///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
+///             Some(&mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t),
+///             Some(&mut conn_addr_len),
 ///             nc::SOCK_CLOEXEC,
 ///         )?
 ///     };
@@ -2886,13 +2892,97 @@ pub unsafe fn getsid(pid: pid_t) -> pid_t {
 }
 
 /// Get current address to which the socket `sockfd` is bound.
+///
+/// # Examples
+///
+/// ```
+/// use nc::Errno;
+/// use std::mem::{size_of, transmute};
+/// use std::thread;
+///
+/// const SERVER_PORT: u16 = 18084;
+///
+/// #[must_use]
+/// #[inline]
+/// const fn htons(host: u16) -> u16 {
+///     host.to_be()
+/// }
+///
+/// fn main() -> Result<(), Errno> {
+///     let listen_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0)? };
+///     println!("listen fd: {listen_fd}");
+///
+///     let addr = nc::sockaddr_in_t {
+///         sin_family: nc::AF_INET as nc::sa_family_t,
+///         sin_port: htons(SERVER_PORT),
+///         sin_addr: nc::in_addr_t {
+///             s_addr: nc::INADDR_ANY as u32,
+///         },
+///         ..Default::default()
+///     };
+///     println!("addr: {addr:?}");
+///
+///     let ret = unsafe {
+///         let addr_alias = transmute::<&nc::sockaddr_in_t, &nc::sockaddr_t>(&addr);
+///         nc::bind(listen_fd, addr_alias, size_of::<nc::sockaddr_in_t>() as u32)
+///     };
+///     assert!(ret.is_ok());
+///
+///     // Start worker thread
+///     thread::spawn(|| {
+///         println!("worker thread started");
+///         let socket_fd = unsafe { nc::socket(nc::AF_INET, nc::SOCK_STREAM, 0) };
+///         assert!(socket_fd.is_ok());
+///         if let Ok(socket_fd) = socket_fd {
+///             let addr = nc::sockaddr_in_t {
+///                 sin_family: nc::AF_INET as nc::sa_family_t,
+///                 sin_port: htons(SERVER_PORT),
+///                 sin_addr: nc::in_addr_t {
+///                     s_addr: nc::INADDR_ANY as u32,
+///                 },
+///                 ..Default::default()
+///             };
+///             unsafe {
+///                 let addr_alias = transmute::<&nc::sockaddr_in_t, &nc::sockaddr_t>(&addr);
+///                 let ret = nc::connect(socket_fd, addr_alias, size_of::<nc::sockaddr_in_t>() as u32);
+///                 assert_eq!(ret, Ok(()));
+///             }
+///         } else {
+///             eprintln!("Failed to create socket");
+///         }
+///     });
+///
+///     unsafe {
+///         nc::listen(listen_fd, nc::SOCK_STREAM)?;
+///     }
+///
+///     let conn_fd = unsafe {
+///         nc::accept4(listen_fd, None, None, nc::SOCK_CLOEXEC)?
+///     };
+///     println!("conn_fd: {conn_fd}");
+///
+///     let mut conn_addr = nc::sockaddr_in_t::default();
+///     let mut conn_addr_len: nc::socklen_t = 0;
+///     unsafe {
+///         let _ = nc::getsockname(conn_fd,
+///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
+///             &mut conn_addr_len
+///         );
+///     }
+///
+///     unsafe {
+///         nc::close(listen_fd)?;
+///     }
+///
+///     Ok(())
+/// }
 pub unsafe fn getsockname(
     sockfd: i32,
-    addr: &mut sockaddr_in_t,
+    addr: *mut sockaddr_t,
     addrlen: &mut socklen_t,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *mut sockaddr_in_t as usize;
+    let addr_ptr = addr as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
 }
@@ -7425,15 +7515,8 @@ pub unsafe fn shmget(key: key_t, size: size_t, shmflg: i32) -> Result<i32, Errno
 ///         nc::listen(listen_fd, nc::SOCK_STREAM)?;
 ///     }
 ///
-///     let mut conn_addr = nc::sockaddr_in_t::default();
-///     let mut conn_addr_len: nc::socklen_t = 0;
 ///     let conn_fd = unsafe {
-///         nc::accept4(
-///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
-///             nc::SOCK_CLOEXEC,
-///         )?
+///         nc::accept4(listen_fd, None, None, nc::SOCK_CLOEXEC)?
 ///     };
 ///     println!("conn_fd: {conn_fd}");
 ///

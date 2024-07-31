@@ -68,8 +68,8 @@
 ///     let conn_fd = unsafe {
 ///         nc::accept4(
 ///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
+///             Some(&mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t),
+///             Some(&mut conn_addr_len),
 ///             nc::SOCK_CLOEXEC,
 ///         )?
 ///     };
@@ -84,13 +84,17 @@
 /// ```
 pub unsafe fn accept4(
     sockfd: i32,
-    addr: *mut sockaddr_t,
-    addrlen: &mut socklen_t,
+    addr: Option<*mut sockaddr_t>,
+    addrlen: Option<&mut socklen_t>,
     flags: i32,
 ) -> Result<i32, Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    let addr_ptr = addr.map_or(core::ptr::null_mut::<sockaddr_t>() as usize, |addr| {
+        addr as usize
+    });
+    let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
+        addrlen as *mut socklen_t as usize
+    });
     let flags = flags as usize;
     syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32)
 }

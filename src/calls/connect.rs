@@ -68,8 +68,8 @@
 ///     let conn_fd = unsafe {
 ///         nc::accept4(
 ///             listen_fd,
-///             &mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t,
-///             &mut conn_addr_len,
+///             Some(&mut conn_addr as *mut nc::sockaddr_in_t as *mut nc::sockaddr_t),
+///             Some(&mut conn_addr_len),
 ///             nc::SOCK_CLOEXEC,
 ///         )?
 ///     };

@@ -28,10 +28,10 @@ fn main() {
             tv_usec: 0,
         },
     };
-    let mut prev_itv = nc::itimerval_t::default();
-    let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
+    let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, None) };
     assert!(ret.is_ok());
 
+    let mut prev_itv = nc::itimerval_t::default();
     let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
     assert!(ret.is_ok());
     assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);

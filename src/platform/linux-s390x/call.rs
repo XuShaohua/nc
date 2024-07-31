@@ -2292,7 +2292,7 @@ pub unsafe fn getgroups(group_list: &mut [gid_t]) -> Result<i32, Errno> {
 ///     },
 /// };
 /// let mut prev_itv = nc::itimerval_t::default();
-/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
+/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, Some(&mut prev_itv)) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
@@ -6579,10 +6579,10 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///         tv_usec: 0,
 ///     },
 /// };
-/// let mut prev_itv = nc::itimerval_t::default();
-/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
+/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, None) };
 /// assert!(ret.is_ok());
 ///
+/// let mut prev_itv = nc::itimerval_t::default();
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };
 /// assert!(ret.is_ok());
 /// assert!(prev_itv.it_value.tv_sec <= itv.it_value.tv_sec);
@@ -6598,11 +6598,13 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 pub unsafe fn setitimer(
     which: i32,
     new_val: &itimerval_t,
-    old_val: &mut itimerval_t,
+    old_val: Option<&mut itimerval_t>,
 ) -> Result<(), Errno> {
     let which = which as usize;
     let new_val_ptr = new_val as *const itimerval_t as usize;
-    let old_val_ptr = old_val as *mut itimerval_t as usize;
+    let old_val_ptr = old_val.map_or(core::ptr::null_mut::<itimerval_t>() as usize, |old_val| {
+        old_val as *mut itimerval_t as usize
+    });
     syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr).map(drop)
 }
 

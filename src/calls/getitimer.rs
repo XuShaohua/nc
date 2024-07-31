@@ -30,7 +30,7 @@
 ///     },
 /// };
 /// let mut prev_itv = nc::itimerval_t::default();
-/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, &mut prev_itv) };
+/// let ret = unsafe { nc::setitimer(nc::ITIMER_REAL, &itv, Some(&mut prev_itv)) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::getitimer(nc::ITIMER_REAL, &mut prev_itv) };

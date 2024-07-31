@@ -14,7 +14,7 @@ fn main() {
         sa_flags: nc::SA_SIGINFO,
         ..nc::sigaction_t::default()
     };
-    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, &sa, None) };
+    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, Some(&sa), None) };
     assert!(ret.is_ok());
 
     // Initialize an anonymous mapping with 4 pages.

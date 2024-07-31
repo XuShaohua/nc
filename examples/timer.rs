@@ -14,7 +14,7 @@ fn main() {
         sa_flags: 0,
         ..nc::sigaction_t::default()
     };
-    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
+    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };
     assert!(ret.is_ok());
 
     // Single shot timer, actived after 1 second.

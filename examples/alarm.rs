@@ -18,7 +18,7 @@ fn main() {
         ..nc::sigaction_t::default()
     };
     println!("sa size: {}", size_of_val(&sa));
-    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, &sa, None) };
+    let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };
     assert!(ret.is_ok());
 
     let seconds = 1;

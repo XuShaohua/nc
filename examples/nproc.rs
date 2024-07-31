@@ -3,15 +3,14 @@
 // in the LICENSE file.
 
 pub fn get_num_cpu() -> Result<u16, nc::Errno> {
-    let mut set = [0; 128];
-    set[0] = 1;
+    let mut set = nc::cpu_set_t::default();
 
     unsafe {
-        nc::sched_getaffinity(0, set.len(), &mut set)?;
+        nc::sched_getaffinity(0, &mut set)?;
     }
 
     let mut count = 0;
-    for item in set.iter() {
+    for item in set.bits.iter() {
         let mut item = *item;
         while item > 0 {
             item &= item - 1;

@@ -2,22 +2,31 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use core::mem::size_of_val;
-
 #[no_mangle]
 fn handle_alarm(signum: i32) {
     println!("handle alarm");
     assert_eq!(signum, nc::SIGALRM);
 }
 
+#[must_use]
+#[inline]
+fn get_sa_restorer() -> Option<nc::restorefn_t> {
+    let mut old_sa = nc::sigaction_t::default();
+    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, None, Some(&mut old_sa)) };
+    if ret.is_ok() {
+        old_sa.sa_restorer
+    } else {
+        None
+    }
+}
+
 fn main() {
     let sa = nc::sigaction_t {
-        sa_handler: nc::SIG_IGN,
-        //sa_handler: handle_alarm as nc::sighandler_t,
-        sa_flags: nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK,
+        sa_handler: handle_alarm as nc::sighandler_t,
+        sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
+        sa_restorer: get_sa_restorer(),
         ..nc::sigaction_t::default()
     };
-    println!("sa size: {}", size_of_val(&sa));
     let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };
     assert!(ret.is_ok());
 

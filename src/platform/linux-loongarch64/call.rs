@@ -7112,8 +7112,7 @@ pub unsafe fn wait4(
 ///     Ok(pid) => {
 ///         let mut info = nc::siginfo_t::default();
 ///         let options = nc::WEXITED;
-///         let mut usage = nc::rusage_t::default();
-///         let ret = unsafe { nc::waitid(nc::P_ALL, -1, &mut info, options, &mut usage) };
+///         let ret = unsafe { nc::waitid(nc::P_ALL, -1, &mut info, options, None) };
 ///         match ret {
 ///             Err(errno) => eprintln!("waitid() error: {}", nc::strerror(errno)),
 ///             Ok(()) => {
@@ -7129,13 +7128,15 @@ pub unsafe fn waitid(
     pid: pid_t,
     info: &mut siginfo_t,
     options: i32,
-    ru: &mut rusage_t,
+    ru: Option<&mut rusage_t>,
 ) -> Result<(), Errno> {
     let which = which as usize;
     let pid = pid as usize;
     let info_ptr = info as *mut siginfo_t as usize;
     let options = options as usize;
-    let ru_ptr = ru as *mut rusage_t as usize;
+    let ru_ptr = ru.map_or(core::ptr::null_mut::<rusage_t>() as usize, |ru| {
+        ru as *mut rusage_t as usize
+    });
     syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(drop)
 }
 

@@ -29,6 +29,8 @@ pub unsafe fn execveat<P: AsRef<Path>>(
     env: &[P],
     flags: i32,
 ) -> Result<(), Errno> {
+    use alloc::vec::Vec;
+
     let fd = fd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;

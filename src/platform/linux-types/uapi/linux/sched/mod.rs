@@ -4,7 +4,9 @@
 
 //! From `include/uapi/linux/sched.h`
 
+mod cpu;
 mod sched_types;
+pub use cpu::*;
 pub use sched_types::*;
 
 /// cloning flags:

@@ -70,7 +70,10 @@ pub unsafe fn timer_settime(
     let timer_id = timer_id as usize;
     let flags = flags as usize;
     let new_value_ptr = new_value as *const itimerspec_t as usize;
-    let old_value_ptr = old_value.map_or(0, |old_value| old_value as *mut itimerspec_t as usize);
+    let old_value_ptr = old_value.map_or(
+        core::ptr::null_mut::<itimerspec_t>() as usize,
+        |old_value| old_value as *mut itimerspec_t as usize,
+    );
     syscall4(
         SYS_TIMER_SETTIME,
         timer_id,

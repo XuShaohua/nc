@@ -23,13 +23,13 @@
 /// contain stale information.
 ///
 /// return values:
-///   - zero       - success
-///   - EFAULT     - cstat or `cstat_range` points to an illegal address
-///   - EINVAL     - invalid flags
-///   - EBADF      - invalid file descriptor
-///   - EOPNOTSUPP - file descriptor is of a hugetlbfs file
+/// - zero       - success
+/// - EFAULT     - cstat or `cstat_range` points to an illegal address
+/// - EINVAL     - invalid flags
+/// - EBADF      - invalid file descriptor
+/// - EOPNOTSUPP - file descriptor is of a hugetlbfs file
 pub unsafe fn cachestat(
-    fd: i32,
+    fd: u32,
     cstat_range: &mut cachestat_range_t,
     cstat: &mut cachestat_t,
     flags: u32,

@@ -207,13 +207,13 @@ pub unsafe fn cacheflush(addr: usize, nbytes: size_t, cache: i32) -> Result<(), 
 /// contain stale information.
 ///
 /// return values:
-///   - zero       - success
-///   - EFAULT     - cstat or `cstat_range` points to an illegal address
-///   - EINVAL     - invalid flags
-///   - EBADF      - invalid file descriptor
-///   - EOPNOTSUPP - file descriptor is of a hugetlbfs file
+/// - zero       - success
+/// - EFAULT     - cstat or `cstat_range` points to an illegal address
+/// - EINVAL     - invalid flags
+/// - EBADF      - invalid file descriptor
+/// - EOPNOTSUPP - file descriptor is of a hugetlbfs file
 pub unsafe fn cachestat(
-    fd: i32,
+    fd: u32,
     cstat_range: &mut cachestat_range_t,
     cstat: &mut cachestat_t,
     flags: u32,
@@ -484,6 +484,11 @@ pub unsafe fn close(fd: i32) -> Result<(), Errno> {
 
 /// Close all file descriptors in a given range
 ///
+/// Parameters:
+/// - `fd`: starting file descriptor to close
+/// - `max_fd`: last file descriptor to close
+/// - `flags`: reserved for future extensions
+///
 /// # Examples
 ///
 /// ```
@@ -492,11 +497,11 @@ pub unsafe fn close(fd: i32) -> Result<(), Errno> {
 /// let ret = unsafe { nc::close_range(STDOUT_FD, STDERR_FD, nc::CLOSE_RANGE_CLOEXEC) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn close_range(first_fd: u32, last_fd: u32, flags: u32) -> Result<(), Errno> {
-    let first = first_fd as usize;
-    let last = last_fd as usize;
+pub unsafe fn close_range(fd: u32, max_fd: u32, flags: u32) -> Result<(), Errno> {
+    let fd = fd as usize;
+    let max_fd = max_fd as usize;
     let flags = flags as usize;
-    syscall3(SYS_CLOSE_RANGE, first, last, flags).map(drop)
+    syscall3(SYS_CLOSE_RANGE, fd, max_fd, flags).map(drop)
 }
 
 /// Initialize a connection on a socket.

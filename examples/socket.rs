@@ -49,7 +49,7 @@ fn main() -> Result<(), Errno> {
                 ..Default::default()
             };
             unsafe {
-                let addr_alias = transmute::<&nc::sockaddr_in_t, &nc::sockaddr_t>(&addr);
+                let addr_alias = (&addr as *const nc::sockaddr_in_t).cast::<nc::sockaddr_t>();
                 let ret = nc::connect(socket_fd, addr_alias, size_of::<nc::sockaddr_in_t>() as u32);
                 assert_eq!(ret, Ok(()));
             }

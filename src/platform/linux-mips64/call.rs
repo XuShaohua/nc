@@ -2577,7 +2577,7 @@ pub unsafe fn getgid() -> gid_t {
 /// assert_eq!(ret, Ok(total_num));
 /// ```
 pub unsafe fn getgroups(group_list: &mut [gid_t]) -> Result<i32, Errno> {
-    let size = group_list.len() as usize;
+    let size = group_list.len();
     let group_ptr = group_list.as_mut_ptr() as usize;
     syscall2(SYS_GETGROUPS, size, group_ptr).map(|ret| ret as i32)
 }

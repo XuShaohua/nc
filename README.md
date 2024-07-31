@@ -5,13 +5,13 @@ nc
 ![Build status](https://github.com/xushaohua/nc/actions/workflows/rust.yml/badge.svg)
 [![Latest version](https://img.shields.io/crates/v/nc.svg)](https://crates.io/crates/nc)
 [![Documentation](https://docs.rs/nc/badge.svg)](https://docs.rs/nc)
-![Minimum rustc version](https://img.shields.io/badge/rustc-1.56+-yellow.svg)
+![Minimum rustc version](https://img.shields.io/badge/rustc-1.63+-yellow.svg)
 ![License](https://img.shields.io/crates/l/nc.svg)
 
 Access system calls directly without `std` or `libc`.
 
 - [Documentation](https://docs.rs/nc)
-- [Release notes](https://github.com/xushaohua/nc/releases)
+- [Release notes](https://github.com/xushaohua/nc/tags)
 
 Features:
 - No glibc or musl required

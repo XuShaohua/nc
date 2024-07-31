@@ -5,7 +5,7 @@
 //! Execute system call directly without `std` or `libc`.
 //!
 //! - [Documentation](https://docs.rs/nc)
-//! - [Release notes](https://github.com/xushaohua/nc/releases)
+//! - [Release notes](https://github.com/xushaohua/nc/tags)
 //!
 //! ## Usage
 //! Add this to `Cargo.toml`:

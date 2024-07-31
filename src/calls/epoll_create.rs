@@ -1,5 +1,7 @@
 /// Open an epoll file descriptor.
 ///
+/// Note that `size` is ignored.
+///
 /// # Examples
 ///
 /// ```

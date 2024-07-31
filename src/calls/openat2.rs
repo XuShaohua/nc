@@ -6,7 +6,7 @@
 /// let path = "/etc/passwd";
 /// let mut how = nc::open_how_t{
 ///   flags: nc::O_RDONLY as u64,
-///   ..nc::open_how_t::default()
+///   ..Default::default()
 /// };
 /// let ret = unsafe { nc::openat2(nc::AT_FDCWD, path, &mut how) };
 /// assert!(ret.is_ok());

@@ -1354,10 +1354,24 @@ pub unsafe fn execve<P: AsRef<Path>>(filename: P, argv: &[P], env: &[P]) -> Resu
 ///
 /// # Examples
 ///
+/// Specify program file via `filename`:
+///
 /// ```
 /// let args = ["ls", "-l", "-a"];
 /// let env = ["DISPLAY=:0"];
 /// let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/ls", &args, &env, 0) };
+/// assert!(ret.is_ok());
+/// ```
+///
+/// Or via an opened file descriptor `fd`, leaving `filename` empty:
+///
+/// ```
+/// let args = ["ls", "-l", "-a"];
+/// let env = ["DISPLAY=:0"];
+/// let ret = unsafe { nc::open("/bin/ls", nc::O_RDONLY | nc::O_CLOEXEC, 0) };
+/// assert!(ret.is_ok());
+/// let fd = ret.unwrap();
+/// let ret = unsafe { nc::execveat(fd, "", &args, &env, nc::AT_EMPTY_PATH) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execveat<P: AsRef<Path>>(

@@ -13,8 +13,18 @@ fn call_ls() {
 fn call_date() {
     println!("[date] pid: {}", unsafe { nc::getpid() });
     let args = ["date", "+%Y:%m:%d %H:%M:%S"];
-    let env = [];
-    let ret = unsafe { nc::execve("/bin/date", &args, &env) };
+    let env = ["DISPLAY=:0"];
+    let ret = unsafe { nc::execveat(nc::AT_FDCWD, "/bin/date", &args, &env, 0) };
+    assert!(ret.is_ok());
+}
+
+fn call_id() {
+    let ret = unsafe { nc::open("/usr/bin/id", nc::O_RDONLY | nc::O_CLOEXEC, 0) };
+    assert!(ret.is_ok());
+    let fd = ret.unwrap();
+    let args = ["id", "-u", "-n"];
+    let env = ["DISPLAY=:0"];
+    let ret = unsafe { nc::execveat(fd, "", &args, &env, nc::AT_EMPTY_PATH) };
     assert!(ret.is_ok());
 }
 
@@ -38,6 +48,19 @@ fn main() {
         Ok(0) => {
             // Child process
             call_date();
+        }
+        Ok(child_pid) => {
+            // Parent process
+            println!("[main] child pid is: {child_pid}");
+        }
+    }
+
+    let pid = unsafe { nc::fork() };
+    match pid {
+        Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
+        Ok(0) => {
+            // Child process
+            call_id();
         }
         Ok(child_pid) => {
             // Parent process

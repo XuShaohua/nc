@@ -43,11 +43,11 @@ impl Default for linux_dirent64_t {
 }
 
 impl linux_dirent64_t {
-    /// d_name may be smaller than this length value.
+    /// `d_name` may be smaller than this length value.
     #[must_use]
     #[inline]
     pub const fn name_max_len(&self) -> usize {
-        self.d_reclen as usize - mem::offset_of!(linux_dirent64_t, d_name)
+        self.d_reclen as usize - mem::offset_of!(Self, d_name)
     }
 
     /// Return filename.

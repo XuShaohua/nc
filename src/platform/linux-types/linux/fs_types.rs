@@ -34,6 +34,7 @@ pub const fn s_dt(mode: mode_t) -> u8 {
     ((mode & S_IFMT) >> S_DT_SHIFT) as u8
 }
 
+#[allow(clippy::cast_possible_truncation)]
 pub const S_DT_MASK: u8 = (S_IFMT >> S_DT_SHIFT) as u8;
 
 /// these are defined by POSIX and also present in glibc's dirent.h

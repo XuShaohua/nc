@@ -35,13 +35,13 @@ impl Default for linux_dirent_t {
 }
 
 impl linux_dirent_t {
-    /// Read d_type from struct.
+    /// Read `d_type` from struct.
     ///
-    /// d_type located at last byte of dirent.
+    /// `d_type` located at last byte of dirent.
     #[must_use]
     #[inline]
     pub fn d_type(&self) -> u8 {
-        let self_ptr = self as *const Self as *const u8;
+        let self_ptr: *const u8 = (self as *const Self).cast::<u8>();
         let d_type_ptr: *const u8 = self_ptr
             .wrapping_add(self.d_reclen as usize)
             .wrapping_sub(1);
@@ -61,7 +61,7 @@ impl linux_dirent_t {
     #[inline]
     pub fn name(&self) -> &[u8] {
         let max_len = self.name_max_len();
-        let d_name_ptr: *const u8 = (ptr::addr_of!(self.d_reclen) as *const u8).wrapping_add(2);
+        let d_name_ptr: *const u8 = ptr::addr_of!(self.d_reclen).cast::<u8>().wrapping_add(2);
         unsafe { slice::from_raw_parts(d_name_ptr, max_len) }
     }
 }

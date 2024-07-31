@@ -4,6 +4,8 @@
 
 //! `cput_set_t` is from libc.
 
+#![allow(clippy::module_name_repetitions)]
+
 use core::mem::size_of;
 
 use crate::{Errno, EINVAL};
@@ -31,6 +33,9 @@ impl cpu_set_t {
         CPU_SET_BYTES * 8
     }
 
+    /// # Errors
+    ///
+    /// Returns `EINVAL` if `pos` is larger than 1023.
     pub fn set(&mut self, pos: usize) -> Result<(), Errno> {
         if pos >= Self::bits() {
             return Err(EINVAL);
@@ -40,6 +45,9 @@ impl cpu_set_t {
         Ok(())
     }
 
+    /// # Errors
+    ///
+    /// Returns `EINVAL` if `pos` is larger than 1023.
     pub fn clear(&mut self, pos: usize) -> Result<(), Errno> {
         if pos >= Self::bits() {
             return Err(EINVAL);
@@ -49,7 +57,10 @@ impl cpu_set_t {
         Ok(())
     }
 
-    pub fn is_set(&self, pos: usize) -> Result<bool, Errno> {
+    /// # Errors
+    ///
+    /// Returns `EINVAL` if `pos` is larger than 1023.
+    pub const fn is_set(&self, pos: usize) -> Result<bool, Errno> {
         if pos >= Self::bits() {
             return Err(EINVAL);
         }
@@ -59,10 +70,14 @@ impl cpu_set_t {
         Ok(ret != 0)
     }
 
-    pub fn as_ptr(&self) -> &[usize] {
+    #[must_use]
+    #[inline]
+    pub const fn as_ptr(&self) -> &[usize] {
         &self.bits
     }
 
+    #[must_use]
+    #[inline]
     pub fn as_mut_ptr(&mut self) -> &mut [usize] {
         &mut self.bits
     }

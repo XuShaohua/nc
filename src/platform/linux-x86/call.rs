@@ -7429,14 +7429,13 @@ pub unsafe fn setsid() -> Result<pid_t, Errno> {
 ///
 /// // Enable tcp fast open.
 /// let queue_len: i32 = 5;
-/// let queue_len_ptr = &queue_len as *const i32 as usize;
 /// let ret = unsafe {
 ///     nc::setsockopt(
 ///         socket_fd,
 ///         nc::IPPROTO_TCP,
 ///         nc::TCP_FASTOPEN,
-///         queue_len_ptr,
-///         std::mem::size_of_val(&queue_len) as u32,
+///         &queue_len as *const i32 as *const _,
+///         std::mem::size_of_val(&queue_len) as nc::socklen_t,
 ///     )
 /// };
 /// assert!(ret.is_ok());
@@ -7446,15 +7445,16 @@ pub unsafe fn setsid() -> Result<pid_t, Errno> {
 pub unsafe fn setsockopt(
     sockfd: i32,
     level: i32,
-    optname: i32,
-    optval: usize,
-    optlen: socklen_t,
+    opt_name: i32,
+    opt_val: *const core::ffi::c_void,
+    opt_len: socklen_t,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let level = level as usize;
-    let optname = optname as usize;
-    let optlen = optlen as usize;
-    syscall5(SYS_SETSOCKOPT, sockfd, level, optname, optval, optlen).map(drop)
+    let opt_name = opt_name as usize;
+    let opt_val = opt_val as usize;
+    let opt_len = opt_len as usize;
+    syscall5(SYS_SETSOCKOPT, sockfd, level, opt_name, opt_val, opt_len).map(drop)
 }
 
 /// Set system time and timezone.
@@ -8197,12 +8197,12 @@ pub unsafe fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errn
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, newname,0 ) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn symlink<P: AsRef<Path>>(oldname: P, newname: P) -> Result<(), Errno> {
-    let oldname = CString::new(oldname.as_ref());
-    let oldname_ptr = oldname.as_ptr() as usize;
-    let newname = CString::new(newname.as_ref());
-    let newname_ptr = newname.as_ptr() as usize;
-    syscall2(SYS_SYMLINK, oldname_ptr, newname_ptr).map(drop)
+pub unsafe fn symlink<P: AsRef<Path>>(old_name: P, new_name: P) -> Result<(), Errno> {
+    let old_name = CString::new(old_name.as_ref());
+    let old_name_ptr = old_name.as_ptr() as usize;
+    let new_name = CString::new(new_name.as_ref());
+    let new_name_ptr = new_name.as_ptr() as usize;
+    syscall2(SYS_SYMLINK, old_name_ptr, new_name_ptr).map(drop)
 }
 
 /// Make a new name for a file.
@@ -8218,16 +8218,16 @@ pub unsafe fn symlink<P: AsRef<Path>>(oldname: P, newname: P) -> Result<(), Errn
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn symlinkat<P: AsRef<Path>>(
-    oldname: P,
-    newdirfd: i32,
-    newname: P,
+    old_name: P,
+    new_dirfd: i32,
+    new_name: P,
 ) -> Result<(), Errno> {
-    let oldname = CString::new(oldname.as_ref());
-    let oldname_ptr = oldname.as_ptr() as usize;
-    let newname = CString::new(newname.as_ref());
-    let newname_ptr = newname.as_ptr() as usize;
-    let newdirfd = newdirfd as usize;
-    syscall3(SYS_SYMLINKAT, oldname_ptr, newdirfd, newname_ptr).map(drop)
+    let old_name = CString::new(old_name.as_ref());
+    let old_name_ptr = old_name.as_ptr() as usize;
+    let new_dirfd = new_dirfd as usize;
+    let new_name = CString::new(new_name.as_ref());
+    let new_name_ptr = new_name.as_ptr() as usize;
+    syscall3(SYS_SYMLINKAT, old_name_ptr, new_dirfd, new_name_ptr).map(drop)
 }
 
 /// Commit filesystem caches to disk.

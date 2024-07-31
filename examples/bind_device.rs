@@ -10,7 +10,7 @@ fn main() -> Result<(), nc::Errno> {
             socket_fd,
             nc::SOL_SOCKET,
             nc::SO_BINDTODEVICE,
-            interface_name.as_ptr() as usize,
+            interface_name.as_ptr() as *const _,
             interface_name.len() as nc::socklen_t,
         )
     };

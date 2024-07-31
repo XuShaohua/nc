@@ -12,15 +12,14 @@ fn main() -> Result<(), nc::Errno> {
     // For the others, just a boolean value for enable and disable.
     #[cfg(target_os = "freebsd")]
     let queue_len: i32 = 1;
-    let queue_len_ptr = &queue_len as *const i32 as usize;
 
     let ret = unsafe {
         nc::setsockopt(
             socket_fd,
             nc::IPPROTO_TCP,
             nc::TCP_FASTOPEN,
-            queue_len_ptr,
-            std::mem::size_of_val(&queue_len) as u32,
+            &queue_len as *const i32 as *const _,
+            std::mem::size_of_val(&queue_len) as nc::socklen_t,
         )
     };
     assert!(ret.is_ok());

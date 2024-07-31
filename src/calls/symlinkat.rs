@@ -11,14 +11,14 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn symlinkat<P: AsRef<Path>>(
-    oldname: P,
-    newdirfd: i32,
-    newname: P,
+    old_name: P,
+    new_dirfd: i32,
+    new_name: P,
 ) -> Result<(), Errno> {
-    let oldname = CString::new(oldname.as_ref());
-    let oldname_ptr = oldname.as_ptr() as usize;
-    let newname = CString::new(newname.as_ref());
-    let newname_ptr = newname.as_ptr() as usize;
-    let newdirfd = newdirfd as usize;
-    syscall3(SYS_SYMLINKAT, oldname_ptr, newdirfd, newname_ptr).map(drop)
+    let old_name = CString::new(old_name.as_ref());
+    let old_name_ptr = old_name.as_ptr() as usize;
+    let new_dirfd = new_dirfd as usize;
+    let new_name = CString::new(new_name.as_ref());
+    let new_name_ptr = new_name.as_ptr() as usize;
+    syscall3(SYS_SYMLINKAT, old_name_ptr, new_dirfd, new_name_ptr).map(drop)
 }

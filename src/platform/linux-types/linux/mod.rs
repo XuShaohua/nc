@@ -12,6 +12,7 @@ mod quota;
 mod socket;
 mod splice;
 mod swap;
+mod syslog;
 mod time64;
 mod timex;
 
@@ -25,5 +26,6 @@ pub use quota::*;
 pub use socket::*;
 pub use splice::*;
 pub use swap::*;
+pub use syslog::*;
 pub use time64::*;
 pub use timex::*;

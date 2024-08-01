@@ -1918,7 +1918,11 @@ pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
 /// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
-/// assert!(pid >= 0);
+/// if pid == 0 {
+///   println!("child process");
+/// } else {
+///   println!("parent process");
+/// }
 /// ```
 pub unsafe fn fork() -> Result<pid_t, Errno> {
     syscall0(SYS_FORK).map(|ret| ret as pid_t)
@@ -8831,14 +8835,10 @@ pub unsafe fn vhangup() -> Result<(), Errno> {
 }
 
 /// Splice user page into a pipe.
-pub unsafe fn vmsplice(
-    fd: i32,
-    iov: &iovec_t,
-    nr_segs: usize,
-    flags: u32,
-) -> Result<ssize_t, Errno> {
+pub unsafe fn vmsplice(fd: i32, iov: &[iovec_t], flags: u32) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
-    let iov_ptr = iov as *const iovec_t as usize;
+    let iov_ptr = iov.as_ptr() as usize;
+    let nr_segs = iov.len();
     let flags = flags as usize;
     syscall4(SYS_VMSPLICE, fd, iov_ptr, nr_segs, flags).map(|ret| ret as ssize_t)
 }

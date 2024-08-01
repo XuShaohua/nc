@@ -1,6 +1,5 @@
 
-nc
-===
+# nc
 
 ![Build status](https://github.com/xushaohua/nc/actions/workflows/rust.yml/badge.svg)
 [![Latest version](https://img.shields.io/crates/v/nc.svg)](https://crates.io/crates/nc)
@@ -20,6 +19,7 @@ Features:
 - Support latest kernel APIs, like io-uring and pidfd, introduced in linux 5.0+
 
 ## Usage
+
 Add this to `Cargo.toml`:
 ```toml
 [dependencies]
@@ -27,6 +27,7 @@ nc = "0.8"
 ```
 
 ## Examples
+
 Get file stat:
 ```rust
 let mut statbuf = nc::stat_t::default();
@@ -46,21 +47,16 @@ Fork process:
 ```rust
 let pid = unsafe { nc::fork() };
 match pid {
-    Ok(pid) => {
-        if pid == 0 {
-            println!("child process: {}", pid);
-            let args = [""];
-            let env = [""];
-            match unsafe { nc::execve("/bin/ls", &args, &env) } {
-                Ok(_) => {},
-                Err(errno) => eprintln!("`ls` got err: {}", errno),
-            }
-        } else if pid < 0 {
-            eprintln!("fork() error!");
-        } else {
-            println!("parent process!");
+    Ok(0) => {
+        println!("child process: {}", pid);
+        let args = ["ls", "-l", "-a"];
+        let env = ["FOO=BAR"];
+        match unsafe { nc::execve("/bin/ls", &args, &env) } {
+            Ok(_) => {},
+            Err(errno) => eprintln!("`ls` got err: {}", errno),
         }
-    },
+    }
+    Ok(pid) => println!("parent process!"),
     Err(errno) => eprintln!("errno: {}", errno),
 }
 ```
@@ -73,29 +69,14 @@ let ret = unsafe { nc::kill(pid, nc::SIGTERM) };
 println!("ret: {:?}", ret);
 ```
 
-Or handle signals:
-```rust
-fn handle_alarm(signum: i32) {
-    assert_eq!(signum, nc::SIGALRM);
-}
-
-fn main() {
-    let ret = unsafe { nc::signal(nc::SIGALRM, handle_alarm as nc::sighandler_t) };
-    assert!(ret.is_ok());
-    let remaining = unsafe {nc::alarm(1) };
-    let ret = unsafe { nc::pause() };
-    assert!(ret.is_err());
-    assert_eq!(ret, Err(nc::EINTR));
-    assert_eq!(remaining, 0);
-}
-```
-
 ## Stable version
+
 For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
 As `llvm_asm!` feature is unavailable in stable version.
 
 
 ## Supported Operating Systems and Architectures
+
 - linux
   - aarch64
   - arm
@@ -120,6 +101,7 @@ As `llvm_asm!` feature is unavailable in stable version.
   - x86-64
 
 ## Related projects
+
 - [nix][nix]
 - [syscall][syscall]
 - [relibc][relibc]
@@ -133,4 +115,5 @@ As `llvm_asm!` feature is unavailable in stable version.
 [go-syscall]: https://github.com/golang/go/tree/master/src/syscall
 
 ## License
-This library is release in [Apache License](LICENSE).
+
+This library is govered by [Apache-2.0 License](LICENSE).

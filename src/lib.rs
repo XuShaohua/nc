@@ -8,6 +8,7 @@
 //! - [Release notes](https://github.com/xushaohua/nc/tags)
 //!
 //! ## Usage
+//!
 //! Add this to `Cargo.toml`:
 //! ```toml
 //! [dependencies]
@@ -15,6 +16,7 @@
 //! ```
 //!
 //! ## Examples
+//!
 //! Get file stat:
 //! ```rust
 //! let mut statbuf = nc::stat_t::default();
@@ -33,21 +35,16 @@
 //! ```rust
 //! let pid = unsafe { nc::fork() };
 //! match pid {
-//!     Ok(pid) => {
-//!         if pid == 0 {
-//!             println!("child process: {}", pid);
-//!             let args = [""];
-//!             let env = [""];
-//!             match unsafe { nc::execve("/bin/ls", &args, &env) } {
-//!                 Ok(_) => {},
-//!                 Err(errno) => eprintln!("`ls` got err: {}", errno),
-//!             }
-//!         } else if pid < 0 {
-//!             eprintln!("fork() error!");
-//!         } else {
-//!             println!("parent process!");
+//!     Ok(0) => {
+//!         println!("child process: {}", pid);
+//!         let args = ["ls", "-l", "-a"];
+//!         let env = ["FOO=BAR"];
+//!         match unsafe { nc::execve("/bin/ls", &args, &env) } {
+//!             Ok(_) => {},
+//!             Err(errno) => eprintln!("`ls` got err: {}", errno),
 //!         }
-//!     },
+//!     }
+//!     Ok(pid) => println!("parent process!"),
 //!     Err(errno) => eprintln!("errno: {}", errno),
 //! }
 //! ```
@@ -88,10 +85,12 @@
 //! ```
 //!
 //! ## Stable version
+//!
 //! For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
 //! As `asm!` feature is unavailable in stable version.
 //!
 //! ## Supported Operating Systems and Architectures
+//!
 //! - linux
 //!   - aarch64
 //!   - arm
@@ -116,6 +115,7 @@
 //!   - x86-64
 //!
 //! ## Related projects
+//!
 //! * [nix][nix]
 //! * [syscall][syscall]
 //! * [relibc][relibc]

@@ -5,7 +5,7 @@
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
-/// let addr = unsafe {
+/// let ret = unsafe {
 ///     nc::mmap(
 ///         0,
 ///         map_length,
@@ -15,11 +15,11 @@
 ///         0,
 ///     )
 /// };
-/// assert!(addr.is_ok());
-/// let addr = addr.unwrap();
+/// assert!(ret.is_ok());
+/// let addr = ret.unwrap();
 ///
-/// // Set the third page readonly. And we will run into SIGSEGV when updating it.
-/// let ret = unsafe { nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_RANDOM) };
+/// // Notify kernel that the third page will be accessed.
+/// let ret = unsafe { nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_WILLNEED) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::munmap(addr, map_length) };

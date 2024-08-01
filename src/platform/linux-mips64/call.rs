@@ -589,7 +589,9 @@ pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
     syscall1(SYS_CHROOT, filename_ptr).map(drop)
 }
 
-/// Tune kernel clock. Returns clock state on success.
+/// Tune kernel clock.
+///
+/// Returns clock state on success.
 ///
 /// # Examples
 ///
@@ -611,13 +613,18 @@ pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<
 ///
 /// ```
 /// let mut tp = nc::timespec_t::default();
-/// let ret = unsafe { nc::clock_getres(nc::CLOCK_BOOTTIME, &mut tp) };
+/// let ret = unsafe { nc::clock_getres(nc::CLOCK_BOOTTIME, Some(&mut tp)) };
 /// assert!(ret.is_ok());
 /// assert!(tp.tv_nsec > 0);
 /// ```
-pub unsafe fn clock_getres(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
+pub unsafe fn clock_getres(
+    which_clock: clockid_t,
+    tp: Option<&mut timespec_t>,
+) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
-    let tp_ptr = tp as *mut timespec_t as usize;
+    let tp_ptr = tp.map_or(core::ptr::null_mut::<timespec_t>() as usize, |tp| {
+        tp as *mut timespec_t as usize
+    });
     syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr).map(drop)
 }
 
@@ -4129,7 +4136,7 @@ pub unsafe fn lstat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result
 /// ```
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
-/// let addr = unsafe {
+/// let ret = unsafe {
 ///     nc::mmap(
 ///         0,
 ///         map_length,
@@ -4139,11 +4146,11 @@ pub unsafe fn lstat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result
 ///         0,
 ///     )
 /// };
-/// assert!(addr.is_ok());
-/// let addr = addr.unwrap();
+/// assert!(ret.is_ok());
+/// let addr = ret.unwrap();
 ///
-/// // Set the third page readonly. And we will run into SIGSEGV when updating it.
-/// let ret = unsafe { nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_RANDOM) };
+/// // Notify kernel that the third page will be accessed.
+/// let ret = unsafe { nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_WILLNEED) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::munmap(addr, map_length) };

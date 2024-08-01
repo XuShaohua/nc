@@ -1,4 +1,6 @@
-/// Tune kernel clock. Returns clock state on success.
+/// Tune kernel clock.
+///
+/// Returns clock state on success.
 ///
 /// # Examples
 ///

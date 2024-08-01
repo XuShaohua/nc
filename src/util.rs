@@ -13,9 +13,9 @@ use alloc::vec::Vec;
 
 use crate::Errno;
 
-pub type Syscalls = BTreeSet<String>;
+pub type SyscallTable = BTreeSet<String>;
 
-const K_ALL_SYMS: &str = "/proc/kallsyms";
+pub const ALL_SYMS: &str = "/proc/kallsyms";
 
 /// A simple wrapper to File IO.
 ///
@@ -51,7 +51,7 @@ impl Drop for File {
 pub fn syscall_exists(name: &str) -> Result<bool, Errno> {
     const BUF_LEN: usize = 1024;
 
-    let file = File::open(K_ALL_SYMS)?;
+    let file = File::open(ALL_SYMS)?;
     let mut buf = [0_u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
     loop {
@@ -108,10 +108,10 @@ fn parse_syscall_from_sym(s: &str) -> Option<String> {
 }
 
 /// Read syscall list from /proc.
-pub fn read_syscall_list() -> Result<Syscalls, Errno> {
+pub fn read_syscall_list() -> Result<SyscallTable, Errno> {
     const BUF_LEN: usize = 1024;
 
-    let file = File::open(K_ALL_SYMS)?;
+    let file = File::open(ALL_SYMS)?;
     let mut set = BTreeSet::new();
     let mut buf = [0_u8; BUF_LEN];
     let mut line_str = Vec::with_capacity(BUF_LEN);
@@ -144,35 +144,6 @@ pub fn read_syscall_list() -> Result<Syscalls, Errno> {
     }
 
     Ok(set)
-}
-
-#[cfg(any(target_os = "linux", target_os = "android"))]
-#[allow(clippy::cast_possible_truncation)]
-#[allow(clippy::cast_possible_wrap)]
-pub fn alarm(seconds: u32) -> Result<u32, crate::Errno> {
-    #[cfg(any(
-        target_arch = "aarch64",
-        target_arch = "arm",
-        target_arch = "loongarch64",
-        target_arch = "riscv64",
-    ))]
-    let remaining = {
-        let mut it = crate::itimerval_t::default();
-        it.it_value.tv_sec = seconds as isize;
-        let mut old = crate::itimerval_t::default();
-        unsafe { crate::setitimer(crate::ITIMER_REAL, &it, &mut old)? };
-        (old.it_value.tv_sec + !!old.it_value.tv_usec) as u32
-    };
-
-    #[cfg(not(any(
-        target_arch = "aarch64",
-        target_arch = "arm",
-        target_arch = "loongarch64",
-        target_arch = "riscv64",
-    )))]
-    let remaining = unsafe { crate::alarm(seconds) };
-
-    Ok(remaining)
 }
 
 #[cfg(test)]

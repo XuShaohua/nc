@@ -1,4 +1,6 @@
-/// Send a message on a socket. Allow sending ancillary data.
+/// Send a message on a socket.
+///
+/// Allow sending ancillary data.
 pub unsafe fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
     let msg_ptr = msg as *const msghdr_t as usize;

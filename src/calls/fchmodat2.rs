@@ -10,7 +10,7 @@
 ///     nc::openat(
 ///         nc::AT_FDCWD,
 ///         filename,
-///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///         nc::O_CREAT | nc::O_WRONLY,
 ///         0o644
 ///     )
 /// };

@@ -8,15 +8,15 @@
 ///     nc::openat(
 ///         nc::AT_FDCWD,
 ///         filename,
-///         nc::O_CREAT | nc::O_WRONLY | nc::O_TRUNC,
+///         nc::O_CREAT | nc::O_WRONLY,
 ///         0o644
 ///     )
 /// };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
-/// let ret = unsafe { nc::fchmod(fd, 0o600) };
-/// assert!(ret.is_ok());
 /// let ret = unsafe { nc::close(fd) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::fchmod(fd, 0o640) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
 /// assert!(ret.is_ok());

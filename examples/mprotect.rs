@@ -2,6 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+use std::ffi::c_void;
+use std::ptr;
 use std::sync::atomic::{AtomicU32, Ordering};
 
 static SEG_COUNT: AtomicU32 = AtomicU32::new(0);
@@ -59,7 +61,7 @@ fn main() {
     #[cfg(not(target_arch = "arm"))]
     let addr = unsafe {
         nc::mmap(
-            0,
+            ptr::null(),
             map_length,
             nc::PROT_READ | nc::PROT_WRITE,
             nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
@@ -68,14 +70,21 @@ fn main() {
         )
     };
     assert!(addr.is_ok());
-    let addr = addr.unwrap();
+    let addr: *const c_void = addr.unwrap();
 
     // Set the third page readonly. And we will run into SIGSEGV when updating it.
-    let ret = unsafe { nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ) };
+    let ret = unsafe {
+        nc::mprotect(
+            addr.wrapping_add(2 * nc::PAGE_SIZE),
+            nc::PAGE_SIZE,
+            nc::PROT_READ,
+        )
+    };
     assert!(ret.is_ok());
 
-    for ptr in addr..(addr + map_length) {
-        println!("access address: 0x{ptr:x}");
+    for off in 0..map_length {
+        let ptr = addr.wrapping_add(off);
+        println!("access address: 0x{:x}", ptr as usize);
 
         // Trigger segfault
         unsafe {

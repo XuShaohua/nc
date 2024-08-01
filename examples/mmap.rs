@@ -2,7 +2,8 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use std::mem;
+use std::ffi::c_void;
+use std::ptr;
 
 fn main() {
     let path = "/etc/passwd";
@@ -23,7 +24,7 @@ fn main() {
     #[cfg(target_arch = "arm")]
     let addr = unsafe {
         nc::mmap2(
-            0, // 0 as NULL
+            ptr::null(),
             map_length,
             nc::PROT_READ,
             nc::MAP_PRIVATE,
@@ -34,7 +35,7 @@ fn main() {
     #[cfg(not(target_arch = "arm"))]
     let addr = unsafe {
         nc::mmap(
-            0, // 0 as NULL
+            ptr::null(),
             map_length,
             nc::PROT_READ,
             nc::MAP_PRIVATE,
@@ -43,12 +44,22 @@ fn main() {
         )
     };
     assert!(addr.is_ok());
+    let addr: *const c_void = addr.unwrap();
 
-    let addr = addr.unwrap();
     let stdout = 1;
     // Create the "fat pointer".
-    let buf =
-        unsafe { mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+    // let buf = unsafe {
+    //     mem::transmute::<(usize, usize), &[u8]>((addr as usize + offset - pa_offset, length))
+    // };
+    // Create buffer slice.
+    let buf: &[u8] = unsafe {
+        &*ptr::slice_from_raw_parts(
+            addr.wrapping_add(offset)
+                .wrapping_sub(pa_offset)
+                .cast::<u8>(),
+            length,
+        )
+    };
     let n_write = unsafe { nc::write(stdout, buf) };
     assert!(n_write.is_ok());
     assert_eq!(n_write, Ok(length as nc::ssize_t));

@@ -3,6 +3,9 @@
 /// # Examples
 ///
 /// ```
+/// use std::{mem, ptr};
+/// use std::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
 /// assert!(ret.is_ok());
@@ -20,7 +23,7 @@
 ///
 /// let addr = unsafe {
 ///     nc::mmap(
-///         0, // 0 as NULL
+///         ptr::null(),
 ///         map_length,
 ///         nc::PROT_READ,
 ///         nc::MAP_PRIVATE,
@@ -29,11 +32,13 @@
 ///     )
 /// };
 /// assert!(addr.is_ok());
-/// let addr = addr.unwrap();
+/// let addr: *const c_void = addr.unwrap();
+///
 /// let stdout = 1;
 /// // Create the "fat pointer".
-/// let buf =
-///     unsafe { std::mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+/// let buf = unsafe {
+///     mem::transmute::<(usize, usize), &[u8]>((addr as usize + offset - pa_offset, length))
+/// };
 /// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
@@ -43,16 +48,18 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mmap(
-    start: usize,
+    start: *const core::ffi::c_void,
     len: size_t,
     prot: i32,
     flags: i32,
     fd: i32,
     offset: off_t,
-) -> Result<usize, Errno> {
+) -> Result<*const core::ffi::c_void, Errno> {
+    let start = start as usize;
     let prot = prot as usize;
     let flags = flags as usize;
     let fd = fd as usize;
     let offset = offset as usize;
     syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
+        .map(|ret| ret as *const core::ffi::c_void)
 }

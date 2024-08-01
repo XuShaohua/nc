@@ -4340,11 +4340,13 @@ pub unsafe fn lstat64<P: AsRef<Path>>(filename: P, statbuf: &mut stat64_t) -> Re
 /// # Examples
 ///
 /// ```
+/// use std::ptr;
+///
 /// // Initialize an anonymous mapping with 4 pages.
 /// let map_length = 4 * nc::PAGE_SIZE;
 /// let ret = unsafe {
 ///     nc::mmap(
-///         0,
+///         ptr::null(),
 ///         map_length,
 ///         nc::PROT_READ | nc::PROT_WRITE,
 ///         nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
@@ -4356,13 +4358,18 @@ pub unsafe fn lstat64<P: AsRef<Path>>(filename: P, statbuf: &mut stat64_t) -> Re
 /// let addr = ret.unwrap();
 ///
 /// // Notify kernel that the third page will be accessed.
-/// let ret = unsafe { nc::madvise(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::MADV_WILLNEED) };
+/// let ret = unsafe { nc::madvise(addr.wrapping_add(2 * nc::PAGE_SIZE), nc::PAGE_SIZE, nc::MADV_WILLNEED) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::munmap(addr, map_length) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn madvise(addr: usize, len: size_t, advice: i32) -> Result<(), Errno> {
+pub unsafe fn madvise(
+    addr: *const core::ffi::c_void,
+    len: size_t,
+    advice: i32,
+) -> Result<(), Errno> {
+    let addr = addr as usize;
     let advice = advice as usize;
     syscall3(SYS_MADVISE, addr, len, advice).map(drop)
 }
@@ -4595,6 +4602,9 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
+/// use std::{mem, ptr};
+/// use std::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
 /// assert!(ret.is_ok());
@@ -4612,7 +4622,7 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 ///
 /// let addr = unsafe {
 ///     nc::mmap(
-///         0, // 0 as NULL
+///         ptr::null(),
 ///         map_length,
 ///         nc::PROT_READ,
 ///         nc::MAP_PRIVATE,
@@ -4621,11 +4631,13 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 ///     )
 /// };
 /// assert!(addr.is_ok());
-/// let addr = addr.unwrap();
+/// let addr: *const c_void = addr.unwrap();
+///
 /// let stdout = 1;
 /// // Create the "fat pointer".
-/// let buf =
-///     unsafe { std::mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+/// let buf = unsafe {
+///     mem::transmute::<(usize, usize), &[u8]>((addr as usize + offset - pa_offset, length))
+/// };
 /// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
@@ -4635,18 +4647,20 @@ pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mmap(
-    start: usize,
+    start: *const core::ffi::c_void,
     len: size_t,
     prot: i32,
     flags: i32,
     fd: i32,
     offset: off_t,
-) -> Result<usize, Errno> {
+) -> Result<*const core::ffi::c_void, Errno> {
+    let start = start as usize;
     let prot = prot as usize;
     let flags = flags as usize;
     let fd = fd as usize;
     let offset = offset as usize;
     syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
+        .map(|ret| ret as *const core::ffi::c_void)
 }
 
 /// Map files or devices into memory.
@@ -4815,7 +4829,7 @@ pub unsafe fn move_pages(
 /// let map_length = 4 * nc::PAGE_SIZE;
 /// let addr = unsafe {
 ///     nc::mmap(
-///         0,
+///         std::ptr::null(),
 ///         map_length,
 ///         nc::PROT_READ | nc::PROT_WRITE,
 ///         nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
@@ -4827,13 +4841,18 @@ pub unsafe fn move_pages(
 /// let addr = addr.unwrap();
 ///
 /// // Set the third page readonly. And we will run into SIGSEGV when updating it.
-/// let ret = unsafe { nc::mprotect(addr + 2 * nc::PAGE_SIZE, nc::PAGE_SIZE, nc::PROT_READ) };
+/// let ret = unsafe { nc::mprotect(addr.wrapping_add(2 * nc::PAGE_SIZE), nc::PAGE_SIZE, nc::PROT_READ) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::munmap(addr, map_length) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn mprotect(addr: usize, len: size_t, prot: i32) -> Result<(), Errno> {
+pub unsafe fn mprotect(
+    addr: *const core::ffi::c_void,
+    len: size_t,
+    prot: i32,
+) -> Result<(), Errno> {
+    let addr = addr as usize;
     let prot = prot as usize;
     syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
 }
@@ -5352,6 +5371,8 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
+/// use std::{mem, ptr};
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
 /// assert!(ret.is_ok());
@@ -5369,7 +5390,7 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 ///
 /// let addr = unsafe {
 ///     nc::mmap(
-///         0, // 0 as NULL
+///         ptr::null(),
 ///         map_length,
 ///         nc::PROT_READ,
 ///         nc::MAP_PRIVATE,
@@ -5382,8 +5403,9 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// let stdout = 1;
 ///
 /// // Create the "fat pointer".
-/// let buf =
-///     unsafe { std::mem::transmute::<(usize, usize), &[u8]>((addr + offset - pa_offset, length)) };
+/// let buf = unsafe {
+///     mem::transmute::<(usize, usize), &[u8]>((addr as usize + offset - pa_offset, length))
+/// };
 /// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
@@ -5392,7 +5414,8 @@ pub unsafe fn munlockall() -> Result<(), Errno> {
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn munmap(addr: usize, len: size_t) -> Result<(), Errno> {
+pub unsafe fn munmap(addr: *const core::ffi::c_void, len: size_t) -> Result<(), Errno> {
+    let addr = addr as usize;
     syscall2(SYS_MUNMAP, addr, len).map(drop)
 }
 

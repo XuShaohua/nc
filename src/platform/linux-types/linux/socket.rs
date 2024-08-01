@@ -4,7 +4,11 @@
 
 //! From `include/linux/socket.h`
 
-use crate::{iovec_t, kernel_sa_family_t, kernel_sockaddr_storage_t, size_t, timespec64_t};
+use core::ffi::c_void;
+
+use crate::{
+    iovec_t, kernel_sa_family_t, kernel_sockaddr_storage_t, size_t, socklen_t, timespec64_t,
+};
 
 pub type sa_family_t = kernel_sa_family_t;
 
@@ -57,19 +61,19 @@ pub type sockaddr_storage_t = kernel_sockaddr_storage_t;
 #[derive(Debug, Clone)]
 pub struct msghdr_t {
     /// ptr to socket address structure
-    pub msg_name: usize,
+    pub msg_name: *const c_void,
     /// size of socket address structure
-    pub msg_namelen: i32,
+    pub msg_namelen: socklen_t,
     /// scatter/gather array
     pub msg_iov: *mut iovec_t,
     /// # elements in `msg_iov`
     pub msg_iovlen: size_t,
     /// ancillary data
-    pub msg_control: usize,
+    pub msg_control: *const c_void,
     /// ancillary data buffer length
     pub msg_controllen: size_t,
     /// flags on received message
-    pub msg_flags: u32,
+    pub msg_flags: i32,
 }
 
 pub type user_msghdr_t = msghdr_t;

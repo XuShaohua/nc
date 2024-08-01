@@ -8199,11 +8199,31 @@ pub unsafe fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
 }
 
 /// Read and/or clear kernel message ring buffer.
-pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<i32, Errno> {
+///
+/// # Examples
+///
+/// ```
+/// let uid = unsafe { nc::getuid() };
+/// let mut buf = vec![0_u8; 4096];
+/// let ret = unsafe { nc::syslog(nc::SYSLOG_ACTION_READ_ALL, &mut buf) };
+/// if uid == 0 {
+///     if let Err(errno) = ret {
+///         eprintln!("err: {}", nc::strerror(errno));
+///     }
+///     assert!(ret.is_ok());
+///     let nread = ret.unwrap();
+///     if let Ok(msg) = std::str::from_utf8(&buf[..nread as usize]) {
+///         println!("msg: {msg}");
+///     }
+/// } else {
+///     assert_eq!(ret, Err(nc::EPERM));
+/// }
+/// ```
+pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let action = action as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
-    syscall3(SYS_SYSLOG, action, buf_ptr, buf_len).map(|ret| ret as i32)
+    syscall3(SYS_SYSLOG, action, buf_ptr, buf_len).map(|ret| ret as ssize_t)
 }
 
 /// Duplicate pipe content.

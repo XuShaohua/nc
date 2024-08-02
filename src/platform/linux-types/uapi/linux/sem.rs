@@ -87,8 +87,15 @@ pub union semun_t {
     /// array for GETALL & SETALL
     pub array: *mut u16,
     /// buffer for `IPC_INFO`
-    pub info_buf: seminfo_t,
+    pub info_buf: *mut seminfo_t,
     pad: usize,
+}
+
+impl Default for semun_t {
+    #[inline]
+    fn default() -> Self {
+        Self { pad: 0 }
+    }
 }
 
 #[repr(C)]

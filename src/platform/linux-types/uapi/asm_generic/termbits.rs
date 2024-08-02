@@ -198,6 +198,6 @@ pub const IEXTEN: tcflag_t = 0x08000;
 pub const EXTPROC: tcflag_t = 0x10000;
 
 /// tcsetattr uses these
-pub const TCSANOW: i32 = 0;
-pub const TCSADRAIN: i32 = 1;
-pub const TCSAFLUSH: i32 = 2;
+pub const TCSANOW: u32 = 0;
+pub const TCSADRAIN: u32 = 1;
+pub const TCSAFLUSH: u32 = 2;

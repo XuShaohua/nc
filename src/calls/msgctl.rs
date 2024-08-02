@@ -13,9 +13,9 @@
 /// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
-    let msqid = msqid as usize;
+pub unsafe fn msgctl(msq_id: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
+    let msq_id = msq_id as usize;
     let cmd = cmd as usize;
     let buf_ptr = buf as *mut msqid_ds_t as usize;
-    syscall3(SYS_MSGCTL, msqid, cmd, buf_ptr).map(|ret| ret as i32)
+    syscall3(SYS_MSGCTL, msq_id, cmd, buf_ptr).map(|ret| ret as i32)
 }

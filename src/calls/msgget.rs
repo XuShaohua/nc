@@ -13,8 +13,8 @@
 /// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
+pub unsafe fn msgget(key: key_t, msg_flag: i32) -> Result<i32, Errno> {
     let key = key as usize;
-    let msgflg = msgflg as usize;
-    syscall2(SYS_MSGGET, key, msgflg).map(|ret| ret as i32)
+    let msg_flag = msg_flag as usize;
+    syscall2(SYS_MSGGET, key, msg_flag).map(|ret| ret as i32)
 }

@@ -4405,11 +4405,12 @@ pub unsafe fn mknodat<P: AsRef<Path>>(
 /// # Examples
 ///
 /// ```
-/// let mut passwd_buf = [0_u8; 64];
-/// let ret = unsafe { nc::mlock(passwd_buf.as_ptr() as usize, passwd_buf.len()) };
+/// let mut passwd_buf = vec![0; 64];
+/// let ret = unsafe { nc::mlock(passwd_buf.as_ptr() as *const _, passwd_buf.len()) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
+pub unsafe fn mlock(addr: *const core::ffi::c_void, len: size_t) -> Result<(), Errno> {
+    let addr = addr as usize;
     syscall2(SYS_MLOCK, addr, len).map(drop)
 }
 
@@ -4418,11 +4419,12 @@ pub unsafe fn mlock(addr: usize, len: size_t) -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
-/// let mut passwd_buf = [0_u8; 64];
-/// let ret = unsafe { nc::mlock2(passwd_buf.as_ptr() as usize, passwd_buf.len(), nc::MCL_CURRENT) };
+/// let mut passwd_buf = vec![0; 64];
+/// let ret = unsafe { nc::mlock2(passwd_buf.as_ptr() as *const _, passwd_buf.len(), nc::MCL_CURRENT) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn mlock2(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+pub unsafe fn mlock2(addr: *const core::ffi::c_void, len: size_t, flags: i32) -> Result<(), Errno> {
+    let addr = addr as usize;
     let flags = flags as usize;
     syscall3(SYS_MLOCK2, addr, len, flags).map(drop)
 }
@@ -4968,11 +4970,11 @@ pub unsafe fn mremap(
 /// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
-    let msqid = msqid as usize;
+pub unsafe fn msgctl(msq_id: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
+    let msq_id = msq_id as usize;
     let cmd = cmd as usize;
     let buf_ptr = buf as *mut msqid_ds_t as usize;
-    syscall3(SYS_MSGCTL, msqid, cmd, buf_ptr).map(|ret| ret as i32)
+    syscall3(SYS_MSGCTL, msq_id, cmd, buf_ptr).map(|ret| ret as i32)
 }
 
 /// Get a System V message queue identifier.
@@ -4990,10 +4992,10 @@ pub unsafe fn msgctl(msqid: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, 
 /// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
+pub unsafe fn msgget(key: key_t, msg_flag: i32) -> Result<i32, Errno> {
     let key = key as usize;
-    let msgflg = msgflg as usize;
-    syscall2(SYS_MSGGET, key, msgflg).map(|ret| ret as i32)
+    let msg_flag = msg_flag as usize;
+    syscall2(SYS_MSGGET, key, msg_flag).map(|ret| ret as i32)
 }
 
 /// Receive messages from a System V message queue.
@@ -5183,8 +5185,8 @@ pub unsafe fn msync(addr: *const core::ffi::c_void, len: size_t, flags: i32) -> 
 /// # Examples
 ///
 /// ```
-/// let mut passwd_buf = [0_u8; 64];
-/// let addr = passwd_buf.as_ptr() as usize;
+/// let mut passwd_buf = vec![0; 64];
+/// let addr = passwd_buf.as_ptr() as *const _;
 /// let ret = unsafe { nc::mlock2(addr, passwd_buf.len(), nc::MCL_CURRENT) };
 /// for i in 0..passwd_buf.len() {
 ///   passwd_buf[i] = i as u8;
@@ -5193,7 +5195,8 @@ pub unsafe fn msync(addr: *const core::ffi::c_void, len: size_t, flags: i32) -> 
 /// let ret = unsafe { nc::munlock(addr, passwd_buf.len()) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn munlock(addr: usize, len: size_t) -> Result<(), Errno> {
+pub unsafe fn munlock(addr: *const core::ffi::c_void, len: size_t) -> Result<(), Errno> {
+    let addr = addr as usize;
     syscall2(SYS_MUNLOCK, addr, len).map(drop)
 }
 

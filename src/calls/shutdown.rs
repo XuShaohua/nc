@@ -7,7 +7,7 @@
 /// use std::mem::{size_of, transmute};
 /// use std::thread;
 ///
-/// const SERVER_PORT: u16 = 18084;
+/// const SERVER_PORT: u16 = 18087;
 ///
 /// #[must_use]
 /// #[inline]

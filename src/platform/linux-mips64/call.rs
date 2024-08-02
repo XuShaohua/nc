@@ -336,7 +336,7 @@ pub unsafe fn alarm(seconds: u32) -> u32 {
 /// use std::mem::{size_of, transmute};
 /// use std::thread;
 ///
-/// const SERVER_PORT: u16 = 18084;
+/// const SERVER_PORT: u16 = 18085;
 ///
 /// #[must_use]
 /// #[inline]
@@ -2979,7 +2979,7 @@ pub unsafe fn getsid(pid: pid_t) -> pid_t {
 /// use std::mem::{size_of, transmute};
 /// use std::thread;
 ///
-/// const SERVER_PORT: u16 = 18084;
+/// const SERVER_PORT: u16 = 18088;
 ///
 /// #[must_use]
 /// #[inline]
@@ -3829,7 +3829,7 @@ pub unsafe fn linkat<P: AsRef<Path>>(
 /// use std::mem::{size_of, transmute};
 /// use std::thread;
 ///
-/// const SERVER_PORT: u16 = 18084;
+/// const SERVER_PORT: u16 = 18086;
 ///
 /// #[must_use]
 /// #[inline]
@@ -7997,7 +7997,7 @@ pub unsafe fn shmget(key: key_t, size: size_t, shm_flag: i32) -> Result<i32, Err
 /// use std::mem::{size_of, transmute};
 /// use std::thread;
 ///
-/// const SERVER_PORT: u16 = 18084;
+/// const SERVER_PORT: u16 = 18087;
 ///
 /// #[must_use]
 /// #[inline]

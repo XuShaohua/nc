@@ -6602,7 +6602,7 @@ pub unsafe fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i3
 /// }
 ///
 /// fn main() {
-///     const KEY_ID: i32 = 0x1234;
+///     const KEY_ID: i32 = 0x1235;
 ///     let ret = BinarySemaphore::new(KEY_ID, true);
 ///     if let Err(errno) = ret {
 ///         eprintln!("sem init failed: {}", nc::strerror(errno));
@@ -6740,7 +6740,7 @@ pub unsafe fn semget(key: key_t, nsems: i32, sem_flag: i32) -> Result<i32, Errno
 /// }
 ///
 /// fn main() {
-///     const KEY_ID: i32 = 0x1234;
+///     const KEY_ID: i32 = 0x1236;
 ///     let ret = BinarySemaphore::new(KEY_ID, true);
 ///     if let Err(errno) = ret {
 ///         eprintln!("sem init failed: {}", nc::strerror(errno));

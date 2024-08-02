@@ -3,12 +3,14 @@
 // in the LICENSE file.
 
 mod aio_abi;
+mod blktrace_api;
 mod bpf;
 mod capability;
 mod close_range;
 mod eventpoll;
 mod fadvise;
 mod fcntl;
+mod fiemap;
 mod fs;
 mod futex;
 mod r#in;
@@ -60,12 +62,14 @@ mod wait;
 mod xattr;
 
 pub use aio_abi::*;
+pub use blktrace_api::*;
 pub use bpf::*;
 pub use capability::*;
 pub use close_range::*;
 pub use eventpoll::*;
 pub use fadvise::*;
 pub use fcntl::*;
+pub use fiemap::*;
 pub use fs::*;
 pub use futex::*;
 pub use in6::*;

@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 //! From `include/uapi/linux/fs.h`
-
+//!
 //! This file has definitions for some important file table structures
 //! and constants and structures used by various generic file system
 //! ioctl's.  Please do not make any changes in this file before
@@ -19,6 +19,8 @@
 //!
 //! Some programs (notably those using `select()`) may have to be
 //! ecompiled to take full advantage of the new limits..
+
+use crate::{blk_user_trace_setup_t, fiemap_t, size_t, IO, IOR, IOW, IOWR};
 
 /// Fixed constants first:
 /// Initial setting for nfile rlimits
@@ -147,104 +149,121 @@ pub struct fsxattr_t {
 
 /// Flags for the `fsx_xflags` field
 /// data in realtime volume
-pub const FS_XFLAG_REALTIME: i32 = 0x0000_0001;
+pub const FS_XFLAG_REALTIME: u32 = 0x0000_0001;
 /// preallocated file extents
-pub const FS_XFLAG_PREALLOC: i32 = 0x0000_0002;
+pub const FS_XFLAG_PREALLOC: u32 = 0x0000_0002;
 /// file cannot be modified
-pub const FS_XFLAG_IMMUTABLE: i32 = 0x0000_0008;
+pub const FS_XFLAG_IMMUTABLE: u32 = 0x0000_0008;
 /// all writes append
-pub const FS_XFLAG_APPEND: i32 = 0x0000_0010;
+pub const FS_XFLAG_APPEND: u32 = 0x0000_0010;
 /// all writes synchronous
-pub const FS_XFLAG_SYNC: i32 = 0x0000_0020;
+pub const FS_XFLAG_SYNC: u32 = 0x0000_0020;
 /// do not update access time
-pub const FS_XFLAG_NOATIME: i32 = 0x0000_0040;
+pub const FS_XFLAG_NOATIME: u32 = 0x0000_0040;
 /// do not include in backups
-pub const FS_XFLAG_NODUMP: i32 = 0x0000_0080;
+pub const FS_XFLAG_NODUMP: u32 = 0x0000_0080;
 /// create with rt bit set
-pub const FS_XFLAG_RTINHERIT: i32 = 0x0000_0100;
+pub const FS_XFLAG_RTINHERIT: u32 = 0x0000_0100;
 /// create with parents projid
-pub const FS_XFLAG_PROJINHERIT: i32 = 0x0000_0200;
+pub const FS_XFLAG_PROJINHERIT: u32 = 0x0000_0200;
 /// disallow symlink creation
-pub const FS_XFLAG_NOSYMLINKS: i32 = 0x0000_0400;
+pub const FS_XFLAG_NOSYMLINKS: u32 = 0x0000_0400;
 /// extent size allocator hint
-pub const FS_XFLAG_EXTSIZE: i32 = 0x0000_0800;
+pub const FS_XFLAG_EXTSIZE: u32 = 0x0000_0800;
 /// inherit inode extent size
-pub const FS_XFLAG_EXTSZINHERIT: i32 = 0x0000_1000;
+pub const FS_XFLAG_EXTSZINHERIT: u32 = 0x0000_1000;
 /// do not defragment
-pub const FS_XFLAG_NODEFRAG: i32 = 0x0000_2000;
+pub const FS_XFLAG_NODEFRAG: u32 = 0x0000_2000;
 /// use filestream allocator
-pub const FS_XFLAG_FILESTREAM: i32 = 0x0000_4000;
+pub const FS_XFLAG_FILESTREAM: u32 = 0x0000_4000;
 /// use DAX for IO
-pub const FS_XFLAG_DAX: i32 = 0x0000_8000;
+pub const FS_XFLAG_DAX: u32 = 0x0000_8000;
 /// `CoW` extent size allocator hint
-pub const FS_XFLAG_COWEXTSIZE: i32 = 0x0001_0000;
+pub const FS_XFLAG_COWEXTSIZE: u32 = 0x0001_0000;
 /// no DIFLAG for this
-#[allow(overflowing_literals)]
-pub const FS_XFLAG_HASATTR: i32 = 0x8000_0000;
+pub const FS_XFLAG_HASATTR: u32 = 0x8000_0000;
 
 /// the read-only stuff doesn't really belong here, but any other place is
 /// probably as bad and I don't want to create yet another include file.
-//pub const BLKROSET: i32 = _IO!(0x12,93)	/* set device read-only (0 = read-write) */
-//pub const BLKROGET: i32 = _IO!(0x12,94)	/* get read-only status (0 = read_write) */
-//pub const BLKRRPART: i32 = _IO!(0x12,95)	/* re-read partition table */
-//pub const BLKGETSIZE: i32 = _IO!(0x12,96)	/* return device size /512 (long *arg) */
-//pub const BLKFLSBUF: i32 = _IO!(0x12,97)	/* flush buffer cache */
-//pub const BLKRASET: i32 = _IO!(0x12,98)	/* set read ahead for block device */
-//pub const BLKRAGET: i32 = _IO!(0x12,99)	/* get current read ahead setting */
-//pub const BLKFRASET: i32 = _IO!(0x12,100)/* set filesystem (mm/filemap.c) read-ahead */
-//pub const BLKFRAGET: i32 = _IO!(0x12,101)/* get filesystem (mm/filemap.c) read-ahead */
-//pub const BLKSECTSET: i32 = _IO!(0x12,102)/* set max sectors per request (ll_rw_blk.c) */
-//pub const BLKSECTGET: i32 = _IO!(0x12,103)/* get max sectors per request (ll_rw_blk.c) */
-//pub const BLKSSZGET: i32 = _IO!(0x12,104)/* get block device sector size */
-
+/// set device read-only (0 = read-write)
+pub const BLKROSET: u32 = IO(0x12, 93);
+/// get read-only status (0 = read_write)
+pub const BLKROGET: u32 = IO(0x12, 94);
+/// re-read partition table
+pub const BLKRRPART: u32 = IO(0x12, 95);
+/// return device size /512 (long *arg)
+pub const BLKGETSIZE: u32 = IO(0x12, 96);
+/// flush buffer cache
+pub const BLKFLSBUF: u32 = IO(0x12, 97);
+/// set read ahead for block device
+pub const BLKRASET: u32 = IO(0x12, 98);
+/// get current read ahead setting
+pub const BLKRAGET: u32 = IO(0x12, 99);
+/// set filesystem (mm/filemap.c) read-ahead
+pub const BLKFRASET: u32 = IO(0x12, 100);
+/// get filesystem (mm/filemap.c) read-ahead
+pub const BLKFRAGET: u32 = IO(0x12, 101);
+/// set max sectors per request (ll_rw_blk.c)
+pub const BLKSECTSET: u32 = IO(0x12, 102);
+/// get max sectors per request (ll_rw_blk.c)
+pub const BLKSECTGET: u32 = IO(0x12, 103);
+/// get block device sector size
+pub const BLKSSZGET: u32 = IO(0x12, 104);
 // A jump here: 108-111 have been used for various private purposes.
 
-//pub const BLKBSZGET: i32 = _IOR!(0x12,112,size_t)
-//pub const BLKBSZSET: i32 = _IOW!(0x12,113,size_t)
-//pub const BLKGETSIZE64: i32 = _IOR!(0x12,114,size_t)	/* return device size in bytes (u64 *arg) */
-//pub const BLKTRACESETUP: i32 = _IOWR!(0x12,115,struct blk_user_trace_setup)
-//pub const BLKTRACESTART: i32 = _IO!(0x12,116)
-//pub const BLKTRACESTOP: i32 = _IO!(0x12,117)
-//pub const BLKTRACETEARDOWN: i32 = _IO!(0x12,118)
-//pub const BLKDISCARD: i32 = _IO!(0x12,119)
-//pub const BLKIOMIN: i32 = _IO!(0x12,120)
-//pub const BLKIOOPT: i32 = _IO!(0x12,121)
-//pub const BLKALIGNOFF: i32 = _IO!(0x12,122)
-//pub const BLKPBSZGET: i32 = _IO!(0x12,123)
-//pub const BLKDISCARDZEROES: i32 = _IO!(0x12,124)
-//pub const BLKSECDISCARD: i32 = _IO!(0x12,125)
-//pub const BLKROTATIONAL: i32 = _IO!(0x12,126)
-//pub const BLKZEROOUT: i32 = _IO!(0x12,127)
+pub const BLKBSZGET: u32 = IOR::<size_t>(0x12, 112);
+pub const BLKBSZSET: u32 = IOW::<size_t>(0x12, 113);
+/// return device size in bytes (u64 *arg)
+pub const BLKGETSIZE64: u32 = IOR::<size_t>(0x12, 114);
+pub const BLKTRACESETUP: u32 = IOWR::<blk_user_trace_setup_t>(0x12, 115);
+pub const BLKTRACESTART: u32 = IO(0x12, 116);
+pub const BLKTRACESTOP: u32 = IO(0x12, 117);
+pub const BLKTRACETEARDOWN: u32 = IO(0x12, 118);
+pub const BLKDISCARD: u32 = IO(0x12, 119);
+pub const BLKIOMIN: u32 = IO(0x12, 120);
+pub const BLKIOOPT: u32 = IO(0x12, 121);
+pub const BLKALIGNOFF: u32 = IO(0x12, 122);
+pub const BLKPBSZGET: u32 = IO(0x12, 123);
+pub const BLKDISCARDZEROES: u32 = IO(0x12, 124);
+pub const BLKSECDISCARD: u32 = IO(0x12, 125);
+pub const BLKROTATIONAL: u32 = IO(0x12, 126);
+pub const BLKZEROOUT: u32 = IO(0x12, 127);
 
 // A jump here: 130-131 are reserved for zoned block devices
 // (see uapi/linux/blkzoned.h)
 
-//pub const BMAP_IOCTL: i32 = 1;		/* obsolete - kept for compatibility */
-//pub const FIBMAP: i32 = _IO!(0x00,1)	/* bmap access */
-//pub const FIGETBSZ: i32 = _IO!(0x00,2)	/* get the block size used for bmap */
-//pub const FIFREEZE: i32 = _IOWR!('X', 119, int)	/* Freeze */
-//pub const FITHAW: i32 = _IOWR!('X', 120, int)	/* Thaw */
-//pub const FITRIM: i32 = _IOWR!('X', 121, struct fstrim_range)	/* Trim */
-//pub const FICLONE: i32 = _IOW!(0x94, 9, int)
-//pub const FICLONERANGE: i32 = _IOW!(0x94, 13, struct file_clone_range)
-//pub const FIDEDUPERANGE: i32 = _IOWR!(0x94, 54, struct file_dedupe_range)
+/// obsolete - kept for compatibility
+pub const BMAP_IOCTL: u32 = 1;
+/// bmap access
+pub const FIBMAP: u32 = IO(0x00, 1);
+/// get the block size used for bmap
+pub const FIGETBSZ: u32 = IO(0x00, 2);
+/// Freeze
+pub const FIFREEZE: u32 = IOWR::<i32>(b'X', 119);
+/// Thaw
+pub const FITHAW: u32 = IOWR::<i32>(b'X', 120);
+/// Trim
+pub const FITRIM: u32 = IOWR::<fstrim_range_t>(b'X', 121);
+pub const FICLONE: u32 = IOW::<i32>(0x94, 9);
+pub const FICLONERANGE: u32 = IOW::<file_clone_range_t>(0x94, 13);
+pub const FIDEDUPERANGE: u32 = IOWR::<file_dedupe_range_t>(0x94, 54);
 
 /// Max chars for the interface; each fs may differ
-pub const FSLABEL_MAX: i32 = 256;
+pub const FSLABEL_MAX: usize = 256;
 
-//pub const FS_IOC_GETFLAGS: i32 = _IOR!('f', 1, long)
-//pub const FS_IOC_SETFLAGS: i32 = _IOW!('f', 2, long)
-//pub const FS_IOC_GETVERSION: i32 = _IOR!('v', 1, long)
-//pub const FS_IOC_SETVERSION: i32 = _IOW!('v', 2, long)
-//pub const FS_IOC_FIEMAP: i32 = _IOWR!('f', 11, struct fiemap)
-//pub const FS_IOC32_GETFLAGS: i32 = _IOR!('f', 1, int)
-//pub const FS_IOC32_SETFLAGS: i32 = _IOW!('f', 2, int)
-//pub const FS_IOC32_GETVERSION: i32 = _IOR!('v', 1, int)
-//pub const FS_IOC32_SETVERSION: i32 = _IOW!('v', 2, int)
-//pub const FS_IOC_FSGETXATTR: i32 = _IOR!('X', 31, struct fsxattr)
-//pub const FS_IOC_FSSETXATTR: i32 = _IOW!('X', 32, struct fsxattr)
-//pub const FS_IOC_GETFSLABEL: i32 = _IOR!(0x94, 49, char[FSLABEL_MAX])
-//pub const FS_IOC_SETFSLABEL: i32 = _IOW!(0x94, 50, char[FSLABEL_MAX])
+pub const FS_IOC_GETFLAGS: u32 = IOR::<isize>(b'f', 1);
+pub const FS_IOC_SETFLAGS: u32 = IOW::<isize>(b'f', 2);
+pub const FS_IOC_GETVERSION: u32 = IOR::<isize>(b'v', 1);
+pub const FS_IOC_SETVERSION: u32 = IOW::<isize>(b'v', 2);
+pub const FS_IOC_FIEMAP: u32 = IOWR::<fiemap_t>(b'f', 11);
+pub const FS_IOC32_GETFLAGS: u32 = IOR::<i32>(b'f', 1);
+pub const FS_IOC32_SETFLAGS: u32 = IOW::<i32>(b'f', 2);
+pub const FS_IOC32_GETVERSION: u32 = IOR::<i32>(b'v', 1);
+pub const FS_IOC32_SETVERSION: u32 = IOW::<i32>(b'v', 2);
+pub const FS_IOC_FSGETXATTR: u32 = IOR::<fsxattr_t>(b'X', 31);
+pub const FS_IOC_FSSETXATTR: u32 = IOW::<fsxattr_t>(b'X', 32);
+pub const FS_IOC_GETFSLABEL: u32 = IOR::<[u8; FSLABEL_MAX]>(0x94, 49);
+pub const FS_IOC_SETFSLABEL: u32 = IOW::<[u8; FSLABEL_MAX]>(0x94, 50);
 
 /// File system encryption support
 /// Policy provided via an ioctl on the topmost directory
@@ -309,66 +328,65 @@ pub const FS_MAX_KEY_SIZE: i32 = 64;
 /// XFS to the generic FS level interface.  This uses a structure that
 /// has padding and hence has more room to grow, so it may be more
 /// appropriate for many new use cases.
-pub const FS_SECRM_FL: i32 = 0x0000_0001;
+pub const FS_SECRM_FL: u32 = 0x0000_0001;
 /// Undelete
-pub const FS_UNRM_FL: i32 = 0x0000_0002;
+pub const FS_UNRM_FL: u32 = 0x0000_0002;
 /// Compress file
-pub const FS_COMPR_FL: i32 = 0x0000_0004;
+pub const FS_COMPR_FL: u32 = 0x0000_0004;
 /// Synchronous updates
-pub const FS_SYNC_FL: i32 = 0x0000_0008;
+pub const FS_SYNC_FL: u32 = 0x0000_0008;
 /// Immutable file
-pub const FS_IMMUTABLE_FL: i32 = 0x0000_0010;
+pub const FS_IMMUTABLE_FL: u32 = 0x0000_0010;
 /// writes to file may only append
-pub const FS_APPEND_FL: i32 = 0x0000_0020;
+pub const FS_APPEND_FL: u32 = 0x0000_0020;
 /// do not dump file
-pub const FS_NODUMP_FL: i32 = 0x0000_0040;
+pub const FS_NODUMP_FL: u32 = 0x0000_0040;
 /// do not update atime
-pub const FS_NOATIME_FL: i32 = 0x0000_0080;
+pub const FS_NOATIME_FL: u32 = 0x0000_0080;
 /// Reserved for compression usage...
-pub const FS_DIRTY_FL: i32 = 0x0000_0100;
+pub const FS_DIRTY_FL: u32 = 0x0000_0100;
 /// One or more compressed clusters
-pub const FS_COMPRBLK_FL: i32 = 0x0000_0200;
+pub const FS_COMPRBLK_FL: u32 = 0x0000_0200;
 /// Don't compress
-pub const FS_NOCOMP_FL: i32 = 0x0000_0400;
+pub const FS_NOCOMP_FL: u32 = 0x0000_0400;
 /// End compression flags --- maybe not all used
 /// Encrypted file
-pub const FS_ENCRYPT_FL: i32 = 0x0000_0800;
+pub const FS_ENCRYPT_FL: u32 = 0x0000_0800;
 /// btree format dir
-pub const FS_BTREE_FL: i32 = 0x0000_1000;
+pub const FS_BTREE_FL: u32 = 0x0000_1000;
 /// hash-indexed directory
-pub const FS_INDEX_FL: i32 = 0x0000_1000;
+pub const FS_INDEX_FL: u32 = 0x0000_1000;
 /// AFS directory
-pub const FS_IMAGIC_FL: i32 = 0x0000_2000;
+pub const FS_IMAGIC_FL: u32 = 0x0000_2000;
 /// Reserved for ext3
-pub const FS_JOURNAL_DATA_FL: i32 = 0x0000_4000;
+pub const FS_JOURNAL_DATA_FL: u32 = 0x0000_4000;
 /// file tail should not be merged
-pub const FS_NOTAIL_FL: i32 = 0x0000_8000;
+pub const FS_NOTAIL_FL: u32 = 0x0000_8000;
 /// dirsync behaviour (directories only)
-pub const FS_DIRSYNC_FL: i32 = 0x0001_0000;
+pub const FS_DIRSYNC_FL: u32 = 0x0001_0000;
 /// Top of directory hierarchies
-pub const FS_TOPDIR_FL: i32 = 0x0002_0000;
+pub const FS_TOPDIR_FL: u32 = 0x0002_0000;
 /// Reserved for ext4
-pub const FS_HUGE_FILE_FL: i32 = 0x0004_0000;
+pub const FS_HUGE_FILE_FL: u32 = 0x0004_0000;
 /// Extents
-pub const FS_EXTENT_FL: i32 = 0x0008_0000;
+pub const FS_EXTENT_FL: u32 = 0x0008_0000;
 /// Inode used for large EA
-pub const FS_EA_INODE_FL: i32 = 0x0020_0000;
+pub const FS_EA_INODE_FL: u32 = 0x0020_0000;
 /// Reserved for ext4
-pub const FS_EOFBLOCKS_FL: i32 = 0x0040_0000;
+pub const FS_EOFBLOCKS_FL: u32 = 0x0040_0000;
 /// Do not cow file
-pub const FS_NOCOW_FL: i32 = 0x0080_0000;
+pub const FS_NOCOW_FL: u32 = 0x0080_0000;
 /// Reserved for ext4
-pub const FS_INLINE_DATA_FL: i32 = 0x1000_0000;
+pub const FS_INLINE_DATA_FL: u32 = 0x1000_0000;
 /// Create with parents projid
-pub const FS_PROJINHERIT_FL: i32 = 0x2000_0000;
+pub const FS_PROJINHERIT_FL: u32 = 0x2000_0000;
 /// reserved for ext2 lib
-#[allow(overflowing_literals)]
-pub const FS_RESERVED_FL: i32 = 0x8000_0000;
+pub const FS_RESERVED_FL: u32 = 0x8000_0000;
 
 /// User visible flags
-pub const FS_FL_USER_VISIBLE: i32 = 0x0003_DFFF;
+pub const FS_FL_USER_VISIBLE: u32 = 0x0003_DFFF;
 /// User modifiable flags
-pub const FS_FL_USER_MODIFIABLE: i32 = 0x0003_80FF;
+pub const FS_FL_USER_MODIFIABLE: u32 = 0x0003_80FF;
 
 pub const SYNC_FILE_RANGE_WAIT_BEFORE: i32 = 1;
 pub const SYNC_FILE_RANGE_WRITE: i32 = 2;

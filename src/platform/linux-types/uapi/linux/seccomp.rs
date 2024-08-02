@@ -6,21 +6,21 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-use crate::IO;
+use crate::{IO, IOR, IOW, IOWR};
 
 /// Valid values for seccomp.mode and prctl(`PR_SET_SECCOMP`, `<mode>`)
 /// seccomp is not in use.
-pub const SECCOMP_MODE_DISABLED: i32 = 0;
+pub const SECCOMP_MODE_DISABLED: u32 = 0;
 /// uses hard-coded filter.
-pub const SECCOMP_MODE_STRICT: i32 = 1;
+pub const SECCOMP_MODE_STRICT: u32 = 1;
 /// uses user-supplied filter.
-pub const SECCOMP_MODE_FILTER: i32 = 2;
+pub const SECCOMP_MODE_FILTER: u32 = 2;
 
 /// Valid operations for seccomp syscall.
-pub const SECCOMP_SET_MODE_STRICT: i32 = 0;
-pub const SECCOMP_SET_MODE_FILTER: i32 = 1;
-pub const SECCOMP_GET_ACTION_AVAIL: i32 = 2;
-pub const SECCOMP_GET_NOTIF_SIZES: i32 = 3;
+pub const SECCOMP_SET_MODE_STRICT: u32 = 0;
+pub const SECCOMP_SET_MODE_FILTER: u32 = 1;
+pub const SECCOMP_GET_ACTION_AVAIL: u32 = 2;
+pub const SECCOMP_GET_NOTIF_SIZES: u32 = 3;
 
 /// Valid flags for `SECCOMP_SET_MODE_FILTER`
 pub const SECCOMP_FILTER_FLAG_TSYNC: usize = 1;
@@ -100,33 +100,35 @@ pub struct seccomp_notif_resp_t {
     pub flags: u32,
 }
 
-pub const SECCOMP_IOC_MAGIC: char = '!';
+pub const SECCOMP_IOC_MAGIC: u8 = b'!';
 
-#[inline]
 #[must_use]
-pub const fn SECCOMP_IO(nr: i32) -> i32 {
+#[inline]
+pub const fn SECCOMP_IO(nr: u32) -> u32 {
     IO(SECCOMP_IOC_MAGIC, nr)
 }
 
-// TODO(Shaohua):
-//#[inline]
-//pub const fn SECCOMP_IOR(nr: i32, type_: char) -> i32 {
-//    IOR(SECCOMP_IOC_MAGIC, nr, type_)
-//}
-//
-//#[inline]
-//pub const fn SECCOMP_IOW(nr: i32, type_: char) -> i32 {
-//    IOW(SECCOMP_IOC_MAGIC, nr, type_)
-//}
-//
-//#[inline]
-//pub const fn SECCOMP_IOWR(nr: i32, type_: char) -> i32 {
-//    IOWR(SECCOMP_IOC_MAGIC, nr, type_)
-//}
-//
-///// Flags for seccomp notification fd ioctl.
-//pub const SECCOMP_IOCTL_NOTIF_RECV: i32 = SECCOMP_IOWR(0, seccomp_notif_t);
-//
-//pub const SECCOMP_IOCTL_NOTIF_SEND: i32 = SECCOMP_IOWR(1, seccomp_notif_resp_t);
-//
-//pub const SECCOMP_IOCTL_NOTIF_ID_VALID: i32 = SECCOMP_IOR(2, u64);
+#[must_use]
+#[inline]
+pub const fn SECCOMP_IOR<T>(nr: u32) -> u32 {
+    IOR::<T>(SECCOMP_IOC_MAGIC, nr)
+}
+
+#[must_use]
+#[inline]
+pub const fn SECCOMP_IOW<T>(nr: u32) -> u32 {
+    IOW::<T>(SECCOMP_IOC_MAGIC, nr)
+}
+
+#[must_use]
+#[inline]
+pub const fn SECCOMP_IOWR<T>(nr: u32) -> u32 {
+    IOWR::<T>(SECCOMP_IOC_MAGIC, nr)
+}
+
+/// Flags for seccomp notification fd ioctl.
+pub const SECCOMP_IOCTL_NOTIF_RECV: u32 = SECCOMP_IOWR::<seccomp_notif_t>(0);
+
+pub const SECCOMP_IOCTL_NOTIF_SEND: u32 = SECCOMP_IOWR::<seccomp_notif_resp_t>(1);
+
+pub const SECCOMP_IOCTL_NOTIF_ID_VALID: u32 = SECCOMP_IOR::<u64>(2);

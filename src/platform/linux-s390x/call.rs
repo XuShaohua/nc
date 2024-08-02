@@ -4979,7 +4979,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
 ///     }
 ///
-///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0) };
+///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as *const _, msg_len, 0) };
 ///     assert!(ret.is_ok());
 ///
 ///     // Read from message queue.
@@ -4987,7 +4987,7 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 ///     let ret = unsafe {
 ///         nc::msgrcv(
 ///             msq_id,
-///             &mut recv_msg as *mut Message as usize,
+///             &mut recv_msg as *mut Message as *mut _,
 ///             MAX_MTEXT,
 ///             MTYPE_CLIENT,
 ///             0,
@@ -5008,16 +5008,17 @@ pub unsafe fn msgget(key: key_t, msgflg: i32) -> Result<i32, Errno> {
 /// }
 /// ```
 pub unsafe fn msgrcv(
-    msqid: i32,
-    msgq: usize,
-    msgsz: size_t,
-    msgtyp: isize,
-    msgflg: i32,
+    msq_id: i32,
+    msgq: *mut core::ffi::c_void,
+    msg_size: size_t,
+    msg_type: isize,
+    msg_flag: i32,
 ) -> Result<ssize_t, Errno> {
-    let msqid = msqid as usize;
-    let msgtyp = msgtyp as usize;
-    let msgflg = msgflg as usize;
-    syscall5(SYS_MSGRCV, msqid, msgq, msgsz, msgtyp, msgflg).map(|ret| ret as ssize_t)
+    let msq_id = msq_id as usize;
+    let msgq = msgq as usize;
+    let msg_type = msg_type as usize;
+    let msg_flag = msg_flag as usize;
+    syscall5(SYS_MSGRCV, msq_id, msgq, msg_size, msg_type, msg_flag).map(|ret| ret as ssize_t)
 }
 
 /// Append the message to a System V message queue.
@@ -5067,7 +5068,7 @@ pub unsafe fn msgrcv(
 ///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
 ///     }
 ///
-///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0) };
+///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as *const _, msg_len, 0) };
 ///     assert!(ret.is_ok());
 ///
 ///     // Read from message queue.
@@ -5075,7 +5076,7 @@ pub unsafe fn msgrcv(
 ///     let ret = unsafe {
 ///         nc::msgrcv(
 ///             msq_id,
-///             &mut recv_msg as *mut Message as usize,
+///             &mut recv_msg as *mut Message as *mut _,
 ///             MAX_MTEXT,
 ///             MTYPE_CLIENT,
 ///             0,
@@ -5094,10 +5095,16 @@ pub unsafe fn msgrcv(
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub unsafe fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
-    let msqid = msqid as usize;
-    let msgflg = msgflg as usize;
-    syscall4(SYS_MSGSND, msqid, msgq, msgsz, msgflg).map(drop)
+pub unsafe fn msgsnd(
+    msq_id: i32,
+    msgq: *const core::ffi::c_void,
+    msg_size: size_t,
+    msg_flag: i32,
+) -> Result<(), Errno> {
+    let msq_id = msq_id as usize;
+    let msgq = msgq as usize;
+    let msg_flag = msg_flag as usize;
+    syscall4(SYS_MSGSND, msq_id, msgq, msg_size, msg_flag).map(drop)
 }
 
 /// Synchronize a file with memory map.

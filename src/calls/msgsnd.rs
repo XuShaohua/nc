@@ -45,7 +45,7 @@
 ///         core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, msg_len);
 ///     }
 ///
-///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as usize, msg_len, 0) };
+///     let ret = unsafe { nc::msgsnd(msq_id, &client_msg as *const Message as *const _, msg_len, 0) };
 ///     assert!(ret.is_ok());
 ///
 ///     // Read from message queue.
@@ -53,7 +53,7 @@
 ///     let ret = unsafe {
 ///         nc::msgrcv(
 ///             msq_id,
-///             &mut recv_msg as *mut Message as usize,
+///             &mut recv_msg as *mut Message as *mut _,
 ///             MAX_MTEXT,
 ///             MTYPE_CLIENT,
 ///             0,
@@ -72,8 +72,14 @@
 ///     assert!(ret.is_ok());
 /// }
 /// ```
-pub unsafe fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Result<(), Errno> {
-    let msqid = msqid as usize;
-    let msgflg = msgflg as usize;
-    syscall4(SYS_MSGSND, msqid, msgq, msgsz, msgflg).map(drop)
+pub unsafe fn msgsnd(
+    msq_id: i32,
+    msgq: *const core::ffi::c_void,
+    msg_size: size_t,
+    msg_flag: i32,
+) -> Result<(), Errno> {
+    let msq_id = msq_id as usize;
+    let msgq = msgq as usize;
+    let msg_flag = msg_flag as usize;
+    syscall4(SYS_MSGSND, msq_id, msgq, msg_size, msg_flag).map(drop)
 }

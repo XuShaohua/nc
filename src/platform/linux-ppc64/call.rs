@@ -4372,8 +4372,13 @@ pub unsafe fn migrate_pages(
 /// invalid for the address space of this process, or specify one or
 /// more pages which are not currently mapped
 ///  -EAGAIN - A kernel resource was temporarily unavailable.
-pub unsafe fn mincore(start: usize, len: size_t, vec: *const u8) -> Result<(), Errno> {
-    let vec_ptr = vec as usize;
+pub unsafe fn mincore(
+    start: *const core::ffi::c_void,
+    len: size_t,
+    vec: &mut [u8],
+) -> Result<(), Errno> {
+    let start = start as usize;
+    let vec_ptr = vec.as_ptr() as usize;
     syscall3(SYS_MINCORE, start, len, vec_ptr).map(drop)
 }
 

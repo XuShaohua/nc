@@ -1615,9 +1615,9 @@ pub unsafe fn fchdir(fd: i32) -> Result<(), Errno> {
 /// };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
-/// let ret = unsafe { nc::close(fd) };
-/// assert!(ret.is_ok());
 /// let ret = unsafe { nc::fchmod(fd, 0o640) };
+/// assert!(ret.is_ok());
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, filename, 0) };
 /// assert!(ret.is_ok());

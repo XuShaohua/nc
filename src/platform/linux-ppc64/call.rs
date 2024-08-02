@@ -5225,7 +5225,8 @@ pub unsafe fn msgsnd(msqid: i32, msgq: usize, msgsz: size_t, msgflg: i32) -> Res
 }
 
 /// Synchronize a file with memory map.
-pub unsafe fn msync(addr: usize, len: size_t, flags: i32) -> Result<(), Errno> {
+pub unsafe fn msync(addr: *const core::ffi::c_void, len: size_t, flags: i32) -> Result<(), Errno> {
+    let addr = addr as usize;
     let flags = flags as usize;
     syscall3(SYS_MSYNC, addr, len, flags).map(drop)
 }
@@ -5355,7 +5356,9 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
 /// ```
 pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
     let req_ptr = req as *const timespec_t as usize;
-    let rem_ptr = rem.map_or(0, |rem| rem as *mut timespec_t as usize);
+    let rem_ptr = rem.map_or(core::ptr::null_mut::<timespec_t>() as usize, |rem| {
+        rem as *mut timespec_t as usize
+    });
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
 }
 

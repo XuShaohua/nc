@@ -5,14 +5,14 @@
 fn ptsname(pty_fd: i32) -> Result<String, nc::Errno> {
     #[allow(unused_mut)]
     let mut n: i32 = 0;
-    let n_ptr = (&mut n) as *mut i32 as usize;
+    let n_ptr = (&mut n) as *mut i32 as *const _;
     unsafe { nc::ioctl(pty_fd, nc::TIOCGPTN, n_ptr)? };
     Ok(format!("/dev/pts/{}", n))
 }
 
-fn unlockpt(pty_fd: i32) -> Result<(), nc::Errno> {
+fn unlockpt(pty_fd: i32) -> Result<i32, nc::Errno> {
     let u: i32 = 0;
-    let u_ptr = &u as *const i32 as usize;
+    let u_ptr = &u as *const i32 as *const _;
     unsafe { nc::ioctl(pty_fd, nc::TIOCSPTLCK, u_ptr) }
 }
 

@@ -71,28 +71,28 @@ pub const O_TMPFILE_MASK: i32 = __O_TMPFILE | O_DIRECTORY | O_CREAT;
 
 pub const O_NDELAY: i32 = O_NONBLOCK;
 
-pub const F_DUPFD: i32 = 0; // dup
-pub const F_GETFD: i32 = 1; // get close_on_exec
-pub const F_SETFD: i32 = 2; // set/clear close_on_exec
-pub const F_GETFL: i32 = 3; // get file->f_flags
-pub const F_SETFL: i32 = 4; // set file->f_flags
-pub const F_GETLK: i32 = 5;
-pub const F_SETLK: i32 = 6;
-pub const F_SETLKW: i32 = 7;
-pub const F_SETOWN: i32 = 8; // for sockets.
-pub const F_GETOWN: i32 = 9; // for sockets.
-pub const F_SETSIG: i32 = 10; // for sockets.
-pub const F_GETSIG: i32 = 11; // for sockets.
+pub const F_DUPFD: u32 = 0; // dup
+pub const F_GETFD: u32 = 1; // get close_on_exec
+pub const F_SETFD: u32 = 2; // set/clear close_on_exec
+pub const F_GETFL: u32 = 3; // get file->f_flags
+pub const F_SETFL: u32 = 4; // set file->f_flags
+pub const F_GETLK: u32 = 5;
+pub const F_SETLK: u32 = 6;
+pub const F_SETLKW: u32 = 7;
+pub const F_SETOWN: u32 = 8; // for sockets.
+pub const F_GETOWN: u32 = 9; // for sockets.
+pub const F_SETSIG: u32 = 10; // for sockets.
+pub const F_GETSIG: u32 = 11; // for sockets.
 
 ///  using 'struct flock64'
-pub const F_GETLK64: i32 = 12;
-pub const F_SETLK64: i32 = 13;
-pub const F_SETLKW64: i32 = 14;
+pub const F_GETLK64: u32 = 12;
+pub const F_SETLK64: u32 = 13;
+pub const F_SETLKW64: u32 = 14;
 
-pub const F_SETOWN_EX: i32 = 15;
-pub const F_GETOWN_EX: i32 = 16;
+pub const F_SETOWN_EX: u32 = 15;
+pub const F_GETOWN_EX: u32 = 16;
 
-pub const F_GETOWNER_UIDS: i32 = 17;
+pub const F_GETOWNER_UIDS: u32 = 17;
 
 /// Open File Description Locks
 ///
@@ -104,9 +104,9 @@ pub const F_GETOWNER_UIDS: i32 = 17;
 /// process. This means that they are inherited across `fork()` like BSD (flock)
 /// locks, and they are only released automatically when the last reference to
 /// the the open file against which they were acquired is put.
-pub const F_OFD_GETLK: i32 = 36;
-pub const F_OFD_SETLK: i32 = 37;
-pub const F_OFD_SETLKW: i32 = 38;
+pub const F_OFD_GETLK: u32 = 36;
+pub const F_OFD_SETLK: u32 = 37;
+pub const F_OFD_SETLKW: u32 = 38;
 
 pub const F_OWNER_TID: i32 = 0;
 pub const F_OWNER_PID: i32 = 1;
@@ -151,7 +151,7 @@ pub const LOCK_WRITE: i32 = 128;
 /// which allows concurrent read & write ops
 pub const LOCK_RW: i32 = 192;
 
-pub const F_LINUX_SPECIFIC_BASE: i32 = 1024;
+pub const F_LINUX_SPECIFIC_BASE: u32 = 1024;
 
 #[repr(C)]
 #[derive(Debug, Default)]

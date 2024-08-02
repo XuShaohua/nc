@@ -6,47 +6,47 @@
 
 use crate::F_LINUX_SPECIFIC_BASE;
 
-pub const F_SETLEASE: i32 = F_LINUX_SPECIFIC_BASE;
-pub const F_GETLEASE: i32 = F_LINUX_SPECIFIC_BASE + 1;
+pub const F_SETLEASE: u32 = F_LINUX_SPECIFIC_BASE;
+pub const F_GETLEASE: u32 = F_LINUX_SPECIFIC_BASE + 1;
 
 /// Request nofications on a directory.
 /// See below for events that may be notified.
-pub const F_NOTIFY: i32 = F_LINUX_SPECIFIC_BASE + 2;
+pub const F_NOTIFY: u32 = F_LINUX_SPECIFIC_BASE + 2;
 
 /// Cancel a blocking posix lock; internal use only until we expose an
 /// asynchronous lock api to userspace:
-pub const F_CANCELLK: i32 = F_LINUX_SPECIFIC_BASE + 5;
+pub const F_CANCELLK: u32 = F_LINUX_SPECIFIC_BASE + 5;
 
 /// Create a file descriptor with `FD_CLOEXEC` set.
-pub const F_DUPFD_CLOEXEC: i32 = F_LINUX_SPECIFIC_BASE + 6;
+pub const F_DUPFD_CLOEXEC: u32 = F_LINUX_SPECIFIC_BASE + 6;
 
 /// Set and get of pipe page size array
-pub const F_SETPIPE_SZ: i32 = F_LINUX_SPECIFIC_BASE + 7;
-pub const F_GETPIPE_SZ: i32 = F_LINUX_SPECIFIC_BASE + 8;
+pub const F_SETPIPE_SZ: u32 = F_LINUX_SPECIFIC_BASE + 7;
+pub const F_GETPIPE_SZ: u32 = F_LINUX_SPECIFIC_BASE + 8;
 
 /// Set/Get seals
-pub const F_ADD_SEALS: i32 = F_LINUX_SPECIFIC_BASE + 9;
-pub const F_GET_SEALS: i32 = F_LINUX_SPECIFIC_BASE + 10;
+pub const F_ADD_SEALS: u32 = F_LINUX_SPECIFIC_BASE + 9;
+pub const F_GET_SEALS: u32 = F_LINUX_SPECIFIC_BASE + 10;
 
 /// Set/Get write life time hints. `{GET,SET}_RW_HINT` operate on the
 /// underlying inode, while `{GET,SET}_FILE_RW_HINT` operate only on
 /// the specific file.
-pub const F_GET_RW_HINT: i32 = F_LINUX_SPECIFIC_BASE + 11;
-pub const F_SET_RW_HINT: i32 = F_LINUX_SPECIFIC_BASE + 12;
-pub const F_GET_FILE_RW_HINT: i32 = F_LINUX_SPECIFIC_BASE + 13;
-pub const F_SET_FILE_RW_HINT: i32 = F_LINUX_SPECIFIC_BASE + 14;
+pub const F_GET_RW_HINT: u32 = F_LINUX_SPECIFIC_BASE + 11;
+pub const F_SET_RW_HINT: u32 = F_LINUX_SPECIFIC_BASE + 12;
+pub const F_GET_FILE_RW_HINT: u32 = F_LINUX_SPECIFIC_BASE + 13;
+pub const F_SET_FILE_RW_HINT: u32 = F_LINUX_SPECIFIC_BASE + 14;
 
 /// Types of seals
 /// prevent further seals from being set
-pub const F_SEAL_SEAL: i32 = 0x0001;
+pub const F_SEAL_SEAL: u32 = 0x0001;
 /// prevent file from shrinking
-pub const F_SEAL_SHRINK: i32 = 0x0002;
+pub const F_SEAL_SHRINK: u32 = 0x0002;
 /// prevent file from growing
-pub const F_SEAL_GROW: i32 = 0x0004;
+pub const F_SEAL_GROW: u32 = 0x0004;
 /// prevent writes
-pub const F_SEAL_WRITE: i32 = 0x0008;
+pub const F_SEAL_WRITE: u32 = 0x0008;
 /// prevent future writes while mapped
-pub const F_SEAL_FUTURE_WRITE: i32 = 0x0010;
+pub const F_SEAL_FUTURE_WRITE: u32 = 0x0010;
 /// (1U << 31) is reserved for signed error codes
 
 /*
@@ -64,18 +64,17 @@ pub const RWH_WRITE_LIFE_EXTREME: i32 = 5;
 /// File accessed
 pub const DN_ACCESS: i32 = 0x0000_0001;
 /// File modified
-pub const DN_MODIFY: i32 = 0x0000_0002;
+pub const DN_MODIFY: u32 = 0x0000_0002;
 /// File created
-pub const DN_CREATE: i32 = 0x0000_0004;
+pub const DN_CREATE: u32 = 0x0000_0004;
 /// File removed
-pub const DN_DELETE: i32 = 0x0000_0008;
+pub const DN_DELETE: u32 = 0x0000_0008;
 /// File renamed
-pub const DN_RENAME: i32 = 0x0000_0010;
+pub const DN_RENAME: u32 = 0x0000_0010;
 /// File changed attibutes
-pub const DN_ATTRIB: i32 = 0x0000_0020;
+pub const DN_ATTRIB: u32 = 0x0000_0020;
 /// Don't remove notifier
-#[allow(overflowing_literals)]
-pub const DN_MULTISHOT: i32 = 0x8000_0000;
+pub const DN_MULTISHOT: u32 = 0x8000_0000;
 
 /// Special value used to indicate openat should use the current working directory.
 pub const AT_FDCWD: i32 = -100;

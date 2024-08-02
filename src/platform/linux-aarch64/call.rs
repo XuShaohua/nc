@@ -1522,7 +1522,7 @@ pub unsafe fn fchownat<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 ///
-/// let ret = unsafe { nc::fcntl(fd, nc::F_DUPFD, 0) };
+/// let ret = unsafe { nc::fcntl(fd, nc::F_DUPFD, std::ptr::null()) };
 /// assert!(ret.is_ok());
 /// let fd2 = ret.unwrap();
 /// let ret = unsafe { nc::close(fd) };
@@ -1530,9 +1530,10 @@ pub unsafe fn fchownat<P: AsRef<Path>>(
 /// let ret = unsafe { nc::close(fd2) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn fcntl(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+pub unsafe fn fcntl(fd: i32, cmd: u32, arg: *const core::ffi::c_void) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
+    let arg = arg as usize;
     syscall3(SYS_FCNTL, fd, cmd, arg).map(|ret| ret as i32)
 }
 
@@ -1912,14 +1913,14 @@ pub unsafe fn fsync(fd: i32) -> Result<(), Errno> {
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_WRONLY | nc::O_CREAT, 0o644) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
-/// let ret = unsafe { nc::ftruncate(fd as u32, 64 * 1024) };
+/// let ret = unsafe { nc::ftruncate(fd, 64 * 1024) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn ftruncate(fd: u32, length: off_t) -> Result<(), Errno> {
+pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let length = length as usize;
     syscall2(SYS_FTRUNCATE, fd, length).map(drop)
@@ -2987,8 +2988,8 @@ pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let mut attr: i32 = 0;
-/// let cmd = -2146933247; // nc::FS_IOC_GETFLAGS
-/// let ret = unsafe { nc::ioctl(fd, cmd, &mut attr as *mut i32 as usize) };
+/// let cmd = nc::FS_IOC_GETFLAGS;
+/// let ret = unsafe { nc::ioctl(fd, cmd, &mut attr as *mut i32 as *const _) };
 /// assert!(ret.is_ok());
 /// println!("attr: {}", attr);
 ///
@@ -2997,10 +2998,11 @@ pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
 /// let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, path, 0) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn ioctl(fd: i32, cmd: i32, arg: usize) -> Result<(), Errno> {
+pub unsafe fn ioctl(fd: i32, cmd: u32, arg: *const core::ffi::c_void) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
-    syscall3(SYS_IOCTL, fd, cmd, arg).map(drop)
+    let arg = arg as usize;
+    syscall3(SYS_IOCTL, fd, cmd, arg).map(|ret| ret as i32)
 }
 
 /// Get I/O scheduling class and priority.

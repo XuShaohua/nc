@@ -36,7 +36,7 @@
 //! let pid = unsafe { nc::fork() };
 //! match pid {
 //!     Ok(0) => {
-//!         println!("child process: {}", pid);
+//!         println!("child process");
 //!         let args = ["ls", "-l", "-a"];
 //!         let env = ["FOO=BAR"];
 //!         match unsafe { nc::execve("/bin/ls", &args, &env) } {
@@ -44,7 +44,7 @@
 //!             Err(errno) => eprintln!("`ls` got err: {}", errno),
 //!         }
 //!     }
-//!     Ok(pid) => println!("parent process!"),
+//!     Ok(pid) => println!("[parent] child pid: {pid} "),
 //!     Err(errno) => eprintln!("errno: {}", errno),
 //! }
 //! ```

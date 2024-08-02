@@ -9,8 +9,7 @@
 /// assert!(ret.is_ok());
 /// let shmid = ret.unwrap();
 ///
-/// let addr: usize = 0;
-/// let ret = unsafe { nc::shmat(shmid, addr, 0) };
+/// let ret = unsafe { nc::shmat(shmid, None, 0) };
 /// assert!(ret.is_ok());
 /// let addr = ret.unwrap();
 ///
@@ -24,6 +23,7 @@
 /// let ret = unsafe { nc::shmctl(shmid, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn shmdt(shmaddr: usize) -> Result<(), Errno> {
-    syscall1(SYS_SHMDT, shmaddr).map(drop)
+pub unsafe fn shmdt(shm_addr: *const core::ffi::c_void) -> Result<(), Errno> {
+    let shm_addr = shm_addr as usize;
+    syscall1(SYS_SHMDT, shm_addr).map(drop)
 }

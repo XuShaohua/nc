@@ -10,7 +10,7 @@
 /// let src_dir = "/etc";
 /// let fs_type = "";
 /// let mount_flags = nc::MS_BIND | nc::MS_RDONLY;
-/// let data = 0;
+/// let data = std::ptr::null_mut();
 /// let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));

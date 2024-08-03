@@ -15,92 +15,91 @@ use crate::O_CLOEXEC;
 /// equivalent instead.
 ///
 /// Mount read-only
-pub const MS_RDONLY: usize = 1;
+pub const MS_RDONLY: u32 = 1;
 /// Ignore suid and sgid bits
-pub const MS_NOSUID: usize = 2;
+pub const MS_NOSUID: u32 = 2;
 /// Disallow access to device special files
-pub const MS_NODEV: usize = 4;
+pub const MS_NODEV: u32 = 4;
 /// Disallow program execution
-pub const MS_NOEXEC: usize = 8;
+pub const MS_NOEXEC: u32 = 8;
 /// Writes are synced at once
-pub const MS_SYNCHRONOUS: usize = 16;
+pub const MS_SYNCHRONOUS: u32 = 16;
 /// Alter flags of a mounted FS
-pub const MS_REMOUNT: usize = 32;
+pub const MS_REMOUNT: u32 = 32;
 /// Allow mandatory locks on an FS
-pub const MS_MANDLOCK: usize = 64;
+pub const MS_MANDLOCK: u32 = 64;
 /// Directory modifications are synchronous
-pub const MS_DIRSYNC: usize = 128;
+pub const MS_DIRSYNC: u32 = 128;
 /// Do not update access times.
-pub const MS_NOATIME: usize = 1024;
+pub const MS_NOATIME: u32 = 1024;
 /// Do not update directory access times
-pub const MS_NODIRATIME: usize = 2048;
-pub const MS_BIND: usize = 4096;
-pub const MS_MOVE: usize = 8192;
-pub const MS_REC: usize = 16384;
+pub const MS_NODIRATIME: u32 = 2048;
+pub const MS_BIND: u32 = 4096;
+pub const MS_MOVE: u32 = 8192;
+pub const MS_REC: u32 = 16384;
 /// `MS_VERBOSE` is deprecated.
-pub const MS_VERBOSE: usize = 32768;
-pub const MS_SILENT: usize = 32768;
+pub const MS_VERBOSE: u32 = 32768;
+pub const MS_SILENT: u32 = 32768;
 /// VFS does not apply the umask
-pub const MS_POSIXACL: usize = 1 << 16;
+pub const MS_POSIXACL: u32 = 1 << 16;
 /// change to unbindable
-pub const MS_UNBINDABLE: usize = 1 << 17;
+pub const MS_UNBINDABLE: u32 = 1 << 17;
 /// change to private
-pub const MS_PRIVATE: usize = 1 << 18;
+pub const MS_PRIVATE: u32 = 1 << 18;
 /// change to slave
-pub const MS_SLAVE: usize = 1 << 19;
+pub const MS_SLAVE: u32 = 1 << 19;
 /// change to shared
-pub const MS_SHARED: usize = 1 << 20;
+pub const MS_SHARED: u32 = 1 << 20;
 /// Update atime relative to mtime/ctime.
-pub const MS_RELATIME: usize = 1 << 21;
+pub const MS_RELATIME: u32 = 1 << 21;
 /// this is a `kern_mount` call
-pub const MS_KERNMOUNT: usize = 1 << 22;
+pub const MS_KERNMOUNT: u32 = 1 << 22;
 /// Update inode `I_version` field
-pub const MS_I_VERSION: usize = 1 << 23;
+pub const MS_I_VERSION: u32 = 1 << 23;
 /// Always perform atime updates
-pub const MS_STRICTATIME: usize = 1 << 24;
+pub const MS_STRICTATIME: u32 = 1 << 24;
 /// Update the on-disk `acm` times lazily
-pub const MS_LAZYTIME: usize = 1 << 25;
+pub const MS_LAZYTIME: u32 = 1 << 25;
 
 /// These sb flags are internal to the kernel
-pub const MS_SUBMOUNT: usize = 1 << 26;
-pub const MS_NOREMOTELOCK: usize = 1 << 27;
-pub const MS_NOSEC: usize = 1 << 28;
-pub const MS_BORN: usize = 1 << 29;
-pub const MS_ACTIVE: usize = 1 << 30;
-pub const MS_NOUSER: usize = 1 << 31;
+pub const MS_SUBMOUNT: u32 = 1 << 26;
+pub const MS_NOREMOTELOCK: u32 = 1 << 27;
+pub const MS_NOSEC: u32 = 1 << 28;
+pub const MS_BORN: u32 = 1 << 29;
+pub const MS_ACTIVE: u32 = 1 << 30;
+pub const MS_NOUSER: u32 = 1 << 31;
 
 ///  Superblock flags that can be altered by `MS_REMOUNT`
-pub const MS_RMT_MASK: usize =
-    MS_RDONLY | MS_SYNCHRONOUS | MS_MANDLOCK | MS_I_VERSION | MS_LAZYTIME;
+pub const MS_RMT_MASK: u32 = MS_RDONLY | MS_SYNCHRONOUS | MS_MANDLOCK | MS_I_VERSION | MS_LAZYTIME;
 
 /// Old magic mount flag and mask
-pub const MS_MGC_VAL: usize = 0xC0ED_0000;
-pub const MS_MGC_MSK: usize = 0xffff_0000;
+pub const MS_MGC_VAL: u32 = 0xC0ED_0000;
+pub const MS_MGC_MSK: u32 = 0xffff_0000;
 
 /// `open_tree()` flags.
 /// Clone the target tree and attach the clone
-pub const OPEN_TREE_CLONE: i32 = 1;
+pub const OPEN_TREE_CLONE: u32 = 1;
 /// Close the file on `execve()`
-pub const OPEN_TREE_CLOEXEC: i32 = O_CLOEXEC;
+pub const OPEN_TREE_CLOEXEC: u32 = O_CLOEXEC as u32;
 
 /// `move_mount()` flags.
 /// Follow symlinks on from path
-pub const MOVE_MOUNT_F_SYMLINKS: i32 = 0x0000_0001;
+pub const MOVE_MOUNT_F_SYMLINKS: u32 = 0x0000_0001;
 /// Follow automounts on from path
-pub const MOVE_MOUNT_F_AUTOMOUNTS: i32 = 0x0000_0002;
+pub const MOVE_MOUNT_F_AUTOMOUNTS: u32 = 0x0000_0002;
 /// Empty from path permitted
-pub const MOVE_MOUNT_F_EMPTY_PATH: i32 = 0x0000_0004;
+pub const MOVE_MOUNT_F_EMPTY_PATH: u32 = 0x0000_0004;
 /// Follow symlinks on to path
-pub const MOVE_MOUNT_T_SYMLINKS: i32 = 0x0000_0010;
+pub const MOVE_MOUNT_T_SYMLINKS: u32 = 0x0000_0010;
 /// Follow automounts on to path
-pub const MOVE_MOUNT_T_AUTOMOUNTS: i32 = 0x0000_0020;
+pub const MOVE_MOUNT_T_AUTOMOUNTS: u32 = 0x0000_0020;
 /// Empty to path permitted
-pub const MOVE_MOUNT_T_EMPTY_PATH: i32 = 0x0000_0040;
+pub const MOVE_MOUNT_T_EMPTY_PATH: u32 = 0x0000_0040;
 /// Set sharing group instead
-pub const MOVE_MOUNT_SET_GROUP: i32 = 0x0000_0100;
+pub const MOVE_MOUNT_SET_GROUP: u32 = 0x0000_0100;
 /// Mount beneath top mount
-pub const MOVE_MOUNT_BENEATH: i32 = 0x0000_0200;
-pub const MOVE_MOUNT__MASK: i32 = 0x0000_0377;
+pub const MOVE_MOUNT_BENEATH: u32 = 0x0000_0200;
+pub const MOVE_MOUNT__MASK: u32 = 0x0000_0377;
 
 /// `fsopen()` flags.
 pub const FSOPEN_CLOEXEC: u32 = 0x0000_0001;

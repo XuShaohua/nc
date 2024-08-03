@@ -5919,7 +5919,8 @@ pub unsafe fn pivot_root<P: AsRef<Path>>(new_root: P, put_old: P) -> Result<(), 
 }
 
 /// Create a new protection key.
-pub unsafe fn pkey_alloc(flags: usize, init_val: usize) -> Result<i32, Errno> {
+pub unsafe fn pkey_alloc(flags: usize, init_val: u32) -> Result<i32, Errno> {
+    let init_val = init_val as usize;
     syscall2(SYS_PKEY_ALLOC, flags, init_val).map(|ret| ret as i32)
 }
 
@@ -5931,11 +5932,13 @@ pub unsafe fn pkey_free(pkey: i32) -> Result<(), Errno> {
 
 /// Set protection on a region of memory.
 pub unsafe fn pkey_mprotect(
-    start: usize,
+    start: *const core::ffi::c_void,
     len: size_t,
-    prot: usize,
+    prot: i32,
     pkey: i32,
 ) -> Result<(), Errno> {
+    let start = start as usize;
+    let prot = prot as usize;
     let pkey = pkey as usize;
     syscall4(SYS_PKEY_MPROTECT, start, len, prot, pkey).map(drop)
 }

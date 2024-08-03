@@ -110,6 +110,6 @@ pub const MADV_PAGEOUT: i32 = 21;
 /// compatibility flags
 pub const MAP_FILE: i32 = 0;
 
-pub const PKEY_DISABLE_ACCESS: i32 = 0x1;
-pub const PKEY_DISABLE_WRITE: i32 = 0x2;
-pub const PKEY_ACCESS_MASK: i32 = PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE;
+pub const PKEY_DISABLE_ACCESS: u32 = 0x1;
+pub const PKEY_DISABLE_WRITE: u32 = 0x2;
+pub const PKEY_ACCESS_MASK: u32 = PKEY_DISABLE_ACCESS | PKEY_DISABLE_WRITE;

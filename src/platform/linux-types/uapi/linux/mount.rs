@@ -103,61 +103,61 @@ pub const MOVE_MOUNT_BENEATH: i32 = 0x0000_0200;
 pub const MOVE_MOUNT__MASK: i32 = 0x0000_0377;
 
 /// `fsopen()` flags.
-pub const FSOPEN_CLOEXEC: i32 = 0x0000_0001;
+pub const FSOPEN_CLOEXEC: u32 = 0x0000_0001;
 
 /// `fspick()` flags.
-pub const FSPICK_CLOEXEC: i32 = 0x0000_0001;
-pub const FSPICK_SYMLINK_NOFOLLOW: i32 = 0x0000_0002;
-pub const FSPICK_NO_AUTOMOUNT: i32 = 0x0000_0004;
-pub const FSPICK_EMPTY_PATH: i32 = 0x0000_0008;
+pub const FSPICK_CLOEXEC: u32 = 0x0000_0001;
+pub const FSPICK_SYMLINK_NOFOLLOW: u32 = 0x0000_0002;
+pub const FSPICK_NO_AUTOMOUNT: u32 = 0x0000_0004;
+pub const FSPICK_EMPTY_PATH: u32 = 0x0000_0008;
 
 /// The type of `fsconfig()` call made.
-//pub enum fsconfig_command_e {
+pub type fsconfig_command_t = u32;
 /// Set parameter, supplying no value
-pub const FSCONFIG_SET_FLAG: i32 = 0;
+pub const FSCONFIG_SET_FLAG: fsconfig_command_t = 0;
 /// Set parameter, supplying a string value
-pub const FSCONFIG_SET_STRING: i32 = 1;
+pub const FSCONFIG_SET_STRING: fsconfig_command_t = 1;
 /// Set parameter, supplying a binary blob value
-pub const FSCONFIG_SET_BINARY: i32 = 2;
+pub const FSCONFIG_SET_BINARY: fsconfig_command_t = 2;
 /// Set parameter, supplying an object by path
-pub const FSCONFIG_SET_PATH: i32 = 3;
+pub const FSCONFIG_SET_PATH: fsconfig_command_t = 3;
 /// Set parameter, supplying an object by (empty) path
-pub const FSCONFIG_SET_PATH_EMPTY: i32 = 4;
+pub const FSCONFIG_SET_PATH_EMPTY: fsconfig_command_t = 4;
 /// Set parameter, supplying an object by fd
-pub const FSCONFIG_SET_FD: i32 = 5;
+pub const FSCONFIG_SET_FD: fsconfig_command_t = 5;
 /// Create new or reuse existing superblock
-pub const FSCONFIG_CMD_CREATE: i32 = 6;
+pub const FSCONFIG_CMD_CREATE: fsconfig_command_t = 6;
 /// Invoke superblock reconfiguration
-pub const FSCONFIG_CMD_RECONFIGURE: i32 = 7;
+pub const FSCONFIG_CMD_RECONFIGURE: fsconfig_command_t = 7;
 /// Create new superblock, fail if reusing existing superblock
-pub const FSCONFIG_CMD_CREATE_EXCL: i32 = 8;
+pub const FSCONFIG_CMD_CREATE_EXCL: fsconfig_command_t = 8;
 
 /// `fsmount()` flags.
-pub const FSMOUNT_CLOEXEC: i32 = 0x0000_0001;
+pub const FSMOUNT_CLOEXEC: u32 = 0x0000_0001;
 
-/// Mount attributes.
+/// Mount attributes used in `fsmount()`.
 /// Mount read-only
-pub const MOUNT_ATTR_RDONLY: i32 = 0x0000_0001;
+pub const MOUNT_ATTR_RDONLY: u32 = 0x0000_0001;
 /// Ignore suid and sgid bits
-pub const MOUNT_ATTR_NOSUID: i32 = 0x0000_0002;
+pub const MOUNT_ATTR_NOSUID: u32 = 0x0000_0002;
 /// Disallow access to device special files
-pub const MOUNT_ATTR_NODEV: i32 = 0x0000_0004;
+pub const MOUNT_ATTR_NODEV: u32 = 0x0000_0004;
 /// Disallow program execution
-pub const MOUNT_ATTR_NOEXEC: i32 = 0x0000_0008;
+pub const MOUNT_ATTR_NOEXEC: u32 = 0x0000_0008;
 /// Setting on how atime should be updated
-pub const MOUNT_ATTR__ATIME: i32 = 0x0000_0070;
+pub const MOUNT_ATTR__ATIME: u32 = 0x0000_0070;
 /// - Update atime relative to mtime/ctime.
-pub const MOUNT_ATTR_RELATIME: i32 = 0x0000_0000;
+pub const MOUNT_ATTR_RELATIME: u32 = 0x0000_0000;
 /// - Do not update access times.
-pub const MOUNT_ATTR_NOATIME: i32 = 0x0000_0010;
+pub const MOUNT_ATTR_NOATIME: u32 = 0x0000_0010;
 /// - Always perform atime updates
-pub const MOUNT_ATTR_STRICTATIME: i32 = 0x0000_0020;
+pub const MOUNT_ATTR_STRICTATIME: u32 = 0x0000_0020;
 /// Do not update directory access times
-pub const MOUNT_ATTR_NODIRATIME: i32 = 0x0000_0080;
+pub const MOUNT_ATTR_NODIRATIME: u32 = 0x0000_0080;
 /// Idmap mount to @`userns_fd` in struct `mount_attr`.
-pub const MOUNT_ATTR_IDMAP: i32 = 0x0010_0000;
+pub const MOUNT_ATTR_IDMAP: u32 = 0x0010_0000;
 /// Do not follow symlinks
-pub const MOUNT_ATTR_NOSYMFOLLOW: i32 = 0x0020_0000;
+pub const MOUNT_ATTR_NOSYMFOLLOW: u32 = 0x0020_0000;
 
 /// `mount_setattr()`
 #[repr(C)]

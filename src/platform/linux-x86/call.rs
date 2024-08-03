@@ -2020,7 +2020,7 @@ pub unsafe fn fsopen<P: AsRef<Path>>(fs_name: P, flags: u32) -> Result<(), Errno
 }
 
 /// Pick a superblock into a context for reconfiguration.
-pub unsafe fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: i32) -> Result<i32, Errno> {
+pub unsafe fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: u32) -> Result<i32, Errno> {
     let dfd = dfd as usize;
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;

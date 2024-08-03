@@ -13,8 +13,7 @@ fn main() {
     let data = std::ptr::null_mut();
     let ret = unsafe { nc::mount(src_dir, target_dir, fs_type, mount_flags, data) };
     assert!(ret.is_ok());
-    let flags = 0;
-    let ret = unsafe { nc::umount2(target_dir, flags) };
+    let ret = unsafe { nc::umount2(target_dir, nc::UMOUNT_NOFOLLOW) };
     assert!(ret.is_ok());
     let ret = unsafe { nc::unlinkat(nc::AT_FDCWD, target_dir, nc::AT_REMOVEDIR) };
     assert!(ret.is_ok());

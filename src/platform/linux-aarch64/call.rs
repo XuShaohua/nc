@@ -3801,14 +3801,14 @@ pub unsafe fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, E
 /// Move all pages in a process to another set of nodes
 pub unsafe fn migrate_pages(
     pid: pid_t,
-    maxnode: usize,
+    max_node: usize,
     old_nodes: *const usize,
     new_nodes: *const usize,
 ) -> Result<isize, Errno> {
     let pid = pid as usize;
     let old_nodes = old_nodes as usize;
     let new_nodes = new_nodes as usize;
-    syscall4(SYS_MIGRATE_PAGES, pid, maxnode, old_nodes, new_nodes).map(|ret| ret as isize)
+    syscall4(SYS_MIGRATE_PAGES, pid, max_node, old_nodes, new_nodes).map(|ret| ret as isize)
 }
 
 /// `mincore()` returns the memory residency status of the pages in the
@@ -4078,12 +4078,15 @@ pub unsafe fn move_pages(
     nr_pages: usize,
     pages: usize,
     nodes: *const i32,
-    status: &mut i32,
-    flags: i32,
+    status: Option<&mut i32>,
+    flags: u32,
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let nodes_ptr = nodes as usize;
-    let status = status as *mut i32 as usize;
+    let status = status.map_or(core::ptr::null_mut::<i32>() as usize, |status| {
+        status as *mut i32 as usize
+    });
+    // NOTE(Shaohua): Type of flags is i32 in kernel.
     let flags = flags as usize;
     syscall6(
         SYS_MOVE_PAGES,

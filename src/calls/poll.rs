@@ -6,10 +6,12 @@
 /// no file descriptors are ready.
 ///
 /// ## Return value
+///
 /// On success, it returns a nonnegative value which is the number of events
 /// in the `fds` whose `revents` fields have been set to a nonzero value.
 ///
 /// # Exampless
+///
 /// ```rust
 /// use std::thread;
 /// use std::time::Duration;
@@ -44,9 +46,9 @@
 ///     assert!(handle.join().is_ok());
 /// }
 /// ```
-pub unsafe fn poll(fds: &mut [pollfd_t], timeout: i32) -> Result<i32, Errno> {
+pub unsafe fn poll(fds: &mut [pollfd_t], timeout_msecs: i32) -> Result<i32, Errno> {
     let fds_ptr = fds.as_mut_ptr() as usize;
     let nfds = fds.len();
-    let timeout = timeout as usize;
-    syscall3(SYS_POLL, fds_ptr, nfds, timeout).map(|ret| ret as i32)
+    let timeout_msecs = timeout_msecs as usize;
+    syscall3(SYS_POLL, fds_ptr, nfds, timeout_msecs).map(|ret| ret as i32)
 }

@@ -4428,21 +4428,27 @@ pub unsafe fn pkey_mprotect(
 /// Wait for some event on a file descriptor.
 pub unsafe fn ppoll(
     fds: &mut [pollfd_t],
-    timeout: &timespec_t,
-    sigmask: &sigset_t,
-    sigsetsize: size_t,
+    timeout: Option<&timespec_t>,
+    sig_mask: Option<&sigset_t>,
 ) -> Result<i32, Errno> {
+    use core::ptr::null;
+
     let fds_ptr = fds.as_mut_ptr() as usize;
     let nfds = fds.len();
-    let timeout_ptr = timeout as *const timespec_t as usize;
-    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
+        timeout as *const timespec_t as usize
+    });
+    let sig_mask_ptr = sig_mask.map_or(null::<sigset_t>() as usize, |sig_mask| {
+        sig_mask as *const sigset_t as usize
+    });
+    let sig_set_size = core::mem::size_of::<sigset_t>();
     syscall5(
         SYS_PPOLL,
         fds_ptr,
         nfds,
         timeout_ptr,
-        sigmask_ptr,
-        sigsetsize,
+        sig_mask_ptr,
+        sig_set_size,
     )
     .map(|ret| ret as i32)
 }
@@ -5208,6 +5214,7 @@ pub unsafe fn remap_file_pages(
 ) -> Result<(), Errno> {
     let prot = prot as usize;
     let pgoff = pgoff as usize;
+    // NOTE(Shaohua): Type of flags is usize in kernel.
     let flags = flags as usize;
     syscall5(SYS_REMAP_FILE_PAGES, start, size, prot, pgoff, flags).map(drop)
 }

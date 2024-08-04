@@ -4,8 +4,7 @@
 
 fn main() {
     let mut timeval = nc::timeval_t::default();
-    let mut timezone = nc::timezone_t::default();
-    let ret = unsafe { nc::gettimeofday(&mut timeval, &mut timezone) };
+    let ret = unsafe { nc::gettimeofday(&mut timeval, None) };
     match ret {
         Err(errno) => eprintln!("gettimeofday() failed: {}", nc::strerror(errno)),
         Ok(_) => println!("time: {:+?}", timeval),

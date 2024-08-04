@@ -54,10 +54,15 @@ pub unsafe fn splice(
     len: size_t,
     flags: u32,
 ) -> Result<ssize_t, Errno> {
+    use core::ptr::null_mut;
     let fd_in = fd_in as usize;
-    let off_in_ptr = off_in.map_or(0, |off_in| off_in as *mut loff_t as usize);
+    let off_in_ptr = off_in.map_or(null_mut::<loff_t>() as usize, |off_in| {
+        off_in as *mut loff_t as usize
+    });
     let fd_out = fd_out as usize;
-    let off_out_ptr = off_out.map_or(0, |off_out| off_out as *mut loff_t as usize);
+    let off_out_ptr = off_out.map_or(null_mut::<loff_t>() as usize, |off_out| {
+        off_out as *mut loff_t as usize
+    });
     let flags = flags as usize;
     syscall6(
         SYS_SPLICE,

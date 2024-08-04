@@ -3289,13 +3289,18 @@ pub unsafe fn gettid() -> pid_t {
 /// ```
 /// let mut tv = nc::timeval_t::default();
 /// let mut tz = nc::timezone_t::default();
-/// let ret = unsafe { nc::gettimeofday(&mut tv, &mut tz) };
+/// let ret = unsafe { nc::gettimeofday(&mut tv, Some(&mut tz)) };
 /// assert!(ret.is_ok());
 /// assert!(tv.tv_sec > 1611380386);
 /// ```
-pub unsafe fn gettimeofday(timeval: &mut timeval_t, tz: &mut timezone_t) -> Result<(), Errno> {
+pub unsafe fn gettimeofday(
+    timeval: &mut timeval_t,
+    tz: Option<&mut timezone_t>,
+) -> Result<(), Errno> {
     let timeval_ptr = timeval as *mut timeval_t as usize;
-    let tz_ptr = tz as *mut timezone_t as usize;
+    let tz_ptr = tz.map_or(core::ptr::null_mut::<timezone_t>() as usize, |tz| {
+        tz as *mut timezone_t as usize
+    });
     syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
 }
 
@@ -8388,17 +8393,18 @@ pub unsafe fn setsockopt(
 ///
 /// ```
 /// let tv = nc::timeval_t {
-///     tv_sec: 0,
+///     tv_sec: 1,
 ///     tv_usec: 0,
 /// };
-/// let tz = nc::timezone_t::default();
-/// let ret = unsafe { nc::settimeofday(&tv, &tz) };
+/// let ret = unsafe { nc::settimeofday(&tv, None) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
-pub unsafe fn settimeofday(timeval: &timeval_t, tz: &timezone_t) -> Result<(), Errno> {
+pub unsafe fn settimeofday(timeval: &timeval_t, tz: Option<&timezone_t>) -> Result<(), Errno> {
     let timeval_ptr = timeval as *const timeval_t as usize;
-    let tz_ptr = tz as *const timezone_t as usize;
+    let tz_ptr = tz.map_or(core::ptr::null::<timezone_t>() as usize, |tz| {
+        tz as *const timezone_t as usize
+    });
     syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
 }
 
@@ -8961,10 +8967,15 @@ pub unsafe fn splice(
     len: size_t,
     flags: u32,
 ) -> Result<ssize_t, Errno> {
+    use core::ptr::null_mut;
     let fd_in = fd_in as usize;
-    let off_in_ptr = off_in.map_or(0, |off_in| off_in as *mut loff_t as usize);
+    let off_in_ptr = off_in.map_or(null_mut::<loff_t>() as usize, |off_in| {
+        off_in as *mut loff_t as usize
+    });
     let fd_out = fd_out as usize;
-    let off_out_ptr = off_out.map_or(0, |off_out| off_out as *mut loff_t as usize);
+    let off_out_ptr = off_out.map_or(null_mut::<loff_t>() as usize, |off_out| {
+        off_out as *mut loff_t as usize
+    });
     let flags = flags as usize;
     syscall6(
         SYS_SPLICE,

@@ -4656,12 +4656,14 @@ pub unsafe fn mq_getsetattr(
 /// Register for notification when a message is available
 pub unsafe fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
-    let notification_ptr =
-        notification.map_or(0, |notification| notification as *const sigevent_t as usize);
+    let notification_ptr = notification
+        .map_or(core::ptr::null::<sigevent_t>() as usize, |notification| {
+            notification as *const sigevent_t as usize
+        });
     syscall2(SYS_MQ_NOTIFY, mqdes, notification_ptr).map(drop)
 }
 
-/// Open a message queue.
+/// Open a POSIX message queue.
 ///
 /// # Examples
 ///
@@ -4692,7 +4694,9 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
     let name_ptr = name.as_ptr() as usize;
     let oflag = oflag as usize;
     let mode = mode as usize;
-    let attr_ptr = attr.map_or(0, |attr| attr as *mut mq_attr_t as usize);
+    let attr_ptr = attr.map_or(core::ptr::null_mut::<mq_attr_t>() as usize, |attr| {
+        attr as *mut mq_attr_t as usize
+    });
     syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr).map(|ret| ret as mqd_t)
 }
 
@@ -4724,7 +4728,7 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
+/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), prio, &timeout) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
@@ -4732,13 +4736,12 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 /// assert_eq!(attr.mq_curmsgs, 1);
 ///
 /// let mut buf = vec![0_u8; attr.mq_msgsize as usize];
-/// let buf_len = buf.len();
 /// let mut recv_prio = 0;
 /// let read_timeout = nc::timespec_t {
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = unsafe { nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout) };
+/// let ret = unsafe { nc::mq_timedreceive(mq_id, &mut buf, &mut recv_prio, &read_timeout) };
 /// if let Err(errno) = ret {
 ///     eprintln!("mq_timedreceive() error: {}", nc::strerror(errno));
 /// }
@@ -4754,13 +4757,12 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
 pub unsafe fn mq_timedreceive(
     mqdes: mqd_t,
     msg: &mut [u8],
-    msg_len: usize,
     msg_prio: &mut u32,
     abs_timeout: &timespec_t,
 ) -> Result<ssize_t, Errno> {
     let mqdes = mqdes as usize;
-    let msg = CString::new(msg);
-    let msg_ptr = msg.as_ptr() as usize;
+    let msg_ptr = msg.as_mut_ptr() as usize;
+    let msg_len = msg.len();
     let msg_prio = msg_prio as *mut u32 as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(
@@ -4801,7 +4803,7 @@ pub unsafe fn mq_timedreceive(
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
+/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), prio, &timeout) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
@@ -4816,13 +4818,13 @@ pub unsafe fn mq_timedreceive(
 pub unsafe fn mq_timedsend(
     mqdes: mqd_t,
     msg: &[u8],
-    msg_len: usize,
     msg_prio: u32,
     abs_timeout: &timespec_t,
 ) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
     let msg = CString::new(msg);
     let msg_ptr = msg.as_ptr() as usize;
+    let msg_len = msg.len();
     let msg_prio = msg_prio as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(

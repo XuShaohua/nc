@@ -25,7 +25,7 @@
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
+/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), prio, &timeout) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
@@ -40,13 +40,13 @@
 pub unsafe fn mq_timedsend(
     mqdes: mqd_t,
     msg: &[u8],
-    msg_len: usize,
     msg_prio: u32,
     abs_timeout: &timespec_t,
 ) -> Result<(), Errno> {
     let mqdes = mqdes as usize;
     let msg = CString::new(msg);
     let msg_ptr = msg.as_ptr() as usize;
+    let msg_len = msg.len();
     let msg_prio = msg_prio as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(

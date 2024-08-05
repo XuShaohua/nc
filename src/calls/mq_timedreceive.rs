@@ -26,7 +26,7 @@
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), msg.len(), prio, &timeout) };
+/// let ret = unsafe { nc::mq_timedsend(mq_id, msg.as_bytes(), prio, &timeout) };
 /// assert!(ret.is_ok());
 ///
 /// let ret = unsafe { nc::mq_getsetattr(mq_id, None, Some(&mut attr)) };
@@ -34,13 +34,12 @@
 /// assert_eq!(attr.mq_curmsgs, 1);
 ///
 /// let mut buf = vec![0_u8; attr.mq_msgsize as usize];
-/// let buf_len = buf.len();
 /// let mut recv_prio = 0;
 /// let read_timeout = nc::timespec_t {
 ///     tv_sec: 1,
 ///     tv_nsec: 0,
 /// };
-/// let ret = unsafe { nc::mq_timedreceive(mq_id, &mut buf, buf_len, &mut recv_prio, &read_timeout) };
+/// let ret = unsafe { nc::mq_timedreceive(mq_id, &mut buf, &mut recv_prio, &read_timeout) };
 /// if let Err(errno) = ret {
 ///     eprintln!("mq_timedreceive() error: {}", nc::strerror(errno));
 /// }
@@ -56,13 +55,12 @@
 pub unsafe fn mq_timedreceive(
     mqdes: mqd_t,
     msg: &mut [u8],
-    msg_len: usize,
     msg_prio: &mut u32,
     abs_timeout: &timespec_t,
 ) -> Result<ssize_t, Errno> {
     let mqdes = mqdes as usize;
-    let msg = CString::new(msg);
-    let msg_ptr = msg.as_ptr() as usize;
+    let msg_ptr = msg.as_mut_ptr() as usize;
+    let msg_len = msg.len();
     let msg_prio = msg_prio as *mut u32 as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
     syscall5(

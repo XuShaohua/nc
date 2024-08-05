@@ -9,7 +9,7 @@
 #![allow(clippy::module_name_repetitions)]
 
 /// attr.type
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_type_id_t {
     PERF_TYPE_HARDWARE = 0,
     PERF_TYPE_SOFTWARE = 1,
@@ -27,7 +27,7 @@ pub enum perf_type_id_t {
 /// syscall:
 
 /// Common hardware events, generalized by the kernel:
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_hw_id_t {
     PERF_COUNT_HW_CPU_CYCLES = 0,
     PERF_COUNT_HW_INSTRUCTIONS = 1,
@@ -49,7 +49,7 @@ pub enum perf_hw_id_t {
 /// { L1-D, L1-I, LLC, ITLB, DTLB, BPU, NODE } x
 /// { read, write, prefetch } x
 /// { accesses, misses }
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_hw_cache_id_t {
     PERF_COUNT_HW_CACHE_L1D = 0,
     PERF_COUNT_HW_CACHE_L1I = 1,
@@ -63,7 +63,7 @@ pub enum perf_hw_cache_id_t {
     PERF_COUNT_HW_CACHE_MAX = 7,
 }
 
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_hw_cache_op_id_t {
     PERF_COUNT_HW_CACHE_OP_READ = 0,
     PERF_COUNT_HW_CACHE_OP_WRITE = 1,
@@ -73,7 +73,7 @@ pub enum perf_hw_cache_op_id_t {
     PERF_COUNT_HW_CACHE_OP_MAX = 3,
 }
 
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_hw_cache_op_result_id_t {
     PERF_COUNT_HW_CACHE_RESULT_ACCESS = 0,
     PERF_COUNT_HW_CACHE_RESULT_MISS = 1,
@@ -86,7 +86,7 @@ pub enum perf_hw_cache_op_result_id_t {
 /// does not support performance events. These events measure various
 /// physical and sw events of the kernel (and allow the profiling of them as
 /// well):
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_sw_ids_t {
     PERF_COUNT_SW_CPU_CLOCK = 0,
     PERF_COUNT_SW_TASK_CLOCK = 1,
@@ -155,7 +155,7 @@ pub const PERF_SAMPLE_WEIGHT_TYPE: u64 = perf_event_sample_format_t::PERF_SAMPLE
 /// The branch types can be combined, however `BRANCH_ANY` covers all types
 /// of branches and therefore it supersedes all the other types.
 /// user branches
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_branch_sample_type_shift_t {
     PERF_SAMPLE_BRANCH_USER_SHIFT = 0,
     /// kernel branches
@@ -264,7 +264,7 @@ pub const PERF_SAMPLE_BRANCH_PLM_ALL: u32 = perf_branch_sample_type_t::PERF_SAMP
     | perf_branch_sample_type_t::PERF_SAMPLE_BRANCH_HV as u32;
 
 /// Values to determine ABI of the registers dump.
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_sample_regs_abi_t {
     PERF_SAMPLE_REGS_ABI_NONE = 0,
     PERF_SAMPLE_REGS_ABI_32 = 1,
@@ -319,7 +319,7 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 /// };
 /// ```
 
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_event_read_format_t {
     PERF_FORMAT_TOTAL_TIME_ENABLED = 1,
     PERF_FORMAT_TOTAL_TIME_RUNNING = 1 << 1,
@@ -1148,7 +1148,7 @@ pub enum perf_event_type_t {
     PERF_RECORD_MAX,
 }
 
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_record_ksymbol_type_t {
     PERF_RECORD_KSYMBOL_TYPE_UNKNOWN = 0,
     PERF_RECORD_KSYMBOL_TYPE_BPF = 1,
@@ -1163,7 +1163,7 @@ pub enum perf_record_ksymbol_type_t {
 
 pub const PERF_RECORD_KSYMBOL_FLAGS_UNREGISTER: u8 = 1 << 0;
 
-#[repr(u8)]
+#[repr(u32)]
 pub enum perf_bpf_event_type_t {
     PERF_BPF_EVENT_UNKNOWN = 0,
     PERF_BPF_EVENT_PROG_LOAD = 1,

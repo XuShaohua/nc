@@ -164,12 +164,13 @@ pub unsafe fn acct<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 pub unsafe fn add_key<P: AsRef<Path>>(
     type_: P,
     description: P,
-    payload: uintptr_t,
+    payload: *const core::ffi::c_void,
     plen: size_t,
     dest_keyring: key_serial_t,
 ) -> Result<key_serial_t, Errno> {
     let type_ = CString::new(type_.as_ref());
     let type_ptr = type_.as_ptr() as usize;
+    let payload = payload as usize;
     let description = CString::new(description.as_ref());
     let description_ptr = description.as_ptr() as usize;
     let dest_keyring = dest_keyring as usize;

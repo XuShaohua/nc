@@ -7012,22 +7012,28 @@ pub unsafe fn rt_sigpending(set: &mut sigset_t) -> Result<(), Errno> {
 /// Change the list of currently blocked signals.
 pub unsafe fn rt_sigprocmask(
     how: i32,
-    set: &sigset_t,
-    oldset: &mut sigset_t,
-    sigsetsize: size_t,
+    set: Option<&sigset_t>,
+    oldset: Option<&mut sigset_t>,
 ) -> Result<(), Errno> {
     let how = how as usize;
-    let set_ptr = set as *const sigset_t as usize;
-    let oldset_ptr = oldset as *mut sigset_t as usize;
-    syscall4(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr, sigsetsize).map(drop)
+    let set_ptr = set.map_or(core::ptr::null::<sigset_t>() as usize, |set| {
+        set as *const sigset_t as usize
+    });
+    let oldset_ptr = oldset.map_or(core::ptr::null_mut::<sigset_t>() as usize, |oldset| {
+        oldset as *mut sigset_t as usize
+    });
+    let sig_set_size = core::mem::size_of::<sigset_t>();
+    syscall4(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr, sig_set_size).map(drop)
 }
 
 /// Queue a signal and data.
-pub unsafe fn rt_sigqueueinfo(pid: pid_t, sig: i32, uinfo: &mut siginfo_t) -> Result<(), Errno> {
+///
+/// Send signal information to a thread.
+pub unsafe fn rt_sigqueueinfo(pid: pid_t, sig: i32, info: &mut siginfo_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let sig = sig as usize;
-    let uinfo_ptr = uinfo as *mut siginfo_t as usize;
-    syscall3(SYS_RT_SIGQUEUEINFO, pid, sig, uinfo_ptr).map(drop)
+    let info_ptr = info as *mut siginfo_t as usize;
+    syscall3(SYS_RT_SIGQUEUEINFO, pid, sig, info_ptr).map(drop)
 }
 
 /// Return from signal handler and cleanup stack frame.
@@ -7092,13 +7098,13 @@ pub unsafe fn rt_tgsigqueueinfo(
     tgid: pid_t,
     tid: pid_t,
     sig: i32,
-    uinfo: &mut siginfo_t,
+    info: &mut siginfo_t,
 ) -> Result<(), Errno> {
     let tgid = tgid as usize;
     let tid = tid as usize;
     let sig = sig as usize;
-    let uinfo_ptr = uinfo as *mut siginfo_t as usize;
-    syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, uinfo_ptr).map(drop)
+    let info_ptr = info as *mut siginfo_t as usize;
+    syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, info_ptr).map(drop)
 }
 
 /// Get a thread's CPU affinity mask.

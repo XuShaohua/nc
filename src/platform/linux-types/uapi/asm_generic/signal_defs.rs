@@ -74,7 +74,9 @@ pub type signalfn_t = fn(i32);
 /// `signalfn_t` as usize
 pub type sighandler_t = usize;
 
-pub type restorefn_t = fn();
+/// The restore function should be written with assembly, or naked rust function,
+/// which does not modify stack frame.
+pub type restorefn_t = unsafe extern "C" fn();
 
 /// `restorefn_t` as usize
 pub type sigrestore_t = Option<restorefn_t>;

@@ -4427,43 +4427,41 @@ pub unsafe fn mq_unlink<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 /// use std::ffi::c_void;
 /// use std::ptr;
 ///
-/// fn main() {
-///     // Initialize an anonymous mapping with 2 pages.
-///     let map_length = 2 * nc::PAGE_SIZE;
+/// // Initialize an anonymous mapping with 2 pages.
+/// let map_length = 2 * nc::PAGE_SIZE;
 ///
-///     let addr = unsafe {
-///         nc::mmap(
-///             ptr::null(),
-///             map_length,
-///             nc::PROT_READ | nc::PROT_WRITE,
-///             nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
-///             -1,
-///             0,
-///         )
-///     };
-///     assert!(addr.is_ok());
-///     let addr: *const c_void = addr.unwrap();
+/// let addr = unsafe {
+///     nc::mmap(
+///         ptr::null(),
+///         map_length,
+///         nc::PROT_READ | nc::PROT_WRITE,
+///         nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,
+///         -1,
+///         0,
+///     )
+/// };
+/// assert!(addr.is_ok());
+/// let addr: *const c_void = addr.unwrap();
 ///
-///     let new_map_length = 4 * nc::PAGE_SIZE;
-///     let new_addr = unsafe {
-///         nc::mremap(
-///             addr,
-///             map_length,
-///             new_map_length,
-///             nc::MREMAP_MAYMOVE,
-///             ptr::null(),
-///         )
-///     };
-///     if let Err(errno) = new_addr {
-///         eprintln!("mremap() err: {}", nc::strerror(errno));
-///     }
-///     assert!(new_addr.is_ok());
-///     let new_addr: *const c_void = new_addr.unwrap();
-///
-///     let ret = unsafe { nc::munmap(new_addr, map_length) };
-///     assert!(ret.is_ok());
-///     unsafe { nc::exit(0) };
+/// let new_map_length = 4 * nc::PAGE_SIZE;
+/// let new_addr = unsafe {
+///     nc::mremap(
+///         addr,
+///         map_length,
+///         new_map_length,
+///         nc::MREMAP_MAYMOVE,
+///         ptr::null(),
+///     )
+/// };
+/// if let Err(errno) = new_addr {
+///     eprintln!("mremap() err: {}", nc::strerror(errno));
 /// }
+/// assert!(new_addr.is_ok());
+/// let new_addr: *const c_void = new_addr.unwrap();
+///
+/// let ret = unsafe { nc::munmap(new_addr, map_length) };
+/// assert!(ret.is_ok());
+/// unsafe { nc::exit(0) };
 /// ```
 pub unsafe fn mremap(
     addr: *const core::ffi::c_void,
@@ -6554,46 +6552,44 @@ pub unsafe fn seccomp(
 ///     }
 /// }
 ///
-/// fn main() {
-///     const KEY_ID: i32 = 0x1234;
-///     let ret = BinarySemaphore::new(KEY_ID, true);
-///     if let Err(errno) = ret {
-///         eprintln!("sem init failed: {}", nc::strerror(errno));
-///         return;
-///     }
-///     let mut sem = ret.unwrap();
+/// const KEY_ID: i32 = 0x1234;
+/// let ret = BinarySemaphore::new(KEY_ID, true);
+/// if let Err(errno) = ret {
+///     eprintln!("sem init failed: {}", nc::strerror(errno));
+///     return;
+/// }
+/// let mut sem = ret.unwrap();
 ///
-///     // child thread as consumer
-///     let handle = thread::spawn(|| {
-///         let mut sem = BinarySemaphore::new(KEY_ID, false).unwrap();
-///         for _ in 0..5 {
-///             if let Err(errno) = sem.reserve() {
-///                 eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
-///                 break;
-///             }
-///             println!("[worker] wait for 100 millis");
-///             thread::sleep(Duration::from_millis(100));
-///             if let Err(errno) = sem.release() {
-///                 eprintln!("[worker] sem release failed: {}", nc::strerror(errno));
-///             }
-///         }
-///     });
-///
-///     // parent thread as producer
+/// // child thread as consumer
+/// let handle = thread::spawn(|| {
+///     let mut sem = BinarySemaphore::new(KEY_ID, false).unwrap();
 ///     for _ in 0..5 {
 ///         if let Err(errno) = sem.reserve() {
 ///             eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
 ///             break;
 ///         }
-///         println!("[main] wait for 200 millis");
-///         thread::sleep(Duration::from_millis(200));
+///         println!("[worker] wait for 100 millis");
+///         thread::sleep(Duration::from_millis(100));
 ///         if let Err(errno) = sem.release() {
-///             eprintln!("[main] sem release failed: {}", nc::strerror(errno));
+///             eprintln!("[worker] sem release failed: {}", nc::strerror(errno));
 ///         }
 ///     }
+/// });
 ///
-///     let _ = handle.join();
+/// // parent thread as producer
+/// for _ in 0..5 {
+///     if let Err(errno) = sem.reserve() {
+///         eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
+///         break;
+///     }
+///     println!("[main] wait for 200 millis");
+///     thread::sleep(Duration::from_millis(200));
+///     if let Err(errno) = sem.release() {
+///         eprintln!("[main] sem release failed: {}", nc::strerror(errno));
+///     }
 /// }
+///
+/// let _ = handle.join();
 /// ```
 pub unsafe fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
     let semid = semid as usize;
@@ -6692,46 +6688,44 @@ pub unsafe fn semctl(semid: i32, semnum: i32, cmd: i32, arg: usize) -> Result<i3
 ///     }
 /// }
 ///
-/// fn main() {
-///     const KEY_ID: i32 = 0x1235;
-///     let ret = BinarySemaphore::new(KEY_ID, true);
-///     if let Err(errno) = ret {
-///         eprintln!("sem init failed: {}", nc::strerror(errno));
-///         return;
-///     }
-///     let mut sem = ret.unwrap();
+/// const KEY_ID: i32 = 0x1235;
+/// let ret = BinarySemaphore::new(KEY_ID, true);
+/// if let Err(errno) = ret {
+///     eprintln!("sem init failed: {}", nc::strerror(errno));
+///     return;
+/// }
+/// let mut sem = ret.unwrap();
 ///
-///     // child thread as consumer
-///     let handle = thread::spawn(|| {
-///         let mut sem = BinarySemaphore::new(KEY_ID, false).unwrap();
-///         for _ in 0..5 {
-///             if let Err(errno) = sem.reserve() {
-///                 eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
-///                 break;
-///             }
-///             println!("[worker] wait for 100 millis");
-///             thread::sleep(Duration::from_millis(100));
-///             if let Err(errno) = sem.release() {
-///                 eprintln!("[worker] sem release failed: {}", nc::strerror(errno));
-///             }
-///         }
-///     });
-///
-///     // parent thread as producer
+/// // child thread as consumer
+/// let handle = thread::spawn(|| {
+///     let mut sem = BinarySemaphore::new(KEY_ID, false).unwrap();
 ///     for _ in 0..5 {
 ///         if let Err(errno) = sem.reserve() {
 ///             eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
 ///             break;
 ///         }
-///         println!("[main] wait for 200 millis");
-///         thread::sleep(Duration::from_millis(200));
+///         println!("[worker] wait for 100 millis");
+///         thread::sleep(Duration::from_millis(100));
 ///         if let Err(errno) = sem.release() {
-///             eprintln!("[main] sem release failed: {}", nc::strerror(errno));
+///             eprintln!("[worker] sem release failed: {}", nc::strerror(errno));
 ///         }
 ///     }
+/// });
 ///
-///     let _ = handle.join();
+/// // parent thread as producer
+/// for _ in 0..5 {
+///     if let Err(errno) = sem.reserve() {
+///         eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
+///         break;
+///     }
+///     println!("[main] wait for 200 millis");
+///     thread::sleep(Duration::from_millis(200));
+///     if let Err(errno) = sem.release() {
+///         eprintln!("[main] sem release failed: {}", nc::strerror(errno));
+///     }
 /// }
+///
+/// let _ = handle.join();
 /// ```
 pub unsafe fn semget(key: key_t, nsems: i32, sem_flag: i32) -> Result<i32, Errno> {
     let key = key as usize;
@@ -6830,46 +6824,44 @@ pub unsafe fn semget(key: key_t, nsems: i32, sem_flag: i32) -> Result<i32, Errno
 ///     }
 /// }
 ///
-/// fn main() {
-///     const KEY_ID: i32 = 0x1236;
-///     let ret = BinarySemaphore::new(KEY_ID, true);
-///     if let Err(errno) = ret {
-///         eprintln!("sem init failed: {}", nc::strerror(errno));
-///         return;
-///     }
-///     let mut sem = ret.unwrap();
+/// const KEY_ID: i32 = 0x1236;
+/// let ret = BinarySemaphore::new(KEY_ID, true);
+/// if let Err(errno) = ret {
+///     eprintln!("sem init failed: {}", nc::strerror(errno));
+///     return;
+/// }
+/// let mut sem = ret.unwrap();
 ///
-///     // child thread as consumer
-///     let handle = thread::spawn(|| {
-///         let mut sem = BinarySemaphore::new(KEY_ID, false).unwrap();
-///         for _ in 0..5 {
-///             if let Err(errno) = sem.reserve() {
-///                 eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
-///                 break;
-///             }
-///             println!("[worker] wait for 100 millis");
-///             thread::sleep(Duration::from_millis(100));
-///             if let Err(errno) = sem.release() {
-///                 eprintln!("[worker] sem release failed: {}", nc::strerror(errno));
-///             }
-///         }
-///     });
-///
-///     // parent thread as producer
+/// // child thread as consumer
+/// let handle = thread::spawn(|| {
+///     let mut sem = BinarySemaphore::new(KEY_ID, false).unwrap();
 ///     for _ in 0..5 {
 ///         if let Err(errno) = sem.reserve() {
 ///             eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
 ///             break;
 ///         }
-///         println!("[main] wait for 200 millis");
-///         thread::sleep(Duration::from_millis(200));
+///         println!("[worker] wait for 100 millis");
+///         thread::sleep(Duration::from_millis(100));
 ///         if let Err(errno) = sem.release() {
-///             eprintln!("[main] sem release failed: {}", nc::strerror(errno));
+///             eprintln!("[worker] sem release failed: {}", nc::strerror(errno));
 ///         }
 ///     }
+/// });
 ///
-///     let _ = handle.join();
+/// // parent thread as producer
+/// for _ in 0..5 {
+///     if let Err(errno) = sem.reserve() {
+///         eprintln!("[worker ]sem reserve failed: {}", nc::strerror(errno));
+///         break;
+///     }
+///     println!("[main] wait for 200 millis");
+///     thread::sleep(Duration::from_millis(200));
+///     if let Err(errno) = sem.release() {
+///         eprintln!("[main] sem release failed: {}", nc::strerror(errno));
+///     }
 /// }
+///
+/// let _ = handle.join();
 /// ```
 pub unsafe fn semop(semid: i32, sops: &mut [sembuf_t]) -> Result<(), Errno> {
     let semid = semid as usize;

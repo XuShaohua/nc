@@ -17,7 +17,12 @@ pub unsafe fn prlimit64(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let resource = resource as usize;
-    let new_limit_ptr = new_limit.map_or(0, |new_limit| new_limit as *const rlimit64_t as usize);
-    let old_limit_ptr = old_limit.map_or(0, |old_limit| old_limit as *mut rlimit64_t as usize);
+    let new_limit_ptr = new_limit.map_or(core::ptr::null::<rlimit64_t>() as usize, |new_limit| {
+        new_limit as *const rlimit64_t as usize
+    });
+    let old_limit_ptr = old_limit
+        .map_or(core::ptr::null_mut::<rlimit64_t>() as usize, |old_limit| {
+            old_limit as *mut rlimit64_t as usize
+        });
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }

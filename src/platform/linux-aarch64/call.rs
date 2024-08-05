@@ -5337,8 +5337,13 @@ pub unsafe fn prlimit64(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let resource = resource as usize;
-    let new_limit_ptr = new_limit.map_or(0, |new_limit| new_limit as *const rlimit64_t as usize);
-    let old_limit_ptr = old_limit.map_or(0, |old_limit| old_limit as *mut rlimit64_t as usize);
+    let new_limit_ptr = new_limit.map_or(core::ptr::null::<rlimit64_t>() as usize, |new_limit| {
+        new_limit as *const rlimit64_t as usize
+    });
+    let old_limit_ptr = old_limit
+        .map_or(core::ptr::null_mut::<rlimit64_t>() as usize, |old_limit| {
+            old_limit as *mut rlimit64_t as usize
+        });
     syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
 }
 
@@ -7880,12 +7885,12 @@ pub unsafe fn sigaltstack(
 }
 
 /// Create a file descriptor to accept signals.
-pub unsafe fn signalfd4(fd: i32, mask: &[sigset_t], flags: i32) -> Result<i32, Errno> {
+pub unsafe fn signalfd4(fd: i32, mask: &sigset_t, flags: i32) -> Result<i32, Errno> {
     let fd = fd as usize;
-    let mask_ptr = mask.as_ptr() as usize;
-    let mask_len = mask.len();
+    let mask_ptr = mask as *const sigset_t as usize;
+    let size_mask = core::mem::size_of::<sigset_t>();
     let flags = flags as usize;
-    syscall4(SYS_SIGNALFD4, fd, mask_ptr, mask_len, flags).map(|ret| ret as i32)
+    syscall4(SYS_SIGNALFD4, fd, mask_ptr, size_mask, flags).map(|ret| ret as i32)
 }
 
 /// Create an endpoint for communication.

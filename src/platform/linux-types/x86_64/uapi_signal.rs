@@ -4,7 +4,7 @@
 
 //! From `arch/x86/include/uapi/asm/signal.h`
 
-use crate::{sighandler_t, sigrestore_t, sigset_t, size_t, _NSIG};
+use crate::{sighandler_t, sigrestore_t, sigset_t, size_t, uintptr_t, _NSIG};
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
@@ -66,8 +66,13 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
-    pub ss_sp: usize,
+    /// Base address of stack.
+    pub ss_sp: uintptr_t,
+
+    /// Flags
     pub ss_flags: i32,
+
+    /// Number of bytes in stack.
     pub ss_size: size_t,
 }
 

@@ -4,7 +4,7 @@
 
 //! From `arch/powerpc/include/uapi/asm/signal.h`
 
-use crate::{sighandler_t, sigrestore_t, size_t};
+use crate::{sighandler_t, sigrestore_t, size_t, uintptr_t};
 
 pub const _NSIG: usize = 64;
 pub const _NSIG_BPW: usize = 64;
@@ -95,7 +95,7 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
-    pub ss_sp: usize,
+    pub ss_sp: uintptr_t,
     pub ss_flags: i32,
     pub ss_size: size_t,
 }

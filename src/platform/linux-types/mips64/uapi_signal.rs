@@ -6,7 +6,7 @@
 
 use core::mem::size_of;
 
-use crate::{sighandler_t, size_t};
+use crate::{sighandler_t, size_t, uintptr_t};
 
 pub const _NSIG: usize = 128;
 pub const _NSIG_BPW: usize = size_of::<usize>() * 8;
@@ -138,7 +138,7 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
-    pub ss_sp: usize,
+    pub ss_sp: uintptr_t,
     pub ss_size: size_t,
     pub ss_flags: i32,
 }

@@ -6,7 +6,7 @@
 
 use core::fmt;
 
-use crate::{sighandler_t, siginfo_t, sigrestore_t, sigset_t, size_t, SIG_DFL, _NSIG};
+use crate::{sighandler_t, siginfo_t, sigrestore_t, sigset_t, size_t, uintptr_t, SIG_DFL, _NSIG};
 
 pub const SIGHUP: i32 = 1;
 pub const SIGINT: i32 = 2;
@@ -101,7 +101,7 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
-    pub ss_sp: usize,
+    pub ss_sp: uintptr_t,
     pub ss_flags: i32,
     pub ss_size: size_t,
 }

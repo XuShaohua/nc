@@ -95,7 +95,7 @@ pub struct sigaction_t {
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sigaltstack_t {
-    pub ss_sp: usize,
+    pub ss_sp: uintptr_t,
     pub ss_flags: i32,
     pub ss_size: size_t,
 }

@@ -10,7 +10,7 @@
     target_arch = "x86_64",
 )))]
 #[path = "c.rs"]
-mod restore;
+mod imp;
 
 #[cfg(any(
     target_arch = "aarch64",
@@ -20,6 +20,6 @@ mod restore;
     target_arch = "x86_64",
 ))]
 #[path = "native.rs"]
-mod restore;
+mod imp;
 
-pub use restore::*;
+pub use imp::*;

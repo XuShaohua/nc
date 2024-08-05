@@ -187,7 +187,7 @@ pub const FS_XFLAG_HASATTR: u32 = 0x8000_0000;
 /// probably as bad and I don't want to create yet another include file.
 /// set device read-only (0 = read-write)
 pub const BLKROSET: u32 = IO(0x12, 93);
-/// get read-only status (0 = read_write)
+/// get read-only status (0 = `read_write`)
 pub const BLKROGET: u32 = IO(0x12, 94);
 /// re-read partition table
 pub const BLKRRPART: u32 = IO(0x12, 95);
@@ -203,9 +203,9 @@ pub const BLKRAGET: u32 = IO(0x12, 99);
 pub const BLKFRASET: u32 = IO(0x12, 100);
 /// get filesystem (mm/filemap.c) read-ahead
 pub const BLKFRAGET: u32 = IO(0x12, 101);
-/// set max sectors per request (ll_rw_blk.c)
+/// set max sectors per request (`ll_rw_blk.c`)
 pub const BLKSECTSET: u32 = IO(0x12, 102);
-/// get max sectors per request (ll_rw_blk.c)
+/// get max sectors per request (`ll_rw_blk.c`)
 pub const BLKSECTGET: u32 = IO(0x12, 103);
 /// get block device sector size
 pub const BLKSSZGET: u32 = IO(0x12, 104);

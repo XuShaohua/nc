@@ -44,7 +44,7 @@ pub const BLK_TC_FUA: u32 = 1 << 15;
 pub const BLK_TC_END: u32 = 1 << 15;
 
 pub const BLK_TC_SHIFT: u32 = 16;
-pub const fn BLK_TC_ACT(act: u32) -> u32 {
+#[must_use] pub const fn BLK_TC_ACT(act: u32) -> u32 {
     act << BLK_TC_SHIFT
 }
 
@@ -142,7 +142,7 @@ pub const BLK_TN_PROCESS: u32 = __BLK_TN_PROCESS | BLK_TC_ACT(BLK_TC_NOTIFY);
 pub const BLK_TN_TIMESTAMP: u32 = __BLK_TN_TIMESTAMP | BLK_TC_ACT(BLK_TC_NOTIFY);
 pub const BLK_TN_MESSAGE: u32 = __BLK_TN_MESSAGE | BLK_TC_ACT(BLK_TC_NOTIFY);
 
-pub const BLK_IO_TRACE_MAGIC: i32 = 0x65617400;
+pub const BLK_IO_TRACE_MAGIC: i32 = 0x6561_7400;
 pub const BLK_IO_TRACE_VERSION: i32 = 0x07;
 
 /// The trace itself

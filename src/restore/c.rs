@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-use crate::sigaction_t, restorefn_t, SIGSEGV, rt_sigaction};
+use crate::{restorefn_t, rt_sigaction, sigaction_t, SIGSEGV};
 
 /// Reuse sa restorer function.
 ///

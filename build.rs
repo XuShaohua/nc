@@ -27,7 +27,7 @@ fn build_sa_restore(target_arch: &str) {
     if target_arch == "aarch64"
         || target_arch == "arm"
         || target_arch == "riscv64"
-        || target_arch == "x86_64"
+        || target_arch == "x86"
         || target_arch == "x86_64"
     {
         let restore_file = format!("src/restore/restore_{}.s", target_arch);

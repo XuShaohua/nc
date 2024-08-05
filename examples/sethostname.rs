@@ -5,7 +5,7 @@ fn main() {
     if uid == 0 {
         assert!(ret.is_ok());
     } else {
-        assert!(!ret.is_ok());
+        assert!(ret.is_err());
         assert_eq!(ret, Err(nc::EPERM));
     }
 }

@@ -4,6 +4,8 @@
 
 //! From `include/uapi/linux/fiemap.h`
 
+#![allow(clippy::module_name_repetitions)]
+
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct fiemap_extent_t {
@@ -18,7 +20,7 @@ pub struct fiemap_extent_t {
 
     fe_reserved64: [u64; 2],
 
-    /// FIEMAP_EXTENT_* flags for this extent
+    /// `FIEMAP_EXTENT`_* flags for this extent
     pub fe_flags: u32,
 
     fe_reserved: [u32; 3],
@@ -33,13 +35,13 @@ pub struct fiemap_t {
     /// logical length of mapping which userspace wants (in)
     pub fm_length: u64,
 
-    /// FIEMAP_FLAG_* flags for request (in/out)
+    /// `FIEMAP_FLAG`_* flags for request (in/out)
     pub fm_flags: u32,
 
     /// number of extents that were mapped (out)
     pub fm_mapped_extents: u32,
 
-    /// size of fm_extents array (in)
+    /// size of `fm_extents` array (in)
     pub fm_extent_count: u32,
 
     fm_reserved: u32,
@@ -51,43 +53,43 @@ pub struct fiemap_t {
 pub const FIEMAP_MAX_OFFSET: u32 = !0;
 
 /// sync file data before map
-pub const FIEMAP_FLAG_SYNC: u32 = 0x00000001;
+pub const FIEMAP_FLAG_SYNC: u32 = 0x0000_0001;
 /// map extended attribute tree
-pub const FIEMAP_FLAG_XATTR: u32 = 0x00000002;
+pub const FIEMAP_FLAG_XATTR: u32 = 0x0000_0002;
 /// request caching of the extents
-pub const FIEMAP_FLAG_CACHE: u32 = 0x00000004;
+pub const FIEMAP_FLAG_CACHE: u32 = 0x0000_0004;
 
 pub const FIEMAP_FLAGS_COMPAT: u32 = FIEMAP_FLAG_SYNC | FIEMAP_FLAG_XATTR;
 
 /// Last extent in file.
-pub const FIEMAP_EXTENT_LAST: u32 = 0x00000001;
+pub const FIEMAP_EXTENT_LAST: u32 = 0x0000_0001;
 /// Data location unknown.
-pub const FIEMAP_EXTENT_UNKNOWN: u32 = 0x00000002;
+pub const FIEMAP_EXTENT_UNKNOWN: u32 = 0x0000_0002;
 /// Location still pending.
 ///
-/// Sets EXTENT_UNKNOWN.
-pub const FIEMAP_EXTENT_DELALLOC: u32 = 0x00000004;
+/// Sets `EXTENT_UNKNOWN`.
+pub const FIEMAP_EXTENT_DELALLOC: u32 = 0x0000_0004;
 /// Data can not be read while fs is unmounted
-pub const FIEMAP_EXTENT_ENCODED: u32 = 0x00000008;
+pub const FIEMAP_EXTENT_ENCODED: u32 = 0x0000_0008;
 /// Data is encrypted by fs.
 ///
-/// Sets EXTENT_NO_BYPASS.
-pub const FIEMAP_EXTENT_DATA_ENCRYPTED: u32 = 0x00000080;
+/// Sets `EXTENT_NO_BYPASS`.
+pub const FIEMAP_EXTENT_DATA_ENCRYPTED: u32 = 0x0000_0080;
 /// Extent offsets may not be block aligned.
-pub const FIEMAP_EXTENT_NOT_ALIGNED: u32 = 0x00000100;
+pub const FIEMAP_EXTENT_NOT_ALIGNED: u32 = 0x0000_0100;
 /// Data mixed with metadata.
 ///
-/// Sets EXTENT_NOT_ALIGNED.
-pub const FIEMAP_EXTENT_DATA_INLINE: u32 = 0x00000200;
+/// Sets `EXTENT_NOT_ALIGNED`.
+pub const FIEMAP_EXTENT_DATA_INLINE: u32 = 0x0000_0200;
 /// Multiple files in block.
 ///
-/// Sets EXTENT_NOT_ALIGNED.
-pub const FIEMAP_EXTENT_DATA_TAIL: u32 = 0x00000400;
+/// Sets `EXTENT_NOT_ALIGNED`.
+pub const FIEMAP_EXTENT_DATA_TAIL: u32 = 0x0000_0400;
 /// Space allocated, but no data (i.e. zero).
-pub const FIEMAP_EXTENT_UNWRITTEN: u32 = 0x00000800;
+pub const FIEMAP_EXTENT_UNWRITTEN: u32 = 0x0000_0800;
 /// File does not natively support extents.
 ///
 /// Result merged for efficiency.
-pub const FIEMAP_EXTENT_MERGED: u32 = 0x00001000;
+pub const FIEMAP_EXTENT_MERGED: u32 = 0x0000_1000;
 /// Space shared with other files.
-pub const FIEMAP_EXTENT_SHARED: u32 = 0x00002000;
+pub const FIEMAP_EXTENT_SHARED: u32 = 0x0000_2000;

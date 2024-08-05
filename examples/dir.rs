@@ -5,7 +5,7 @@
 use std::mem::offset_of;
 
 fn main() {
-    const BUF_SIZE: usize = 1 * 1024;
+    const BUF_SIZE: usize = 1024;
 
     let path = "/etc";
     let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_DIRECTORY, 0) };

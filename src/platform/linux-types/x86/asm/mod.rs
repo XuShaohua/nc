@@ -2,8 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-mod asm;
-mod uapi;
+mod signal;
 
-pub use asm::*;
-pub use uapi::*;
+pub use signal::*;

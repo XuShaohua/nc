@@ -4230,15 +4230,16 @@ pub unsafe fn map_shadow_stack(addr: usize, size: usize, flags: u32) -> Result<u
 
 /// Set memory policy for a memory range.
 pub unsafe fn mbind(
-    start: usize,
+    start: *const core::ffi::c_void,
     len: usize,
     mode: i32,
-    nmask: *const usize,
+    nmask: &[usize],
     maxnode: usize,
-    flags: i32,
+    flags: u32,
 ) -> Result<(), Errno> {
+    let start = start as usize;
     let mode = mode as usize;
-    let nmask = nmask as usize;
+    let nmask = nmask.as_ptr() as usize;
     let flags = flags as usize;
     syscall6(SYS_MBIND, start, len, mode, nmask, maxnode, flags).map(drop)
 }
@@ -8339,18 +8340,19 @@ pub unsafe fn setxattr<P: AsRef<Path>>(
 }
 
 /// Set default NUMA memory policy for a thread and its children
-pub unsafe fn set_mempolicy(mode: i32, nmask: *const usize, maxnode: usize) -> Result<(), Errno> {
+pub unsafe fn set_mempolicy(mode: i32, nmask: &[usize], max_node: usize) -> Result<(), Errno> {
     let mode = mode as usize;
-    let nmask = nmask as usize;
-    syscall3(SYS_SET_MEMPOLICY, mode, nmask, maxnode).map(drop)
+    let nmask = nmask.as_ptr() as usize;
+    syscall3(SYS_SET_MEMPOLICY, mode, nmask, max_node).map(drop)
 }
 
 pub unsafe fn set_mempolicy_home_node(
-    start: usize,
+    start: *const core::ffi::c_void,
     len: usize,
     home_node: usize,
     flags: usize,
 ) -> Result<(), Errno> {
+    let start = start as usize;
     syscall4(SYS_SET_MEMPOLICY_HOME_NODE, start, len, home_node, flags).map(drop)
 }
 

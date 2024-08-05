@@ -6854,9 +6854,12 @@ pub unsafe fn set_robust_list(heads: &[robust_list_head_t]) -> Result<(), Errno>
 }
 
 /// Set pointer to thread ID.
-pub unsafe fn set_tid_address(tid: &mut i32) -> Result<isize, Errno> {
+///
+/// Always returns the caller's thread id.
+pub unsafe fn set_tid_address(tid: &mut i32) -> pid_t {
     let tid_ptr = tid as *mut i32 as usize;
-    syscall1(SYS_SET_TID_ADDRESS, tid_ptr).map(|ret| ret as isize)
+    // This function is always successful.
+    syscall1(SYS_SET_TID_ADDRESS, tid_ptr).unwrap_or_default() as pid_t
 }
 
 /// Attach the System V shared memory segment.

@@ -44,7 +44,8 @@ pub const BLK_TC_FUA: u32 = 1 << 15;
 pub const BLK_TC_END: u32 = 1 << 15;
 
 pub const BLK_TC_SHIFT: u32 = 16;
-#[must_use] pub const fn BLK_TC_ACT(act: u32) -> u32 {
+#[must_use]
+pub const fn BLK_TC_ACT(act: u32) -> u32 {
     act << BLK_TC_SHIFT
 }
 

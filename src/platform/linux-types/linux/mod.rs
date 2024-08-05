@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 mod dirent;
+mod fanotify;
 mod fs;
 mod fs_types;
 mod getcpu;
@@ -17,6 +18,7 @@ mod time64;
 mod timex;
 
 pub use dirent::*;
+pub use fanotify::*;
 pub use fs::*;
 pub use fs_types::*;
 pub use getcpu::*;

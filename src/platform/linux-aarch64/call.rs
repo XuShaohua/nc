@@ -3250,13 +3250,14 @@ pub unsafe fn kexec_file_load<P: AsRef<Path>>(
     kernel_fd: i32,
     initrd_fd: i32,
     cmdline: P,
-    flags: usize,
+    flags: u32,
 ) -> Result<(), Errno> {
     let kernel_fd = kernel_fd as usize;
     let initrd_fd = initrd_fd as usize;
     let cmdline_len = cmdline.as_ref().len();
     let cmdline = CString::new(cmdline.as_ref());
     let cmdline_ptr = cmdline.as_ptr() as usize;
+    let flags = flags as usize;
     syscall5(
         SYS_KEXEC_FILE_LOAD,
         kernel_fd,
@@ -3271,11 +3272,12 @@ pub unsafe fn kexec_file_load<P: AsRef<Path>>(
 /// Load a new kernel for later execution.
 pub unsafe fn kexec_load(
     entry: usize,
-    nr_segments: usize,
-    segments: &mut kexec_segment_t,
-    flags: usize,
+    segments: &mut [kexec_segment_t],
+    flags: u32,
 ) -> Result<(), Errno> {
-    let segments_ptr = segments as *mut kexec_segment_t as usize;
+    let segments_ptr = segments.as_mut_ptr() as usize;
+    let nr_segments = segments.len();
+    let flags = flags as usize;
     syscall4(SYS_KEXEC_LOAD, entry, nr_segments, segments_ptr, flags).map(drop)
 }
 

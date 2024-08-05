@@ -1,6 +1,6 @@
 /// Wait for a signal.
 ///
-/// Always returns Errno, normally EINTR.
+/// Always returns `Errno`, normally `EINTR`.
 ///
 /// # Examples
 /// ```

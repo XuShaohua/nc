@@ -5421,7 +5421,7 @@ pub unsafe fn rt_sigreturn() {
 
 /// Wait for a signal.
 ///
-/// Always returns Errno, normally EINTR.
+/// Always returns `Errno`, normally `EINTR`.
 ///
 /// # Examples
 /// ```
@@ -5456,22 +5456,17 @@ pub unsafe fn rt_sigsuspend(set: &sigset_t) -> Result<(), Errno> {
 
 /// Synchronously wait for queued signals.
 pub unsafe fn rt_sigtimedwait(
-    uthese: &sigset_t,
-    uinfo: &mut siginfo_t,
-    uts: &timespec_t,
-    sigsetsize: size_t,
+    set: &sigset_t,
+    info: Option<&mut siginfo_t>,
+    ts: &timespec_t,
 ) -> Result<i32, Errno> {
-    let uthese_ptr = uthese as *const sigset_t as usize;
-    let uinfo_ptr = uinfo as *mut siginfo_t as usize;
-    let uts_ptr = uts as *const timespec_t as usize;
-    syscall4(
-        SYS_RT_SIGTIMEDWAIT,
-        uthese_ptr,
-        uinfo_ptr,
-        uts_ptr,
-        sigsetsize,
-    )
-    .map(|ret| ret as i32)
+    let set_ptr = set as *const sigset_t as usize;
+    let info_ptr = info.map_or(core::ptr::null_mut::<siginfo_t>() as usize, |info| {
+        info as *mut siginfo_t as usize
+    });
+    let ts_ptr = ts as *const timespec_t as usize;
+    let sig_set_size = core::mem::size_of::<sigset_t>();
+    syscall4(SYS_RT_SIGTIMEDWAIT, set_ptr, info_ptr, ts_ptr, sig_set_size).map(|ret| ret as i32)
 }
 
 /// Queue a signal and data.

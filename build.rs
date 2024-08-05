@@ -23,6 +23,18 @@ fn get_page_size() {
     .unwrap();
 }
 
+fn build_sa_restore(target_arch: &str) {
+    if target_arch == "aarch64"
+        || target_arch == "arm"
+        || target_arch == "riscv64"
+        || target_arch == "x86_64"
+        || target_arch == "x86_64"
+    {
+        let restore_file = format!("src/restore/restore_{}.s", target_arch);
+        cc::Build::new().file(restore_file).compile("restore");
+    }
+}
+
 fn main() {
     // Switch to new syntax in rust 1.77
     //println!("cargo::rustc-check-cfg=cfg(has_asm)");
@@ -48,4 +60,6 @@ fn main() {
         cc::Build::new().file(syscall_file).compile("syscall");
     }
     get_page_size();
+
+    build_sa_restore(&target_arch);
 }

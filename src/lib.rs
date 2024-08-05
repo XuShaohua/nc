@@ -217,6 +217,7 @@ mod platform;
 #[path = "platform/darwin-x86_64/mod.rs"]
 mod platform;
 
+pub mod restore;
 pub mod util;
 
 // Re-export functions

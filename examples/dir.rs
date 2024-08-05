@@ -51,7 +51,6 @@ fn main() {
 
             bpos += d_ref.d_reclen as usize;
         }
-        break;
     }
     let offset = offset_of!(nc::linux_dirent_t, d_name);
     println!("offset of d_name is: {}", offset);

@@ -3820,6 +3820,12 @@ pub unsafe fn memfd_create<P: AsRef<Path>>(name: P, flags: u32) -> Result<i32, E
     syscall2(SYS_MEMFD_CREATE, name_ptr, flags).map(|ret| ret as i32)
 }
 
+/// create an anonymous RAM-based file to access secret memory regions.
+pub unsafe fn memfd_secret(flags: u32) -> Result<i32, Errno> {
+    let flags = flags as usize;
+    syscall1(SYS_MEMFD_SECRET, flags).map(|ret| ret as i32)
+}
+
 /// Move all pages in a process to another set of nodes
 pub unsafe fn migrate_pages(
     pid: pid_t,

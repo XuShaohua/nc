@@ -55,6 +55,29 @@
 //! assert_eq!(ret, Err(nc::EPERM));
 //! ```
 //!
+//! Or handle signals:
+//! ```
+//! fn handle_alarm(signum: i32) {
+//!     assert_eq!(signum, nc::SIGALRM);
+//! }
+//!
+//! fn main() {
+//!     let sa = nc::sigaction_t {
+//!         sa_handler: handle_alarm as nc::sighandler_t,
+//!         sa_flags: nc::SA_RESTORER,
+//!         sa_restorer: nc::restore::get_sa_restorer(),
+//!         ..nc::sigaction_t::default()
+//!     };
+//!     let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };
+//!     assert!(ret.is_ok());
+//!     let remaining = unsafe { nc::alarm(1) };
+//!     let ret = unsafe { nc::pause() };
+//!     assert!(ret.is_err());
+//!     assert_eq!(ret, Err(nc::EINTR));
+//!     assert_eq!(remaining, 0);
+//! }
+//! ```
+//!
 //! Or get system info:
 //! ```rust
 //! pub fn cstr_to_str(input: &[u8]) -> &str {

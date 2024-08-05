@@ -48,15 +48,9 @@ fn main() {
 
     let seconds = 1;
     let remaining = alarm(seconds);
-
     let mask = nc::sigset_t::default();
     let ret = unsafe { nc::rt_sigsuspend(&mask) };
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
-
     assert_eq!(remaining.unwrap(), 0);
-
-    unsafe {
-        nc::exit(1);
-    }
 }

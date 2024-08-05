@@ -8523,8 +8523,9 @@ pub unsafe fn set_robust_list(heads: &[robust_list_head_t]) -> Result<(), Errno>
 }
 
 /// Set thread-local storage information.
-pub unsafe fn set_thread_area(addr: usize) -> Result<(), Errno> {
-    syscall1(SYS_SET_THREAD_AREA, addr).map(drop)
+pub unsafe fn set_thread_area(info: &mut user_desc_t) -> Result<(), Errno> {
+    let info_ptr = info as *mut user_desc_t as usize;
+    syscall1(SYS_SET_THREAD_AREA, info_ptr).map(drop)
 }
 
 /// Set pointer to thread ID.

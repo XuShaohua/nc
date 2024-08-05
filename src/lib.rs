@@ -107,11 +107,6 @@
 //! }
 //! ```
 //!
-//! ## Stable version
-//!
-//! For stable version of rustc, please install a C compiler (`gcc` or `clang`) first.
-//! As `asm!` feature is unavailable in stable version.
-//!
 //! ## Supported Operating Systems and Architectures
 //!
 //! - linux

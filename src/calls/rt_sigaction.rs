@@ -9,7 +9,8 @@
 ///
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_sigterm as nc::sighandler_t,
-///     sa_mask: (nc::SA_RESTART | nc::SA_SIGINFO | nc::SA_ONSTACK).into(),
+///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
+///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
 /// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, Some(&sa), None) };

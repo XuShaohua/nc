@@ -2,18 +2,6 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#[must_use]
-#[inline]
-fn get_sa_restorer() -> Option<nc::restorefn_t> {
-    let mut old_sa = nc::sigaction_t::default();
-    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, None, Some(&mut old_sa)) };
-    if ret.is_ok() {
-        old_sa.sa_restorer
-    } else {
-        None
-    }
-}
-
 fn main() {
     fn handle_alarm(signum: i32) {
         assert_eq!(signum, nc::SIGALRM);
@@ -24,7 +12,7 @@ fn main() {
     let sa = nc::sigaction_t {
         sa_handler: handle_alarm as nc::sighandler_t,
         sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
-        sa_restorer: get_sa_restorer(),
+        sa_restorer: nc::restore::get_sa_restorer(),
         ..nc::sigaction_t::default()
     };
     let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };

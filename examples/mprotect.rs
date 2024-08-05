@@ -21,24 +21,12 @@ fn handle_segfault(sig: i32) {
     }
 }
 
-#[must_use]
-#[inline]
-fn get_sa_restorer() -> Option<nc::restorefn_t> {
-    let mut old_sa = nc::sigaction_t::default();
-    let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, None, Some(&mut old_sa)) };
-    if ret.is_ok() {
-        old_sa.sa_restorer
-    } else {
-        None
-    }
-}
-
 fn main() {
     // Register SIGSEGV handler.
     let sa = nc::sigaction_t {
         sa_handler: handle_segfault as nc::sighandler_t,
         sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
-        sa_restorer: get_sa_restorer(),
+        sa_restorer: nc::restore::get_sa_restorer(),
         ..nc::sigaction_t::default()
     };
     let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, Some(&sa), None) };

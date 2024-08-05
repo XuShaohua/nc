@@ -3,16 +3,17 @@
 /// # Examples
 ///
 /// ```
+/// const TIMER_SIG: i32 = nc::SIGRTMAX;
+///
 /// fn handle_alarm(signum: i32) {
-///     assert_eq!(signum, nc::SIGALRM);
+///     assert_eq!(signum, TIMER_SIG);
 /// }
 ///
 /// fn main() {
-///     const TIMER_SIG: i32 = nc::SIGRTMAX;
-///
 ///     let sa = nc::sigaction_t {
-///         sa_flags: nc::SA_SIGINFO,
 ///         sa_handler: handle_alarm as nc::sighandler_t,
+///         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
+///         sa_restorer: nc::restore::get_sa_restorer(),
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, Some(&sa), None) };

@@ -9,6 +9,8 @@
 ///
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
+///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
+///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
 /// let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };

@@ -10,9 +10,10 @@
 //! ## Usage
 //!
 //! Add this to `Cargo.toml`:
+//!
 //! ```toml
 //! [dependencies]
-//! nc = "0.8"
+//! nc = "0.9"
 //! ```
 //!
 //! ## Examples

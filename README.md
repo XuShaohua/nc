@@ -92,7 +92,8 @@ fn main() {
     let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };
     assert!(ret.is_ok());
     let remaining = unsafe { nc::alarm(1) };
-    let ret = unsafe { nc::pause() };
+    let mask = nc::sigset_t::default();
+    let ret = unsafe { nc::rt_sigsuspend(&mask) };
     assert!(ret.is_err());
     assert_eq!(ret, Err(nc::EINTR));
     assert_eq!(remaining, Ok(0));

@@ -29,12 +29,7 @@ fn call_id() {
 }
 
 fn main() {
-    let args = nc::clone_args_t {
-        exit_signal: nc::SIGCHLD as u64,
-        ..Default::default()
-    };
-
-    let pid = unsafe { nc::clone3(&args) };
+    let pid = unsafe { nc::fork() };
     match pid {
         Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
         Ok(0) => {
@@ -47,7 +42,7 @@ fn main() {
         }
     }
 
-    let pid = unsafe { nc::clone3(&args) };
+    let pid = unsafe { nc::fork() };
     match pid {
         Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
         Ok(0) => {
@@ -60,7 +55,7 @@ fn main() {
         }
     }
 
-    let pid = unsafe { nc::clone3(&args) };
+    let pid = unsafe { nc::fork() };
     match pid {
         Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
         Ok(0) => {

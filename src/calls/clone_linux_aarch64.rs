@@ -3,8 +3,8 @@ pub unsafe fn clone(
     clone_flags: usize,
     child_stack: *const core::ffi::c_void,
     parent_tid: Option<&mut pid_t>,
-    child_tid: Option<&mut pid_t>,
     tls: Option<*const core::ffi::c_void>,
+    child_tid: Option<&mut pid_t>,
 ) -> Result<pid_t, Errno> {
     use core::ptr::null_mut;
     let child_stack = child_stack as usize;
@@ -20,8 +20,8 @@ pub unsafe fn clone(
         clone_flags,
         child_stack,
         parent_tid_ptr,
-        child_tid_ptr,
         tls_ptr,
+        child_tid_ptr,
     )
     .map(|ret| ret as pid_t)
 }

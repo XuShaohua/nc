@@ -238,6 +238,10 @@ mod platform;
 pub mod restore;
 pub mod util;
 
+mod wrappers;
+#[allow(unused_imports)]
+pub use wrappers::*;
+
 // Re-export functions
 pub use platform::*;
 pub use types::*;

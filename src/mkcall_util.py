@@ -114,14 +114,23 @@ def parse_template(template_file):
     return syscalls, headers
 
 
-def check_call_file_exists(sysno, system_name):
+def check_call_file_exists(sysno, system_name, arch_name):
     CALLS_DIR = "calls"
     real_sysno = sysno.replace("SYS_", "").lower()
-    spec_filename = "".join([real_sysno, "_", system_name, ".rs"])
-    spec_filepath = os.path.join(CALLS_DIR, spec_filename)
-    if os.path.exists(spec_filepath):
-        return (spec_filepath, True)
 
+    # Like clone_linux_aarch64.rs
+    arch_filename = "".join([real_sysno, "_", system_name, "_", arch_name,".rs"])
+    arch_filepath = os.path.join(CALLS_DIR, arch_filename)
+    if os.path.exists(arch_filepath):
+        return (arch_filepath, True)
+
+    # Like clone_linux.rs
+    system_filename = "".join([real_sysno, "_", system_name, ".rs"])
+    system_filepath = os.path.join(CALLS_DIR, system_filename)
+    if os.path.exists(system_filepath):
+        return (system_filepath, True)
+
+    # Like clone.rs
     general_filename = "".join([real_sysno, ".rs"])
     general_filepath = os.path.join(CALLS_DIR, general_filename)
     if os.path.exists(general_filepath):
@@ -130,7 +139,7 @@ def check_call_file_exists(sysno, system_name):
     return ("", False)
 
 
-def generate_call_file(root_dir, system_name):
+def generate_call_file(root_dir, system_name, arch_name):
     sysno_file = os.path.join(root_dir, "sysno.rs")
     call_file = os.path.join(root_dir, "call.rs")
 
@@ -145,7 +154,7 @@ def generate_call_file(root_dir, system_name):
         fh.write("\n")
 
         for sysno in sorted(sysnos):
-            in_filepath, exists = check_call_file_exists(sysno, system_name)
+            in_filepath, exists = check_call_file_exists(sysno, system_name, arch_name)
             if exists:
                 matched_sysno.append(sysno)
                 with open(in_filepath) as in_fh:

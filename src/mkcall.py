@@ -47,7 +47,7 @@ def generate_call_file_helper(system_name, arch_name):
     if arch_name not in SUPPORTED_ARCHES[system_name]:
         print(F"arch name {arch_name} is not supported on system: {system_name}")
         sys.exit(1)
-    generate_call_file(root_dir, system_name)
+    generate_call_file(root_dir, system_name, arch_name)
 
 
 def main():

@@ -610,13 +610,13 @@ pub unsafe fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(
 /// Create a child process.
 pub unsafe fn clone(
     clone_flags: usize,
-    new_sp: *const core::ffi::c_void,
+    child_stack: *const core::ffi::c_void,
     parent_tid: Option<&mut pid_t>,
     child_tid: Option<&mut pid_t>,
     tls: Option<*const core::ffi::c_void>,
 ) -> Result<pid_t, Errno> {
     use core::ptr::null_mut;
-    let new_sp = new_sp as usize;
+    let child_stack = child_stack as usize;
     let parent_tid_ptr = parent_tid.map_or(null_mut::<pid_t>() as usize, |parent_tid| {
         parent_tid as *mut pid_t as usize
     });
@@ -627,7 +627,7 @@ pub unsafe fn clone(
     syscall5(
         SYS_CLONE,
         clone_flags,
-        new_sp,
+        child_stack,
         parent_tid_ptr,
         child_tid_ptr,
         tls_ptr,

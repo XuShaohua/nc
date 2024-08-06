@@ -23,25 +23,11 @@ fn get_page_size() {
     .unwrap();
 }
 
-fn build_sa_restore(target_arch: &str) {
-    if target_arch == "aarch64"
-        || target_arch == "arm"
-        || target_arch == "riscv64"
-        || target_arch == "x86"
-        || target_arch == "x86_64"
-    {
-        let restore_file = format!("src/restore/restore_{}.s", target_arch);
-        cc::Build::new().file(restore_file).compile("restore");
-    }
-}
-
-fn main() {
+fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     // Switch to new syntax in rust 1.77
     //println!("cargo::rustc-check-cfg=cfg(has_asm)");
     println!("cargo:rustc-check-cfg=cfg(has_asm)");
 
-    let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_owned());
-    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_else(|_| "x86_64".to_owned());
     // - x86_64/aarch64/arm/riscv64: support inline assembly in stable version
     // - x86/i686: esi and ebp registers are not allowed in inline asm in x86/i686, so always
     //   disable inline assembly
@@ -59,7 +45,36 @@ fn main() {
         let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
         cc::Build::new().file(syscall_file).compile("syscall");
     }
-    get_page_size();
+}
 
+fn build_sa_restore(target_arch: &str) {
+    if target_arch == "aarch64"
+        || target_arch == "arm"
+        || target_arch == "riscv64"
+        || target_arch == "x86"
+        || target_arch == "x86_64"
+    {
+        let restore_file = format!("src/restore/restore_{}.s", target_arch);
+        cc::Build::new().file(restore_file).compile("restore");
+    }
+}
+
+fn check_sa_restorer(target_arch: &str) {
+    //println!("cargo::rustc-check-cfg=cfg(has_sa_restorer)");
+    println!("cargo:rustc-check-cfg=cfg(has_sa_restorer)");
+
+    if target_arch != "riscv64" {
+        println!("cargo:rustc-cfg=has_sa_restorer");
+    }
+}
+
+fn main() {
+    let rustc_toolchain = env::var("RUSTUP_TOOLCHAIN").unwrap_or_else(|_| "stable".to_owned());
+    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_else(|_| "x86_64".to_owned());
+
+    get_page_size();
+    build_syscall(&rustc_toolchain, &target_arch);
     build_sa_restore(&target_arch);
+
+    check_sa_restorer(&target_arch);
 }

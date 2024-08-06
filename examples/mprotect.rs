@@ -22,11 +22,18 @@ fn handle_segfault(sig: i32) {
 }
 
 fn main() {
-    // Register SIGSEGV handler.
+    #[cfg(has_sa_restorer)]
     let sa = nc::sigaction_t {
         sa_handler: handle_segfault as nc::sighandler_t,
         sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
         sa_restorer: nc::restore::get_sa_restorer(),
+        ..nc::sigaction_t::default()
+    };
+    #[cfg(target_arch = "riscv64")]
+    #[cfg(not(has_sa_restorer))]
+    let sa = nc::sigaction_t {
+        sa_handler: handle_segfault as nc::sighandler_t,
+        sa_flags: nc::SA_RESTART,
         ..nc::sigaction_t::default()
     };
     let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, Some(&sa), None) };

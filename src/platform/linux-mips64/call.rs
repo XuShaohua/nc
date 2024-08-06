@@ -323,13 +323,11 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 /// let mask = nc::sigset_t::default();
 /// let ret = unsafe { nc::rt_sigsuspend(&mask) };
 /// assert_eq!(ret, Err(nc::EINTR));
-/// assert_eq!(remaining, 0);
+/// assert_eq!(remaining, Ok(0));
 /// ```
-#[must_use]
-pub unsafe fn alarm(seconds: u32) -> u32 {
+pub unsafe fn alarm(seconds: u32) -> Result<u32, Errno> {
     let seconds = seconds as usize;
-    // This function is always successful.
-    syscall1(SYS_ALARM, seconds).unwrap_or_default() as u32
+    syscall1(SYS_ALARM, seconds).map(|ret| ret as u32)
 }
 
 /// Bind a name to a socket.
@@ -5838,7 +5836,7 @@ pub unsafe fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Re
 /// let ret = unsafe { nc::pause() };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
-/// assert_eq!(remaining, 0);
+/// assert_eq!(remaining, Ok(0));
 /// ```
 pub unsafe fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)

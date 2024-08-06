@@ -5925,7 +5925,7 @@ pub unsafe fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Re
 /// let ret = unsafe { nc::pause() };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EINTR));
-/// assert_eq!(remaining, 0);
+/// assert_eq!(remaining, Ok(0));
 /// ```
 pub unsafe fn pause() -> Result<(), Errno> {
     syscall0(SYS_PAUSE).map(drop)

@@ -19,11 +19,9 @@
 /// let mask = nc::sigset_t::default();
 /// let ret = unsafe { nc::rt_sigsuspend(&mask) };
 /// assert_eq!(ret, Err(nc::EINTR));
-/// assert_eq!(remaining, 0);
+/// assert_eq!(remaining, Ok(0));
 /// ```
-#[must_use]
-pub unsafe fn alarm(seconds: u32) -> u32 {
+pub unsafe fn alarm(seconds: u32) -> Result<u32, Errno> {
     let seconds = seconds as usize;
-    // This function is always successful.
-    syscall1(SYS_ALARM, seconds).unwrap_or_default() as u32
+    syscall1(SYS_ALARM, seconds).map(|ret| ret as u32)
 }

@@ -12,4 +12,26 @@ mod fork;
     target_os = "linux",
     any(target_arch = "aarch64", target_arch = "riscv64")
 ))]
-pub use fork::*;
+pub use fork::fork;
+
+#[cfg(all(
+    any(target_os = "linux", target_os = "android"),
+    any(
+        target_arch = "aarch64",
+        target_arch = "arm",
+        target_arch = "loongarch64",
+        target_arch = "riscv64",
+    )
+))]
+mod alarm;
+
+#[cfg(all(
+    any(target_os = "linux", target_os = "android"),
+    any(
+        target_arch = "aarch64",
+        target_arch = "arm",
+        target_arch = "loongarch64",
+        target_arch = "riscv64",
+    )
+))]
+pub use alarm::alarm;

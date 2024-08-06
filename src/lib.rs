@@ -20,11 +20,29 @@
 //! Get file stat:
 //! ```rust
 //! let mut statbuf = nc::stat_t::default();
-//! let path = "/etc/passwd";
-//! #[cfg(not(target_arch = "aarch64"))]
-//! let ret = unsafe { nc::stat(path, &mut statbuf) };
-//! #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
-//! let ret = unsafe { nc::fstatat(nc::AT_FDCWD, path, &mut statbuf, 0) };
+//! let filepath = "/etc/passwd";
+//! #[cfg(target_os = "linux")]
+//! let ret = {
+//!     #[cfg(not(any(
+//!         target_arch = "aarch64",
+//!         target_arch = "loongarch64",
+//!         target_arch = "riscv64"
+//!     )))]
+//!     unsafe {
+//!         nc::stat(filepath, &mut statbuf)
+//!     }
+//!
+//!     #[cfg(any(
+//!         target_arch = "aarch64",
+//!         target_arch = "loongarch64",
+//!         target_arch = "riscv64"
+//!     ))]
+//!     unsafe {
+//!         nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0)
+//!     }
+//! };
+//! #[cfg(any(target_os = "android", target_os = "freebsd"))]
+//! let ret = unsafe { nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0) };
 //! match ret {
 //!     Ok(_) => println!("s: {:?}", statbuf),
 //!     Err(errno) => eprintln!("Failed to get file status, got errno: {}", errno),

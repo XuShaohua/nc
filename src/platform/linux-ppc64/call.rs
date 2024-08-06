@@ -9324,7 +9324,7 @@ pub unsafe fn sigreturn() {
 ///
 /// if pid == 0 {
 ///     // child process.
-///     let mask = nc::sigset_t::default();
+///     let mask = nc::old_sigset_t::default();
 ///     let ret = unsafe { nc::sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
@@ -9630,7 +9630,7 @@ pub unsafe fn statx<P: AsRef<Path>>(
 ///
 /// ```
 /// let t = 1611630530;
-/// let ret = unsafe { nc::stime(t) };
+/// let ret = unsafe { nc::stime(&t) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```

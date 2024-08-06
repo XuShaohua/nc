@@ -4,7 +4,7 @@
 ///
 /// ```
 /// let t = 1611630530;
-/// let ret = unsafe { nc::stime(t) };
+/// let ret = unsafe { nc::stime(&t) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```

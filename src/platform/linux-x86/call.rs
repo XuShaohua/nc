@@ -1748,7 +1748,7 @@ pub unsafe fn fcntl(fd: i32, cmd: u32, arg: *const core::ffi::c_void) -> Result<
 /// let ret = unsafe { nc::close(fd2) };
 /// assert!(ret.is_ok());
 /// ```
-pub unsafe fn fcntl64(fd: i32, cmd: i32, arg: usize) -> Result<i32, Errno> {
+pub unsafe fn fcntl64(fd: i32, cmd: u32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
     syscall3(SYS_FCNTL64, fd, cmd, arg).map(|ret| ret as i32)
@@ -2076,7 +2076,7 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 /// let fd = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_PATH, 0) };
 /// assert!(fd.is_ok());
 /// let fd = fd.unwrap();
-/// let mut stat = nc::stat_t::default();
+/// let mut stat = nc::stat64_t::default();
 /// let ret = unsafe { nc::fstat64(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
@@ -2099,7 +2099,7 @@ pub unsafe fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
 /// let mut stat = nc::stat64_t::default();
 /// let ret = unsafe { nc::fstatat64(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
 /// assert!(ret.is_ok());
-/// assert_eq!(nc::S_ISREG(stat.st_mode as nc::mode_t));
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn fstatat64<P: AsRef<Path>>(
     dfd: i32,
@@ -9271,7 +9271,7 @@ pub unsafe fn sigreturn() {
 ///
 /// if pid == 0 {
 ///     // child process.
-///     let mask = nc::sigset_t::default();
+///     let mask = nc::old_sigset_t::default();
 ///     let ret = unsafe { nc::sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {
@@ -9573,7 +9573,7 @@ pub unsafe fn statx<P: AsRef<Path>>(
 ///
 /// ```
 /// let t = 1611630530;
-/// let ret = unsafe { nc::stime(t) };
+/// let ret = unsafe { nc::stime(&t) };
 /// assert!(ret.is_err());
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```

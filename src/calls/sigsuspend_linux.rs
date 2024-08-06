@@ -14,7 +14,7 @@
 ///
 /// if pid == 0 {
 ///     // child process.
-///     let mask = nc::sigset_t::default();
+///     let mask = nc::old_sigset_t::default();
 ///     let ret = unsafe { nc::sigsuspend(&mask) };
 ///     assert!(ret.is_ok());
 /// } else {

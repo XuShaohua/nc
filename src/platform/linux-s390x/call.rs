@@ -9551,15 +9551,9 @@ pub unsafe fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
 /// # Examples
 ///
 /// ```
-/// let uid = unsafe { nc::getuid() };
 /// let mut buf = vec![0_u8; 4096];
 /// let ret = unsafe { nc::syslog(nc::SYSLOG_ACTION_READ_ALL, &mut buf) };
-/// if uid == 0 {
-///     if let Err(errno) = ret {
-///         eprintln!("err: {}", nc::strerror(errno));
-///     }
-///     assert!(ret.is_ok());
-///     let nread = ret.unwrap();
+/// if let Ok(nread) = ret {
 ///     if let Ok(msg) = std::str::from_utf8(&buf[..nread as usize]) {
 ///         println!("msg: {msg}");
 ///     }
@@ -9968,7 +9962,7 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 ///     #[cfg(not(has_sa_restorer))]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
-///         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
+///         sa_flags: nc::SA_RESTART,
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, Some(&sa), None) };

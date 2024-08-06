@@ -20,7 +20,7 @@
 ///     #[cfg(not(has_sa_restorer))]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
-///         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
+///         sa_flags: nc::SA_RESTART,
 ///         ..nc::sigaction_t::default()
 ///     };
 ///     let ret = unsafe { nc::rt_sigaction(TIMER_SIG, Some(&sa), None) };

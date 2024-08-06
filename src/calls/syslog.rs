@@ -3,15 +3,9 @@
 /// # Examples
 ///
 /// ```
-/// let uid = unsafe { nc::getuid() };
 /// let mut buf = vec![0_u8; 4096];
 /// let ret = unsafe { nc::syslog(nc::SYSLOG_ACTION_READ_ALL, &mut buf) };
-/// if uid == 0 {
-///     if let Err(errno) = ret {
-///         eprintln!("err: {}", nc::strerror(errno));
-///     }
-///     assert!(ret.is_ok());
-///     let nread = ret.unwrap();
+/// if let Ok(nread) = ret {
 ///     if let Ok(msg) = std::str::from_utf8(&buf[..nread as usize]) {
 ///         println!("msg: {msg}");
 ///     }

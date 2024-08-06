@@ -3,10 +3,15 @@
 /// # Examples
 ///
 /// ```
-/// let ret = unsafe { nc::fork() };
-/// match ret {
+/// let args = nc::clone_args_t {
+///     exit_signal: nc::SIGCHLD as u64,
+///     ..Default::default()
+/// };
+/// let pid = unsafe { nc::clone3(&args) };
+///
+/// match pid {
 ///     Err(errno) => {
-///         eprintln!("fork() error: {}", nc::strerror(errno));
+///         eprintln!("clone3() error: {}", nc::strerror(errno));
 ///         unsafe { nc::exit(1) };
 ///     }
 ///     Ok(0) => println!("[child] pid is: {}", unsafe { nc::getpid() }),

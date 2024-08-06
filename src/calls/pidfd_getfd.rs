@@ -3,10 +3,17 @@
 /// # Examples
 ///
 /// ```
-/// let pid = unsafe { nc::fork() };
 /// const STDOUT_FD: i32 = 1;
+///
+/// let args = nc::clone_args_t {
+///     exit_signal: nc::SIGCHLD as u64,
+///     ..Default::default()
+/// };
+/// let pid = unsafe { nc::clone3(&args) };
+///
 /// assert!(pid.is_ok());
-/// if pid == Ok(0) {
+/// let pid = pid.unwrap();
+/// if pid == 0 {
 ///     println!("In child process, pid: {}", unsafe { nc::getpid() });
 ///     let path = "/tmp/nc-pidfdopen";
 ///     let fd = unsafe {
@@ -38,7 +45,6 @@
 ///     }
 /// }
 ///
-/// let pid = pid.unwrap();
 /// println!("[parent] child pid: {}", pid);
 ///
 /// let t = nc::timespec_t {

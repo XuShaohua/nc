@@ -3,7 +3,11 @@
 /// # Examples
 ///
 /// ```
-/// let pid = unsafe { nc::fork() };
+/// let args = nc::clone_args_t {
+///     exit_signal: nc::SIGCHLD as u64,
+///     ..Default::default()
+/// };
+/// let pid = unsafe { nc::clone3(&args) };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);

@@ -8,7 +8,7 @@
 /// let ret = unsafe { nc::lstat(path, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn lstat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());

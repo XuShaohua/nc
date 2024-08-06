@@ -12,7 +12,7 @@
 /// let ret = unsafe { nc::fstat64(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```

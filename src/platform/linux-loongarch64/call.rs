@@ -1583,7 +1583,7 @@ pub unsafe fn fsetxattr<P: AsRef<Path>>(
 /// let ret = unsafe { nc::fstat(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::S_ISDIR(stat.st_mode as nc::mode_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
@@ -1602,7 +1602,7 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 /// let mut stat = nc::stat_t::default();
 /// let ret = unsafe { nc::fstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
 /// assert!(ret.is_ok());
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn fstatat<P: AsRef<Path>>(
     dfd: i32,
@@ -7679,7 +7679,7 @@ pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<
 /// let ret = unsafe { nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(statx.stx_mode as nc::mode_t));
 /// ```
 pub unsafe fn statx<P: AsRef<Path>>(
     dirfd: i32,

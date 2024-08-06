@@ -8,7 +8,7 @@
 /// let ret = unsafe { nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(statx.stx_mode as nc::mode_t));
 /// ```
 pub unsafe fn statx<P: AsRef<Path>>(
     dirfd: i32,

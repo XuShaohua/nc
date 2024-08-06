@@ -7,7 +7,7 @@
 /// let mut stat = nc::stat_t::default();
 /// let ret = unsafe { nc::newfstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
 /// assert!(ret.is_ok());
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn newfstatat<P: AsRef<Path>>(
     dfd: i32,

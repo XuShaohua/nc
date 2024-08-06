@@ -2056,7 +2056,7 @@ pub unsafe fn fspick<P: AsRef<Path>>(dfd: i32, path: P, flags: u32) -> Result<i3
 /// let ret = unsafe { nc::fstat(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::S_ISDIR(stat.st_mode as nc::mode_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
@@ -2080,7 +2080,7 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
 /// let ret = unsafe { nc::fstat64(fd, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a directory.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFDIR);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
@@ -2099,7 +2099,7 @@ pub unsafe fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
 /// let mut stat = nc::stat64_t::default();
 /// let ret = unsafe { nc::fstatat64(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
 /// assert!(ret.is_ok());
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert_eq!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn fstatat64<P: AsRef<Path>>(
     dfd: i32,
@@ -4659,7 +4659,7 @@ pub unsafe fn lsetxattr<P: AsRef<Path>>(
 /// let ret = unsafe { nc::lstat(path, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn lstat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -4678,7 +4678,7 @@ pub unsafe fn lstat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result
 /// let ret = unsafe { nc::lstat64(path, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn lstat64<P: AsRef<Path>>(filename: P, statbuf: &mut stat64_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -9461,7 +9461,7 @@ pub unsafe fn splice(
 /// let ret = unsafe { nc::stat(path, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn stat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -9480,7 +9480,7 @@ pub unsafe fn stat<P: AsRef<Path>>(filename: P, statbuf: &mut stat_t) -> Result<
 /// let ret = unsafe { nc::stat64(path, &mut stat) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((stat.st_mode & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
 /// ```
 pub unsafe fn stat64<P: AsRef<Path>>(filename: P, statbuf: &mut stat64_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
@@ -9549,7 +9549,7 @@ pub unsafe fn statmount(
 /// let ret = unsafe { nc::statx(nc::AT_FDCWD, path, nc::AT_SYMLINK_NOFOLLOW, nc::STATX_TYPE, &mut statx) };
 /// assert!(ret.is_ok());
 /// // Check fd is a regular file.
-/// assert_eq!((statx.stx_mode as u32 & nc::S_IFMT), nc::S_IFREG);
+/// assert!(nc::S_ISREG(statx.stx_mode as nc::mode_t));
 /// ```
 pub unsafe fn statx<P: AsRef<Path>>(
     dirfd: i32,

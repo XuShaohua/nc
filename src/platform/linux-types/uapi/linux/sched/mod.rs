@@ -9,6 +9,8 @@ mod sched_types;
 pub use cpu::*;
 pub use sched_types::*;
 
+use crate::uintptr_t;
+
 /// cloning flags:
 /// signal mask to be sent at exit
 pub const CSIGNAL: i32 = 0x0000_00ff;
@@ -78,8 +80,8 @@ pub const CLONE_NEWTIME: i32 = 0x0000_0080;
 /// The structure is versioned by size and thus extensible.
 /// New struct members must go at the end of the struct and
 /// must be properly 64bit aligned.
-#[derive(Debug, Clone, Default)]
 #[repr(C)]
+#[derive(Debug, Clone, Default)]
 pub struct clone_args_t {
     /// Flags for the new process.
     /// All flags are valid except for CSIGNAL and `CLONE_DETACHED`.
@@ -104,7 +106,7 @@ pub struct clone_args_t {
     /// Note, @stack is expected to point to the lowest address.
     /// The stack direction will be determined by the kernel and
     /// set up appropriately based on `@stack_size`.
-    pub stack: u64,
+    pub stack: uintptr_t,
 
     /// The size of the stack for the child process.
     pub stack_size: u64,

@@ -3616,7 +3616,7 @@ pub unsafe fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno>
 /// Attempts to cancel an iocb previously passed to `io_submit`.
 ///
 /// If the operation is successfully cancelled, the resulting event is
-/// copied into the memory pointed to by result without being placed
+/// copied into the memory pointed to by `result` without being placed
 /// into the completion queue and 0 is returned.
 ///
 ///
@@ -3627,10 +3627,10 @@ pub unsafe fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno>
 /// - Will fail with `-ENOSYS` if not implemented.
 pub unsafe fn io_cancel(
     ctx_id: aio_context_t,
-    iocb: &mut iocb_t,
+    iocb: &iocb_t,
     result: &mut io_event_t,
 ) -> Result<(), Errno> {
-    let iocb_ptr = iocb as *mut iocb_t as usize;
+    let iocb_ptr = iocb as *const iocb_t as usize;
     let result_ptr = result as *mut io_event_t as usize;
     syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(drop)
 }
@@ -3641,6 +3641,80 @@ pub unsafe fn io_cancel(
 ///
 /// Will fail with `-ENOSYS` if not implemented.
 /// May fail with `-EINVAL` if the context pointed to is invalid.
+///
+/// # Examples
+///
+/// ```
+/// use std::alloc::{alloc, Layout};
+/// use std::ptr;
+///
+/// let mut ctx: nc::aio_context_t = 0;
+/// let nr_events = 10;
+///
+/// let ret = unsafe { nc::io_setup(nr_events, &mut ctx) };
+/// assert!(ret.is_ok());
+///
+/// let out_filename = "/tmp/nc-io-destroy";
+/// let fd = unsafe {
+///     nc::open(
+///         out_filename,
+///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
+///         nc::S_IRUSR | nc::S_IWUSR,
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+///
+/// let layout =
+///     Layout::from_size_align(nc::PAGE_SIZE, nc::PAGE_SIZE).expect("Failed to create mem layout");
+/// let ptr = unsafe { alloc(layout) };
+/// if ptr.is_null() {
+///     eprintln!("Failed to alloc aligned memory");
+///     return;
+/// }
+/// let mut buf: Box<[u8]> = unsafe {
+///     let slice = ptr::slice_from_raw_parts_mut(ptr, nc::PAGE_SIZE);
+///     Box::from_raw(slice)
+/// };
+///
+/// let msg = "hello Rust\n";
+/// unsafe {
+///     ptr::copy_nonoverlapping(msg.as_ptr(), buf.as_mut_ptr(), msg.len());
+/// }
+///
+/// let mut iocb = Vec::with_capacity(1);
+/// iocb.push(nc::iocb_t {
+///     aio_data: buf.as_ptr() as u64,
+///     aio_lio_opcode: nc::IOCB_CMD_PWRITE,
+///     aio_fildes: fd as u32,
+///     aio_buf: buf.as_ptr() as u64,
+///     aio_nbytes: nc::PAGE_SIZE as u64,
+///     ..Default::default()
+/// });
+///
+/// let ret = unsafe { nc::io_submit(ctx, &iocb) };
+/// if let Err(errno) = ret {
+///     eprintln!("io_submit() failed, err: {}", nc::strerror(errno));
+///     return;
+/// }
+///
+/// let mut events = vec![nc::io_event_t::default(); 10];
+/// let mut timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 100,
+/// };
+///
+/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, &mut timeout) };
+/// assert!(ret.is_ok());
+/// let nread = ret.unwrap();
+/// assert_eq!(nread, 1);
+///
+/// unsafe {
+///     let _ret = nc::close(fd);
+///     let _ret = nc::io_destroy(ctx);
+/// }
+/// ```
+///
 pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
     syscall1(SYS_IO_DESTROY, ctx_id).map(drop)
 }
@@ -3660,16 +3734,88 @@ pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
 ///   specifies an infinite timeout. Note that the timeout pointed to by timeout
 ///   is relative.
 /// - Will fail with `-ENOSYS` if not implemented.
+///
+/// # Examples
+///
+/// ```
+/// use std::alloc::{alloc, Layout};
+/// use std::ptr;
+///
+/// let mut ctx: nc::aio_context_t = 0;
+/// let nr_events = 10;
+///
+/// let ret = unsafe { nc::io_setup(nr_events, &mut ctx) };
+/// assert!(ret.is_ok());
+///
+/// let out_filename = "/tmp/nc-io-getevents";
+/// let fd = unsafe {
+///     nc::open(
+///         out_filename,
+///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
+///         nc::S_IRUSR | nc::S_IWUSR,
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+///
+/// let layout =
+///     Layout::from_size_align(nc::PAGE_SIZE, nc::PAGE_SIZE).expect("Failed to create mem layout");
+/// let ptr = unsafe { alloc(layout) };
+/// if ptr.is_null() {
+///     eprintln!("Failed to alloc aligned memory");
+///     return;
+/// }
+/// let mut buf: Box<[u8]> = unsafe {
+///     let slice = ptr::slice_from_raw_parts_mut(ptr, nc::PAGE_SIZE);
+///     Box::from_raw(slice)
+/// };
+///
+/// let msg = "hello Rust\n";
+/// unsafe {
+///     ptr::copy_nonoverlapping(msg.as_ptr(), buf.as_mut_ptr(), msg.len());
+/// }
+///
+/// let mut iocb = Vec::with_capacity(1);
+/// iocb.push(nc::iocb_t {
+///     aio_data: buf.as_ptr() as u64,
+///     aio_lio_opcode: nc::IOCB_CMD_PWRITE,
+///     aio_fildes: fd as u32,
+///     aio_buf: buf.as_ptr() as u64,
+///     aio_nbytes: nc::PAGE_SIZE as u64,
+///     ..Default::default()
+/// });
+///
+/// let ret = unsafe { nc::io_submit(ctx, &iocb) };
+/// if let Err(errno) = ret {
+///     eprintln!("io_submit() failed, err: {}", nc::strerror(errno));
+///     return;
+/// }
+///
+/// let mut events = vec![nc::io_event_t::default(); 10];
+/// let mut timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 100,
+/// };
+///
+/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, &mut timeout) };
+/// assert!(ret.is_ok());
+/// let nread = ret.unwrap();
+/// assert_eq!(nread, 1);
+///
+/// unsafe {
+///     let _ret = nc::close(fd);
+///     let _ret = nc::io_destroy(ctx);
+/// }
+/// ```
+///
 pub unsafe fn io_getevents(
     ctx_id: aio_context_t,
-    min_nr: isize,
-    nr: isize,
-    events: &mut io_event_t,
+    min_nr: usize,
+    events: &mut [io_event_t],
     timeout: &mut timespec_t,
-) -> Result<i32, Errno> {
-    let min_nr = min_nr as usize;
-    let nr = nr as usize;
-    let events_ptr = events as *mut io_event_t as usize;
+) -> Result<ssize_t, Errno> {
+    let nr = events.len();
+    let events_ptr = events.as_mut_ptr() as usize;
     let timeout_ptr = timeout as *mut timespec_t as usize;
     syscall5(
         SYS_IO_GETEVENTS,
@@ -3679,7 +3825,7 @@ pub unsafe fn io_getevents(
         events_ptr,
         timeout_ptr,
     )
-    .map(|ret| ret as i32)
+    .map(|ret| ret as ssize_t)
 }
 
 /// read asynchronous I/O events from the completion queue
@@ -3711,28 +3857,102 @@ pub unsafe fn io_pgetevents(
 /// Create an asynchronous I/O context.
 ///
 /// Create an `aio_context` capable of receiving at least `nr_events`.
-/// ctxp must not point to an `aio_context` that already exists, and
+/// `ctx_id` must not point to an `aio_context` that already exists, and
 /// must be initialized to 0 prior to the call.
 ///
-/// On successful creation of the `aio_context`, `*ctxp` is filled in with the resulting
-/// handle.
+/// On successful creation of the `aio_context`, `ctx_id` is filled in with
+/// the resulting handle.
 ///
 /// # Errors
 ///
-/// - May fail with `-EINVAL` if `*ctxp` is not initialized,
+/// - May fail with `-EINVAL` if `*ctx_id` is not initialized,
 ///   if the specified `nr_events` exceeds internal limits.
 /// - May fail with `-EAGAIN` if the specified `nr_events` exceeds the user's limit
 ///   of available events.
 /// - May fail with `-ENOMEM` if insufficient kernel resources are available.
-/// - May fail with `-EFAULT` if an invalid pointer is passed for ctxp.
+/// - May fail with `-EFAULT` if an invalid pointer is passed for `ctx_id`.
 /// - Will fail with `-ENOSYS` if not implemented.
+///
+/// # Examples
+///
+/// ```
+/// use std::alloc::{alloc, Layout};
+/// use std::ptr;
+///
+/// let mut ctx: nc::aio_context_t = 0;
+/// let nr_events = 10;
+///
+/// let ret = unsafe { nc::io_setup(nr_events, &mut ctx) };
+/// assert!(ret.is_ok());
+///
+/// let out_filename = "/tmp/nc-io-setup";
+/// let fd = unsafe {
+///     nc::open(
+///         out_filename,
+///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
+///         nc::S_IRUSR | nc::S_IWUSR,
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+///
+/// let layout =
+///     Layout::from_size_align(nc::PAGE_SIZE, nc::PAGE_SIZE).expect("Failed to create mem layout");
+/// let ptr = unsafe { alloc(layout) };
+/// if ptr.is_null() {
+///     eprintln!("Failed to alloc aligned memory");
+///     return;
+/// }
+/// let mut buf: Box<[u8]> = unsafe {
+///     let slice = ptr::slice_from_raw_parts_mut(ptr, nc::PAGE_SIZE);
+///     Box::from_raw(slice)
+/// };
+///
+/// let msg = "hello Rust\n";
+/// unsafe {
+///     ptr::copy_nonoverlapping(msg.as_ptr(), buf.as_mut_ptr(), msg.len());
+/// }
+///
+/// let mut iocb = Vec::with_capacity(1);
+/// iocb.push(nc::iocb_t {
+///     aio_data: buf.as_ptr() as u64,
+///     aio_lio_opcode: nc::IOCB_CMD_PWRITE,
+///     aio_fildes: fd as u32,
+///     aio_buf: buf.as_ptr() as u64,
+///     aio_nbytes: nc::PAGE_SIZE as u64,
+///     ..Default::default()
+/// });
+///
+/// let ret = unsafe { nc::io_submit(ctx, &iocb) };
+/// if let Err(errno) = ret {
+///     eprintln!("io_submit() failed, err: {}", nc::strerror(errno));
+///     return;
+/// }
+///
+/// let mut events = vec![nc::io_event_t::default(); 10];
+/// let mut timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 100,
+/// };
+///
+/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, &mut timeout) };
+/// assert!(ret.is_ok());
+/// let nread = ret.unwrap();
+/// assert_eq!(nread, 1);
+///
+/// unsafe {
+///     let _ret = nc::close(fd);
+///     let _ret = nc::io_destroy(ctx);
+/// }
+/// ```
+///
 pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
     let nr_events = nr_events as usize;
     let ctx_id_ptr = ctx_id as *mut aio_context_t as usize;
     syscall2(SYS_IO_SETUP, nr_events, ctx_id_ptr).map(drop)
 }
 
-/// Queue the nr iocbs pointed to by iocbpp for processing.
+/// Queue the nr iocbs pointed to by `iocb` for processing.
 ///
 /// Returns the number of iocbs queued.
 ///
@@ -3746,10 +3966,83 @@ pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(),
 /// - May fail with `-EAGAIN` if insufficient resources are available to queue any iocbs.
 /// - Will return 0 if nr is 0.
 /// - Will fail with `-ENOSYS` if not implemented.
-// TODO(Shaohua): type of iocbpp is struct iocb**
-pub unsafe fn io_submit(ctx_id: aio_context_t, nr: isize, iocb: &mut iocb_t) -> Result<i32, Errno> {
-    let nr = nr as usize;
-    let iocb_ptr = iocb as *mut iocb_t as usize;
+///
+/// # Examples
+///
+/// ```
+/// use std::alloc::{alloc, Layout};
+/// use std::ptr;
+///
+/// let mut ctx: nc::aio_context_t = 0;
+/// let nr_events = 10;
+///
+/// let ret = unsafe { nc::io_setup(nr_events, &mut ctx) };
+/// assert!(ret.is_ok());
+///
+/// let out_filename = "/tmp/nc-io-submit";
+/// let fd = unsafe {
+///     nc::open(
+///         out_filename,
+///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
+///         nc::S_IRUSR | nc::S_IWUSR,
+///     )
+/// };
+/// assert!(fd.is_ok());
+/// let fd = fd.unwrap();
+///
+/// let layout =
+///     Layout::from_size_align(nc::PAGE_SIZE, nc::PAGE_SIZE).expect("Failed to create mem layout");
+/// let ptr = unsafe { alloc(layout) };
+/// if ptr.is_null() {
+///     eprintln!("Failed to alloc aligned memory");
+///     return;
+/// }
+/// let mut buf: Box<[u8]> = unsafe {
+///     let slice = ptr::slice_from_raw_parts_mut(ptr, nc::PAGE_SIZE);
+///     Box::from_raw(slice)
+/// };
+///
+/// let msg = "hello Rust\n";
+/// unsafe {
+///     ptr::copy_nonoverlapping(msg.as_ptr(), buf.as_mut_ptr(), msg.len());
+/// }
+///
+/// let mut iocb = Vec::with_capacity(1);
+/// iocb.push(nc::iocb_t {
+///     aio_data: buf.as_ptr() as u64,
+///     aio_lio_opcode: nc::IOCB_CMD_PWRITE,
+///     aio_fildes: fd as u32,
+///     aio_buf: buf.as_ptr() as u64,
+///     aio_nbytes: nc::PAGE_SIZE as u64,
+///     ..Default::default()
+/// });
+///
+/// let ret = unsafe { nc::io_submit(ctx, &iocb) };
+/// if let Err(errno) = ret {
+///     eprintln!("io_submit() failed, err: {}", nc::strerror(errno));
+///     return;
+/// }
+///
+/// let mut events = vec![nc::io_event_t::default(); 10];
+/// let mut timeout = nc::timespec_t {
+///     tv_sec: 1,
+///     tv_nsec: 100,
+/// };
+///
+/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, &mut timeout) };
+/// assert!(ret.is_ok());
+/// let nread = ret.unwrap();
+/// assert_eq!(nread, 1);
+///
+/// unsafe {
+///     let _ret = nc::close(fd);
+///     let _ret = nc::io_destroy(ctx);
+/// }
+/// ```
+///
+pub unsafe fn io_submit(ctx_id: aio_context_t, iocb: &[iocb_t]) -> Result<i32, Errno> {
+    let nr = iocb.len();
+    let iocb_ptr = core::ptr::addr_of!(iocb) as usize;
     syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
 }
 

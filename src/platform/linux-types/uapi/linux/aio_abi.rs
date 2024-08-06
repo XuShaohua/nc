@@ -8,15 +8,15 @@ use crate::rwf_t;
 
 pub type aio_context_t = usize;
 
-pub const IOCB_CMD_PREAD: i32 = 0;
-pub const IOCB_CMD_PWRITE: i32 = 1;
-pub const IOCB_CMD_FSYNC: i32 = 2;
-pub const IOCB_CMD_FDSYNC: i32 = 3;
+pub const IOCB_CMD_PREAD: u16 = 0;
+pub const IOCB_CMD_PWRITE: u16 = 1;
+pub const IOCB_CMD_FSYNC: u16 = 2;
+pub const IOCB_CMD_FDSYNC: u16 = 3;
 // 4 was the experimental IOCB_CMD_PREADX
-pub const IOCB_CMD_POLL: i32 = 5;
-pub const IOCB_CMD_NOOP: i32 = 6;
-pub const IOCB_CMD_PREADV: i32 = 7;
-pub const IOCB_CMD_PWRITEV: i32 = 8;
+pub const IOCB_CMD_POLL: u16 = 5;
+pub const IOCB_CMD_NOOP: u16 = 6;
+pub const IOCB_CMD_PREADV: u16 = 7;
+pub const IOCB_CMD_PWRITEV: u16 = 8;
 
 /// Valid flags for the `aio_flags` member of the `struct iocb`.
 /// `IOCB_FLAG_RESFD` - Set if the `aio_resfd` member of the `struct iocb` is valid.
@@ -26,7 +26,7 @@ pub const IOCB_FLAG_IOPRIO: i32 = 1 << 1;
 
 /// `read()` from `/dev/aio` returns these structures.
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct io_event_t {
     /// the data field from the iocb
     pub data: u64,
@@ -44,13 +44,13 @@ pub struct io_event_t {
 /// we always use a 64bit `off_t` when communicating
 /// with userland.  its up to libraries to do the
 /// proper padding and `aio_error` abstraction
-// TODO(Shaohua): Check int types to pre-defined types
 #[repr(C)]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct iocb_t {
     /// these are internal to the kernel/libc.
     /// data to be returned in event's data */
     pub aio_data: u64,
+
     /// the kernel sets `aio_key` to the req #
     pub aio_key: u32,
 
@@ -67,7 +67,6 @@ pub struct iocb_t {
     pub aio_offset: i64,
 
     /// extra parameters
-    // TODO: use this for a (struct sigevent *)
     pub aio_reserved2: u64,
 
     /// flags for the `struct iocb`

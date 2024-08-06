@@ -19,7 +19,7 @@ fn call_date() {
 }
 
 fn call_id() {
-    let ret = unsafe { nc::open("/usr/bin/id", nc::O_RDONLY | nc::O_CLOEXEC, 0) };
+    let ret = unsafe { nc::openat(nc::AT_FDCWD, "/usr/bin/id", nc::O_RDONLY | nc::O_CLOEXEC, 0) };
     assert!(ret.is_ok());
     let fd = ret.unwrap();
     let args = ["id", "-u", "-n"];
@@ -29,7 +29,12 @@ fn call_id() {
 }
 
 fn main() {
-    let pid = unsafe { nc::fork() };
+    let args = nc::clone_args_t {
+        exit_signal: nc::SIGCHLD as u64,
+        ..Default::default()
+    };
+
+    let pid = unsafe { nc::clone3(&args) };
     match pid {
         Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
         Ok(0) => {
@@ -42,7 +47,7 @@ fn main() {
         }
     }
 
-    let pid = unsafe { nc::fork() };
+    let pid = unsafe { nc::clone3(&args) };
     match pid {
         Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
         Ok(0) => {
@@ -55,7 +60,7 @@ fn main() {
         }
     }
 
-    let pid = unsafe { nc::fork() };
+    let pid = unsafe { nc::clone3(&args) };
     match pid {
         Err(errno) => eprintln!("Failed to call fork(), err: {errno}"),
         Ok(0) => {

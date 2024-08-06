@@ -6,6 +6,8 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+use crate::mode_t;
+
 pub const STAT_HAVE_NSEC: i32 = 1;
 
 #[repr(C)]

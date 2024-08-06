@@ -4042,11 +4042,7 @@ pub unsafe fn keyctl(
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -5882,11 +5878,7 @@ pub unsafe fn personality(persona: u32) -> Result<u32, Errno> {
 /// ```
 /// const STDOUT_FD: i32 = 1;
 ///
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 ///
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -5969,11 +5961,7 @@ pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32,
 /// ```
 /// const STDOUT_FD: i32 = 1;
 ///
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 ///
@@ -6064,11 +6052,7 @@ pub unsafe fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
 /// ```
 /// const STDOUT_FD: i32 = 1;
 ///
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 ///
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
@@ -7417,11 +7401,7 @@ pub unsafe fn rt_sigreturn() {
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -9065,11 +9045,7 @@ pub unsafe fn sigreturn() {
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -9609,11 +9585,7 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -10028,11 +10000,7 @@ pub unsafe fn times(buf: &mut tms_t) -> Result<clock_t, Errno> {
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 /// assert!(pid >= 0);
@@ -10375,15 +10343,11 @@ pub unsafe fn vmsplice(fd: i32, iov: &[iovec_t], flags: u32) -> Result<ssize_t, 
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 ///
 /// match pid {
 ///     Err(errno) => {
-///         eprintln!("clone3() error: {}", nc::strerror(errno));
+///         eprintln!("fork() error: {}", nc::strerror(errno));
 ///         unsafe { nc::exit(1) };
 ///     }
 ///     Ok(0) => println!("[child] pid is: {}", unsafe { nc::getpid() }),
@@ -10419,15 +10383,11 @@ pub unsafe fn wait4(
 /// # Examples
 ///
 /// ```
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 ///
 /// match pid {
 ///     Err(errno) => {
-///         eprintln!("clone3() error: {}", nc::strerror(errno));
+///         eprintln!("fork() error: {}", nc::strerror(errno));
 ///         unsafe { nc::exit(1) };
 ///     }
 ///     Ok(0) => println!("[child] pid is: {}", unsafe { nc::getpid() }),

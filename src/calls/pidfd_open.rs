@@ -5,11 +5,7 @@
 /// ```
 /// const STDOUT_FD: i32 = 1;
 ///
-/// let args = nc::clone_args_t {
-///     exit_signal: nc::SIGCHLD as u64,
-///     ..Default::default()
-/// };
-/// let pid = unsafe { nc::clone3(&args) };
+/// let pid = unsafe { nc::fork() };
 /// assert!(pid.is_ok());
 /// let pid = pid.unwrap();
 ///

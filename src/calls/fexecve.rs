@@ -5,7 +5,7 @@
 /// ```
 /// let args = ["ls", "-l", "-a"];
 /// let env = ["DISPLAY=:0"];
-/// let ret = unsafe { nc::open("/bin/ls", nc::O_RDONLY, 0) };
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, "/bin/ls", nc::O_RDONLY, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let ret = unsafe { nc::fexecve(fd, &args, &env) };

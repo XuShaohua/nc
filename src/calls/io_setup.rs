@@ -31,7 +31,8 @@
 ///
 /// let out_filename = "/tmp/nc-io-setup";
 /// let fd = unsafe {
-///     nc::open(
+///     nc::openat(
+///         nc::AT_FDCWD,
 ///         out_filename,
 ///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
 ///         nc::S_IRUSR | nc::S_IWUSR,

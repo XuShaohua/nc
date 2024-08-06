@@ -1397,7 +1397,7 @@ pub unsafe fn execve<P: AsRef<Path>>(filename: P, argv: &[P], env: &[P]) -> Resu
 /// ```
 /// let args = ["ls", "-l", "-a"];
 /// let env = ["DISPLAY=:0"];
-/// let ret = unsafe { nc::open("/bin/ls", nc::O_RDONLY | nc::O_CLOEXEC, 0) };
+/// let ret = unsafe { nc::openat(nc::AT_FDCWD, "/bin/ls", nc::O_RDONLY | nc::O_CLOEXEC, 0) };
 /// assert!(ret.is_ok());
 /// let fd = ret.unwrap();
 /// let ret = unsafe { nc::execveat(fd, "", &args, &env, nc::AT_EMPTY_PATH) };
@@ -3486,7 +3486,8 @@ pub unsafe fn io_cancel(
 ///
 /// let out_filename = "/tmp/nc-io-destroy";
 /// let fd = unsafe {
-///     nc::open(
+///     nc::openat(
+///         nc::AT_FDCWD,
 ///         out_filename,
 ///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
 ///         nc::S_IRUSR | nc::S_IWUSR,
@@ -3579,7 +3580,8 @@ pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
 ///
 /// let out_filename = "/tmp/nc-io-getevents";
 /// let fd = unsafe {
-///     nc::open(
+///     nc::openat(
+///         nc::AT_FDCWD,
 ///         out_filename,
 ///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
 ///         nc::S_IRUSR | nc::S_IWUSR,
@@ -3676,7 +3678,8 @@ pub unsafe fn io_getevents(
 ///
 /// let out_filename = "/tmp/nc-io-getevents";
 /// let fd = unsafe {
-///     nc::open(
+///     nc::openat(
+///         nc::AT_FDCWD,
 ///         out_filename,
 ///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
 ///         nc::S_IRUSR | nc::S_IWUSR,
@@ -3798,7 +3801,8 @@ pub unsafe fn io_pgetevents(
 ///
 /// let out_filename = "/tmp/nc-io-setup";
 /// let fd = unsafe {
-///     nc::open(
+///     nc::openat(
+///         nc::AT_FDCWD,
 ///         out_filename,
 ///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
 ///         nc::S_IRUSR | nc::S_IWUSR,
@@ -3892,7 +3896,8 @@ pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(),
 ///
 /// let out_filename = "/tmp/nc-io-submit";
 /// let fd = unsafe {
-///     nc::open(
+///     nc::openat(
+///         nc::AT_FDCWD,
 ///         out_filename,
 ///         nc::O_CREAT | nc::O_DIRECT | nc::O_WRONLY,
 ///         nc::S_IRUSR | nc::S_IWUSR,

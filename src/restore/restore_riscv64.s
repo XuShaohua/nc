@@ -1,4 +1,4 @@
-// From musl v1.2.5
+# From musl v1.2.5
 .global __restore
 .type __restore, %function
 __restore:

@@ -4,7 +4,7 @@
 
 //! From `include/uapi/asm-generic/signal.h`
 
-use crate::{sighandler_t, size_t, BITS_PER_LONG};
+use crate::{sighandler_t, sigrestore_t, size_t, BITS_PER_LONG};
 
 pub const _NSIG: usize = 64;
 pub const _NSIG_BPW: usize = BITS_PER_LONG;
@@ -74,12 +74,14 @@ impl From<old_sigset_t> for sigset_t {
     }
 }
 
-// No SA_RESTORER
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct sigaction_t {
     pub sa_handler: sighandler_t,
     pub sa_flags: usize,
+
+    #[cfg(any(target_arch = "aarch64", target_arch = "riscv64",))]
+    pub sa_restorer: sigrestore_t,
 
     /// mask last for extensibility
     pub sa_mask: sigset_t,

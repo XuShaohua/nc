@@ -2307,7 +2307,7 @@ pub unsafe fn futex_requeue(
 /// Identical to the traditional `FUTEX_WAIT_BITSET` op, except it is part of the
 /// futex2 familiy of calls.
 pub unsafe fn futex_wait(
-    uaddr: *const (),
+    uaddr: *const core::ffi::c_void,
     val: usize,
     mask: usize,
     flags: u32,
@@ -2382,10 +2382,10 @@ pub unsafe fn futex_waitv(
 
 /// Wake a number of futexes.
 ///
-/// - uaddr: Address of the futex(es) to wake
-/// - mask: bitmask
-/// - nr: Number of the futexes to wake
-/// - flags: `FUTEX2` flags
+/// - `uaddr`: Address of the futex(es) to wake
+/// - `mask`: bitmask
+/// - `nr`: Number of the futexes to wake
+/// - `flags`: `FUTEX2` flags
 ///
 /// Identical to the traditional `FUTEX_WAKE_BITSET` op, except it is part of the
 /// futex2 family of calls.

@@ -1,9 +1,9 @@
 /// Wake a number of futexes.
 ///
-/// - uaddr: Address of the futex(es) to wake
-/// - mask: bitmask
-/// - nr: Number of the futexes to wake
-/// - flags: `FUTEX2` flags
+/// - `uaddr`: Address of the futex(es) to wake
+/// - `mask`: bitmask
+/// - `nr`: Number of the futexes to wake
+/// - `flags`: `FUTEX2` flags
 ///
 /// Identical to the traditional `FUTEX_WAKE_BITSET` op, except it is part of the
 /// futex2 family of calls.

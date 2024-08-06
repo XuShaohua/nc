@@ -10,7 +10,7 @@
 /// Identical to the traditional `FUTEX_WAIT_BITSET` op, except it is part of the
 /// futex2 familiy of calls.
 pub unsafe fn futex_wait(
-    uaddr: *const (),
+    uaddr: *const core::ffi::c_void,
     val: usize,
     mask: usize,
     flags: u32,

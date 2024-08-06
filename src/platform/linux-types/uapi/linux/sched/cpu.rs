@@ -11,7 +11,7 @@ use core::mem::size_of;
 use crate::{Errno, EINVAL};
 
 pub const CPU_SET_BYTES: usize = 128;
-const WORD_BYTES: usize = size_of::<usize>();
+const WORD_BYTES: usize = size_of::<u64>();
 const WORD_BITS: usize = WORD_BYTES * 8;
 
 #[repr(C)]

@@ -42,8 +42,8 @@ pub const SA_EXPOSE_TAGBITS: usize = 0x0000_0800;
 /* 0x00010000 used on mips */
 /* 0x01000000 used on x86 */
 /* 0x02000000 used on x86 */
-/// New architectures should not define the obsolete
-/// `SA_RESTORER` 0x04000000
+// New architectures should not define the obsolete
+// `SA_RESTORER` 0x04000000
 #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
 pub const SA_ONSTACK: usize = 0x0800_0000;
 #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]

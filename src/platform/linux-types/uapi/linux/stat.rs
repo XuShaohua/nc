@@ -18,14 +18,47 @@ pub const S_ISUID: mode_t = 0o004_000;
 pub const S_ISGID: mode_t = 0o002_000;
 pub const S_ISVTX: mode_t = 0o001_000;
 
-// TODO(Shaohua):
-//#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
-//#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
-//#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
-//#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
-//#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
-//#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
-//#define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
+#[must_use]
+#[inline]
+pub const fn S_ISLNK(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFLNK
+}
+
+#[must_use]
+#[inline]
+pub const fn S_ISREG(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFREG
+}
+
+#[must_use]
+#[inline]
+pub const fn S_ISDIR(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFDIR
+}
+
+#[must_use]
+#[inline]
+pub const fn S_ISCHR(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFCHR
+}
+
+#[must_use]
+#[inline]
+pub const fn S_ISBLK(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFBLK
+}
+
+#[must_use]
+#[inline]
+pub const fn S_ISFIFO(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFIFO
+}
+
+#[must_use]
+#[inline]
+pub const fn S_ISSOCK(m: mode_t) -> bool {
+    (m & S_IFMT) == S_IFSOCK
+}
 
 pub const S_IRWXU: mode_t = 0o0700;
 pub const S_IRUSR: mode_t = 0o0400;

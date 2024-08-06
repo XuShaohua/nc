@@ -16,7 +16,7 @@ pub struct stat_t {
     /// File serial number.
     pub st_ino: usize,
     /// File mode.
-    pub st_mode: u32,
+    pub st_mode: mode_t,
     /// Link count.
     pub st_nlink: u32,
     /// User ID of the file's owner.

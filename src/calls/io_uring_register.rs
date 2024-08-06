@@ -1,5 +1,6 @@
+/// Register files or user buffers for asynchronous I/O
 pub unsafe fn io_uring_register(
-    fd: i32,
+    fd: u32,
     opcode: u32,
     arg: usize,
     nr_args: u32,

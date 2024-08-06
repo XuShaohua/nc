@@ -6,11 +6,13 @@
 
 #![allow(clippy::module_name_repetitions)]
 
+use core::fmt;
+
 use crate::off_t;
 use crate::rwf_t;
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub union io_uring_sqe_file_off_t {
     /// offset into file
     pub off: u64,
@@ -18,8 +20,20 @@ pub union io_uring_sqe_file_off_t {
     pub addr2: u64,
 }
 
+impl fmt::Debug for io_uring_sqe_file_off_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "off: {}", unsafe { self.off })
+    }
+}
+
+impl Default for io_uring_sqe_file_off_t {
+    fn default() -> Self {
+        Self { off: 0 }
+    }
+}
+
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub union io_uring_sqe_buf_addr_t {
     /// pointer to buffer or iovecs
     pub addr: u64,
@@ -27,8 +41,20 @@ pub union io_uring_sqe_buf_addr_t {
     pub splice_off_in: u64,
 }
 
+impl fmt::Debug for io_uring_sqe_buf_addr_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "addr: {}", unsafe { self.addr })
+    }
+}
+
+impl Default for io_uring_sqe_buf_addr_t {
+    fn default() -> Self {
+        Self { addr: 0 }
+    }
+}
+
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub union io_uring_sqe_other_flags_t {
     pub rw_flags: rwf_t,
     pub fsync_flags: u32,
@@ -44,8 +70,20 @@ pub union io_uring_sqe_other_flags_t {
     pub splice_flags: u32,
 }
 
+impl fmt::Debug for io_uring_sqe_other_flags_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "rw_flags: {}", unsafe { self.rw_flags })
+    }
+}
+
+impl Default for io_uring_sqe_other_flags_t {
+    fn default() -> Self {
+        Self { rw_flags: 0 }
+    }
+}
+
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub union io_uring_sqe_buf_group_t {
     /// index into fixed buffers, if used
     pub buf_index: u16,
@@ -54,8 +92,20 @@ pub union io_uring_sqe_buf_group_t {
     pub buf_group: u16,
 }
 
+impl fmt::Debug for io_uring_sqe_buf_group_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "buf_index: {}", unsafe { self.buf_index })
+    }
+}
+
+impl Default for io_uring_sqe_buf_group_t {
+    fn default() -> Self {
+        Self { buf_index: 0 }
+    }
+}
+
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct io_uring_sqe_buf_t {
     /// pack this to avoid bogus arm OABI complaints
     pub group: io_uring_sqe_buf_group_t,
@@ -66,15 +116,29 @@ pub struct io_uring_sqe_buf_t {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 pub union io_uring_sqe_opt_buf_t {
     pub buf: io_uring_sqe_buf_t,
     pad2: [u64; 3],
 }
 
+impl fmt::Debug for io_uring_sqe_opt_buf_t {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", unsafe { self.buf })
+    }
+}
+
+impl Default for io_uring_sqe_opt_buf_t {
+    fn default() -> Self {
+        Self {
+            buf: io_uring_sqe_buf_t::default(),
+        }
+    }
+}
+
 /// IO submission data structure (Submission Queue Entry)
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct io_uring_sqe_t {
     /// type of operation for this sqe
     pub opcode: IOURING_OP,
@@ -139,8 +203,9 @@ pub const IORING_SETUP_CLAMP: u32 = 1 << 4;
 pub const IORING_SETUP_ATTACH_WQ: u32 = 1 << 5;
 
 #[repr(u32)]
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Default, Clone, Copy, Eq, PartialEq)]
 pub enum IOURING_OP {
+    #[default]
     IORING_OP_NOP,
     IORING_OP_READV,
     IORING_OP_WRITEV,
@@ -193,7 +258,7 @@ pub const SPLICE_F_FD_IN_FIXED: u32 = 1 << 31;
 
 /// IO completion data structure (Completion Queue Entry)
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct io_uring_cqe_t {
     /// sqe->data submission passed back
     pub user_data: u64,
@@ -217,7 +282,7 @@ pub const IORING_OFF_SQES: off_t = 0x1000_0000;
 
 /// Filled with the offset for `mmap(2)`
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct io_sqring_offsets_t {
     pub head: u32,
     pub tail: u32,
@@ -235,7 +300,7 @@ pub struct io_sqring_offsets_t {
 pub const IORING_SQ_NEED_WAKEUP: u32 = 1;
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct io_cqring_offsets_t {
     pub head: u32,
     pub tail: u32,
@@ -252,7 +317,7 @@ pub const IORING_ENTER_SQ_WAKEUP: u32 = 1 << 1;
 
 /// Passed in for `io_uring_setup(2)`. Copied back with updated info on success
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct io_uring_params_t {
     pub sq_entries: u32,
     pub cq_entries: u32,
@@ -288,7 +353,7 @@ pub const IORING_REGISTER_PERSONALITY: i32 = 9;
 pub const IORING_UNREGISTER_PERSONALITY: i32 = 10;
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct io_uring_files_update_t {
     pub offset: u32,
     pub resv: u32,
@@ -298,7 +363,7 @@ pub struct io_uring_files_update_t {
 pub const IO_URING_OP_SUPPORTED: u32 = 1;
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct io_uring_probe_op_t {
     pub op: u8,
     pub resv: u8,
@@ -310,7 +375,7 @@ pub struct io_uring_probe_op_t {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Debug, Clone)]
 pub struct io_uring_probe_t {
     /// last opcode supported
     pub last_op: u8,
@@ -320,5 +385,5 @@ pub struct io_uring_probe_t {
 
     pub resv: u16,
     pub resv2: [u32; 3],
-    pub ops: *mut io_uring_probe_op_t,
+    pub ops: [io_uring_probe_op_t; 0],
 }

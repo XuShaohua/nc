@@ -3901,33 +3901,35 @@ pub unsafe fn io_submit(ctx_id: aio_context_t, iocb: &[iocb_t]) -> Result<i32, E
     syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
 }
 
+/// Initiate and/or complete asynchronous I/O
 pub unsafe fn io_uring_enter(
     fd: i32,
     to_submit: u32,
     min_complete: u32,
     flags: u32,
-    sig: &sigset_t,
-    sigsetsize: size_t,
+    arg: *const core::ffi::c_void,
+    arg_size: usize,
 ) -> Result<i32, Errno> {
     let fd = fd as usize;
     let to_submit = to_submit as usize;
     let min_complete = min_complete as usize;
     let flags = flags as usize;
-    let sig_ptr = sig as *const sigset_t as usize;
+    let arg = arg as usize;
     syscall6(
         SYS_IO_URING_ENTER,
         fd,
         to_submit,
         min_complete,
         flags,
-        sig_ptr,
-        sigsetsize,
+        arg,
+        arg_size,
     )
     .map(|ret| ret as i32)
 }
 
+/// Register files or user buffers for asynchronous I/O
 pub unsafe fn io_uring_register(
-    fd: i32,
+    fd: u32,
     opcode: u32,
     arg: usize,
     nr_args: u32,
@@ -3938,10 +3940,17 @@ pub unsafe fn io_uring_register(
     syscall4(SYS_IO_URING_REGISTER, fd, opcode, arg, nr_args).map(|ret| ret as i32)
 }
 
-pub unsafe fn io_uring_setup(entries: u32, params: &mut io_uring_params_t) -> Result<i32, Errno> {
+/// Setup a context for performing asynchronous I/O.
+///
+/// Sets up a submission queue (SQ) and completion queue (CQ) with at least `entries`,
+/// and returns a file descriptor which can be used to perform subsequent operations
+/// on the `io_uring` instance.
+/// The submission and completion queues are shared between userspace and the kernel,
+/// which eliminates the need to copy data when initiating and completing I/O.
+pub unsafe fn io_uring_setup(entries: u32, params: &mut io_uring_params_t) -> Result<u32, Errno> {
     let entries = entries as usize;
     let params_ptr = params as *mut io_uring_params_t as usize;
-    syscall2(SYS_IO_URING_SETUP, entries, params_ptr).map(|ret| ret as i32)
+    syscall2(SYS_IO_URING_SETUP, entries, params_ptr).map(|ret| ret as u32)
 }
 
 /// System V IPC system calls.

@@ -9,14 +9,14 @@ fn main() {
         let _ = unsafe { nc::write(2, msg.as_bytes()) };
     }
 
-    #[cfg(has_sa_restorer)]
+    #[cfg(nc_has_sa_restorer)]
     let sa = nc::sigaction_t {
         sa_handler: handle_alarm as nc::sighandler_t,
         sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
         sa_restorer: nc::restore::get_sa_restorer(),
         ..nc::sigaction_t::default()
     };
-    #[cfg(not(has_sa_restorer))]
+    #[cfg(not(nc_has_sa_restorer))]
     let sa = nc::sigaction_t {
         sa_handler: handle_alarm as nc::sighandler_t,
         sa_flags: nc::SA_RESTART,

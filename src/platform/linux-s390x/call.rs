@@ -211,14 +211,14 @@ pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
 ///
-/// #[cfg(has_sa_restorer)]
+/// #[cfg(nc_has_sa_restorer)]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// #[cfg(not(has_sa_restorer))]
+/// #[cfg(not(nc_has_sa_restorer))]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTART,
@@ -2595,14 +2595,14 @@ pub unsafe fn getgroups(group_list: &mut [gid_t]) -> Result<i32, Errno> {
 ///     let _ = unsafe { nc::write(stderr, msg) };
 /// }
 ///
-/// #[cfg(has_sa_restorer)]
+/// #[cfg(nc_has_sa_restorer)]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// #[cfg(not(has_sa_restorer))]
+/// #[cfg(not(nc_has_sa_restorer))]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTART,
@@ -5842,14 +5842,14 @@ pub unsafe fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Re
 ///     assert_eq!(signum, nc::SIGALRM);
 /// }
 ///
-/// #[cfg(has_sa_restorer)]
+/// #[cfg(nc_has_sa_restorer)]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// #[cfg(not(has_sa_restorer))]
+/// #[cfg(not(nc_has_sa_restorer))]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTART,
@@ -7346,14 +7346,14 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
 ///     assert_eq!(sig, nc::SIGTERM);
 /// }
 ///
-/// #[cfg(has_sa_restorer)]
+/// #[cfg(nc_has_sa_restorer)]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_sigterm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// #[cfg(not(has_sa_restorer))]
+/// #[cfg(not(nc_has_sa_restorer))]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_sigterm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTART,
@@ -8435,14 +8435,14 @@ pub unsafe fn sethostname<P: AsRef<Path>>(name: P) -> Result<(), Errno> {
 ///     let _ = unsafe { nc::write(stderr, msg) };
 /// }
 ///
-/// #[cfg(has_sa_restorer)]
+/// #[cfg(nc_has_sa_restorer)]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// #[cfg(not(has_sa_restorer))]
+/// #[cfg(not(nc_has_sa_restorer))]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_alarm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTART,
@@ -8972,14 +8972,14 @@ pub unsafe fn shutdown(sockfd: i32, how: i32) -> Result<(), Errno> {
 ///     assert_eq!(sig, nc::SIGTERM);
 /// }
 ///
-/// #[cfg(has_sa_restorer)]
+/// #[cfg(nc_has_sa_restorer)]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_sigterm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///     sa_restorer: nc::restore::get_sa_restorer(),
 ///     ..nc::sigaction_t::default()
 /// };
-/// #[cfg(not(has_sa_restorer))]
+/// #[cfg(not(nc_has_sa_restorer))]
 /// let sa = nc::sigaction_t {
 ///     sa_handler: handle_sigterm as nc::sighandler_t,
 ///     sa_flags: nc::SA_RESTART,
@@ -9795,14 +9795,14 @@ pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
 /// }
 ///
 /// fn main() {
-///     #[cfg(has_sa_restorer)]
+///     #[cfg(nc_has_sa_restorer)]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///         sa_restorer: nc::restore::get_sa_restorer(),
 ///         ..nc::sigaction_t::default()
 ///     };
-///     #[cfg(not(has_sa_restorer))]
+///     #[cfg(not(nc_has_sa_restorer))]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         sa_flags: nc::SA_RESTART,
@@ -9875,14 +9875,14 @@ pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
 /// }
 ///
 /// fn main() {
-///     #[cfg(has_sa_restorer)]
+///     #[cfg(nc_has_sa_restorer)]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///         sa_restorer: nc::restore::get_sa_restorer(),
 ///         ..nc::sigaction_t::default()
 ///     };
-///     #[cfg(not(has_sa_restorer))]
+///     #[cfg(not(nc_has_sa_restorer))]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         sa_flags: nc::SA_RESTART,
@@ -9952,14 +9952,14 @@ pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Resul
 /// }
 ///
 /// fn main() {
-///     #[cfg(has_sa_restorer)]
+///     #[cfg(nc_has_sa_restorer)]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
 ///         sa_restorer: nc::restore::get_sa_restorer(),
 ///         ..nc::sigaction_t::default()
 ///     };
-///     #[cfg(not(has_sa_restorer))]
+///     #[cfg(not(nc_has_sa_restorer))]
 ///     let sa = nc::sigaction_t {
 ///         sa_handler: handle_alarm as nc::sighandler_t,
 ///         sa_flags: nc::SA_RESTART,

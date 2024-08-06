@@ -81,7 +81,7 @@ pub struct sigaction_t {
     pub sa_flags: usize,
 
     // NOTE(Shaohua): riscv64 does not have SA_RESTORER
-    #[cfg(has_sa_restorer)]
+    #[cfg(nc_has_sa_restorer)]
     pub sa_restorer: sigrestore_t,
 
     /// mask last for extensibility

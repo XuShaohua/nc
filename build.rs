@@ -25,8 +25,8 @@ fn get_page_size() {
 
 fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     // Switch to new syntax in rust 1.77
-    //println!("cargo::rustc-check-cfg=cfg(has_asm)");
-    println!("cargo:rustc-check-cfg=cfg(has_asm)");
+    //println!("cargo::rustc-check-cfg=cfg(nc_has_asm)");
+    println!("cargo:rustc-check-cfg=cfg(nc_has_asm)");
 
     // - x86_64/aarch64/arm/riscv64: support inline assembly in stable version
     // - x86/i686: esi and ebp registers are not allowed in inline asm in x86/i686, so always
@@ -40,7 +40,7 @@ fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
         || target_arch == "riscv64"
         || target_arch == "x86_64"
     {
-        println!("cargo:rustc-cfg=has_asm");
+        println!("cargo:rustc-cfg=nc_has_asm");
     } else {
         let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
         cc::Build::new().file(syscall_file).compile("syscall");
@@ -60,11 +60,11 @@ fn build_sa_restore(target_arch: &str) {
 }
 
 fn check_sa_restorer(target_arch: &str) {
-    //println!("cargo::rustc-check-cfg=cfg(has_sa_restorer)");
-    println!("cargo:rustc-check-cfg=cfg(has_sa_restorer)");
+    //println!("cargo::rustc-check-cfg=cfg(nc_has_sa_restorer)");
+    println!("cargo:rustc-check-cfg=cfg(nc_has_sa_restorer)");
 
     if target_arch != "riscv64" {
-        println!("cargo:rustc-cfg=has_sa_restorer");
+        println!("cargo:rustc-cfg=nc_has_sa_restorer");
     }
 }
 

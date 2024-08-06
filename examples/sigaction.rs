@@ -24,14 +24,14 @@ const SIGNALS: [i32; 14] = [
 ];
 
 fn main() {
-    #[cfg(has_sa_restorer)]
+    #[cfg(nc_has_sa_restorer)]
     let sa = nc::sigaction_t {
         sa_handler: signal_handler as nc::sighandler_t,
         sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
         sa_restorer: nc::restore::get_sa_restorer(),
         ..Default::default()
     };
-    #[cfg(not(has_sa_restorer))]
+    #[cfg(not(nc_has_sa_restorer))]
     let sa = nc::sigaction_t {
         sa_handler: signal_handler as nc::sighandler_t,
         sa_flags: nc::SA_RESTART,

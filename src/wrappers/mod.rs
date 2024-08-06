@@ -2,8 +2,14 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+#[cfg(all(
+    target_os = "linux",
+    any(target_arch = "aarch64", target_arch = "riscv64")
+))]
 mod fork;
 
-#[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+#[cfg(all(
+    target_os = "linux",
+    any(target_arch = "aarch64", target_arch = "riscv64")
+))]
 pub use fork::*;

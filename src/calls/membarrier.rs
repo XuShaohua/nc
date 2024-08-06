@@ -26,8 +26,9 @@
 ///        smp_mb()           X           O            O
 ///        sys_membarrier()   O           O            O
 /// ```
-pub unsafe fn membarrier(cmd: i32, flags: i32) -> Result<i32, Errno> {
+pub unsafe fn membarrier(cmd: i32, flags: u32, cpuid: i32) -> Result<i32, Errno> {
     let cmd = cmd as usize;
     let flags = flags as usize;
-    syscall2(SYS_MEMBARRIER, cmd, flags).map(|ret| ret as i32)
+    let cpuid = cpuid as usize;
+    syscall3(SYS_MEMBARRIER, cmd, flags, cpuid).map(|ret| ret as i32)
 }

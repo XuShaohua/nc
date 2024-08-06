@@ -5091,6 +5091,9 @@ pub unsafe fn mmap(
 /// # Examples
 ///
 /// ```
+/// use std::{mem, ptr};
+/// use std::ffi::c_void;
+///
 /// let path = "/etc/passwd";
 /// let ret = unsafe { nc::openat(nc::AT_FDCWD, path, nc::O_RDONLY, 0o644) };
 /// assert!(ret.is_ok());
@@ -5108,7 +5111,7 @@ pub unsafe fn mmap(
 ///
 /// let addr = unsafe {
 ///     nc::mmap2(
-///         0, // 0 as NULL
+///         ptr::null(),
 ///         map_length,
 ///         nc::PROT_READ,
 ///         nc::MAP_PRIVATE,
@@ -5117,29 +5120,36 @@ pub unsafe fn mmap(
 ///     )
 /// };
 /// assert!(addr.is_ok());
-/// let addr = addr.unwrap();
+/// let addr: *const c_void = addr.unwrap();
 ///
-/// let n_write = unsafe { nc::write(1, addr + offset - pa_offset, length) };
+/// let stdout = 1;
+/// // Create the "fat pointer".
+/// let buf = unsafe {
+///     mem::transmute::<(usize, usize), &[u8]>((addr as usize + offset - pa_offset, length))
+/// };
+/// let n_write = unsafe { nc::write(stdout, buf) };
 /// assert!(n_write.is_ok());
 /// assert_eq!(n_write, Ok(length as nc::ssize_t));
 /// let ret = unsafe { nc::munmap(addr, map_length) };
 /// assert!(ret.is_ok());
-/// let ret = unsafe { nc::munmap(addr, map_length) };
+/// let ret = unsafe { nc::close(fd) };
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn mmap2(
-    start: usize,
+    start: *const core::ffi::c_void,
     len: size_t,
     prot: i32,
     flags: i32,
     fd: i32,
     offset: off_t,
-) -> Result<usize, Errno> {
+) -> Result<*const core::ffi::c_void, Errno> {
+    let start = start as usize;
     let prot = prot as usize;
     let flags = flags as usize;
     let fd = fd as usize;
     let offset = offset as usize;
     syscall6(SYS_MMAP2, start, len, prot, flags, fd, offset)
+        .map(|ret| ret as *const core::ffi::c_void)
 }
 
 /// Mount filesystem.

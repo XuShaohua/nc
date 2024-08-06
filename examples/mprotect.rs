@@ -37,7 +37,7 @@ fn main() {
     #[cfg(target_arch = "arm")]
     let addr = unsafe {
         nc::mmap2(
-            0,
+            ptr::null(),
             map_length,
             nc::PROT_READ | nc::PROT_WRITE,
             nc::MAP_PRIVATE | nc::MAP_ANONYMOUS,

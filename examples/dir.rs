@@ -14,7 +14,7 @@ fn main() {
     let mut buf = [0; BUF_SIZE];
 
     loop {
-        let ret = unsafe { nc::getdents(fd, &mut buf) };
+        let ret = unsafe { nc::getdents64(fd, &mut buf) };
         assert!(ret.is_ok());
         let nread = ret.unwrap() as usize;
         if nread == 0 {

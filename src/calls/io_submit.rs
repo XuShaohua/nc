@@ -70,12 +70,12 @@
 /// }
 ///
 /// let mut events = vec![nc::io_event_t::default(); 10];
-/// let mut timeout = nc::timespec_t {
+/// let timeout = nc::timespec_t {
 ///     tv_sec: 1,
 ///     tv_nsec: 100,
 /// };
 ///
-/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, &mut timeout) };
+/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, Some(&timeout)) };
 /// assert!(ret.is_ok());
 /// let nread = ret.unwrap();
 /// assert_eq!(nread, 1);

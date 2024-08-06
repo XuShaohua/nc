@@ -71,12 +71,12 @@
 /// }
 ///
 /// let mut events = vec![nc::io_event_t::default(); 10];
-/// let mut timeout = nc::timespec_t {
+/// let timeout = nc::timespec_t {
 ///     tv_sec: 1,
 ///     tv_nsec: 100,
 /// };
 ///
-/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, &mut timeout) };
+/// let ret = unsafe { nc::io_getevents(ctx, 1, &mut events, Some(&timeout)) };
 /// assert!(ret.is_ok());
 /// let nread = ret.unwrap();
 /// assert_eq!(nread, 1);
@@ -91,11 +91,13 @@ pub unsafe fn io_getevents(
     ctx_id: aio_context_t,
     min_nr: usize,
     events: &mut [io_event_t],
-    timeout: &mut timespec_t,
+    timeout: Option<&timespec_t>,
 ) -> Result<ssize_t, Errno> {
     let nr = events.len();
     let events_ptr = events.as_mut_ptr() as usize;
-    let timeout_ptr = timeout as *mut timespec_t as usize;
+    let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
+        timeout as *const timespec_t as usize
+    });
     syscall5(
         SYS_IO_GETEVENTS,
         ctx_id,

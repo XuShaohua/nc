@@ -4,9 +4,8 @@
 
 use crate::restorefn_t;
 
-#[link(name = "restore", kind = "static")]
 extern "C" {
-    pub fn __restore_rt();
+    fn __restore_rt();
 
     // TODO(Shaohua): Also export "__restore" function.
 }

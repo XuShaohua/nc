@@ -47,18 +47,6 @@ fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     }
 }
 
-fn build_sa_restore(target_arch: &str) {
-    if target_arch == "aarch64"
-        || target_arch == "arm"
-        || target_arch == "riscv64"
-        || target_arch == "x86"
-        || target_arch == "x86_64"
-    {
-        let restore_file = format!("src/restore/restore_{}.s", target_arch);
-        cc::Build::new().file(restore_file).compile("restore");
-    }
-}
-
 fn check_sa_restorer(target_arch: &str) {
     //println!("cargo::rustc-check-cfg=cfg(nc_has_sa_restorer)");
     println!("cargo:rustc-check-cfg=cfg(nc_has_sa_restorer)");
@@ -74,7 +62,6 @@ fn main() {
 
     get_page_size();
     build_syscall(&rustc_toolchain, &target_arch);
-    build_sa_restore(&target_arch);
 
     check_sa_restorer(&target_arch);
 }

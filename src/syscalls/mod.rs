@@ -9,11 +9,11 @@ pub use types::*;
 #[path = "c.rs"]
 mod syscall;
 
-#[cfg(all(nc_has_asm, target_arch = "aarch64"))]
+#[cfg(target_arch = "aarch64")]
 #[path = "syscall_aarch64.rs"]
 mod syscall;
 
-#[cfg(all(nc_has_asm, target_arch = "arm"))]
+#[cfg(target_arch = "arm")]
 #[path = "syscall_arm.rs"]
 mod syscall;
 
@@ -29,7 +29,7 @@ mod syscall;
 #[path = "syscall_powerpc64.rs"]
 mod syscall;
 
-#[cfg(all(nc_has_asm, target_arch = "riscv64"))]
+#[cfg(target_arch = "riscv64")]
 #[path = "syscall_riscv64.rs"]
 mod syscall;
 
@@ -41,7 +41,7 @@ mod syscall;
 #[path = "syscall_x86.rs"]
 mod syscall;
 
-#[cfg(all(nc_has_asm, target_arch = "x86_64"))]
+#[cfg(target_arch = "x86_64")]
 #[path = "syscall_x86_64.rs"]
 mod syscall;
 

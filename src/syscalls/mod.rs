@@ -37,7 +37,7 @@ mod syscall;
 #[path = "syscall_s390x.rs"]
 mod syscall;
 
-#[cfg(all(nc_has_asm, target_arch = "x86"))]
+#[cfg(target_arch = "x86")]
 #[path = "syscall_x86.rs"]
 mod syscall;
 

@@ -28,16 +28,15 @@ fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     //println!("cargo::rustc-check-cfg=cfg(nc_has_asm)");
     println!("cargo:rustc-check-cfg=cfg(nc_has_asm)");
 
-    // - x86_64/aarch64/arm/riscv64: support inline assembly in stable version
-    // - x86/i686: esi and ebp registers are not allowed in inline asm in x86/i686, so always
-    //   disable inline assembly
+    // - aarch64/arm/riscv64/x86/x86_64: support inline assembly in stable version
     // - others: enable inline assembly in nightly version.
     //
     // Note that RUSTUP_TOOLCHAIN is not set in cross-rs docker.
-    if (rustc_toolchain.starts_with("nightly") && target_arch != "x86")
+    if rustc_toolchain.starts_with("nightly")
         || target_arch == "aarch64"
         || target_arch == "arm"
         || target_arch == "riscv64"
+        || target_arch == "x86"
         || target_arch == "x86_64"
     {
         println!("cargo:rustc-cfg=nc_has_asm");

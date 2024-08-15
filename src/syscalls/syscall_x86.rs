@@ -13,7 +13,7 @@ use super::types::{check_errno, Errno, Sysno};
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("int 0x80",
          in("eax") n,
          lateout("eax") ret,
     );
@@ -23,7 +23,7 @@ pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("int 0x80",
          in("eax") n,
          in("ebx") a1,
          lateout("eax") ret,
@@ -34,7 +34,7 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("int 0x80",
          in("eax") n,
          in("ebx") a1,
          in("ecx") a2,
@@ -46,7 +46,7 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("int 0x80",
          in("eax") n,
          in("ebx") a1,
          in("ecx") a2,
@@ -65,12 +65,14 @@ pub unsafe fn syscall4(
     a4: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("xchg esi, {a4}
+         int 0x80
+         xchg esi, {a4}",
+         a4 = in(reg) a4,
          in("eax") n,
          in("ebx") a1,
          in("ecx") a2,
          in("edx") a3,
-         in("esi") a4,
          lateout("eax") ret,
     );
     check_errno(ret)
@@ -86,12 +88,14 @@ pub unsafe fn syscall5(
     a5: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("xchg esi, {a4}
+         int 0x80
+         xchg esi, {a4}",
+         a4 = in(reg) a4,
          in("eax") n,
          in("ebx") a1,
          in("ecx") a2,
          in("edx") a3,
-         in("esi") a4,
          in("edi") a5,
          lateout("eax") ret,
     );
@@ -108,16 +112,20 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    // FIXME(Shaohua): esi and ebp registers are not allowed in inline asm.
+    // ESI and EBP are reserved by LLVM.
     let ret: usize;
-    asm!("int $$0x80",
+    asm!("xchg esi, {a4}
+         xchg ebp, {a6}
+         int 0x80
+         xchg esi, {a4}
+         xchg ebp, {a6}",
+         a4 = in(reg) a4,
+         a6 = in(reg) a6,
          in("eax") n,
          in("ebx") a1,
          in("ecx") a2,
          in("edx") a3,
-         in("esi") a4,
          in("edi") a5,
-         in("ebp") a6,
          lateout("eax") ret,
     );
     check_errno(ret)

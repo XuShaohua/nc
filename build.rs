@@ -41,7 +41,15 @@ fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     {
         println!("cargo:rustc-cfg=nc_has_asm");
     } else {
+        #[allow(unused_variables)]
         let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
+        #[cfg(not(any(
+            target_arch = "aarch64",
+            target_arch = "arm",
+            target_arch = "riscv64",
+            target_arch = "x86",
+            target_arch = "x86_64"
+        )))]
         cc::Build::new().file(syscall_file).compile("syscall");
     }
 }
@@ -61,6 +69,5 @@ fn main() {
 
     get_page_size();
     build_syscall(&rustc_toolchain, &target_arch);
-
     check_sa_restorer(&target_arch);
 }

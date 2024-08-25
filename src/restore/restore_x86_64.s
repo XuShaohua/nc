@@ -1,8 +1,8 @@
 // From musl v1.2.5
-.global __restore_rt
-.hidden __restore_rt
-.type __restore_rt,@function
-__restore_rt:
+.global __nc_restore_rt
+.hidden __nc_restore_rt
+.type __nc_restore_rt,@function
+__nc_restore_rt:
     mov rax, 0xf
 	syscall
-.size __restore_rt,.-__restore_rt
+.size __nc_restore_rt,.-__nc_restore_rt

@@ -5,13 +5,13 @@
 use crate::restorefn_t;
 
 extern "C" {
-    fn __restore_rt();
+    fn __nc_restore_rt();
 
-    // TODO(Shaohua): Also export "__restore" function.
+    // TODO(Shaohua): Also export "__nc_restore" function.
 }
 
 #[must_use]
 #[inline]
 pub fn get_sa_restorer() -> Option<restorefn_t> {
-    Some(__restore_rt)
+    Some(__nc_restore_rt)
 }

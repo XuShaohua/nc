@@ -54,17 +54,19 @@
 //! ```rust
 //! let pid = unsafe { nc::fork() };
 //! match pid {
+//!     Err(errno) => eprintln!("Failed to call fork(), err: {}", nc::strerror(errno)),
 //!     Ok(0) => {
-//!         println!("child process");
+//!         // Child process
+//!         println!("[child] pid: {}", unsafe { nc::getpid() });
 //!         let args = ["ls", "-l", "-a"];
-//!         let env = ["FOO=BAR"];
-//!         match unsafe { nc::execve("/bin/ls", &args, &env) } {
-//!             Ok(_) => {},
-//!             Err(errno) => eprintln!("`ls` got err: {}", errno),
-//!         }
+//!         let env = ["DISPLAY=wayland"];
+//!         let ret = unsafe { nc::execve("/bin/ls", &args, &env) };
+//!         assert!(ret.is_ok());
 //!     }
-//!     Ok(pid) => println!("[parent] child pid: {pid} "),
-//!     Err(errno) => eprintln!("errno: {}", errno),
+//!     Ok(child_pid) => {
+//!         // Parent process
+//!         println!("[main] child pid is: {child_pid}");
+//!     }
 //! }
 //! ```
 //!
@@ -83,7 +85,7 @@
 //! fn main() {
 //!     let sa = nc::sigaction_t {
 //!         sa_handler: handle_alarm as nc::sighandler_t,
-//!         #[cfg(nc_has_sa_restorer)]
+//!         #[cfg(not(nc_has_sa_restorer))]
 //!         sa_flags: nc::SA_RESTART,
 //!         #[cfg(nc_has_sa_restorer)]
 //!         sa_flags: nc::SA_RESTORER | nc::SA_RESTART,

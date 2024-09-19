@@ -16,7 +16,7 @@ categories = ["os", "no-std", "external-ffi-bindings"]
 rust-version = "1.63.0"
 
 [target.'cfg(not(any(target_arch = "arm", target_arch = "aarch64", target_arch = "riscv64", target_arch = "x86", target_arch = "x86_64")))'.build-dependencies]
-cc = "1.1.10"
+cc = "1.1.21"
 
 [features]
 default = ["std"]

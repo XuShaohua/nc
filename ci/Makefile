@@ -3,10 +3,13 @@ cross-all: cross-aarch64 cross-arm cross-i686 \
 	cross-powerpc64le cross-s390x cross-x86_64
 
 define run-cross
-	cross -v +nightly build --target $(1)
+	cross +1.63 build -v --target $(1)
+	cross +1.63 doc --target $(1)
+	cross +1.63 test --target $(1) || true
+	cross build -v --target $(1)
 	cross doc --target $(1)
 	cross test --target $(1) || true
-	cross -v +nightly build --target $(1)
+	cross +nightly build -v --target $(1)
 	cross +nightly doc --target $(1)
 	cross +nightly test --target $(1) || true
 endef

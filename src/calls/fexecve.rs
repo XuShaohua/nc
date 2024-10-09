@@ -12,10 +12,7 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn fexecve<P: AsRef<Path>>(fd: i32, argv: &[P], env: &[P]) -> Result<(), Errno> {
-    use alloc::vec::Vec;
-
     let fd = fd as usize;
-
     // Construct argument list.
     let argv_data: Vec<CString> = argv.iter().map(|arg| CString::new(arg.as_ref())).collect();
     let mut argv_data_ptr: Vec<*const u8> = argv_data.iter().map(|arg| arg.as_ptr()).collect();

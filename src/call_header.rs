@@ -11,6 +11,7 @@
 #![allow(clippy::wildcard_imports)]
 
 extern crate alloc;
+use alloc::vec::Vec;
 
 use crate::c_str::CString;
 use crate::path::Path;

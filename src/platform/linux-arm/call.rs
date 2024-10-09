@@ -11,6 +11,7 @@
 #![allow(clippy::wildcard_imports)]
 
 extern crate alloc;
+use alloc::vec::Vec;
 
 use crate::c_str::CString;
 use crate::path::Path;
@@ -1332,8 +1333,6 @@ pub unsafe fn eventfd2(count: u32, flags: i32) -> Result<i32, Errno> {
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execve<P: AsRef<Path>>(filename: P, argv: &[P], env: &[P]) -> Result<(), Errno> {
-    use alloc::vec::Vec;
-
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
 
@@ -1385,8 +1384,6 @@ pub unsafe fn execveat<P: AsRef<Path>>(
     env: &[P],
     flags: i32,
 ) -> Result<(), Errno> {
-    use alloc::vec::Vec;
-
     let fd = fd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;

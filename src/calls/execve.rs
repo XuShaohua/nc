@@ -9,8 +9,6 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn execve<P: AsRef<Path>>(filename: P, argv: &[P], env: &[P]) -> Result<(), Errno> {
-    use alloc::vec::Vec;
-
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
 

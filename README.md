@@ -126,17 +126,10 @@ fn main() {
 
 ## Related projects
 
-- [nix][nix]
-- [syscall][syscall]
-- [relibc][relibc]
-- [Linux Syscall Support][lss]
-- [syscall pkg in golang][go-syscall]
-
-[syscall]: https://github.com/kmcallister/syscall.rs
-[relibc]: https://gitlab.redox-os.org/redox-os/relibc.git
-[nix]: https://github.com/nix-rust/nix
-[lss]: https://chromium.googlesource.com/linux-syscall-support
-[go-syscall]: https://github.com/golang/go/tree/master/src/syscall
+- [nix](https://github.com/nix-rust/nix)
+- [relibc](https://gitlab.redox-os.org/redox-os/relibc.git)
+- [Linux Syscall Support](https://chromium.googlesource.com/linux-syscall-support)
+- [syscall pkg in golang](https://github.com/golang/go/tree/master/src/syscall)
 
 ## License
 

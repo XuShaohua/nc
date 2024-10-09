@@ -6,11 +6,11 @@
 .type __nc_restore,%function
 __nc_restore:
 	mov r7, #119
-	swc 0x0
+	swi 0x0
 
 .global __nc_restore_rt
 .hidden __nc_restore_rt
 .type __nc_restore_rt,%function
 __nc_restore_rt:
 	mov r7, #173
-	swc 0x0
+	swi 0x0

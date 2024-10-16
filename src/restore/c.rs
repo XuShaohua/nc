@@ -2,11 +2,13 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#[cfg(nc_has_sa_restorer)]
 use crate::{restorefn_t, rt_sigaction, sigaction_t, SIGSEGV};
 
 /// Reuse sa restorer function.
 ///
 /// This method is unreliable.
+#[cfg(nc_has_sa_restorer)]
 #[must_use]
 #[inline]
 pub fn get_sa_restorer() -> Option<restorefn_t> {
@@ -17,4 +19,11 @@ pub fn get_sa_restorer() -> Option<restorefn_t> {
     } else {
         None
     }
+}
+
+#[cfg(not(nc_has_sa_restorer))]
+#[must_use]
+#[inline]
+pub fn get_sa_restorer() -> Option<crate::restorefn_t> {
+    None
 }

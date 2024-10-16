@@ -58,7 +58,18 @@ fn check_sa_restorer(target_arch: &str) {
     //println!("cargo::rustc-check-cfg=cfg(nc_has_sa_restorer)");
     println!("cargo:rustc-check-cfg=cfg(nc_has_sa_restorer)");
 
-    if target_arch != "riscv64" {
+    // Some architectures do not contain sa_restorer property in sa_sigaction_t.
+    // - mips
+    // - mipsel
+    // - mips64
+    // - mips64el
+    // - riscv64
+    if target_arch != "mips"
+        && target_arch != "mipsel"
+        && target_arch != "mips64"
+        && target_arch != "mips64el"
+        && target_arch != "riscv64"
+    {
         println!("cargo:rustc-cfg=nc_has_sa_restorer");
     }
 }

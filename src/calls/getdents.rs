@@ -42,7 +42,7 @@
 ///
 ///         if let Ok(name) = std::str::from_utf8(d_ref.name()) {
 ///             println!(
-///                 "{: >8}  {:>10} {: >4} {: >12}  {}",
+///                 "{: >8}  {:<10} {: >4} {: >12}  {}",
 ///                 d_ref.d_ino, d_type, d_ref.d_reclen, d_ref.d_off as u32, name
 ///             );
 ///         } else {

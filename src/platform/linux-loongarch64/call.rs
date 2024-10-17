@@ -1842,7 +1842,7 @@ pub unsafe fn getcwd(buf: &mut [u8]) -> Result<ssize_t, Errno> {
 ///
 ///         let name = std::str::from_utf8(d_ref.name()).unwrap();
 ///         println!(
-///             "{: >8}  {:>10} {: >4} {: >12}  {}",
+///             "{: >8}  {:<10} {: >4} {: >12}  {}",
 ///             d_ref.d_ino, d_type, d_ref.d_reclen, d_ref.d_off as u32, name
 ///         );
 ///

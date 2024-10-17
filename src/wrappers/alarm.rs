@@ -10,7 +10,7 @@ pub unsafe fn alarm(seconds: u32) -> Result<u32, Errno> {
     let mut it = itimerval_t::default();
     it.it_value.tv_sec = seconds as isize;
     let mut old = itimerval_t::default();
-    unsafe { setitimer(ITIMER_REAL, &it, Some(&mut old))? };
+    setitimer(ITIMER_REAL, &it, Some(&mut old))?;
     let remaining = (old.it_value.tv_sec + !!old.it_value.tv_usec) as u32;
     Ok(remaining)
 }

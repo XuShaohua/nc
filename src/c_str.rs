@@ -25,8 +25,9 @@ use core::ptr;
 /// ```
 #[must_use]
 pub fn strlen(buf: usize, len: usize) -> usize {
+    let buf_ptr = buf as *const u8;
     for i in 0..len {
-        let chr: u8 = unsafe { *((buf + i) as *const u8) };
+        let chr: u8 = unsafe { *buf_ptr.wrapping_add(i) };
         if chr == 0 {
             return i;
         }

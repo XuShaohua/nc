@@ -6,8 +6,9 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-use core::{fmt, mem, slice};
+use core::{fmt, ptr, slice};
 
+use crate::c_str::strlen;
 use crate::{ino64_t, loff_t};
 
 const NAME_MAX_LEN: usize = 256;
@@ -43,26 +44,14 @@ impl Default for linux_dirent64_t {
 }
 
 impl linux_dirent64_t {
-    /// `d_name` may be smaller than this length value.
-    #[must_use]
-    #[inline]
-    pub const fn name_max_len(&self) -> usize {
-        self.d_reclen as usize - mem::offset_of!(Self, d_name)
-    }
-
     /// Return filename.
     ///
     /// name does not contain null-termination.
     #[must_use]
     #[inline]
     pub fn name(&self) -> &[u8] {
-        let max_len = self.name_max_len();
-        for i in 0..max_len {
-            if self.d_name[i] == b'\0' {
-                return &self.d_name[..i];
-            }
-        }
-        &self.d_name[..max_len]
+        let name_len = strlen(self.d_name.as_ptr() as usize, self.d_reclen as usize);
+        &self.d_name[..name_len]
     }
 }
 

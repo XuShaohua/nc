@@ -4,11 +4,13 @@
 
 //! From `fs/readir.c`
 
-use core::{fmt, mem, ptr, slice};
+use core::{fmt, ptr, slice};
 
-use crate::{ino64_t, loff_t, PATH_MAX};
+use crate::c_str::strlen;
+use crate::{ino64_t, loff_t, DT_UNKNOWN, PATH_MAX};
 
 #[repr(C)]
+#[derive(Default)]
 pub struct linux_dirent_t {
     /// Inode number
     pub d_ino: ino64_t,
@@ -20,18 +22,7 @@ pub struct linux_dirent_t {
     pub d_reclen: u16,
 
     /// Filename (null-terminated)
-    pub d_name: *mut u8,
-}
-
-impl Default for linux_dirent_t {
-    fn default() -> Self {
-        Self {
-            d_ino: 0,
-            d_off: 0,
-            d_reclen: 0,
-            d_name: core::ptr::null_mut(),
-        }
-    }
+    pub d_name: [u8; 0],
 }
 
 impl linux_dirent_t {
@@ -48,21 +39,13 @@ impl linux_dirent_t {
         unsafe { d_type_ptr.read() }
     }
 
-    #[must_use]
-    #[inline]
-    pub const fn name_max_len(&self) -> usize {
-        // FIXME(Shaohua): offset_of d_name is different from linux_dirent in C, which is 18.
-        // Also `repr(packed)` is ok, which makes it harder to use this struct.
-        //self.d_reclen as usize - 2 - mem::offset_of!(Self, d_name)
-        self.d_reclen as usize - 2 - mem::offset_of!(Self, d_reclen) - 2
-    }
-
+    /// Get inner `CString`
     #[must_use]
     #[inline]
     pub fn name(&self) -> &[u8] {
-        let max_len = self.name_max_len();
-        let d_name_ptr: *const u8 = ptr::addr_of!(self.d_reclen).cast::<u8>().wrapping_add(2);
-        unsafe { slice::from_raw_parts(d_name_ptr, max_len) }
+        let d_name_ptr: *const u8 = ptr::addr_of!(self.d_name).cast::<u8>();
+        let name_len = strlen(d_name_ptr as usize, self.d_reclen as usize);
+        unsafe { slice::from_raw_parts(d_name_ptr, name_len) }
     }
 }
 

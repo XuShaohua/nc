@@ -62,8 +62,8 @@ main(int argc, char *argv[])
         }
     }
 
-    int offset = offsetof(struct linux_dirent, d_name);
-    printf("offset of d_name is: %d\n", offset);
+    printf("offset of d_name is: %d\n", offsetof(struct linux_dirent, d_name));
+    printf("offset of d_reclen is: %d\n", offsetof(struct linux_dirent, d_reclen));
 
     exit(EXIT_SUCCESS);
 }

@@ -34,10 +34,11 @@ pub const fn ioprio_valid(mask: i32) -> bool {
     ioprio_prio_class(mask) != IOPRIO_CLASS_NONE
 }
 
-/// These are the io priority groups as implemented by CFQ. RT is the realtime
-/// class, it always gets premium service. BE is the best-effort scheduling
-/// class, the default for any process. IDLE is the idle scheduling class, it
-/// is only served when no one else is using the disk.
+/// These are the io priority groups as implemented by CFQ.
+///
+/// RT is the realtime class, it always gets premium service.
+/// BE is the best-effort scheduling class, the default for any process.
+/// IDLE is the idle scheduling class, it is only served when no one else is using the disk.
 pub const IOPRIO_CLASS_NONE: i32 = 0;
 pub const IOPRIO_CLASS_RT: i32 = 1;
 pub const IOPRIO_CLASS_BE: i32 = 2;

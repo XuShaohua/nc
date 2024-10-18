@@ -1,5 +1,6 @@
 /// `mincore()` returns the memory residency status of the pages in the
 /// current process's address space specified by `[addr, addr + len)`.
+///
 /// The status is returned in a vector of bytes.  The least significant
 /// bit of each byte is 1 if the referenced page is in memory, otherwise
 /// it is zero.

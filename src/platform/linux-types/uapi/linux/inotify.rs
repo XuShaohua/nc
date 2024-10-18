@@ -110,8 +110,10 @@ pub const IN_ISDIR: u32 = 0x4000_0000;
 pub const IN_ONESHOT: u32 = 0x8000_0000;
 
 /// All of the events - we build the list by hand so that we can add flags in
-/// the future and not break backward compatibility.  Apps will get only the
-/// events that they originally wanted.  Be sure to add new events here!
+/// the future and not break backward compatibility.
+///
+/// Apps will get only the events that they originally wanted.
+/// Be sure to add new events here!
 pub const IN_ALL_EVENTS: u32 = IN_ACCESS
     | IN_MODIFY
     | IN_ATTRIB

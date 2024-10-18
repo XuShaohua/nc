@@ -18,10 +18,13 @@ pub const MFD_ALLOW_SEALING: u32 = 0x0002;
 pub const MFD_HUGETLB: u32 = 0x0004;
 
 /// Huge page size encoding when `MFD_HUGETLB` is specified, and a huge page
-/// size other than the default is desired.  See `hugetlb_encode.h`.
-/// All known huge page size encodings are provided here.  It is the
-/// responsibility of the application to know which sizes are supported on
-/// the running system.  See `mmap(2)` man page for details.
+/// size other than the default is desired.
+///
+/// See `hugetlb_encode.h`.
+///
+/// All known huge page size encodings are provided here. It is the responsibility
+/// of the application to know which sizes are supported on the running system.
+/// See `mmap(2)` man page for details.
 pub const MFD_HUGE_SHIFT: i32 = HUGETLB_FLAG_ENCODE_SHIFT;
 pub const MFD_HUGE_MASK: i32 = HUGETLB_FLAG_ENCODE_MASK;
 

@@ -457,8 +457,9 @@ pub unsafe fn brk(addr: usize) -> Result<(), Errno> {
 }
 
 /// `cachestat()` returns the page cache statistics of a file in the
-/// bytes range specified by `off` and `len`: number of cached pages,
-/// number of dirty pages, number of pages marked for writeback,
+/// bytes range specified by `off` and `len`.
+///
+/// Number of cached pages, number of dirty pages, number of pages marked for writeback,
 /// number of evicted pages, and number of recently evicted pages.
 ///
 /// An evicted page is a page that is previously in the page cache
@@ -4784,6 +4785,7 @@ pub unsafe fn migrate_pages(
 
 /// `mincore()` returns the memory residency status of the pages in the
 /// current process's address space specified by `[addr, addr + len)`.
+///
 /// The status is returned in a vector of bytes.  The least significant
 /// bit of each byte is 1 if the referenced page is in memory, otherwise
 /// it is zero.

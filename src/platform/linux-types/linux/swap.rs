@@ -23,11 +23,15 @@ pub const SWAP_FLAGS_VALID: i32 = SWAP_FLAG_PRIO_MASK
 pub const SWAP_BATCH: i32 = 64;
 
 /// `MAX_SWAPFILES` defines the maximum number of swaptypes: things which can
-/// be swapped to.  The swap type and the offset into that swap type are
-/// encoded into pte's and into `pgoff_t's` in the swapcache.  Using five bits
-/// for the type means that the maximum number of swapcache pages is 27 bits
-/// on `32-bit-pgoff_t` architectures.  And that assumes that the architecture packs
-/// the type/offset into the pte as 5/27 as well.
+/// be swapped to.
+///
+/// The swap type and the offset into that swap type are encoded into pte's and
+/// into `pgoff_t's` in the swapcache.
+///
+/// Using five bits for the type means that the maximum number of swapcache pages
+/// is 27 bits on `32-bit-pgoff_t` architectures.
+///
+/// And that assumes that the architecture packs the type/offset into the pte as 5/27 as well.
 pub const MAX_SWAPFILES_SHIFT: i32 = 5;
 
 pub const SWAP_CLUSTER_MAX: usize = 32;

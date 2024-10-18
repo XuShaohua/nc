@@ -131,6 +131,7 @@ pub fn read_syscall_list() -> Result<SyscallTable, Errno> {
                     // Check this line
                     let s = alloc::str::from_utf8(&line_str).map_err(|_| crate::EIO)?;
                     if let Some(func_name) = parse_syscall_from_sym(s) {
+                        #[allow(clippy::set_contains_or_insert)]
                         if !set.contains(&func_name) {
                             set.insert(func_name);
                         }

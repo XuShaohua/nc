@@ -5,6 +5,7 @@
 //! From `include/uapi/linux/membarrier.h`
 
 /// enum `membarrier_cmd` - membarrier system call command
+///
 /// @`MEMBARRIER_CMD_QUERY`:   Query the set of supported commands. It returns
 ///                          a bitmask of valid commands.
 /// @`MEMBARRIER_CMD_GLOBAL`:  Execute a memory barrier on all running threads.

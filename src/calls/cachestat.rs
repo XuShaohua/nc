@@ -1,6 +1,7 @@
 /// `cachestat()` returns the page cache statistics of a file in the
-/// bytes range specified by `off` and `len`: number of cached pages,
-/// number of dirty pages, number of pages marked for writeback,
+/// bytes range specified by `off` and `len`.
+///
+/// Number of cached pages, number of dirty pages, number of pages marked for writeback,
 /// number of evicted pages, and number of recently evicted pages.
 ///
 /// An evicted page is a page that is previously in the page cache

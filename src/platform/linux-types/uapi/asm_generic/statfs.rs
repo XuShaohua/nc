@@ -7,6 +7,7 @@
 use crate::fsid_t;
 
 /// Most 64-bit platforms use 'long', while most 32-bit platforms use '__u32'.
+///
 /// Yes, they differ in signedness as well as size.
 /// Special cases can override it for themselves -- except for S390x, which
 /// is just a little too special for us. And MIPS, which I'm not touching

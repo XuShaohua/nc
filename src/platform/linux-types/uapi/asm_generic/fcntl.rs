@@ -48,10 +48,14 @@ pub const O_NOATIME: i32 = 0o100_0000;
 pub const O_CLOEXEC: i32 = 0o200_0000;
 
 /// Before Linux 2.6.33 only `O_DSYNC` semantics were implemented, but using
-/// the `O_SYNC` flag. We continue to use the existing numerical value
-/// for `O_DSYNC` semantics now, but using the correct symbolic name for it.
-/// This new value is used to request true Posix `O_SYNC` semantics.  It is
-/// defined in this strange way to make sure applications compiled against
+/// the `O_SYNC` flag.
+///
+/// We continue to use the existing numerical value for `O_DSYNC` semantics now,
+/// but using the correct symbolic name for it.
+///
+/// This new value is used to request true Posix `O_SYNC` semantics.
+///
+/// It is defined in this strange way to make sure applications compiled against
 /// new headers get at least `O_DSYNC` semantics on older kernels.
 ///
 /// This has the nice side-effect that we can simply test for `O_DSYNC`

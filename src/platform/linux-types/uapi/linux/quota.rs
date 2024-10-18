@@ -24,6 +24,7 @@ pub const INITQFNAMES: &[&str] = &[
 ];
 
 /// Command definitions for the 'quotactl' system call.
+///
 /// The commands are broken into a main command defined below
 /// and a subcommand that is used to convey the type of
 /// quota that is being manipulated (see above).

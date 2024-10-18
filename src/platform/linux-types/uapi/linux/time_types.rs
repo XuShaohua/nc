@@ -26,6 +26,7 @@ pub struct kernel_itimerspec_t {
 
 /// legacy timeval structure, only embedded in structures that
 /// traditionally used 'timeval' to pass time intervals (not absolute times).
+///
 /// Do not add new users. If user space fails to compile here,
 /// this is probably because it is not y2038 safe and needs to
 /// be changed to use another interface.

@@ -53,8 +53,12 @@ pub const MPOL_MF_INTERNAL: u32 = 1 << 4;
 pub const MPOL_MF_VALID: u32 = MPOL_MF_STRICT | MPOL_MF_MOVE | MPOL_MF_MOVE_ALL;
 
 /// Internal flags that share the struct mempolicy flags word with
-/// "mode flags".  These flags are allocated from bit 0 up, as they
-/// are never OR'ed into the mode in mempolicy API arguments.
+/// "mode flags".
+///
+/// These flags are allocated from bit 0 up, as they are never OR'ed into the mode
+///
+/// in mempolicy API arguments.
+///
 /// identify shared policies
 pub const MPOL_F_SHARED: u32 = 1;
 /// preferred local allocation

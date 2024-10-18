@@ -15,12 +15,15 @@ use crate::{
 };
 
 /// SHMMNI, SHMMAX and SHMALL are default upper limits which can be
-/// modified by sysctl. The SHMMAX and SHMALL values have been chosen to
-/// be as large possible without facilitating scenarios where userspace
-/// causes overflows when adjusting the limits via operations of the form
-/// "retrieve current limit; add X; update limit". It is therefore not
-/// advised to make SHMMAX and SHMALL any larger. These limits are
-/// suitable for both 32 and 64-bit systems.
+/// modified by sysctl.
+///
+/// The SHMMAX and SHMALL values have been chosen to be as large possible
+/// without facilitating scenarios where userspace causes overflows
+/// when adjusting the limits via operations of the form "retrieve current limit;
+/// add X; update limit".
+///
+/// It is therefore not advised to make SHMMAX and SHMALL any larger.
+/// These limits are suitable for both 32 and 64-bit systems.
 /// min shared seg size (bytes)
 pub const SHMMIN: i32 = 1;
 /// max num of segs system wide

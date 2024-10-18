@@ -12,9 +12,10 @@ use core::mem::size_of;
 use crate::le32_t;
 
 /// User-level do most of the mapping between kernel and user
-/// capabilities based on the version tag given by the kernel. The
-/// kernel might be somewhat backwards compatible, but don't bet on it.
-
+/// capabilities based on the version tag given by the kernel.
+///
+/// The kernel might be somewhat backwards compatible, but don't bet on it.
+///
 /// Note, `cap_t`, is defined by POSIX (draft) to be an "opaque" pointer to
 /// a set of three capability sets.  The transposition of 3*the
 /// following structure to such a composite is better handled in a user
@@ -97,10 +98,12 @@ pub const CAP_FOWNER: i32 = 3;
 
 /// Overrides the following restrictions that the effective user ID
 /// shall match the file owner ID when setting the `S_ISUID` and `S_ISGID`
-/// bits on that file; that the effective group ID (or one of the
-/// supplementary group IDs) shall match the file owner ID when setting
-/// the `S_ISGID` bit on that file; that the `S_ISUID` and `S_ISGID` bits are
-/// cleared on successful return from chown(2) (not implemented).
+/// bits on that file.
+///
+/// That the effective group ID (or one of the supplementary group IDs)
+/// shall match the file owner ID when setting the `S_ISGID` bit on that file;
+/// that the `S_ISUID` and `S_ISGID` bits are cleared on successful return
+/// from chown(2) (not implemented).
 pub const CAP_FSETID: i32 = 4;
 
 /// Overrides the restriction that the real or effective user ID of a
@@ -118,7 +121,7 @@ pub const CAP_SETGID: i32 = 6;
 pub const CAP_SETUID: i32 = 7;
 
 /// Linux-specific capabilities
-
+///
 /// Without VFS support for capabilities:
 ///   Transfer any capability in your permitted set to any pid,
 ///   remove any capability in your permitted set from any pid
@@ -139,6 +142,8 @@ pub const CAP_NET_BIND_SERVICE: i32 = 10;
 /// Allow broadcasting, listen to multicast
 pub const CAP_NET_BROADCAST: i32 = 11;
 
+/// Network administration capacity.
+///
 /// Allow interface configuration
 /// Allow administration of IP firewall, masquerading and accounting
 /// Allow setting debug option on sockets
@@ -181,6 +186,8 @@ pub const CAP_SYS_PTRACE: i32 = 19;
 /// Allow configuration of process accounting
 pub const CAP_SYS_PACCT: i32 = 20;
 
+/// Administration capacity.
+///
 /// Allow configuration of the secure attention key
 /// Allow administration of the random device
 /// Allow examination and configuration of disk quotas

@@ -83,9 +83,10 @@ pub enum perf_hw_cache_op_result_id_t {
 }
 
 /// Special "software" events provided by the kernel, even if the hardware
-/// does not support performance events. These events measure various
-/// physical and sw events of the kernel (and allow the profiling of them as
-/// well):
+/// does not support performance events.
+///
+/// These events measure various physical and sw events of the kernel
+/// (and allow the profiling of them as well):
 #[repr(u32)]
 pub enum perf_sw_ids_t {
     PERF_COUNT_SW_CPU_CLOCK = 0,

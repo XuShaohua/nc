@@ -33,6 +33,7 @@ pub const PTRACE_SETSIGINFO: i32 = 0x4203;
 
 /// Generic ptrace interface that exports the architecture specific regsets
 /// using the corresponding `NT_*` types (which are also used in the core dump).
+///
 /// Please note that the `NT_PRSTATUS` note type in a core dump contains a full
 /// `struct elf_prstatus`. But the `user_regset` for `NT_PRSTATUS` contains just the
 /// `elf_gregset_t` that is the `pr_reg` field of `struct elf_prstatus`. For all the

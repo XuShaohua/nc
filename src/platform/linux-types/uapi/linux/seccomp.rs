@@ -29,6 +29,7 @@ pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: usize = 1 << 2;
 pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: usize = 1 << 3;
 
 /// All BPF programs must return a 32-bit value.
+///
 /// The bottom 16-bits are for optional return data.
 /// The upper 16-bits are ordered from least permissive values to most,
 /// as a signed value (so 0x8000000 is negative).
@@ -59,6 +60,7 @@ pub const SECCOMP_RET_ACTION: u32 = 0x7fff_0000;
 pub const SECCOMP_RET_DATA: u32 = 0x0000_ffff;
 
 /// struct `seccomp_data` - the format the BPF program executes over.
+///
 /// @nr: the system call number
 /// @arch: indicates system call convention as an `AUDIT_ARCH_*` value
 ///        as defined in `<linux/audit.h>`.

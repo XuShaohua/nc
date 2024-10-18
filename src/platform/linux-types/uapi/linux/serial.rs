@@ -117,10 +117,10 @@ pub struct serial_icounter_struct_t {
     reserved: [i32; 9],
 }
 
-/// Serial interface for controlling RS485 settings on chips with suitable
-/// support. Set with TIOCSRS485 and get with TIOCGRS485 if supported by your
-/// platform. The set function returns the new state, with any unsupported bits
-/// reverted appropriately.
+/// Serial interface for controlling RS485 settings on chips with suitable support.
+///
+/// Set with TIOCSRS485 and get with TIOCGRS485 if supported by your platform.
+/// The set function returns the new state, with any unsupported bits reverted appropriately.
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct serial_rs485_t {

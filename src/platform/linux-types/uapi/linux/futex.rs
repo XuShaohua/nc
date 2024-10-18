@@ -108,9 +108,10 @@ pub struct robust_list_head_t {
 pub const FUTEX_WAITERS: i32 = 0x8000_0000;
 
 /// The kernel signals via this bit that a thread holding a futex
-/// has exited without unlocking the futex. The kernel also does
-/// a `FUTEX_WAKE` on such futexes, after setting the bit, to wake
-/// up any possible waiters:
+/// has exited without unlocking the futex.
+///
+/// The kernel also does a `FUTEX_WAKE` on such futexes, after setting the bit,
+/// to wake up any possible waiters:
 pub const FUTEX_OWNER_DIED: i32 = 0x4000_0000;
 
 /// The rest of the robust-futex field is for the TID:

@@ -164,6 +164,8 @@ pub const BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE: i32 = 21;
 pub const BPF_MAP_TYPE_QUEUE: i32 = 22;
 pub const BPF_MAP_TYPE_STACK: i32 = 23;
 
+/// Program types of bpf.
+///
 /// Note that tracing related programs such as
 /// `BPF_PROG_TYPE_{KPROBE,TRACEPOINT,PERF_EVENT,RAW_TRACEPOINT}`
 /// are not subject to a stable API since kernel internal data
@@ -256,18 +258,20 @@ pub const MAX_BPF_ATTACH_TYPE: i32 = BPF_FLOW_DISSECTOR + 1;
 pub const BPF_F_ALLOW_OVERRIDE: i32 = 1;
 pub const BPF_F_ALLOW_MULTI: i32 = 1 << 1;
 
-/// If `BPF_F_STRICT_ALIGNMENT` is used in `BPF_PROG_LOAD` command, the
-/// verifier will perform strict alignment checking as if the kernel
-/// has been built with `CONFIG_EFFICIENT_UNALIGNED_ACCESS` not set,
+/// The verifier will perform strict alignment checking.
+///
+/// If `BPF_F_STRICT_ALIGNMENT` is used in `BPF_PROG_LOAD` command, as if
+/// the kernel has been built with `CONFIG_EFFICIENT_UNALIGNED_ACCESS` not set,
 /// and `NET_IP_ALIGN` defined to 2.
 pub const BPF_F_STRICT_ALIGNMENT: i32 = 1;
 
 /// If `BPF_F_ANY_ALIGNMENT` is used in `BPF_PROF_LOAD` command, the
-/// verifier will allow any alignment whatsoever.  On platforms
-/// with strict alignment requirements for loads ands stores (such
-/// as sparc and mips) the verifier validates that all loads and
-/// stores provably follow this requirement.  This flag turns that
-/// checking and enforcement off.
+/// verifier will allow any alignment whatsoever.
+///
+/// On platforms with strict alignment requirements for loads ands stores
+/// (such as sparc and mips) the verifier validates that all loads and
+/// stores provably follow this requirement.
+/// This flag turns that checking and enforcement off.
 ///
 /// It is mostly used for testing when we want to validate the
 /// context and memory access aspects of the verifier, but because
@@ -295,9 +299,9 @@ pub const BPF_F_LOCK: i32 = 4;
 /// flags for `BPF_MAP_CREATE` command
 pub const BPF_F_NO_PREALLOC: i32 = 1;
 
-/// Instead of having one common LRU list in the
-/// `BPF_MAP_TYPE_LRU_[PERCPU_]` HASH map, use a percpu LRU list
-/// which can scale and perform better.
+/// Instead of having one common LRU list in the `BPF_MAP_TYPE_LRU_[PERCPU_]` HASH map,
+/// use a percpu LRU list which can scale and perform better.
+///
 /// Note, the LRU nodes (including free nodes) cannot be moved
 /// across different LRU lists.
 pub const BPF_F_NO_COMMON_LRU: i32 = 1 << 1;
@@ -699,6 +703,7 @@ pub const BPF_LWT_ENCAP_IP: i32 = 2;
 //}
 
 /// Generic BPF return codes which all BPF program types may support.
+///
 /// The values are binary compatible with their `TC_ACT_*` counter-part to
 /// provide backwards compatibility with existing `SCHED_CLS` and `SCHED_ACT`
 /// programs.
@@ -1020,6 +1025,7 @@ pub union bpf_sock_ops_reply_t {
 
 /// User `bpf_sock_ops` struct to access socket values and specify request ops
 /// and their replies.
+///
 /// Some of this fields are in network (bigendian) byte order and may need
 /// to be converted before use (`bpf_ntohl()` defined in `samples/bpf/bpf_endian.h`).
 /// New fields can only be added at the end of this structure
@@ -1114,24 +1120,30 @@ pub const BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB: i32 = 5;
 /// If connection's congestion control needs ECN
 pub const BPF_SOCK_OPS_NEEDS_ECN: i32 = 6;
 
-/// Get base RTT. The correct value is based on the path and may be
-/// dependent on the congestion control algorithm. In general it indicates
-/// a congestion threshold. RTTs above this indicate congestion
+/// Get base RTT.
+///
+/// The correct value is based on the path and may be dependent
+/// on the congestion control algorithm.
+/// In general it indicates a congestion threshold.
+/// RTTs above this indicate congestion
 pub const BPF_SOCK_OPS_BASE_RTT: i32 = 7;
 
 /// Called when an RTO has triggered.
+///
 /// Arg1: value of `icsk_retransmits`
 /// Arg2: value of `icsk_rto`
 /// Arg3: whether RTO has expired
 pub const BPF_SOCK_OPS_RTO_CB: i32 = 8;
 
 /// Called when skb is retransmitted.
+///
 /// Arg1: sequence number of 1st byte
 /// Arg2: # segments
 /// Arg3: return value of `tcp_transmit_skb` (0 => success)
 pub const BPF_SOCK_OPS_RETRANS_CB: i32 = 9;
 
 /// Called when TCP changes state.
+///
 /// Arg1: `old_state`
 /// Arg2: `new_state`
 pub const BPF_SOCK_OPS_STATE_CB: i32 = 10;
@@ -1139,8 +1151,11 @@ pub const BPF_SOCK_OPS_STATE_CB: i32 = 10;
 /// Called on listen(2), right after socket transition to LISTEN state.
 pub const BPF_SOCK_OPS_TCP_LISTEN_CB: i32 = 11;
 
-/// List of TCP states. There is a build check in net/ipv4/tcp.c to detect
-/// changes between the TCP and BPF versions. Ideally this should never happen.
+/// List of TCP states.
+///
+/// There is a build check in net/ipv4/tcp.c to detect changes between the TCP
+/// and BPF versions.
+/// Ideally this should never happen.
 /// If it does, we need to add code to convert them before calling
 /// the BPF `sock_ops` function.
 pub const BPF_TCP_ESTABLISHED: i32 = 1;

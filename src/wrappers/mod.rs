@@ -35,3 +35,6 @@ mod alarm;
     )
 ))]
 pub use alarm::alarm;
+
+mod sigaction;
+pub use sigaction::new_sigaction;

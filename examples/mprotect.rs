@@ -22,20 +22,7 @@ fn handle_segfault(sig: i32) {
 }
 
 fn main() {
-    #[cfg(nc_has_sa_restorer)]
-    let sa = nc::sigaction_t {
-        sa_handler: handle_segfault as nc::sighandler_t,
-        sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
-        sa_restorer: nc::restore::get_sa_restorer(),
-        ..nc::sigaction_t::default()
-    };
-    #[cfg(target_arch = "riscv64")]
-    #[cfg(not(nc_has_sa_restorer))]
-    let sa = nc::sigaction_t {
-        sa_handler: handle_segfault as nc::sighandler_t,
-        sa_flags: nc::SA_RESTART,
-        ..nc::sigaction_t::default()
-    };
+    let sa = nc::new_sigaction(handle_segfault);
     let ret = unsafe { nc::rt_sigaction(nc::SIGSEGV, Some(&sa), None) };
     assert!(ret.is_ok());
 

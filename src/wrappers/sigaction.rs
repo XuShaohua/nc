@@ -7,6 +7,7 @@
 use crate::{sigaction_t, sighandler_t, SA_RESTART};
 
 #[cfg(nc_has_sa_restorer)]
+#[inline]
 pub fn new_sigaction(handler: fn(i32)) -> sigaction_t {
     sigaction_t {
         sa_handler: handler as sighandler_t,
@@ -17,6 +18,7 @@ pub fn new_sigaction(handler: fn(i32)) -> sigaction_t {
 }
 
 #[cfg(not(nc_has_sa_restorer))]
+#[inline]
 pub fn new_sigaction(handler: fn(i32)) -> sigaction_t {
     sigaction_t {
         sa_handler: handler as sighandler_t,

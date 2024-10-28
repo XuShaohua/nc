@@ -78,16 +78,7 @@ fn handle_alarm(signum: i32) {
 }
 
 fn main() {
-    let sa = nc::sigaction_t {
-        sa_handler: handle_alarm as nc::sighandler_t,
-        #[cfg(not(nc_has_sa_restorer))]
-        sa_flags: nc::SA_RESTART,
-        #[cfg(nc_has_sa_restorer)]
-        sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
-        #[cfg(nc_has_sa_restorer)]
-        sa_restorer: nc::restore::get_sa_restorer(),
-        ..nc::sigaction_t::default()
-    };
+    let sa = nc::new_sigaction(handle_alarm);
     let ret = unsafe { nc::rt_sigaction(nc::SIGALRM, Some(&sa), None) };
     assert!(ret.is_ok());
     let remaining = unsafe { nc::alarm(1) };

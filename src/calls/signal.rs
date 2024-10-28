@@ -8,7 +8,6 @@
 /// fn handle_sigterm(signum: i32) {
 ///     assert_eq!(signum, nc::SIGTERM);
 /// }
-/// // let ret = nc::signal(nc::SIGTERM, nc::SIG_IGN);
 /// let ret = unsafe { nc::signal(nc::SIGTERM, handle_sigterm as nc::sighandler_t) };
 /// assert!(ret.is_ok());
 /// let ret = unsafe { nc::kill(nc::getpid(), nc::SIGTERM) };

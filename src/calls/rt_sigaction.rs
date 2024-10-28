@@ -7,19 +7,7 @@
 ///     assert_eq!(sig, nc::SIGTERM);
 /// }
 ///
-/// #[cfg(nc_has_sa_restorer)]
-/// let sa = nc::sigaction_t {
-///     sa_handler: handle_sigterm as nc::sighandler_t,
-///     sa_flags: nc::SA_RESTORER | nc::SA_RESTART,
-///     sa_restorer: nc::restore::get_sa_restorer(),
-///     ..nc::sigaction_t::default()
-/// };
-/// #[cfg(not(nc_has_sa_restorer))]
-/// let sa = nc::sigaction_t {
-///     sa_handler: handle_sigterm as nc::sighandler_t,
-///     sa_flags: nc::SA_RESTART,
-///     ..nc::sigaction_t::default()
-/// };
+/// let sa = nc::new_sigaction(handle_sigterm);
 /// let ret = unsafe { nc::rt_sigaction(nc::SIGTERM, Some(&sa), None) };
 /// let ret = unsafe { nc::kill(nc::getpid(), nc::SIGTERM) };
 /// assert!(ret.is_ok());

@@ -24,16 +24,7 @@ const SIGNALS: [i32; 14] = [
 ];
 
 fn main() {
-    let sa = nc::sigaction_t {
-        sa_handler: signal_handler as nc::sighandler_t,
-        #[cfg(nc_has_sa_restorer)]
-        sa_flags: nc::SA_RESTART | nc::SA_RESTORER,
-        #[cfg(not(nc_has_sa_restorer))]
-        sa_flags: nc::SA_RESTART,
-        #[cfg(nc_has_sa_restorer)]
-        sa_restorer: nc::restore::get_sa_restorer(),
-        ..Default::default()
-    };
+    let sa = nc::new_sigaction(signal_handler);
     for sig_num in SIGNALS {
         let ret = unsafe { nc::rt_sigaction(sig_num, Some(&sa), None) };
         assert!(ret.is_ok());

@@ -4371,7 +4371,7 @@ pub unsafe fn mremap(
 /// let ret = unsafe { nc::msgget(key, flags) };
 /// assert!(ret.is_ok());
 /// let msq_id = ret.unwrap();
-
+///
 /// let mut buf = nc::msqid_ds_t::default();
 /// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());
@@ -4393,7 +4393,7 @@ pub unsafe fn msgctl(msq_id: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32,
 /// let ret = unsafe { nc::msgget(key, flags) };
 /// assert!(ret.is_ok());
 /// let msq_id = ret.unwrap();
-
+///
 /// let mut buf = nc::msqid_ds_t::default();
 /// let ret = unsafe { nc::msgctl(msq_id, nc::IPC_RMID, &mut buf) };
 /// assert!(ret.is_ok());

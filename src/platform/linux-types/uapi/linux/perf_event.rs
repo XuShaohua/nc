@@ -25,7 +25,7 @@ pub enum perf_type_id_t {
 /// Generalized performance event `event_id` types, used by the
 /// `attr.event_id` parameter of the `sys_perf_event_open()`
 /// syscall:
-
+///
 /// Common hardware events, generalized by the kernel:
 #[repr(u32)]
 pub enum perf_hw_id_t {
@@ -319,7 +319,6 @@ pub const PERF_TXN_ABORT_SHIFT: i32 = 32;
 ///   } && PERF_FORMAT_GROUP
 /// };
 /// ```
-
 #[repr(u32)]
 pub enum perf_event_read_format_t {
     PERF_FORMAT_TOTAL_TIME_ENABLED = 1,
@@ -561,7 +560,7 @@ pub const fn perf_flags(attr: &perf_event_attr_t) -> u64 {
     attr.read_format + 1
 }
 
-/// Ioctls that can be done on a perf event fd:
+// Ioctls that can be done on a perf event fd:
 //pub const PERF_EVENT_IOC_ENABLE			_IO ('$', 0)
 //#define PERF_EVENT_IOC_DISABLE			_IO ('$', 1)
 //#define PERF_EVENT_IOC_REFRESH			_IO ('$', 2)

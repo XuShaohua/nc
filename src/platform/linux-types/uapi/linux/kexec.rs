@@ -13,7 +13,7 @@ use crate::size_t;
 ///
 /// kexec does not sync, or unmount filesystems so if you need
 /// that to happen you need to do that yourself.
-
+///
 /// kexec flags for different usage scenarios
 pub const KEXEC_ON_CRASH: u32 = 0x0000_0001;
 pub const KEXEC_PRESERVE_CONTEXT: u32 = 0x0000_0002;

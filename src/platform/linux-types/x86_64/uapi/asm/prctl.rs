@@ -25,7 +25,7 @@ pub const ARCH_MAP_VDSO_X32: i32 = 0x2001;
 pub const ARCH_MAP_VDSO_32: i32 = 0x2002;
 pub const ARCH_MAP_VDSO_64: i32 = 0x2003;
 
-/// Don't use 0x3001-0x3004 because of old glibcs
+// Don't use 0x3001-0x3004 because of old glibcs
 
 pub const ARCH_GET_UNTAG_MASK: i32 = 0x4001;
 pub const ARCH_ENABLE_TAGGED_ADDR: i32 = 0x4002;

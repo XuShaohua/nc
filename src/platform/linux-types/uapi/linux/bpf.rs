@@ -9,7 +9,7 @@
 use crate::{be16_t, be32_t};
 
 /// Extended instruction set based on top of classic BPF
-
+///
 /// instruction classes
 /// jmp mode in word width
 pub const BPF_JMP32: i32 = 0x06;

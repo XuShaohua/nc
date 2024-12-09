@@ -5,7 +5,7 @@
 //! From `arch/x86/include/uapi/asm/ldt.h`
 
 /// Definitions of structures used with the `modify_ldt` system call.
-
+///
 /// Maximum number of LDT entries supported.
 pub const LDT_ENTRIES: i32 = 8192;
 /// The size of each LDT entry.

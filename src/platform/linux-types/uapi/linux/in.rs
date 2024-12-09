@@ -17,7 +17,7 @@ use crate::{be16_t, be32_t, sa_family_t, sockaddr_storage_t};
 /// interface as the means of communication with the user level.
 ///
 /// Definitions of the Internet Protocol.
-
+///
 /// Standard well-defined IP protocols.
 /// Dummy protocol for TCP
 pub const IPPROTO_IP: i32 = 0;
@@ -156,7 +156,6 @@ pub const IP_DEFAULT_MULTICAST_TTL: i32 = 1;
 pub const IP_DEFAULT_MULTICAST_LOOP: i32 = 1;
 
 /// Request struct for multicast socket ops
-
 #[repr(C)]
 #[derive(Debug, Default, Clone)]
 pub struct ip_mreq_t {

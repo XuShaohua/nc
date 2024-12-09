@@ -48,7 +48,6 @@ pub const PTRACE_SETSIGINFO: i32 = 0x4203;
 ///
 /// On the successful completion, iov.len will be updated by the kernel,
 /// specifying how much the kernel has written/read to/from the user's iov.buf.
-
 pub const PTRACE_GETREGSET: i32 = 0x4204;
 pub const PTRACE_SETREGSET: i32 = 0x4205;
 

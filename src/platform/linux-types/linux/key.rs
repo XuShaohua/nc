@@ -97,7 +97,6 @@ pub const KEY_IS_POSITIVE: i32 = 1;
 /// - keyrings
 /// - disk encryption IDs
 /// - Kerberos TGTs and tickets
-
 pub const KEY_DEBUG_MAGIC: u32 = 0x1827_3645;
 /// set if key type has been deleted
 pub const KEY_FLAG_DEAD: i32 = 0;

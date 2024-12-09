@@ -152,9 +152,9 @@ pub const FAN_EVENT_INFO_TYPE_ERROR: u32 = 5;
 
 /// Special info types for `FAN_RENAME`
 pub const FAN_EVENT_INFO_TYPE_OLD_DFID_NAME: u32 = 10;
-/// Reserved for `FAN_EVENT_INFO_TYPE_OLD_DFID` 11
+// Reserved for `FAN_EVENT_INFO_TYPE_OLD_DFID` 11
 pub const FAN_EVENT_INFO_TYPE_NEW_DFID_NAME: u32 = 12;
-/// Reserved for `FAN_EVENT_INFO_TYPE_NEW_DFID` 13
+// Reserved for `FAN_EVENT_INFO_TYPE_NEW_DFID` 13
 
 pub const FAN_RESPONSE_INFO_NONE: u32 = 0;
 pub const FAN_RESPONSE_INFO_AUDIT_RULE: u32 = 1;

@@ -9,7 +9,7 @@
 use core::ptr;
 
 /// Values to pass as first argument to `prctl()`
-
+///
 /// Second arg is a signal
 pub const PR_SET_PDEATHSIG: i32 = 1;
 /// Second arg is a ptr to return the signal

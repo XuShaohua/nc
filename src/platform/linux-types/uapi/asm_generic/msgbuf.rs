@@ -21,7 +21,6 @@ use crate::{ipc64_perm_t, pid_t};
 ///
 /// Pad space is left for:
 /// - 2 miscellaneous 32-bit values
-
 #[cfg(target_pointer_width = "64")]
 #[repr(C)]
 #[derive(Debug, Default, Clone)]

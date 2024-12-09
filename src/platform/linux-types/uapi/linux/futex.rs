@@ -7,7 +7,6 @@
 #![allow(clippy::module_name_repetitions)]
 
 /// Second argument to futex syscall
-
 pub const FUTEX_WAIT: i32 = 0;
 pub const FUTEX_WAKE: i32 = 1;
 pub const FUTEX_FD: i32 = 2;
@@ -154,13 +153,13 @@ pub const FUTEX_OP_CMP_GT: i32 = 4;
 pub const FUTEX_OP_CMP_GE: i32 = 5;
 
 /// `FUTEX_WAKE_OP` will perform atomically.
+///
 /// ```c
 /// int oldval = *(int *)UADDR2;
 /// *(int *)UADDR2 = oldval OP OPARG;
 /// if (oldval CMP CMPARG)
 /// wake UADDR2;
 /// ```
-
 #[inline]
 #[must_use]
 pub const fn FUTEX_OP(op: i32, oparg: i32, cmp: i32, cmparg: i32) -> i32 {

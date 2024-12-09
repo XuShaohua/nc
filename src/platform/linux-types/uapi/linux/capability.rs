@@ -20,7 +20,6 @@ use crate::le32_t;
 /// a set of three capability sets.  The transposition of 3*the
 /// following structure to such a composite is better handled in a user
 /// library since the draft standard requires the use of malloc/free etc..
-
 pub const LINUX_CAPABILITY_VERSION_1: i32 = 0x1998_0330;
 pub const LINUX_CAPABILITY_U32S_1: i32 = 1;
 
@@ -76,7 +75,7 @@ pub const LINUX_CAPABILITY_VERSION: i32 = LINUX_CAPABILITY_VERSION_1;
 pub const LINUX_CAPABILITY_U32S: i32 = LINUX_CAPABILITY_U32S_1;
 
 /// POSIX-draft defined capabilities.
-
+///
 /// In a system with the `_POSIX_CHOWN_RESTRICTED` option defined, this
 /// overrides the restriction of changing file ownership and group ownership.
 pub const CAP_CHOWN: i32 = 0;

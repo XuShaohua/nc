@@ -33,7 +33,7 @@ pub const IPC_NOWAIT: i32 = 0o000_4000;
 
 /// these fields are used by the DIPC package so the kernel as standard
 /// should avoid using them if possible
-
+///
 /// make it distributed
 pub const IPC_DIPC: i32 = 0o001_0000;
 /// this machine is the DIPC owner

@@ -33,10 +33,10 @@ pub struct linger_t {
 
 pub type sockaddr_storage_t = kernel_sockaddr_storage_t;
 
-/// As we do 4.4BSD message passing we use a 4.4BSD message passing
-/// system, not 4.3. Thus `msg_accrights(len)` are now missing. They
-/// belong in an obscure libc emulation or the bin.
-
+// As we do 4.4BSD message passing we use a 4.4BSD message passing
+// system, not 4.3. Thus `msg_accrights(len)` are now missing. They
+// belong in an obscure libc emulation or the bin.
+//
 // Comment kernel msg header
 //#[repr(C)]
 //struct msghdr_t {
@@ -100,9 +100,9 @@ pub struct cmsghdr_t {
     pub cmsg_type: i32,
 }
 
-/// Ancillary data object information MACROS
-/// Table 5-14 of POSIX 1003.1g
-
+// Ancillary data object information MACROS
+// Table 5-14 of POSIX 1003.1g
+//
 //#define __CMSG_NXTHDR(ctl, len, cmsg) __cmsg_nxthdr((ctl),(len),(cmsg))
 //#define CMSG_NXTHDR(mhdr, cmsg) cmsg_nxthdr((mhdr), (cmsg))
 //#define CMSG_ALIGN(len) ( ((len)+sizeof(long)-1) & ~(sizeof(long)-1) )
@@ -123,7 +123,7 @@ pub struct cmsghdr_t {
 //	     cmsg = CMSG_NXTHDR(msg, cmsg))
 
 /// "Socket"-level control message types:
-
+///
 /// rw: access rights (array of int)
 pub const SCM_RIGHTS: i32 = 0x01;
 /// rw: struct ucred

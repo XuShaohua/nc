@@ -47,7 +47,7 @@ pub const F_SEAL_GROW: u32 = 0x0004;
 pub const F_SEAL_WRITE: u32 = 0x0008;
 /// prevent future writes while mapped
 pub const F_SEAL_FUTURE_WRITE: u32 = 0x0010;
-/// (1U << 31) is reserved for signed error codes
+// (1U << 31) is reserved for signed error codes
 
 /*
  * Valid hint values for F_{GET,SET}_RW_HINT. 0 is "not set", or can be

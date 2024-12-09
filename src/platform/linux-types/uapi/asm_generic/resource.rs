@@ -12,7 +12,7 @@
 /// are historic and all new rlimits are identical across all
 /// arches. If an arch has such special order for some rlimits
 /// then it defines them prior including asm-generic/resource.h. )
-
+///
 /// CPU time in sec
 pub const RLIMIT_CPU: i32 = 0;
 

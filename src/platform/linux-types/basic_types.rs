@@ -48,7 +48,7 @@ pub type gid16_t = u16;
 /// Note that POSIX wants the `FD_CLEAR(fd,fdsetp)` defines to be in
 /// <sys/time.h> (and thus <linux/time.h>) - but this is a more logical
 /// place for them. Solved by having dummy defines in <sys/time.h>.
-
+///
 /// This macro may have been defined in <gnu/types.h>. But we always
 /// use the one here.
 pub const FD_SETSIZE: usize = 1024;

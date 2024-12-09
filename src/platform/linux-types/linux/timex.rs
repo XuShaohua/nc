@@ -40,7 +40,7 @@ const ADJ_OFFSET_READONLY: i32 = 0x2000;
 /// In David Mills' nanokernel reference implementation `SHIFT_FLL` is 2.
 ///
 /// MAXTC establishes the maximum time constant of the PLL.
-
+///
 /// PLL frequency factor (shift)
 const SHIFT_PLL: i32 = 2;
 /// FLL frequency factor (shift)

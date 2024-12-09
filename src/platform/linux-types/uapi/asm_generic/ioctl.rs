@@ -26,7 +26,6 @@ pub const IOC_NRBITS: u32 = 8;
 pub const IOC_TYPEBITS: u32 = 8;
 
 /// Let any architecture override either of the following before including this file.
-
 pub const IOC_SIZEBITS: u32 = 14;
 
 pub const IOC_DIRBITS: u32 = 2;
@@ -46,7 +45,6 @@ pub const IOC_DIRSHIFT: u32 = IOC_SIZESHIFT + IOC_SIZEBITS;
 ///
 /// NOTE: `_IOC_WRITE` means userland is writing and kernel is
 /// reading. `_IOC_READ` means userland is reading and kernel is writing.
-
 pub const IOC_NONE: u32 = 0;
 pub const IOC_WRITE: u32 = 1;
 pub const IOC_READ: u32 = 2;
@@ -138,7 +136,6 @@ pub const fn IOC_SIZE(nr: u32) -> u32 {
 }
 
 /// ...and for the drivers/sound files...
-
 pub const IOC_IN: u32 = IOC_WRITE << IOC_DIRSHIFT;
 pub const IOC_OUT: u32 = IOC_READ << IOC_DIRSHIFT;
 pub const IOC_INOUT: u32 = (IOC_WRITE | IOC_READ) << IOC_DIRSHIFT;

@@ -9,7 +9,6 @@ use crate::AF_MAX;
 /// NET: An implementation of the SOCKET network access protocol.
 /// This is the master header file for the Linux NET layer,
 /// or, in plain English: the networking handling part of the kernel.
-
 pub const NPROTO: i32 = AF_MAX;
 
 // NOTE(Shaohua): Rename consts as they are used in sysno.rs

@@ -165,7 +165,7 @@ impl Default for siginfo_t {
     }
 }
 
-/// How these fields are to be accessed.
+// How these fields are to be accessed.
 //#define si_pid		_sifields._kill._pid
 //#define si_uid		_sifields._kill._uid
 //#define si_tid		_sifields._timer._tid
@@ -322,7 +322,7 @@ pub const NSIGTRAP: i32 = 5;
 
 /// There is an additional set of SIGTRAP `si_codes` used by ptrace
 /// that are of the form: `((PTRACE_EVENT_XXX << 8) | SIGTRAP)`
-
+///
 /// SIGCHLD `si_codes`
 /// child has exited
 pub const CLD_EXITED: i32 = 1;
@@ -370,7 +370,7 @@ pub const NSIGEMT: i32 = 1;
 /// userspace, libpthread transmuting it to `SIGEV_SIGNAL`, which the
 /// thread manager then catches and does the appropriate nonsense.
 /// However, everything is written out here so as to not get lost.
-
+///
 /// notify via signal
 pub const SIGEV_SIGNAL: i32 = 0;
 /// other notification: meaningless

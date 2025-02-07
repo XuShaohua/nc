@@ -28,19 +28,6 @@ fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     //println!("cargo::rustc-check-cfg=cfg(nc_has_asm)");
     println!("cargo:rustc-check-cfg=cfg(nc_has_asm)");
 
-    // Automatically detect if thumb-mode is an available feature by looking at
-    // the prefix of the target. Currently, the thumb-mode target feature is
-    // only set automatically in nightly builds, so we must do the manual
-    // feature detect here.
-    //
-    // "armv7-linux-androideabi" is a special case that has thumb-mode enabled,
-    // but does not start with the "thumb" prefix.
-    if env::var("TARGET").map_or(false, |t| {
-        t.starts_with("thumb") || t == "armv7-linux-androideabi" 
-    }) {
-        println!("cargo:rustc-cfg=target_feature=\"thumb-mode\"");
-    }
-
     // - aarch64/arm/riscv64/x86/x86_64: support inline assembly in stable version
     // - others: enable inline assembly in nightly version.
     //

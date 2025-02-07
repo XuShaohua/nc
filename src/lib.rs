@@ -204,7 +204,7 @@ pub mod types;
 #[path = "platform/linux-aarch64/mod.rs"]
 mod platform;
 
-#[cfg(all(target_os = "linux", target_arch = "arm"))]
+#[cfg(all(any(target_os = "linux", target_os = "android"), target_arch = "arm"))]
 #[path = "platform/linux-arm/mod.rs"]
 mod platform;
 

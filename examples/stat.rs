@@ -25,12 +25,23 @@ fn main() {
             nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0)
         }
     };
-    #[cfg(any(target_os = "android", target_os = "freebsd"))]
+    #[cfg(all(any(
+        all(target_os = "android", not(target_pointer_width = "32")),
+        target_os = "freebsd"
+    ),))]
     let ret = unsafe { nc::fstatat(nc::AT_FDCWD, filepath, &mut statbuf, 0) };
+
+    #[cfg(all(any(target_os = "android"), target_pointer_width = "32"))]
+    let mut stat64buf = nc::stat64_t::default();
+    #[cfg(all(any(target_os = "android"), target_pointer_width = "32"))]
+    let ret = unsafe { nc::fstatat64(nc::AT_FDCWD, filepath, &mut stat64buf, 0) };
 
     match ret {
         Ok(_) => {
+            #[cfg(not(all(any(target_os = "android"), target_pointer_width = "32")))]
             println!("s: {:?}", statbuf);
+            #[cfg(all(any(target_os = "android"), target_pointer_width = "32"))]
+            println!("s: {:?}", stat64buf);
         }
         Err(errno) => {
             eprintln!(

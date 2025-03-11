@@ -202,7 +202,7 @@ pub const IORING_SETUP_CLAMP: u32 = 1 << 4;
 /// attach to existing wq
 pub const IORING_SETUP_ATTACH_WQ: u32 = 1 << 5;
 
-#[repr(u32)]
+#[repr(u8)]
 #[derive(Debug, Default, Clone, Copy, Eq, PartialEq)]
 pub enum IOURING_OP {
     #[default]

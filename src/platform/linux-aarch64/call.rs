@@ -1841,31 +1841,6 @@ pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     syscall2(SYS_FSTAT, fd, statbuf_ptr).map(drop)
 }
 
-/// Get file status.
-///
-/// # Examples
-///
-/// ```
-/// let path = "/etc/passwd";
-/// let mut stat = nc::stat_t::default();
-/// let ret = unsafe { nc::fstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
-/// assert!(ret.is_ok());
-/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
-/// ```
-pub unsafe fn fstatat<P: AsRef<Path>>(
-    dfd: i32,
-    filename: P,
-    statbuf: &mut stat_t,
-    flag: i32,
-) -> Result<(), Errno> {
-    let dfd = dfd as usize;
-    let filename = CString::new(filename.as_ref());
-    let filename_ptr = filename.as_ptr() as usize;
-    let statbuf_ptr = statbuf as *mut stat_t as usize;
-    let flag = flag as usize;
-    syscall4(SYS_FSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop)
-}
-
 /// Get filesystem statistics.
 ///
 /// # Examples
@@ -5222,6 +5197,31 @@ pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Resul
         rem as *mut timespec_t as usize
     });
     syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop)
+}
+
+/// Get file status.
+///
+/// # Examples
+///
+/// ```
+/// let path = "/etc/passwd";
+/// let mut stat = nc::stat_t::default();
+/// let ret = unsafe { nc::newfstatat(nc::AT_FDCWD, path, &mut stat, nc::AT_SYMLINK_NOFOLLOW) };
+/// assert!(ret.is_ok());
+/// assert!(nc::S_ISREG(stat.st_mode as nc::mode_t));
+/// ```
+pub unsafe fn newfstatat<P: AsRef<Path>>(
+    dfd: i32,
+    filename: P,
+    statbuf: &mut stat_t,
+    flag: i32,
+) -> Result<(), Errno> {
+    let dfd = dfd as usize;
+    let filename = CString::new(filename.as_ref());
+    let filename_ptr = filename.as_ptr() as usize;
+    let statbuf_ptr = statbuf as *mut stat_t as usize;
+    let flag = flag as usize;
+    syscall4(SYS_NEWFSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop)
 }
 
 /// Open and possibly create a file within a directory.

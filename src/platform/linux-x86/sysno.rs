@@ -453,3 +453,4 @@ pub const SYS_LISTMOUNT: Sysno = 458;
 pub const SYS_LSM_GET_SELF_ATTR: Sysno = 459;
 pub const SYS_LSM_SET_SELF_ATTR: Sysno = 460;
 pub const SYS_LSM_LIST_MODULES: Sysno = 461;
+pub const SYS_MSEAL: Sysno = 462;

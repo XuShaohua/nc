@@ -307,6 +307,12 @@ def install_deb(deb_list):
     cmd = " ".join(cmd)
     subprocess.run(cmd, shell=True)
 
+def try_generate_errno_and_sysno(os_name, arch_name):
+    try:
+        gen_errno_and_sysno(os_name, arch_name)
+    except FileNotFoundError:
+        install_deb(get_deb(arch_name))
+
 def main():
     if len(sys.argv) > 3 or len(sys.argv) < 2:
         print("Usage: %s arch" % sys.argv[0])
@@ -326,12 +332,9 @@ def main():
     os_name = "linux"
     if arch_name == "all":
         for arch_name in get_arch_names():
-            try:
-                gen_errno_and_sysno(os_name, arch_name)
-            except FileNotFoundError:
-                install_deb(get_deb(arch_name))
+            try_generate_errno_and_sysno(os_name, arch_name)
     else:
-        gen_errno_and_sysno(os_name, arch_name)
+        try_generate_errno_and_sysno(os_name, arch_name)
 
 if __name__ == "__main__":
     main()

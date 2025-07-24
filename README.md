@@ -124,4 +124,4 @@ fn main() {
 
 ## License
 
-This library is govered by [Apache-2.0 License](LICENSE).
+nc is [Apache-2.0 Licensed](LICENSE).

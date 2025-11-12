@@ -13,8 +13,10 @@ use super::types::{check_errno, Errno, Sysno};
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          lateout("r0") ret,
     );
     check_errno(ret)
@@ -23,8 +25,10 @@ pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          in("r0") a1,
          lateout("r0") ret,
     );
@@ -34,8 +38,10 @@ pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          in("r0") a1,
          in("r1") a2,
          lateout("r0") ret,
@@ -46,8 +52,10 @@ pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          in("r0") a1,
          in("r1") a2,
          in("r2") a3,
@@ -65,8 +73,10 @@ pub unsafe fn syscall4(
     a4: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          in("r0") a1,
          in("r1") a2,
          in("r2") a3,
@@ -86,8 +96,10 @@ pub unsafe fn syscall5(
     a5: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          in("r0") a1,
          in("r1") a2,
          in("r2") a3,
@@ -109,8 +121,10 @@ pub unsafe fn syscall6(
     a6: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("swi 0",
-         in("r7") n,
+    asm!(
+        "mov r7, {n}",
+        "swi 0",
+         n = in(reg) n,
          in("r0") a1,
          in("r1") a2,
          in("r2") a3,

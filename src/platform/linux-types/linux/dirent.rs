@@ -50,7 +50,7 @@ impl linux_dirent64_t {
     #[must_use]
     #[inline]
     pub fn name(&self) -> &[u8] {
-        let name_len = strlen(self.d_name.as_ptr() as usize, self.d_reclen as usize);
+        let name_len = unsafe { strlen(self.d_name.as_ptr() as usize, self.d_reclen as usize) };
         &self.d_name[..name_len]
     }
 }

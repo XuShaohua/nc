@@ -44,7 +44,7 @@ impl linux_dirent_t {
     #[inline]
     pub fn name(&self) -> &[u8] {
         let d_name_ptr: *const u8 = ptr::addr_of!(self.d_name).cast::<u8>();
-        let name_len = strlen(d_name_ptr as usize, self.d_reclen as usize);
+        let name_len = unsafe { strlen(d_name_ptr as usize, self.d_reclen as usize) };
         unsafe { slice::from_raw_parts(d_name_ptr, name_len) }
     }
 }

@@ -20,11 +20,15 @@ use core::ptr;
 /// ```
 /// use nc::c_str::strlen;
 /// let buf = &[b'h', b'e', b'l', b'l', b'o', 0];
-/// let l = strlen(buf.as_ptr() as usize, buf.len());
+/// let l = unsafe { strlen(buf.as_ptr() as usize, buf.len()) };
 /// assert_eq!(l, 5);
 /// ```
+///
+/// # Safety
+/// - `buf` is a pointer to raw buffer memory
+/// - `len` should not be larger than length of buffer
 #[must_use]
-pub fn strlen(buf: usize, len: usize) -> usize {
+pub(crate) unsafe fn strlen(buf: usize, len: usize) -> usize {
     let buf_ptr = buf as *const u8;
     for i in 0..len {
         let chr: u8 = unsafe { *buf_ptr.wrapping_add(i) };

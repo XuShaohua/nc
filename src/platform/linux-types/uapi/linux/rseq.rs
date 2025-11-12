@@ -131,14 +131,11 @@ pub struct rseq_t {
     /// Mainly used for single-stepping through rseq critical sections
     /// with debuggers.
     ///
-    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT`
-    ///     Inhibit instruction sequence block restart on preemption
-    ///     for this thread.
-    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL`
-    ///     Inhibit instruction sequence block restart on signal
-    ///     delivery for this thread.
-    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE`
-    ///     Inhibit instruction sequence block restart on migration for
-    ///     this thread.
+    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT`:
+    ///   Inhibit instruction sequence block restart on preemption for this thread.
+    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_SIGNAL`:
+    ///   Inhibit instruction sequence block restart on signal delivery for this thread.
+    /// - `RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE`:
+    ///   Inhibit instruction sequence block restart on migration for this thread.
     pub flags: u32,
 }

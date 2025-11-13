@@ -24,8 +24,7 @@ pub unsafe fn abort2(why: &str, args_len: i32, args: usize) -> ! {
     let why_ptr = why.as_ptr() as usize;
     let args_len = args_len as usize;
     let _ = syscall3(SYS_ABORT2, why_ptr, args_len, args);
-    // Never returns
-    unreachable!();
+    core::hint::unreachable_unchecked();
 }
 
 /// Accept a connection on a socket.
@@ -814,7 +813,7 @@ pub unsafe fn execve<P: AsRef<Path>>(
 pub unsafe fn exit(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);
-    unreachable!();
+    core::hint::unreachable_unchecked();
 }
 
 /// Manage UFS1 extended attributes
@@ -4963,7 +4962,7 @@ pub unsafe fn thr_craete(ctx: &mut ucontext_t, id: &mut isize, flags: i32) -> Re
 pub unsafe fn thr_exit(state: Option<&mut isize>) -> ! {
     let state_ptr = state.map_or(0, |state| state as *mut isize as usize);
     let _ret = syscall1(SYS_THR_EXIT, state_ptr).map(drop);
-    unreachable!();
+    core::hint::unreachable_unchecked();
 }
 
 /// Send signal to specific thread.

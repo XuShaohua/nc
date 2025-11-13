@@ -1200,7 +1200,7 @@ pub unsafe fn execveat<P: AsRef<Path>>(
 pub unsafe fn exit(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT, status);
-    unreachable!();
+    core::hint::unreachable_unchecked();
 }
 
 /// Exit all threads in a process's thread group.
@@ -1213,7 +1213,7 @@ pub unsafe fn exit(status: i32) -> ! {
 pub unsafe fn exit_group(status: i32) -> ! {
     let status = status as usize;
     let _ret = syscall1(SYS_EXIT_GROUP, status);
-    unreachable!();
+    core::hint::unreachable_unchecked();
 }
 
 /// Check user's permission for a file.

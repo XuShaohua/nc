@@ -23,3 +23,23 @@ default = ["std"]
 # Requires a dependency on the Rust standard library.
 std = []
 
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+cargo = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+
+expect_used = "deny"
+panic_in_result_fn = "deny"
+panic = "deny"
+unused_result_ok = "deny"
+unwrap_used = "deny"
+
+missing_errors_doc = "allow"
+multiple_crate_versions = "allow"
+
+[lints.rust]
+dead_code = "allow"
+function_casts_as_integer = "allow"
+unknown_lints = "allow"
+warnings = "deny"

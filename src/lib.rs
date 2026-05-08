@@ -159,15 +159,6 @@
 //! [relibc]: https://gitlab.redox-os.org/redox-os/relibc.git
 //! [nix]: https://github.com/nix-rust/nix
 
-#![deny(
-    warnings,
-    clippy::all,
-    clippy::cargo,
-    clippy::nursery,
-    clippy::pedantic
-)]
-#![allow(dead_code)]
-#![allow(unknown_lints)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[macro_use]

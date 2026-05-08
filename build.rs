@@ -2,6 +2,9 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
+#![allow(clippy::expect_used)]
+#![allow(clippy::unwrap_used)]
+
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -18,7 +21,7 @@ fn get_page_size() {
     let dest_path = Path::new(&out_dir).join("page_size.rs");
     fs::write(
         dest_path,
-        format!("pub const PAGE_SIZE: usize = {};", page_size_val),
+        format!("pub const PAGE_SIZE: usize = {page_size_val};"),
     )
     .unwrap();
 }
@@ -41,7 +44,7 @@ fn build_syscall(rustc_toolchain: &str, target_arch: &str) {
     {
         println!("cargo:rustc-cfg=nc_has_asm");
     } else {
-        let syscall_file = format!("src/syscalls/syscall_{}.c", target_arch);
+        let syscall_file = format!("src/syscalls/syscall_{target_arch}.c");
         cc::Build::new().file(syscall_file).compile("syscall");
     }
 }

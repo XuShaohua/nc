@@ -7,11 +7,11 @@ homepage = "https://github.com/xushaohua/nc"
 repository = "https://github.com/xushaohua/nc"
 documentation = "https://docs.rs/nc"
 description = "Access system calls directly"
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"
 keywords = ["syscall", "linux"]
 categories = ["os", "no-std", "external-ffi-bindings"]
-rust-version = "1.63.0"
+rust-version = "1.85.0"
 
 [build-dependencies]
 cc = "1.2.47"

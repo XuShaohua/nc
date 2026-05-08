@@ -15,13 +15,15 @@ pub unsafe fn clone(
         child_tid as *mut pid_t as usize
     });
     let tls_ptr = tls.map_or(core::ptr::null::<u8>() as usize, |tls| tls as usize);
-    syscall5(
-        SYS_CLONE,
-        clone_flags,
-        child_stack,
-        parent_tid_ptr,
-        child_tid_ptr,
-        tls_ptr,
-    )
-    .map(|ret| ret as pid_t)
+    unsafe {
+        syscall5(
+            SYS_CLONE,
+            clone_flags,
+            child_stack,
+            parent_tid_ptr,
+            child_tid_ptr,
+            tls_ptr,
+        )
+        .map(|ret| ret as pid_t)
+    }
 }

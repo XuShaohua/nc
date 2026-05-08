@@ -9,14 +9,16 @@ pub unsafe fn __sysctl(
 ) -> Result<(), Errno> {
     let name_ptr = name as *const i32 as usize;
     let name_len = name_len as usize;
-    syscall6(
-        SYS___SYSCTL,
-        name_ptr,
-        name_len,
-        old_val,
-        old_len,
-        new_val,
-        new_len,
-    )
-    .map(drop)
+    unsafe {
+        syscall6(
+            SYS___SYSCTL,
+            name_ptr,
+            name_len,
+            old_val,
+            old_len,
+            new_val,
+            new_len,
+        )
+        .map(drop)
+    }
 }

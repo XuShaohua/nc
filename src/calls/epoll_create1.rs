@@ -11,5 +11,5 @@
 /// ```
 pub unsafe fn epoll_create1(flags: i32) -> Result<i32, Errno> {
     let flags = flags as usize;
-    syscall1(SYS_EPOLL_CREATE1, flags).map(|ret| ret as i32)
+    unsafe { syscall1(SYS_EPOLL_CREATE1, flags).map(|ret| ret as i32) }
 }

@@ -10,5 +10,5 @@ pub unsafe fn __realpathat<P: AsRef<Path>>(
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
     let flags = flags as usize;
-    syscall5(SYS___REALPATHAT, fd, path_ptr, buf_ptr, buf_len, flags)
+    unsafe { syscall5(SYS___REALPATHAT, fd, path_ptr, buf_ptr, buf_len, flags) }
 }

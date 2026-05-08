@@ -90,5 +90,5 @@ pub unsafe fn connect(
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
-    syscall3(SYS_CONNECT, sockfd, addr_ptr, addrlen).map(drop)
+    unsafe { syscall3(SYS_CONNECT, sockfd, addr_ptr, addrlen).map(drop) }
 }

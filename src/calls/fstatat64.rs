@@ -20,5 +20,5 @@ pub unsafe fn fstatat64<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let statbuf_ptr = statbuf as *mut stat64_t as usize;
     let flag = flag as usize;
-    syscall4(SYS_FSTATAT64, dfd, filename_ptr, statbuf_ptr, flag).map(drop)
+    unsafe { syscall4(SYS_FSTATAT64, dfd, filename_ptr, statbuf_ptr, flag).map(drop) }
 }

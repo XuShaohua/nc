@@ -43,14 +43,16 @@ pub unsafe fn copy_file_range(
     let fd_out = fd_out as usize;
     let off_out_ptr = off_out as *mut loff_t as usize;
     let flags = flags as usize;
-    syscall6(
-        SYS_COPY_FILE_RANGE,
-        fd_in,
-        off_in_ptr,
-        fd_out,
-        off_out_ptr,
-        len,
-        flags,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(
+            SYS_COPY_FILE_RANGE,
+            fd_in,
+            off_in_ptr,
+            fd_out,
+            off_out_ptr,
+            len,
+            flags,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

@@ -21,5 +21,5 @@
 pub unsafe fn dup2(oldfd: i32, newfd: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;
-    syscall2(SYS_DUP2, oldfd, newfd).map(drop)
+    unsafe { syscall2(SYS_DUP2, oldfd, newfd).map(drop) }
 }

@@ -11,13 +11,15 @@ pub unsafe fn extattr_get_link<P: AsRef<Path>>(
     let attr_name_ptr = attr_name.as_ptr() as usize;
     let data_ptr = data.as_mut_ptr() as usize;
     let nbytes = data.len();
-    syscall5(
-        SYS_EXTATTR_GET_LINK,
-        path_ptr,
-        attr_namespace,
-        attr_name_ptr,
-        data_ptr,
-        nbytes,
-    )
-    .map(|val| val as ssize_t)
+    unsafe {
+        syscall5(
+            SYS_EXTATTR_GET_LINK,
+            path_ptr,
+            attr_namespace,
+            attr_name_ptr,
+            data_ptr,
+            nbytes,
+        )
+        .map(|val| val as ssize_t)
+    }
 }

@@ -17,5 +17,5 @@ pub unsafe fn getcpu(
     let cpu_ptr = cpu as *mut u32 as usize;
     let node_ptr = node as *mut u32 as usize;
     let cache_ptr = cache as *mut getcpu_cache_t as usize;
-    syscall3(SYS_GETCPU, cpu_ptr, node_ptr, cache_ptr).map(drop)
+    unsafe { syscall3(SYS_GETCPU, cpu_ptr, node_ptr, cache_ptr).map(drop) }
 }

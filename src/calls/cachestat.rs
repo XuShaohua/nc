@@ -39,5 +39,5 @@ pub unsafe fn cachestat(
     let cstat_range_ptr = cstat_range as *mut cachestat_range_t as usize;
     let cstat_ptr = cstat as *mut cachestat_t as usize;
     let flags = flags as usize;
-    syscall4(SYS_CACHESTAT, fd, cstat_range_ptr, cstat_ptr, flags).map(drop)
+    unsafe { syscall4(SYS_CACHESTAT, fd, cstat_range_ptr, cstat_ptr, flags).map(drop) }
 }

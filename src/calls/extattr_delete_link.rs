@@ -8,11 +8,13 @@ pub unsafe fn extattr_delete_link<P: AsRef<Path>>(
     let path_ptr = path.as_ptr() as usize;
     let attr_namespace = attr_namespace as usize;
     let attr_name_ptr = attr_name.as_ptr() as usize;
-    syscall3(
-        SYS_EXTATTR_DELETE_LINK,
-        path_ptr,
-        attr_namespace,
-        attr_name_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall3(
+            SYS_EXTATTR_DELETE_LINK,
+            path_ptr,
+            attr_namespace,
+            attr_name_ptr,
+        )
+        .map(drop)
+    }
 }

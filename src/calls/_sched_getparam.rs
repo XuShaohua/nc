@@ -9,5 +9,5 @@ pub unsafe fn _sched_getparam(
     let lid = lid as usize;
     let policy_ptr = policy as *mut i32 as usize;
     let param_ptr = param as *mut sched_param_t as usize;
-    syscall4(SYS__SCHED_GETPARAM, pid, lid, policy_ptr, param_ptr).map(drop)
+    unsafe { syscall4(SYS__SCHED_GETPARAM, pid, lid, policy_ptr, param_ptr).map(drop) }
 }

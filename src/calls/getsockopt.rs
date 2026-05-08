@@ -54,13 +54,15 @@ pub unsafe fn getsockopt(
     let opt_name = opt_name as usize;
     let opt_val_ptr = opt_val as usize;
     let opt_len_ptr = opt_len as *mut socklen_t as usize;
-    syscall5(
-        SYS_GETSOCKOPT,
-        sockfd,
-        level,
-        opt_name,
-        opt_val_ptr,
-        opt_len_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_GETSOCKOPT,
+            sockfd,
+            level,
+            opt_name,
+            opt_val_ptr,
+            opt_len_ptr,
+        )
+        .map(drop)
+    }
 }

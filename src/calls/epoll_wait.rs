@@ -53,5 +53,5 @@ pub unsafe fn epoll_wait(
     let events_ptr = events.as_mut_ptr() as usize;
     let max_events = events.len();
     let timeout = timeout as usize;
-    syscall4(SYS_EPOLL_WAIT, epfd, events_ptr, max_events, timeout).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_EPOLL_WAIT, epfd, events_ptr, max_events, timeout).map(|ret| ret as i32) }
 }

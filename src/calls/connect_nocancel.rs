@@ -7,5 +7,5 @@ pub unsafe fn connect_nocancel(
     let sockfd = sockfd as usize;
     let name_ptr = name as usize;
     let addrlen = addrlen as usize;
-    syscall3(SYS_CONNECT_NOCANCEL, sockfd, name_ptr, addrlen).map(drop)
+    unsafe { syscall3(SYS_CONNECT_NOCANCEL, sockfd, name_ptr, addrlen).map(drop) }
 }

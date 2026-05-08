@@ -67,5 +67,5 @@ pub unsafe fn getdents(fd: i32, dir_buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let count = dir_buf.len();
     let dir_buf_ptr = dir_buf.as_mut_ptr() as usize;
-    syscall3(SYS_GETDENTS, fd, dir_buf_ptr, count).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_GETDENTS, fd, dir_buf_ptr, count).map(|ret| ret as ssize_t) }
 }

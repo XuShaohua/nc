@@ -9,5 +9,5 @@ pub unsafe fn bindat(
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
     let addrlen = addrlen as usize;
-    syscall4(SYS_BINDAT, fd, sockfd, addr_ptr, addrlen).map(drop)
+    unsafe { syscall4(SYS_BINDAT, fd, sockfd, addr_ptr, addrlen).map(drop) }
 }

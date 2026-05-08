@@ -9,5 +9,5 @@ pub unsafe fn getfsstat(buf: Option<&mut [statfs_t]>, mode: i32) -> Result<i32, 
         buf.as_mut_ptr() as usize
     });
     let mode = mode as usize;
-    syscall3(SYS_GETFSSTAT, buf_ptr, buf_size, mode).map(|val| val as i32)
+    unsafe { syscall3(SYS_GETFSSTAT, buf_ptr, buf_size, mode).map(|val| val as i32) }
 }

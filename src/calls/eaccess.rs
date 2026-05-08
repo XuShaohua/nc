@@ -14,5 +14,5 @@ pub unsafe fn eaccess<P: AsRef<Path>>(filename: P, mode: i32) -> Result<(), Errn
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
-    syscall2(SYS_EACCESS, filename_ptr, mode).map(drop)
+    unsafe { syscall2(SYS_EACCESS, filename_ptr, mode).map(drop) }
 }

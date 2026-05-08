@@ -13,5 +13,5 @@ pub unsafe fn fsconfig<P: AsRef<Path>>(
     let value = CString::new(value.as_ref());
     let value_ptr = value.as_ptr() as usize;
     let aux = aux as usize;
-    syscall5(SYS_FSCONFIG, fd, cmd, key_ptr, value_ptr, aux).map(drop)
+    unsafe { syscall5(SYS_FSCONFIG, fd, cmd, key_ptr, value_ptr, aux).map(drop) }
 }

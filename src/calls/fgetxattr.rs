@@ -42,5 +42,5 @@ pub unsafe fn fgetxattr<P: AsRef<Path>>(
     let name_ptr = name.as_ptr() as usize;
     let value_ptr = value.as_mut_ptr() as usize;
     let size = value.len();
-    syscall4(SYS_FGETXATTR, fd, name_ptr, value_ptr, size).map(|ret| ret as ssize_t)
+    unsafe { syscall4(SYS_FGETXATTR, fd, name_ptr, value_ptr, size).map(|ret| ret as ssize_t) }
 }

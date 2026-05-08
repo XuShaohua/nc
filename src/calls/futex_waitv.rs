@@ -35,13 +35,15 @@ pub unsafe fn futex_waitv(
         timeout as *const timespec_t as usize
     });
     let clockid = clockid as usize;
-    syscall5(
-        SYS_FUTEX_WAITV,
-        waiters_ptr,
-        waiters_len,
-        flags,
-        timeout_ptr,
-        clockid,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall5(
+            SYS_FUTEX_WAITV,
+            waiters_ptr,
+            waiters_len,
+            flags,
+            timeout_ptr,
+            clockid,
+        )
+        .map(|ret| ret as i32)
+    }
 }

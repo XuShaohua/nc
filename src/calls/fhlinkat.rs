@@ -4,5 +4,5 @@ pub unsafe fn fhlinkat<P: AsRef<Path>>(fh: &mut fhandle_t, tofd: i32, to: P) -> 
     let tofd = tofd as usize;
     let to = CString::new(to.as_ref());
     let to_ptr = to.as_ptr() as usize;
-    syscall3(SYS_FHLINKAT, fh_ptr, tofd, to_ptr).map(drop)
+    unsafe { syscall3(SYS_FHLINKAT, fh_ptr, tofd, to_ptr).map(drop) }
 }

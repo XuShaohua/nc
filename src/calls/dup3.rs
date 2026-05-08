@@ -21,5 +21,5 @@ pub unsafe fn dup3(oldfd: i32, newfd: i32, flags: i32) -> Result<(), Errno> {
     let oldfd = oldfd as usize;
     let newfd = newfd as usize;
     let flags = flags as usize;
-    syscall3(SYS_DUP3, oldfd, newfd, flags).map(drop)
+    unsafe { syscall3(SYS_DUP3, oldfd, newfd, flags).map(drop) }
 }

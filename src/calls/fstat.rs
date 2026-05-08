@@ -19,5 +19,5 @@
 pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let statbuf_ptr = statbuf as *mut stat_t as usize;
-    syscall2(SYS_FSTAT, fd, statbuf_ptr).map(drop)
+    unsafe { syscall2(SYS_FSTAT, fd, statbuf_ptr).map(drop) }
 }

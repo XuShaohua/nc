@@ -11,5 +11,5 @@ pub unsafe fn cpuset_getaffinity(
     let id = id as usize;
     let mask_len = mask.len();
     let mask_ptr = mask.as_mut_ptr() as usize;
-    syscall5(SYS_CPUSET_GETAFFINITY, level, which, id, mask_ptr, mask_len).map(drop)
+    unsafe { syscall5(SYS_CPUSET_GETAFFINITY, level, which, id, mask_ptr, mask_len).map(drop) }
 }

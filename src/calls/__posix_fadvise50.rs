@@ -11,5 +11,5 @@ pub unsafe fn __posix_fadvise50(
     let offset = offset as usize;
     let len = len as usize;
     let advice = advice as usize;
-    syscall5(SYS___POSIX_FADVISE50, fd, pad, offset, len, advice).map(drop)
+    unsafe { syscall5(SYS___POSIX_FADVISE50, fd, pad, offset, len, advice).map(drop) }
 }

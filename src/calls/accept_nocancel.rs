@@ -7,5 +7,5 @@ pub unsafe fn accept_nocancel(
     let sockfd = sockfd as usize;
     let addr_ptr = addr as *mut sockaddr_in_t as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
-    syscall3(SYS_ACCEPT_NOCANCEL, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32)
+    unsafe { syscall3(SYS_ACCEPT_NOCANCEL, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32) }
 }

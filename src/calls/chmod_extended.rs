@@ -12,5 +12,5 @@ pub unsafe fn chmod_extended<P: AsRef<Path>>(
     let gid = gid as usize;
     let mode = mode as usize;
     let xsecurity = xsecurity as usize;
-    syscall5(SYS_CHMOD_EXTENDED, path_ptr, uid, gid, mode, xsecurity).map(drop)
+    unsafe { syscall5(SYS_CHMOD_EXTENDED, path_ptr, uid, gid, mode, xsecurity).map(drop) }
 }

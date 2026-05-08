@@ -26,6 +26,5 @@ pub unsafe fn fexecve<P: AsRef<Path>>(fd: i32, argv: &[P], env: &[P]) -> Result<
     // Null-terminated
     env_data_ptr.push(core::ptr::null::<u8>());
     let env_ptr = env_data_ptr.as_ptr() as usize;
-
-    syscall3(SYS_FEXECVE, fd, argv_ptr, env_ptr).map(drop)
+    unsafe { syscall3(SYS_FEXECVE, fd, argv_ptr, env_ptr).map(drop) }
 }

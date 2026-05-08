@@ -23,14 +23,16 @@ pub unsafe fn futex_wait(
         timeout as *const timespec_t as usize
     });
     let clockid = clockid as usize;
-    syscall6(
-        SYS_FUTEX_WAIT,
-        uaddr,
-        val,
-        mask,
-        flags,
-        timeout_ptr,
-        clockid,
-    )
-    .map(drop)
+    unsafe {
+        syscall6(
+            SYS_FUTEX_WAIT,
+            uaddr,
+            val,
+            mask,
+            flags,
+            timeout_ptr,
+            clockid,
+        )
+        .map(drop)
+    }
 }

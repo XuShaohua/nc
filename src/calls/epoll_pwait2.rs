@@ -67,14 +67,16 @@ pub unsafe fn epoll_pwait2(
     });
     let sigmask_ptr = sigmask as *const sigset_t as usize;
     let sigset_size = core::mem::size_of::<sigset_t>();
-    syscall6(
-        SYS_EPOLL_PWAIT2,
-        epfd,
-        events_ptr,
-        max_events,
-        timeout_ptr,
-        sigmask_ptr,
-        sigset_size,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall6(
+            SYS_EPOLL_PWAIT2,
+            epfd,
+            events_ptr,
+            max_events,
+            timeout_ptr,
+            sigmask_ptr,
+            sigset_size,
+        )
+        .map(|ret| ret as i32)
+    }
 }

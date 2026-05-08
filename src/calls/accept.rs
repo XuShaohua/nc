@@ -95,5 +95,5 @@ pub unsafe fn accept(
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
         addrlen as *mut socklen_t as usize
     });
-    syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32)
+    unsafe { syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32) }
 }

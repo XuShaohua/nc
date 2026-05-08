@@ -10,5 +10,5 @@ pub unsafe fn mount<P: AsRef<Path>>(
     let dir_name = CString::new(dir_name.as_ref());
     let dir_name_ptr = dir_name.as_ptr() as usize;
     let flags = flags as usize;
-    syscall4(SYS___MOUNT50, fs_type_ptr, dir_name_ptr, flags, data).map(drop)
+    unsafe { syscall4(SYS___MOUNT50, fs_type_ptr, dir_name_ptr, flags, data).map(drop) }
 }

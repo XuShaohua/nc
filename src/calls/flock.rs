@@ -23,5 +23,5 @@
 pub unsafe fn flock(fd: i32, operation: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let operation = operation as usize;
-    syscall2(SYS_FLOCK, fd, operation).map(drop)
+    unsafe { syscall2(SYS_FLOCK, fd, operation).map(drop) }
 }

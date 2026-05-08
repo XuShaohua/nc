@@ -37,5 +37,5 @@ pub unsafe fn fsetxattr<P: AsRef<Path>>(
     let value_ptr = value.as_ptr() as usize;
     let size = value.len();
     let flags = flags as usize;
-    syscall5(SYS_FSETXATTR, fd, name_ptr, value_ptr, size, flags).map(drop)
+    unsafe { syscall5(SYS_FSETXATTR, fd, name_ptr, value_ptr, size, flags).map(drop) }
 }

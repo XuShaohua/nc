@@ -19,5 +19,5 @@ pub unsafe fn fadvise64_64(fd: i32, offset: loff_t, len: loff_t, advice: i32) ->
     let offset = offset as usize;
     let len = len as usize;
     let advice = advice as usize;
-    syscall4(SYS_FADVISE64_64, fd, offset, len, advice).map(drop)
+    unsafe { syscall4(SYS_FADVISE64_64, fd, offset, len, advice).map(drop) }
 }

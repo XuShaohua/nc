@@ -6,5 +6,5 @@ pub unsafe fn __lutimes50<P: AsRef<Path>>(
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let times_ptr = times.as_ptr() as usize;
-    syscall2(SYS___LUTIMES50, filename_ptr, times_ptr).map(drop)
+    unsafe { syscall2(SYS___LUTIMES50, filename_ptr, times_ptr).map(drop) }
 }

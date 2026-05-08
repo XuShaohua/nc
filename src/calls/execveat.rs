@@ -48,5 +48,5 @@ pub unsafe fn execveat<P: AsRef<Path>>(
     let env_ptr = env_data_ptr.as_ptr() as usize;
 
     let flags = flags as usize;
-    syscall5(SYS_EXECVEAT, fd, filename_ptr, argv_ptr, env_ptr, flags).map(drop)
+    unsafe { syscall5(SYS_EXECVEAT, fd, filename_ptr, argv_ptr, env_ptr, flags).map(drop) }
 }

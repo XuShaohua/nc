@@ -24,5 +24,5 @@
 pub unsafe fn fchmod(fd: i32, mode: mode_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let mode = mode as usize;
-    syscall2(SYS_FCHMOD, fd, mode).map(drop)
+    unsafe { syscall2(SYS_FCHMOD, fd, mode).map(drop) }
 }

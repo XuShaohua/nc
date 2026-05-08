@@ -18,5 +18,5 @@ pub unsafe fn creat<P: AsRef<Path>>(filename: P, mode: mode_t) -> Result<i32, Er
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
-    syscall2(SYS_CREAT, filename_ptr, mode).map(|ret| ret as i32)
+    unsafe { syscall2(SYS_CREAT, filename_ptr, mode).map(|ret| ret as i32) }
 }

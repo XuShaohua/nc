@@ -14,13 +14,15 @@ pub unsafe fn fanotify_mark<P: AsRef<Path>>(
     let filename_ptr = filename.map_or(core::ptr::null::<u8>() as usize, |filename| {
         filename.as_ptr() as usize
     });
-    syscall5(
-        SYS_FANOTIFY_MARK,
-        fanotify_fd,
-        flags,
-        mask,
-        dir_fd,
-        filename_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_FANOTIFY_MARK,
+            fanotify_fd,
+            flags,
+            mask,
+            dir_fd,
+            filename_ptr,
+        )
+        .map(drop)
+    }
 }

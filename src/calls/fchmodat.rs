@@ -26,5 +26,5 @@ pub unsafe fn fchmodat<P: AsRef<Path>>(dirfd: i32, filename: P, mode: mode_t) ->
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
-    syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode).map(drop)
+    unsafe { syscall3(SYS_FCHMODAT, dirfd, filename_ptr, mode).map(drop) }
 }

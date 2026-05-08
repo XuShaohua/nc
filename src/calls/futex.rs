@@ -69,5 +69,7 @@ pub unsafe fn futex(
         uaddr2_ref as *const AtomicU32 as usize
     });
     let val3 = val3 as usize;
-    syscall6(SYS_FUTEX, uaddr_ptr, op, val, utime_ptr, uaddr2_ptr, val3).map(|ret| ret as i32)
+    unsafe {
+        syscall6(SYS_FUTEX, uaddr_ptr, op, val, utime_ptr, uaddr2_ptr, val3).map(|ret| ret as i32)
+    }
 }

@@ -13,14 +13,16 @@ pub unsafe fn cpuset_getdomain(
     let id = id as usize;
     let mask_ptr = mask as *mut domainset_t as usize;
     let policy_ptr = policy as *mut i32 as usize;
-    syscall6(
-        SYS_CPUSET_GETDOMAIN,
-        level,
-        which,
-        id,
-        domainset_size,
-        mask_ptr,
-        policy_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall6(
+            SYS_CPUSET_GETDOMAIN,
+            level,
+            which,
+            id,
+            domainset_size,
+            mask_ptr,
+            policy_ptr,
+        )
+        .map(drop)
+    }
 }

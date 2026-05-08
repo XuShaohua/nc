@@ -22,12 +22,14 @@ pub unsafe fn clock_nanosleep(
     let remain_ptr = remain.map_or(core::ptr::null_mut::<timespec_t>() as usize, |remain| {
         remain as *mut timespec_t as usize
     });
-    syscall4(
-        SYS_CLOCK_NANOSLEEP,
-        which_clock,
-        flags,
-        request_ptr,
-        remain_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall4(
+            SYS_CLOCK_NANOSLEEP,
+            which_clock,
+            flags,
+            request_ptr,
+            remain_ptr,
+        )
+        .map(drop)
+    }
 }

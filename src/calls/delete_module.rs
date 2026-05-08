@@ -3,5 +3,5 @@ pub unsafe fn delete_module<P: AsRef<Path>>(name: P, flags: u32) -> Result<(), E
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
     let flags = flags as usize;
-    syscall2(SYS_DELETE_MODULE, name_ptr, flags).map(drop)
+    unsafe { syscall2(SYS_DELETE_MODULE, name_ptr, flags).map(drop) }
 }

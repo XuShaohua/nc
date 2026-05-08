@@ -34,5 +34,5 @@ pub unsafe fn fchownat<P: AsRef<Path>>(
     let user = user as usize;
     let group = group as usize;
     let flag = flag as usize;
-    syscall5(SYS_FCHOWNAT, dirfd, filename_ptr, user, group, flag).map(drop)
+    unsafe { syscall5(SYS_FCHOWNAT, dirfd, filename_ptr, user, group, flag).map(drop) }
 }

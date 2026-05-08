@@ -9,5 +9,5 @@
 #[must_use]
 pub unsafe fn getppid() -> pid_t {
     // This function is always successful.
-    syscall0(SYS_GETPPID).unwrap_or_default() as pid_t
+    unsafe { syscall0(SYS_GETPPID).unwrap_or_default() as pid_t }
 }

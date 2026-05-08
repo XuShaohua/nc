@@ -10,5 +10,5 @@ pub unsafe fn getfhat<P: AsRef<Path>>(
     let path_ptr = path.as_ptr() as usize;
     let fh_ptr = fh as *mut fhandle_t as usize;
     let flag = flag as usize;
-    syscall4(SYS_GETFHAT, fd, path_ptr, fh_ptr, flag).map(drop)
+    unsafe { syscall4(SYS_GETFHAT, fd, path_ptr, fh_ptr, flag).map(drop) }
 }

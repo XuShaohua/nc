@@ -8,5 +8,5 @@ pub unsafe fn __posix_chown<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let user = user as usize;
     let group = group as usize;
-    syscall3(SYS___POSIX_CHOWN, filename_ptr, user, group).map(drop)
+    unsafe { syscall3(SYS___POSIX_CHOWN, filename_ptr, user, group).map(drop) }
 }

@@ -9,12 +9,14 @@ pub unsafe fn __timer_settime50(
     let flags = flags as usize;
     let new_value_ptr = new_value as *const itimerspec_t as usize;
     let old_value_ptr = old_value.map_or(0, |old_value| old_value as *mut itimerspec_t as usize);
-    syscall4(
-        SYS___TIMER_SETTIME50,
-        timer_id,
-        flags,
-        new_value_ptr,
-        old_value_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall4(
+            SYS___TIMER_SETTIME50,
+            timer_id,
+            flags,
+            new_value_ptr,
+            old_value_ptr,
+        )
+        .map(drop)
+    }
 }

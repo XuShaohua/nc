@@ -7,5 +7,5 @@ pub unsafe fn __sigprocmask14(
     let how = how as usize;
     let newset_ptr = newset as *mut sigset_t as usize;
     let oldset_ptr = oldset as *mut sigset_t as usize;
-    syscall3(SYS___SIGPROCMASK14, how, newset_ptr, oldset_ptr).map(drop)
+    unsafe { syscall3(SYS___SIGPROCMASK14, how, newset_ptr, oldset_ptr).map(drop) }
 }

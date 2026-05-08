@@ -10,5 +10,5 @@ pub unsafe fn funlinkat<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let fd = fd as usize;
     let flag = flag as usize;
-    syscall4(SYS_FUNLINKAT, dfd, filename_ptr, fd, flag).map(drop)
+    unsafe { syscall4(SYS_FUNLINKAT, dfd, filename_ptr, fd, flag).map(drop) }
 }

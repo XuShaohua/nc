@@ -9,13 +9,15 @@ pub unsafe fn get_mempolicy(
     let mode_ptr = mode as *mut i32 as usize;
     let nmask_ptr = nmask as *mut usize as usize;
     let addr = addr as usize;
-    syscall5(
-        SYS_GET_MEMPOLICY,
-        mode_ptr,
-        nmask_ptr,
-        max_node,
-        addr,
-        flags,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_GET_MEMPOLICY,
+            mode_ptr,
+            nmask_ptr,
+            max_node,
+            addr,
+            flags,
+        )
+        .map(drop)
+    }
 }

@@ -18,14 +18,16 @@ pub unsafe fn pselect6(
     let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
     let timeout_ptr = timeout as *const timespec_t as usize;
     let sigmask_ptr = sigmask as *const sigset_t as usize;
-    syscall6(
-        SYS___PSELECT50,
-        nfds,
-        readfds_ptr,
-        writefds_ptr,
-        exceptfds_ptr,
-        timeout_ptr,
-        sigmask_ptr,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall6(
+            SYS___PSELECT50,
+            nfds,
+            readfds_ptr,
+            writefds_ptr,
+            exceptfds_ptr,
+            timeout_ptr,
+            sigmask_ptr,
+        )
+        .map(|ret| ret as i32)
+    }
 }

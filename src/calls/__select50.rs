@@ -11,13 +11,15 @@ pub unsafe fn __select50(
     let writefds_ptr = writefds as *mut fd_set_t as usize;
     let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
     let timeout_ptr = timeout as *mut timeval_t as usize;
-    syscall5(
-        SYS___SELECT50,
-        nfds,
-        readfds_ptr,
-        writefds_ptr,
-        exceptfds_ptr,
-        timeout_ptr,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall5(
+            SYS___SELECT50,
+            nfds,
+            readfds_ptr,
+            writefds_ptr,
+            exceptfds_ptr,
+            timeout_ptr,
+        )
+        .map(|ret| ret as i32)
+    }
 }

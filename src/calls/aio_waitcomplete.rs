@@ -6,5 +6,5 @@ pub unsafe fn aio_waitcomplete(
     let job_ptr = job as *mut aiocb_t as usize;
     let timeout_ptr =
         core::mem::transmute::<Option<_>, &timespec_t>(timeout) as *const timespec_t as usize;
-    syscall2(SYS_AIO_WAITCOMPLETE, job_ptr, timeout_ptr).map(|val| val as ssize_t)
+    unsafe { syscall2(SYS_AIO_WAITCOMPLETE, job_ptr, timeout_ptr).map(|val| val as ssize_t) }
 }

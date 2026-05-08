@@ -14,5 +14,5 @@
 pub unsafe fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *const timespec_t as usize;
-    syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr).map(drop)
+    unsafe { syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr).map(drop) }
 }

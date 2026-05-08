@@ -17,5 +17,5 @@ pub unsafe fn futex_requeue(
     let flags = flags as usize;
     let nr_wake = nr_wake as usize;
     let nr_requeue = nr_requeue as usize;
-    syscall4(SYS_FUTEX_REQUEUE, waiters_ptr, flags, nr_wake, nr_requeue).map(drop)
+    unsafe { syscall4(SYS_FUTEX_REQUEUE, waiters_ptr, flags, nr_wake, nr_requeue).map(drop) }
 }

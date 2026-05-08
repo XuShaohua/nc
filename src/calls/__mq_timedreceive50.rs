@@ -10,13 +10,15 @@ pub unsafe fn __mq_timedreceive50(
     let msg_ptr = msg.as_ptr() as usize;
     let msg_prio = msg_prio as *mut u32 as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
-    syscall5(
-        SYS___MQ_TIMEDRECEIVE50,
-        mqdes,
-        msg_ptr,
-        msg_len,
-        msg_prio,
-        abs_timeout_ptr,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall5(
+            SYS___MQ_TIMEDRECEIVE50,
+            mqdes,
+            msg_ptr,
+            msg_len,
+            msg_prio,
+            abs_timeout_ptr,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

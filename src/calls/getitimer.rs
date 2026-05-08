@@ -44,5 +44,5 @@
 pub unsafe fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
     let which = which as usize;
     let curr_val_ptr = curr_val as *mut itimerval_t as usize;
-    syscall2(SYS_GETITIMER, which, curr_val_ptr).map(drop)
+    unsafe { syscall2(SYS_GETITIMER, which, curr_val_ptr).map(drop) }
 }

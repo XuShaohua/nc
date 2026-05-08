@@ -10,5 +10,5 @@ pub unsafe fn chflagsat<P: AsRef<Path>>(
     let path_ptr = path.as_ptr() as usize;
     let flags = flags as usize;
     let atflag = atflag as usize;
-    syscall4(SYS_CHFLAGSAT, fd, path_ptr, flags, atflag).map(drop)
+    unsafe { syscall4(SYS_CHFLAGSAT, fd, path_ptr, flags, atflag).map(drop) }
 }

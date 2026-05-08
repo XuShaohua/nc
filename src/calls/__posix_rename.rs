@@ -4,5 +4,5 @@ pub unsafe fn __posix_rename<P: AsRef<Path>>(oldfilename: P, newfilename: P) -> 
     let oldfilename_ptr = oldfilename.as_ptr() as usize;
     let newfilename = CString::new(newfilename.as_ref());
     let newfilename_ptr = newfilename.as_ptr() as usize;
-    syscall2(SYS___POSIX_RENAME, oldfilename_ptr, newfilename_ptr).map(drop)
+    unsafe { syscall2(SYS___POSIX_RENAME, oldfilename_ptr, newfilename_ptr).map(drop) }
 }

@@ -33,5 +33,5 @@ pub unsafe fn futimesat<P: AsRef<Path>>(
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let times_ptr = times.as_ptr() as usize;
-    syscall3(SYS_FUTIMESAT, dirfd, filename_ptr, times_ptr).map(drop)
+    unsafe { syscall3(SYS_FUTIMESAT, dirfd, filename_ptr, times_ptr).map(drop) }
 }

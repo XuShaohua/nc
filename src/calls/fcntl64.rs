@@ -19,5 +19,5 @@
 pub unsafe fn fcntl64(fd: i32, cmd: u32, arg: usize) -> Result<i32, Errno> {
     let fd = fd as usize;
     let cmd = cmd as usize;
-    syscall3(SYS_FCNTL64, fd, cmd, arg).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_FCNTL64, fd, cmd, arg).map(|ret| ret as i32) }
 }

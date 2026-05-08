@@ -11,13 +11,15 @@ pub unsafe fn __mq_timedsend50(
     let msg_ptr = msg.as_ptr() as usize;
     let msg_prio = msg_prio as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
-    syscall5(
-        SYS___MQ_TIMEDSEND50,
-        mqdes,
-        msg_ptr,
-        msg_len,
-        msg_prio,
-        abs_timeout_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS___MQ_TIMEDSEND50,
+            mqdes,
+            msg_ptr,
+            msg_len,
+            msg_prio,
+            abs_timeout_ptr,
+        )
+        .map(drop)
+    }
 }

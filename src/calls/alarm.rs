@@ -18,5 +18,5 @@
 /// ```
 pub unsafe fn alarm(seconds: u32) -> Result<u32, Errno> {
     let seconds = seconds as usize;
-    syscall1(SYS_ALARM, seconds).map(|ret| ret as u32)
+    unsafe { syscall1(SYS_ALARM, seconds).map(|ret| ret as u32) }
 }

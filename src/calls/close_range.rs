@@ -17,5 +17,5 @@ pub unsafe fn close_range(fd: u32, max_fd: u32, flags: u32) -> Result<(), Errno>
     let fd = fd as usize;
     let max_fd = max_fd as usize;
     let flags = flags as usize;
-    syscall3(SYS_CLOSE_RANGE, fd, max_fd, flags).map(drop)
+    unsafe { syscall3(SYS_CLOSE_RANGE, fd, max_fd, flags).map(drop) }
 }

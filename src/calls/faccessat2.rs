@@ -17,5 +17,5 @@ pub unsafe fn faccessat2<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     let flags = flags as usize;
-    syscall4(SYS_FACCESSAT2, dfd, filename_ptr, mode, flags).map(drop)
+    unsafe { syscall4(SYS_FACCESSAT2, dfd, filename_ptr, mode, flags).map(drop) }
 }

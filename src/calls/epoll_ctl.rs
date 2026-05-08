@@ -31,5 +31,5 @@ pub unsafe fn epoll_ctl(
     let op = op as usize;
     let fd = fd as usize;
     let event_ptr = event as *mut epoll_event_t as usize;
-    syscall4(SYS_EPOLL_CTL, epfd, op, fd, event_ptr).map(drop)
+    unsafe { syscall4(SYS_EPOLL_CTL, epfd, op, fd, event_ptr).map(drop) }
 }

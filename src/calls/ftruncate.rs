@@ -17,5 +17,5 @@
 pub unsafe fn ftruncate(fd: i32, length: off_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let length = length as usize;
-    syscall2(SYS_FTRUNCATE, fd, length).map(drop)
+    unsafe { syscall2(SYS_FTRUNCATE, fd, length).map(drop) }
 }

@@ -8,5 +8,5 @@ pub unsafe fn _sched_getaffinity(
     let pid = pid as usize;
     let lid = lid as usize;
     let cpuset_ptr = cpuset as *mut cpuset_t as usize;
-    syscall4(SYS__SCHED_GETAFFINITY, pid, lid, size, cpuset_ptr).map(drop)
+    unsafe { syscall4(SYS__SCHED_GETAFFINITY, pid, lid, size, cpuset_ptr).map(drop) }
 }

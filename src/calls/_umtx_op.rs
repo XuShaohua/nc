@@ -7,5 +7,5 @@ pub unsafe fn _umtx_op(
     addr2: usize,
 ) -> Result<i32, Errno> {
     let op = op as usize;
-    syscall5(SYS__UMTX_OP, obj, op, val, addr, addr2).map(|val| val as i32)
+    unsafe { syscall5(SYS__UMTX_OP, obj, op, val, addr, addr2).map(|val| val as i32) }
 }

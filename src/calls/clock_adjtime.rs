@@ -13,5 +13,5 @@
 pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tx_ptr = tx as *mut timex_t as usize;
-    syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr).map(drop)
+    unsafe { syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr).map(drop) }
 }

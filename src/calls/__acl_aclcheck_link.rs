@@ -7,5 +7,5 @@ pub unsafe fn __acl_aclcheck_link<P: AsRef<Path>>(
     let path_ptr = path.as_ptr() as usize;
     let type_ = type_ as usize;
     let acl_ptr = acl as *mut acl_t as usize;
-    syscall3(SYS___ACL_ACLCHECK_LINK, path_ptr, type_, acl_ptr).map(drop)
+    unsafe { syscall3(SYS___ACL_ACLCHECK_LINK, path_ptr, type_, acl_ptr).map(drop) }
 }

@@ -96,5 +96,5 @@ pub unsafe fn accept4(
         addrlen as *mut socklen_t as usize
     });
     let flags = flags as usize;
-    syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32)
+    unsafe { syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32) }
 }

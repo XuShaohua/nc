@@ -17,5 +17,5 @@
 pub unsafe fn ftruncate64(fd: i32, len: loff_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let len = len as usize;
-    syscall2(SYS_FTRUNCATE64, fd, len).map(drop)
+    unsafe { syscall2(SYS_FTRUNCATE64, fd, len).map(drop) }
 }

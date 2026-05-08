@@ -16,5 +16,5 @@ pub unsafe fn clock_getres(
     let tp_ptr = tp.map_or(core::ptr::null_mut::<timespec_t>() as usize, |tp| {
         tp as *mut timespec_t as usize
     });
-    syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr).map(drop)
+    unsafe { syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr).map(drop) }
 }

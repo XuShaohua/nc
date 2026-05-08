@@ -19,5 +19,5 @@ pub unsafe fn acct<P: AsRef<Path>>(filename: Option<P>) -> Result<(), Errno> {
     let filename_ptr = filename.map_or(core::ptr::null::<u8>() as usize, |filename| {
         filename.as_ptr() as usize
     });
-    syscall1(SYS_ACCT, filename_ptr).map(drop)
+    unsafe { syscall1(SYS_ACCT, filename_ptr).map(drop) }
 }

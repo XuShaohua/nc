@@ -16,5 +16,5 @@ pub unsafe fn futex_wake(
     let uaddr = uaddr as usize;
     let nr = nr as usize;
     let flags = flags as usize;
-    syscall4(SYS_FUTEX_WAKE, uaddr, mask, nr, flags).map(drop)
+    unsafe { syscall4(SYS_FUTEX_WAKE, uaddr, mask, nr, flags).map(drop) }
 }

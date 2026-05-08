@@ -11,5 +11,5 @@
 pub unsafe fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp as *mut timespec_t as usize;
-    syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr).map(drop)
+    unsafe { syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr).map(drop) }
 }

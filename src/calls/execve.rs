@@ -26,5 +26,5 @@ pub unsafe fn execve<P: AsRef<Path>>(filename: P, argv: &[P], env: &[P]) -> Resu
     env_data_ptr.push(core::ptr::null::<u8>());
     let env_ptr = env_data_ptr.as_ptr() as usize;
 
-    syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr).map(drop)
+    unsafe { syscall3(SYS_EXECVE, filename_ptr, argv_ptr, env_ptr).map(drop) }
 }

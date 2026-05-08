@@ -19,5 +19,5 @@ pub unsafe fn fallocate(fd: i32, mode: i32, offset: loff_t, len: loff_t) -> Resu
     let mode = mode as usize;
     let offset = offset as usize;
     let len = len as usize;
-    syscall4(SYS_FALLOCATE, fd, mode, offset, len).map(drop)
+    unsafe { syscall4(SYS_FALLOCATE, fd, mode, offset, len).map(drop) }
 }

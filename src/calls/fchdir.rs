@@ -15,5 +15,5 @@
 /// ```
 pub unsafe fn fchdir(fd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
-    syscall1(SYS_FCHDIR, fd).map(drop)
+    unsafe { syscall1(SYS_FCHDIR, fd).map(drop) }
 }

@@ -34,5 +34,5 @@ pub unsafe fn flistxattr(fd: i32, value: &mut [u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let value_ptr = value.as_mut_ptr() as usize;
     let size = value.len();
-    syscall3(SYS_FLISTXATTR, fd, value_ptr, size).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_FLISTXATTR, fd, value_ptr, size).map(|ret| ret as ssize_t) }
 }

@@ -9,5 +9,5 @@ pub unsafe fn fmount<P: AsRef<Path>>(
     let fs_type_ptr = fs_type.as_ptr() as usize;
     let fd = fd as usize;
     let flags = flags as usize;
-    syscall4(SYS_FMOUNT, fs_type_ptr, fd, flags, data).map(drop)
+    unsafe { syscall4(SYS_FMOUNT, fs_type_ptr, fd, flags, data).map(drop) }
 }

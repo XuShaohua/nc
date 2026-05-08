@@ -14,5 +14,5 @@
 pub unsafe fn getcwd(buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let buf_ptr = buf.as_mut_ptr() as usize;
     let size = buf.len();
-    syscall2(SYS_GETCWD, buf_ptr, size).map(|ret| ret as ssize_t)
+    unsafe { syscall2(SYS_GETCWD, buf_ptr, size).map(|ret| ret as ssize_t) }
 }

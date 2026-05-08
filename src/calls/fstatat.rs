@@ -20,5 +20,5 @@ pub unsafe fn fstatat<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let statbuf_ptr = statbuf as *mut stat_t as usize;
     let flag = flag as usize;
-    syscall4(SYS_FSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop)
+    unsafe { syscall4(SYS_FSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop) }
 }

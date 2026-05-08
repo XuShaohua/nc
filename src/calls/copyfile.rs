@@ -6,5 +6,5 @@ pub unsafe fn copyfile<P: AsRef<Path>>(from: P, to: P, mode: i32, flags: u32) ->
     let to_ptr = to.as_ptr() as usize;
     let mode = mode as usize;
     let flags = flags as usize;
-    syscall4(SYS_COPYFILE, from_ptr, to_ptr, mode, flags).map(drop)
+    unsafe { syscall4(SYS_COPYFILE, from_ptr, to_ptr, mode, flags).map(drop) }
 }

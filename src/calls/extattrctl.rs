@@ -14,13 +14,15 @@ pub unsafe fn extattrctl<P: AsRef<Path>>(
     let attr_namespace = attr_namespace as usize;
     let attr_name = CString::new(attr_name);
     let attr_name_ptr = attr_name.as_ptr() as usize;
-    syscall5(
-        SYS_EXTATTRCTL,
-        path_ptr,
-        cmd,
-        filename_ptr,
-        attr_namespace,
-        attr_name_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_EXTATTRCTL,
+            path_ptr,
+            cmd,
+            filename_ptr,
+            attr_namespace,
+            attr_name_ptr,
+        )
+        .map(drop)
+    }
 }

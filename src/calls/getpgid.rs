@@ -9,5 +9,5 @@
 /// ```
 pub unsafe fn getpgid(pid: pid_t) -> Result<pid_t, Errno> {
     let pid = pid as usize;
-    syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t)
+    unsafe { syscall1(SYS_GETPGID, pid).map(|ret| ret as pid_t) }
 }

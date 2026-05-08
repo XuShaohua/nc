@@ -20,5 +20,5 @@
 /// ```
 pub unsafe fn dup(oldfd: i32) -> Result<i32, Errno> {
     let oldfd = oldfd as usize;
-    syscall1(SYS_DUP, oldfd).map(|ret| ret as i32)
+    unsafe { syscall1(SYS_DUP, oldfd).map(|ret| ret as i32) }
 }

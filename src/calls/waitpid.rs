@@ -22,7 +22,7 @@
 /// ```
 pub unsafe fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_t, Errno> {
     let pid = pid as usize;
-    let status_ptr = status as *mut i32 as usize;
+    let status_ptr = core::ptr::from_mut(status) as usize;
     let options = options as usize;
     unsafe { syscall3(SYS_WAITPID, pid, status_ptr, options).map(|ret| ret as pid_t) }
 }

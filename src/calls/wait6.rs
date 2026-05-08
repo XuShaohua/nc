@@ -9,10 +9,10 @@ pub unsafe fn wait6(
 ) -> Result<pid_t, Errno> {
     let idtype = idtype as usize;
     let id = id as usize;
-    let status_ptr = status as *mut i32 as usize;
+    let status_ptr = core::ptr::from_mut(status) as usize;
     let options = options as usize;
-    let wrusage_ptr = wrusage as *mut wrusage_t as usize;
-    let info_ptr = info as *mut siginfo_t as usize;
+    let wrusage_ptr = core::ptr::from_mut(wrusage) as usize;
+    let info_ptr = core::ptr::from_mut(info) as usize;
     unsafe {
         syscall6(
             SYS_WAIT6,

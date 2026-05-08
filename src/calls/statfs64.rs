@@ -13,6 +13,6 @@
 pub unsafe fn statfs64<P: AsRef<Path>>(filename: P, buf: &mut statfs64_t) -> Result<(), Errno> {
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    let buf_ptr = buf as *mut statfs64_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall2(SYS_STATFS64, filename_ptr, buf_ptr).map(drop) }
 }

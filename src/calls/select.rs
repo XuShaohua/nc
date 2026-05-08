@@ -18,7 +18,7 @@ pub unsafe fn select(
     let except_fds_ptr = except_fds.map_or(null_mut::<fd_set_t>() as usize, |except_fds| {
         except_fds as *mut fd_set_t as usize
     });
-    let timeout_ptr = timeout.map_or(null::<timeval_t> as usize, |timeout| {
+    let timeout_ptr = timeout.map_or(null::<timeval_t>() as usize, |timeout| {
         timeout as *const timeval_t as usize
     });
     unsafe {

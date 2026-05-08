@@ -22,6 +22,6 @@ pub unsafe fn statx<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
     let mask = mask as usize;
-    let buf_ptr = buf as *mut statx_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall5(SYS_STATX, dirfd, filename_ptr, flags, mask, buf_ptr).map(drop) }
 }

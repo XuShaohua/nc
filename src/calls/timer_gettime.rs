@@ -59,6 +59,6 @@
 /// ```
 pub unsafe fn timer_gettime(timer_id: timer_t, curr: &mut itimerspec_t) -> Result<(), Errno> {
     let timer_id = timer_id as usize;
-    let curr_ptr = curr as *mut itimerspec_t as usize;
+    let curr_ptr = core::ptr::from_mut(curr) as usize;
     unsafe { syscall2(SYS_TIMER_GETTIME, timer_id, curr_ptr).map(drop) }
 }

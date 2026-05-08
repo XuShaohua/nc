@@ -29,11 +29,11 @@ pub unsafe fn wait4(
 ) -> Result<pid_t, Errno> {
     let pid = pid as usize;
     let wstatus_ptr = wstatus.map_or(core::ptr::null_mut::<i32>() as usize, |wstatus| {
-        wstatus as *mut i32 as usize
+        core::ptr::from_mut(wstatus) as usize
     });
     let options = options as usize;
     let rusage_ptr = rusage.map_or(core::ptr::null_mut::<rusage_t>() as usize, |rusage| {
-        rusage as *mut rusage_t as usize
+        core::ptr::from_mut(rusage) as usize
     });
     unsafe { syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t) }
 }

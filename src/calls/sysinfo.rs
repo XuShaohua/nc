@@ -10,6 +10,6 @@
 /// assert!(info.freeram > 0);
 /// ```
 pub unsafe fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
-    let info_ptr = info as *mut sysinfo_t as usize;
+    let info_ptr = core::ptr::from_mut(info) as usize;
     unsafe { syscall1(SYS_SYSINFO, info_ptr).map(drop) }
 }

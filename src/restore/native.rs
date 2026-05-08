@@ -4,7 +4,7 @@
 
 use crate::restorefn_t;
 
-extern "C" {
+unsafe extern "C" {
     fn __nc_restore_rt();
 
     // TODO(Shaohua): Also export "__nc_restore" function.

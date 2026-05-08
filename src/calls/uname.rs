@@ -10,6 +10,6 @@
 /// assert!(!buf.machine.is_empty());
 /// ```
 pub unsafe fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
-    let buf_ptr = buf as *mut utsname_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall1(SYS_UNAME, buf_ptr).map(drop) }
 }

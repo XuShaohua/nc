@@ -14,8 +14,8 @@ pub unsafe fn timer_create(
 ) -> Result<(), Errno> {
     let clock = clock as usize;
     let event_ptr = event.map_or(core::ptr::null_mut::<sigevent_t>() as usize, |event| {
-        event as *mut sigevent_t as usize
+        core::ptr::from_mut(event) as usize
     });
-    let timer_id_ptr = timer_id as *mut timer_t as usize;
+    let timer_id_ptr = core::ptr::from_mut(timer_id) as usize;
     unsafe { syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr).map(drop) }
 }

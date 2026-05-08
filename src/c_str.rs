@@ -146,7 +146,7 @@ impl CStr {
     #[inline]
     #[allow(clippy::missing_const_for_fn)]
     unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &Self {
-        &*(bytes as *const [u8] as *const Self)
+        unsafe { &*(bytes as *const [u8] as *const Self) }
     }
 
     #[must_use]

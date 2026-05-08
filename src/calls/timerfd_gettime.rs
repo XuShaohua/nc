@@ -27,6 +27,6 @@
 /// ```
 pub unsafe fn timerfd_gettime(ufd: i32, cur_value: &mut itimerspec_t) -> Result<(), Errno> {
     let ufd = ufd as usize;
-    let cur_value_ptr = cur_value as *mut itimerspec_t as usize;
+    let cur_value_ptr = core::ptr::from_mut(cur_value) as usize;
     unsafe { syscall2(SYS_TIMERFD_GETTIME, ufd, cur_value_ptr).map(drop) }
 }

@@ -34,10 +34,10 @@ pub unsafe fn waitid(
 ) -> Result<(), Errno> {
     let which = which as usize;
     let pid = pid as usize;
-    let info_ptr = info as *mut siginfo_t as usize;
+    let info_ptr = core::ptr::from_mut(info) as usize;
     let options = options as usize;
     let ru_ptr = ru.map_or(core::ptr::null_mut::<rusage_t>() as usize, |ru| {
-        ru as *mut rusage_t as usize
+        core::ptr::from_mut(ru) as usize
     });
     unsafe { syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(drop) }
 }

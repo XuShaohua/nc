@@ -40,6 +40,5 @@ multiple_crate_versions = "allow"
 
 [lints.rust]
 dead_code = "allow"
-function_casts_as_integer = "allow"
 unknown_lints = "allow"
 warnings = "deny"

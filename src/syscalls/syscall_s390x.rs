@@ -11,43 +11,50 @@ use super::types::{check_errno, Errno, Sysno};
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={r}"(ret)
          : "{r1}"(n)
          : "memory"
          : "volatile");
+    }
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={r}"(ret)
          : "{r1}"(n),
            "{r2}"(a1)
          : "memory"
          : "volatile");
+    }
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
            "{x1}"(a2),
          : "memory" "cc"
          : "volatile");
+    }
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -55,6 +62,7 @@ pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usiz
            "{x2}"(a3)
          : "memory" "cc"
          : "volatile");
+    }
     check_errno(ret)
 }
 
@@ -67,7 +75,8 @@ pub unsafe fn syscall4(
     a4: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -76,6 +85,7 @@ pub unsafe fn syscall4(
            "{x3}"(a4)
          : "memory" "cc"
          : "volatile");
+    }
     check_errno(ret)
 }
 
@@ -89,7 +99,8 @@ pub unsafe fn syscall5(
     a5: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -99,6 +110,7 @@ pub unsafe fn syscall5(
            "{x4}"(a5)
          : "memory" "cc"
          : "volatile");
+    }
     check_errno(ret)
 }
 
@@ -113,7 +125,8 @@ pub unsafe fn syscall6(
     a6: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    llvm_asm!("svc 0"
+    unsafe {
+        llvm_asm!("svc 0"
          : "={x0}"(ret)
          : "{x8}"(n),
            "{x0}"(a1),
@@ -124,5 +137,6 @@ pub unsafe fn syscall6(
            "{x5}"(a6)
          : "memory" "cc"
          : "volatile");
+    }
     check_errno(ret)
 }

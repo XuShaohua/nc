@@ -35,22 +35,26 @@ extern "C" {
 
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
-    check_errno(__syscall0(n))
+    let ret = unsafe { __syscall0(n); }
+    check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
-    check_errno(__syscall1(n, a1))
+    let ret = unsafe { __syscall1(n, a1); }
+    check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
-    check_errno(__syscall2(n, a1, a2))
+    let ret = unsafe { __syscall2(n, a1, a2); }
+    check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
-    check_errno(__syscall3(n, a1, a2, a3))
+    let ret = unsafe { __syscall3(n, a1, a2, a3); }
+    check_errno(ret)
 }
 
 #[inline]
@@ -61,7 +65,8 @@ pub unsafe fn syscall4(
     a3: usize,
     a4: usize,
 ) -> Result<usize, Errno> {
-    check_errno(__syscall4(n, a1, a2, a3, a4))
+    let ret = unsafe { __syscall4(n, a1, a2, a3, a4); }
+    check_errno(ret)
 }
 
 #[inline]
@@ -73,7 +78,8 @@ pub unsafe fn syscall5(
     a4: usize,
     a5: usize,
 ) -> Result<usize, Errno> {
-    check_errno(__syscall5(n, a1, a2, a3, a4, a5))
+    let ret = unsafe { __syscall5(n, a1, a2, a3, a4, a5); }
+    check_errno(ret)
 }
 
 #[inline]
@@ -86,5 +92,6 @@ pub unsafe fn syscall6(
     a5: usize,
     a6: usize,
 ) -> Result<usize, Errno> {
-    check_errno(__syscall6(n, a1, a2, a3, a4, a5, a6))
+    let ret = unsafe { __syscall6(n, a1, a2, a3, a4, a5, a6); }
+    check_errno(ret)
 }

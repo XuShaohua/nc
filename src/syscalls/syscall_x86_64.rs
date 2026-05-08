@@ -13,54 +13,62 @@ use super::types::{check_errno, Errno, Sysno};
 #[inline]
 pub unsafe fn syscall0(n: Sysno) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        out("rcx") _,  // clobbered by syscalls
-        out("r11") _,  // clobbered by syscalls
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            out("rcx") _,  // clobbered by syscalls
+            out("r11") _,  // clobbered by syscalls
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall1(n: Sysno, a1: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        in("rdi") a1,
-        out("rcx") _,
-        out("r11") _,
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            out("rcx") _,
+            out("r11") _,
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall2(n: Sysno, a1: usize, a2: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        in("rdi") a1,
-        in("rsi") a2,
-        out("rcx") _,
-        out("r11") _,
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            out("rcx") _,
+            out("r11") _,
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }
 
 #[inline]
 pub unsafe fn syscall3(n: Sysno, a1: usize, a2: usize, a3: usize) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        in("rdi") a1,
-        in("rsi") a2,
-        in("rdx") a3,
-        out("rcx") _,
-        out("r11") _,
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            out("rcx") _,
+            out("r11") _,
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }
 
@@ -73,16 +81,18 @@ pub unsafe fn syscall4(
     a4: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        in("rdi") a1,
-        in("rsi") a2,
-        in("rdx") a3,
-        in("r10") a4,
-        out("rcx") _,
-        out("r11") _,
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            in("r10") a4,
+            out("rcx") _,
+            out("r11") _,
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }
 
@@ -96,17 +106,19 @@ pub unsafe fn syscall5(
     a5: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        in("rdi") a1,
-        in("rsi") a2,
-        in("rdx") a3,
-        in("r10") a4,
-        in("r8") a5,
-        out("rcx") _,
-        out("r11") _,
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            in("r10") a4,
+            in("r8") a5,
+            out("rcx") _,
+            out("r11") _,
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }
 
@@ -121,17 +133,19 @@ pub unsafe fn syscall6(
     a6: usize,
 ) -> Result<usize, Errno> {
     let ret: usize;
-    asm!("syscall",
-        in("rax") n,
-        in("rdi") a1,
-        in("rsi") a2,
-        in("rdx") a3,
-        in("r10") a4,
-        in("r8") a5,
-        in("r9") a6,
-        out("rcx") _,
-        out("r11") _,
-        lateout("rax") ret,
-    );
+    unsafe {
+        asm!("syscall",
+            in("rax") n,
+            in("rdi") a1,
+            in("rsi") a2,
+            in("rdx") a3,
+            in("r10") a4,
+            in("r8") a5,
+            in("r9") a6,
+            out("rcx") _,
+            out("r11") _,
+            lateout("rax") ret,
+        );
+    }
     check_errno(ret)
 }

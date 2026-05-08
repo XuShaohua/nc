@@ -9,5 +9,5 @@
 /// ```
 pub unsafe fn setegid(gid: gid_t) -> Result<(), Errno> {
     let gid = gid as usize;
-    syscall1(SYS_SETEGID, gid).map(drop)
+    unsafe { syscall1(SYS_SETEGID, gid).map(drop) }
 }

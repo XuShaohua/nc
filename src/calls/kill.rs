@@ -22,5 +22,5 @@
 pub unsafe fn kill(pid: pid_t, signal: i32) -> Result<(), Errno> {
     let pid = pid as usize;
     let signal = signal as usize;
-    syscall2(SYS_KILL, pid, signal).map(drop)
+    unsafe { syscall2(SYS_KILL, pid, signal).map(drop) }
 }

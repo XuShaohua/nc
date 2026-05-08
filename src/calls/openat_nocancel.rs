@@ -10,5 +10,5 @@ pub unsafe fn openat_nocancel<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
     let mode = mode as usize;
-    syscall4(SYS_OPENAT_NOCANCEL, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_OPENAT_NOCANCEL, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32) }
 }

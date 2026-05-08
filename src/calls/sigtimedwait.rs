@@ -7,5 +7,5 @@ pub unsafe fn sigtimedwait(
     let set_ptr = set as *const sigset_t as usize;
     let info_ptr = info as *mut siginfo_t as usize;
     let timeout_ptr = timeout as *const timespec_t as usize;
-    syscall3(SYS_SIGTIMEDWAIT, set_ptr, info_ptr, timeout_ptr).map(|val| val as i32)
+    unsafe { syscall3(SYS_SIGTIMEDWAIT, set_ptr, info_ptr, timeout_ptr).map(|val| val as i32) }
 }

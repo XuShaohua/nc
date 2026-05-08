@@ -47,5 +47,7 @@ pub unsafe fn pwritev2(
     let vec_ptr = vec.as_ptr() as usize;
     let vec_len = vec.len();
     let flags = flags as usize;
-    syscall6(SYS_PWRITEV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(SYS_PWRITEV2, fd, vec_ptr, vec_len, pos_l, pos_h, flags).map(|ret| ret as ssize_t)
+    }
 }

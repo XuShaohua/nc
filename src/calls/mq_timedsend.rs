@@ -49,13 +49,15 @@ pub unsafe fn mq_timedsend(
     let msg_len = msg.len();
     let msg_prio = msg_prio as usize;
     let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
-    syscall5(
-        SYS_MQ_TIMEDSEND,
-        mqdes,
-        msg_ptr,
-        msg_len,
-        msg_prio,
-        abs_timeout_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_MQ_TIMEDSEND,
+            mqdes,
+            msg_ptr,
+            msg_len,
+            msg_prio,
+            abs_timeout_ptr,
+        )
+        .map(drop)
+    }
 }

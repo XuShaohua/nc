@@ -9,5 +9,5 @@ pub unsafe fn sigaltstack(
     let old_ss_ptr = old_ss.map_or(core::ptr::null_mut::<sigaltstack_t>() as usize, |old_ss| {
         old_ss as *mut sigaltstack_t as usize
     });
-    syscall2(SYS_SIGALTSTACK, ss_ptr, old_ss_ptr).map(drop)
+    unsafe { syscall2(SYS_SIGALTSTACK, ss_ptr, old_ss_ptr).map(drop) }
 }

@@ -20,5 +20,5 @@ pub unsafe fn pread(fd: i32, buf: &mut [u8], offset: off_t) -> Result<ssize_t, E
     let buf_ptr = buf.as_mut_ptr() as usize;
     let count = buf.len();
     let offset = offset as usize;
-    syscall4(SYS_PREAD, fd, buf_ptr, count, offset).map(|ret| ret as ssize_t)
+    unsafe { syscall4(SYS_PREAD, fd, buf_ptr, count, offset).map(|ret| ret as ssize_t) }
 }

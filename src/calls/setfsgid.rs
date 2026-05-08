@@ -10,5 +10,5 @@
 /// ```
 pub unsafe fn setfsgid(fsgid: gid_t) -> Result<gid_t, Errno> {
     let fsgid = fsgid as usize;
-    syscall1(SYS_SETFSGID, fsgid).map(|ret| ret as gid_t)
+    unsafe { syscall1(SYS_SETFSGID, fsgid).map(|ret| ret as gid_t) }
 }

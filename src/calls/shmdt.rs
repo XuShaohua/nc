@@ -25,5 +25,5 @@
 /// ```
 pub unsafe fn shmdt(shm_addr: *const core::ffi::c_void) -> Result<(), Errno> {
     let shm_addr = shm_addr as usize;
-    syscall1(SYS_SHMDT, shm_addr).map(drop)
+    unsafe { syscall1(SYS_SHMDT, shm_addr).map(drop) }
 }

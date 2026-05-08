@@ -88,5 +88,5 @@ pub unsafe fn sendmmsg(sockfd: i32, msgvec: &[mmsghdr_t], flags: i32) -> Result<
     let msgvec_ptr = msgvec.as_ptr() as usize;
     let vlen = msgvec.len();
     let flags = flags as usize;
-    syscall4(SYS_SENDMMSG, sockfd, msgvec_ptr, vlen, flags)
+    unsafe { syscall4(SYS_SENDMMSG, sockfd, msgvec_ptr, vlen, flags) }
 }

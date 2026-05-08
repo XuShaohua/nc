@@ -8,5 +8,5 @@
 /// ```
 pub unsafe fn setuid(uid: uid_t) -> Result<(), Errno> {
     let uid = uid as usize;
-    syscall1(SYS_SETUID, uid).map(drop)
+    unsafe { syscall1(SYS_SETUID, uid).map(drop) }
 }

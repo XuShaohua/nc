@@ -24,5 +24,5 @@ pub unsafe fn sigaction(
     let old_act_ptr = old_act.map_or(core::ptr::null_mut::<sigaction_t>() as usize, |old_act| {
         old_act as *mut sigaction_t as usize
     });
-    syscall3(SYS_SIGACTION, sig, act_ptr, old_act_ptr).map(drop)
+    unsafe { syscall3(SYS_SIGACTION, sig, act_ptr, old_act_ptr).map(drop) }
 }

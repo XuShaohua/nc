@@ -34,12 +34,14 @@ pub unsafe fn timerfd_settime(
         core::ptr::null_mut::<itimerspec_t>() as usize,
         |old_value| old_value as *mut itimerspec_t as usize,
     );
-    syscall4(
-        SYS_TIMERFD_SETTIME,
-        ufd,
-        flags,
-        new_value_ptr,
-        old_value_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall4(
+            SYS_TIMERFD_SETTIME,
+            ufd,
+            flags,
+            new_value_ptr,
+            old_value_ptr,
+        )
+        .map(drop)
+    }
 }

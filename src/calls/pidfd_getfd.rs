@@ -78,5 +78,5 @@ pub unsafe fn pidfd_getfd(pidfd: i32, target_fd: i32, flags: u32) -> Result<i32,
     let pidfd = pidfd as usize;
     let target_fd = target_fd as usize;
     let flags = flags as usize;
-    syscall3(SYS_PIDFD_GETFD, pidfd, target_fd, flags).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_PIDFD_GETFD, pidfd, target_fd, flags).map(|ret| ret as i32) }
 }

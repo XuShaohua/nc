@@ -15,5 +15,5 @@ pub unsafe fn ioprio_set(which: i32, who: i32, ioprio: i32) -> Result<(), Errno>
     let which = which as usize;
     let who = who as usize;
     let ioprio = ioprio as usize;
-    syscall3(SYS_IOPRIO_SET, which, who, ioprio).map(drop)
+    unsafe { syscall3(SYS_IOPRIO_SET, which, who, ioprio).map(drop) }
 }

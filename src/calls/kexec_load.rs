@@ -7,5 +7,5 @@ pub unsafe fn kexec_load(
     let segments_ptr = segments.as_mut_ptr() as usize;
     let nr_segments = segments.len();
     let flags = flags as usize;
-    syscall4(SYS_KEXEC_LOAD, entry, nr_segments, segments_ptr, flags).map(drop)
+    unsafe { syscall4(SYS_KEXEC_LOAD, entry, nr_segments, segments_ptr, flags).map(drop) }
 }

@@ -33,5 +33,7 @@ pub unsafe fn shmat(
         shm_addr as usize
     });
     let shm_flag = shm_flag as usize;
-    syscall3(SYS_SHMAT, shmid, shm_addr, shm_flag).map(|ret| ret as *const core::ffi::c_void)
+    unsafe {
+        syscall3(SYS_SHMAT, shmid, shm_addr, shm_flag).map(|ret| ret as *const core::ffi::c_void)
+    }
 }

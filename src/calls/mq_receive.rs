@@ -9,5 +9,5 @@ pub unsafe fn mq_receive(
     let msg = CString::new(msg);
     let msg_ptr = msg.as_ptr() as usize;
     let msg_prio = msg_prio as *mut u32 as usize;
-    syscall4(SYS_MQ_RECEIVE, mqdes, msg_ptr, msg_len, msg_prio).map(|ret| ret as ssize_t)
+    unsafe { syscall4(SYS_MQ_RECEIVE, mqdes, msg_ptr, msg_len, msg_prio).map(|ret| ret as ssize_t) }
 }

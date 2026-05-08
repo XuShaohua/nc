@@ -10,5 +10,5 @@ pub unsafe fn setresgid(rgid: gid_t, egid: gid_t, sgid: gid_t) -> Result<(), Err
     let rgid = rgid as usize;
     let egid = egid as usize;
     let sgid = sgid as usize;
-    syscall3(SYS_SETRESGID, rgid, egid, sgid).map(drop)
+    unsafe { syscall3(SYS_SETRESGID, rgid, egid, sgid).map(drop) }
 }

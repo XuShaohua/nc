@@ -91,5 +91,5 @@ pub unsafe fn getsockname(
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
-    syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop)
+    unsafe { syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop) }
 }

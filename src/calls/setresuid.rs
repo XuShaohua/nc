@@ -10,5 +10,5 @@ pub unsafe fn setresuid(ruid: uid_t, euid: uid_t, suid: uid_t) -> Result<(), Err
     let ruid = ruid as usize;
     let euid = euid as usize;
     let suid = suid as usize;
-    syscall3(SYS_SETRESUID, ruid, euid, suid).map(drop)
+    unsafe { syscall3(SYS_SETRESUID, ruid, euid, suid).map(drop) }
 }

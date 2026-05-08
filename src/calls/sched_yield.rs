@@ -7,5 +7,5 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn sched_yield() -> Result<(), Errno> {
-    syscall0(SYS_SCHED_YIELD).map(drop)
+    unsafe { syscall0(SYS_SCHED_YIELD).map(drop) }
 }

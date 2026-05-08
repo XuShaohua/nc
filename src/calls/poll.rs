@@ -50,5 +50,5 @@ pub unsafe fn poll(fds: &mut [pollfd_t], timeout_msecs: i32) -> Result<i32, Errn
     let fds_ptr = fds.as_mut_ptr() as usize;
     let nfds = fds.len();
     let timeout_msecs = timeout_msecs as usize;
-    syscall3(SYS_POLL, fds_ptr, nfds, timeout_msecs).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_POLL, fds_ptr, nfds, timeout_msecs).map(|ret| ret as i32) }
 }

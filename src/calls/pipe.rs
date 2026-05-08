@@ -13,5 +13,5 @@
 /// ```
 pub unsafe fn pipe(pipefd: &mut [i32; 2]) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
-    syscall1(SYS_PIPE, pipefd_ptr).map(drop)
+    unsafe { syscall1(SYS_PIPE, pipefd_ptr).map(drop) }
 }

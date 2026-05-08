@@ -17,5 +17,5 @@ pub unsafe fn timer_create(
         event as *mut sigevent_t as usize
     });
     let timer_id_ptr = timer_id as *mut timer_t as usize;
-    syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr).map(drop)
+    unsafe { syscall3(SYS_TIMER_CREATE, clock, event_ptr, timer_id_ptr).map(drop) }
 }

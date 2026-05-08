@@ -32,13 +32,15 @@ pub unsafe fn linkat<P: AsRef<Path>>(
     let newfilename = CString::new(newfilename.as_ref());
     let newfilename_ptr = newfilename.as_ptr() as usize;
     let flags = flags as usize;
-    syscall5(
-        SYS_LINKAT,
-        olddfd,
-        oldfilename_ptr,
-        newdfd,
-        newfilename_ptr,
-        flags,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_LINKAT,
+            olddfd,
+            oldfilename_ptr,
+            newdfd,
+            newfilename_ptr,
+            flags,
+        )
+        .map(drop)
+    }
 }

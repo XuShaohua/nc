@@ -35,5 +35,5 @@ pub unsafe fn wait4(
     let rusage_ptr = rusage.map_or(core::ptr::null_mut::<rusage_t>() as usize, |rusage| {
         rusage as *mut rusage_t as usize
     });
-    syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t)
+    unsafe { syscall4(SYS_WAIT4, pid, wstatus_ptr, options, rusage_ptr).map(|ret| ret as pid_t) }
 }

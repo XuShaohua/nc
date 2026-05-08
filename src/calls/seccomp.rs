@@ -7,5 +7,5 @@ pub unsafe fn seccomp(
     let operation = operation as usize;
     let flags = flags as usize;
     let args = args as usize;
-    syscall3(SYS_SECCOMP, operation, flags, args).map(drop)
+    unsafe { syscall3(SYS_SECCOMP, operation, flags, args).map(drop) }
 }

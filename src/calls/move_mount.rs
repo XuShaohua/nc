@@ -19,13 +19,15 @@ pub unsafe fn move_mount<P: AsRef<Path>>(
     let to_pathname = CString::new(to_pathname.as_ref());
     let to_pathname_ptr = to_pathname.as_ptr() as usize;
     let flags = flags as usize;
-    syscall5(
-        SYS_MOVE_MOUNT,
-        from_dfd,
-        from_pathname_ptr,
-        to_dfd,
-        to_pathname_ptr,
-        flags,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall5(
+            SYS_MOVE_MOUNT,
+            from_dfd,
+            from_pathname_ptr,
+            to_dfd,
+            to_pathname_ptr,
+            flags,
+        )
+        .map(|ret| ret as i32)
+    }
 }

@@ -5,7 +5,5 @@
 #[must_use]
 pub unsafe fn issetugid() -> i32 {
     // This function is always successful.
-    syscall0(SYS_ISSETUGID)
-        .map(|val| val as i32)
-        .expect("issetugid() failed")
+    unsafe { syscall0(SYS_ISSETUGID).map(|val| val as i32) }.expect("issetugid() failed")
 }

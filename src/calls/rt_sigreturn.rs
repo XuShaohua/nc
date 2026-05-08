@@ -2,5 +2,5 @@
 ///
 /// Never returns.
 pub unsafe fn rt_sigreturn() {
-    let _ret = syscall0(SYS_RT_SIGRETURN);
+    let _ret = unsafe { syscall0(SYS_RT_SIGRETURN) };
 }

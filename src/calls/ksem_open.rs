@@ -13,5 +13,5 @@ pub unsafe fn ksem_open<P: AsRef<Path>>(
     let mode = mode as usize;
     let value = value as usize;
     let id_ptr = id as *mut semid_t as usize;
-    syscall5(SYS_KSEM_OPEN, name_ptr, flags, mode, value, id_ptr).map(|ret| ret as i32)
+    unsafe { syscall5(SYS_KSEM_OPEN, name_ptr, flags, mode, value, id_ptr).map(|ret| ret as i32) }
 }

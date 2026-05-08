@@ -90,5 +90,5 @@
 pub unsafe fn io_submit(ctx_id: aio_context_t, iocb: &[iocb_t]) -> Result<i32, Errno> {
     let nr = iocb.len();
     let iocb_ptr = core::ptr::addr_of!(iocb) as usize;
-    syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_IO_SUBMIT, ctx_id, nr, iocb_ptr).map(|ret| ret as i32) }
 }

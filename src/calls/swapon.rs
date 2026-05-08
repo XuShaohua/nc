@@ -12,5 +12,5 @@ pub unsafe fn swapon<P: AsRef<Path>>(filename: P, flags: i32) -> Result<(), Errn
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
-    syscall2(SYS_SWAPON, filename_ptr, flags).map(drop)
+    unsafe { syscall2(SYS_SWAPON, filename_ptr, flags).map(drop) }
 }

@@ -21,13 +21,15 @@ pub unsafe fn select(
     let timeout_ptr = timeout.map_or(null::<timeval_t> as usize, |timeout| {
         timeout as *const timeval_t as usize
     });
-    syscall5(
-        SYS_SELECT,
-        nfds,
-        read_fds_ptr,
-        write_fds_ptr,
-        except_fds_ptr,
-        timeout_ptr,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall5(
+            SYS_SELECT,
+            nfds,
+            read_fds_ptr,
+            write_fds_ptr,
+            except_fds_ptr,
+            timeout_ptr,
+        )
+        .map(|ret| ret as i32)
+    }
 }

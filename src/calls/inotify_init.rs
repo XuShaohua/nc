@@ -10,5 +10,5 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn inotify_init() -> Result<i32, Errno> {
-    syscall0(SYS_INOTIFY_INIT).map(|ret| ret as i32)
+    unsafe { syscall0(SYS_INOTIFY_INIT).map(|ret| ret as i32) }
 }

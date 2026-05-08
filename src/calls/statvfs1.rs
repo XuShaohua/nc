@@ -8,5 +8,5 @@ pub unsafe fn statvfs1<P: AsRef<Path>>(
     let path_ptr = path.as_ptr() as usize;
     let buf_ptr = buf as *mut statvfs_t as usize;
     let flags = flags as usize;
-    syscall3(SYS_STATVFS1, path_ptr, buf_ptr, flags).map(drop)
+    unsafe { syscall3(SYS_STATVFS1, path_ptr, buf_ptr, flags).map(drop) }
 }

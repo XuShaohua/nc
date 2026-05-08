@@ -37,5 +37,7 @@ pub unsafe fn mq_getsetattr(
     let old_attr_ptr = old_attr.map_or(core::ptr::null_mut::<mq_attr_t>() as usize, |old_attr| {
         old_attr as *mut mq_attr_t as usize
     });
-    syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)
+    unsafe {
+        syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)
+    }
 }

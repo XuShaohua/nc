@@ -34,5 +34,5 @@ pub unsafe fn setsockopt(
     let opt_name = opt_name as usize;
     let opt_val = opt_val as usize;
     let opt_len = opt_len as usize;
-    syscall5(SYS_SETSOCKOPT, sockfd, level, opt_name, opt_val, opt_len).map(drop)
+    unsafe { syscall5(SYS_SETSOCKOPT, sockfd, level, opt_name, opt_val, opt_len).map(drop) }
 }

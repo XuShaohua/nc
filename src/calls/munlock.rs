@@ -15,5 +15,5 @@
 /// ```
 pub unsafe fn munlock(addr: *const core::ffi::c_void, len: size_t) -> Result<(), Errno> {
     let addr = addr as usize;
-    syscall2(SYS_MUNLOCK, addr, len).map(drop)
+    unsafe { syscall2(SYS_MUNLOCK, addr, len).map(drop) }
 }

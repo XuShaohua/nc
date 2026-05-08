@@ -10,5 +10,5 @@ pub unsafe fn shm_rename<P: AsRef<Path>>(
     let path_to = CString::new(path_to.as_ref());
     let path_to_ptr = path_to.as_ptr() as usize;
     let flags = flags as usize;
-    syscall3(SYS_SHM_RENAME, path_from_ptr, path_to_ptr, flags).map(drop)
+    unsafe { syscall3(SYS_SHM_RENAME, path_from_ptr, path_to_ptr, flags).map(drop) }
 }

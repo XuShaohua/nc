@@ -10,5 +10,7 @@ pub unsafe fn rt_sigtimedwait(
     });
     let ts_ptr = ts as *const timespec_t as usize;
     let sig_set_size = core::mem::size_of::<sigset_t>();
-    syscall4(SYS_RT_SIGTIMEDWAIT, set_ptr, info_ptr, ts_ptr, sig_set_size).map(|ret| ret as i32)
+    unsafe {
+        syscall4(SYS_RT_SIGTIMEDWAIT, set_ptr, info_ptr, ts_ptr, sig_set_size).map(|ret| ret as i32)
+    }
 }

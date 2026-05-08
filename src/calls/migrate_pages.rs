@@ -8,5 +8,7 @@ pub unsafe fn migrate_pages(
     let pid = pid as usize;
     let old_nodes = old_nodes.as_ptr() as usize;
     let new_nodes = new_nodes.as_ptr() as usize;
-    syscall4(SYS_MIGRATE_PAGES, pid, max_node, old_nodes, new_nodes).map(|ret| ret as isize)
+    unsafe {
+        syscall4(SYS_MIGRATE_PAGES, pid, max_node, old_nodes, new_nodes).map(|ret| ret as isize)
+    }
 }

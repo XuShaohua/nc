@@ -33,5 +33,5 @@ pub unsafe fn preadv(
 ) -> Result<ssize_t, Errno> {
     let vec_ptr = vec.as_mut_ptr() as usize;
     let vec_len = vec.len();
-    syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t)
+    unsafe { syscall5(SYS_PREADV, fd, vec_ptr, vec_len, pos_l, pos_h).map(|ret| ret as ssize_t) }
 }

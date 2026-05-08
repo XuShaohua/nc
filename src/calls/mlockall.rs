@@ -9,5 +9,5 @@
 /// ```
 pub unsafe fn mlockall(flags: i32) -> Result<(), Errno> {
     let flags = flags as usize;
-    syscall1(SYS_MLOCKALL, flags).map(drop)
+    unsafe { syscall1(SYS_MLOCKALL, flags).map(drop) }
 }

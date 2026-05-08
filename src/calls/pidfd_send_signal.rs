@@ -106,5 +106,5 @@ pub unsafe fn pidfd_send_signal(
         info as *mut siginfo_t as usize
     });
     let flags = flags as usize;
-    syscall4(SYS_PIDFD_SEND_SIGNAL, pidfd, sig, info_ptr, flags).map(drop)
+    unsafe { syscall4(SYS_PIDFD_SEND_SIGNAL, pidfd, sig, info_ptr, flags).map(drop) }
 }

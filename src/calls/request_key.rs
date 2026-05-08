@@ -14,12 +14,14 @@ pub unsafe fn request_key<P: AsRef<Path>>(
         callout_info.as_ptr() as usize
     });
     let dest_keyring = dest_keyring as usize;
-    syscall4(
-        SYS_REQUEST_KEY,
-        type_ptr,
-        description_ptr,
-        callout_info_ptr,
-        dest_keyring,
-    )
-    .map(|ret| ret as key_serial_t)
+    unsafe {
+        syscall4(
+            SYS_REQUEST_KEY,
+            type_ptr,
+            description_ptr,
+            callout_info_ptr,
+            dest_keyring,
+        )
+        .map(|ret| ret as key_serial_t)
+    }
 }

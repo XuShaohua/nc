@@ -4,5 +4,5 @@
 /// freezer thread and do not block on a process being frozen.
 pub unsafe fn pid_hibernate(pid: pid_t) -> Result<(), Errno> {
     let pid = pid as usize;
-    syscall1(SYS_PID_HIBERNATE, pid).map(drop)
+    unsafe { syscall1(SYS_PID_HIBERNATE, pid).map(drop) }
 }

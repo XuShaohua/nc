@@ -48,5 +48,5 @@
 /// ```
 pub unsafe fn munmap(addr: *const core::ffi::c_void, len: size_t) -> Result<(), Errno> {
     let addr = addr as usize;
-    syscall2(SYS_MUNMAP, addr, len).map(drop)
+    unsafe { syscall2(SYS_MUNMAP, addr, len).map(drop) }
 }

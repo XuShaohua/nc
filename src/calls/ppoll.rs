@@ -15,13 +15,15 @@ pub unsafe fn ppoll(
         sig_mask as *const sigset_t as usize
     });
     let sig_set_size = core::mem::size_of::<sigset_t>();
-    syscall5(
-        SYS_PPOLL,
-        fds_ptr,
-        nfds,
-        timeout_ptr,
-        sig_mask_ptr,
-        sig_set_size,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall5(
+            SYS_PPOLL,
+            fds_ptr,
+            nfds,
+            timeout_ptr,
+            sig_mask_ptr,
+            sig_set_size,
+        )
+        .map(|ret| ret as i32)
+    }
 }

@@ -9,5 +9,5 @@ pub unsafe fn getvfsstat(buf: Option<&mut [statvfs_t]>, mode: i32) -> Result<i32
         buf.as_mut_ptr() as usize
     });
     let mode = mode as usize;
-    syscall3(SYS_GETVFSSTAT, buf_ptr, buf_size, mode).map(|val| val as i32)
+    unsafe { syscall3(SYS_GETVFSSTAT, buf_ptr, buf_size, mode).map(|val| val as i32) }
 }

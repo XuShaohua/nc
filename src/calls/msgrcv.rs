@@ -84,5 +84,7 @@ pub unsafe fn msgrcv(
     let msgq = msgq as usize;
     let msg_type = msg_type as usize;
     let msg_flag = msg_flag as usize;
-    syscall5(SYS_MSGRCV, msq_id, msgq, msg_size, msg_type, msg_flag).map(|ret| ret as ssize_t)
+    unsafe {
+        syscall5(SYS_MSGRCV, msq_id, msgq, msg_size, msg_type, msg_flag).map(|ret| ret as ssize_t)
+    }
 }

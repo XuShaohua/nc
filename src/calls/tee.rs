@@ -41,5 +41,5 @@ pub unsafe fn tee(fd_in: i32, fd_out: i32, len: size_t, flags: u32) -> Result<ss
     let fd_in = fd_in as usize;
     let fd_out = fd_out as usize;
     let flags = flags as usize;
-    syscall4(SYS_TEE, fd_in, fd_out, len, flags).map(|ret| ret as ssize_t)
+    unsafe { syscall4(SYS_TEE, fd_in, fd_out, len, flags).map(|ret| ret as ssize_t) }
 }

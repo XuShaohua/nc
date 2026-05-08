@@ -21,5 +21,5 @@ pub unsafe fn pwrite(fd: i32, buf: &[u8], offset: off_t) -> Result<ssize_t, Errn
     let buf_ptr = buf.as_ptr() as usize;
     let count = buf.len();
     let offset = offset as usize;
-    syscall4(SYS_PWRITE, fd, buf_ptr, count, offset).map(|ret| ret as ssize_t)
+    unsafe { syscall4(SYS_PWRITE, fd, buf_ptr, count, offset).map(|ret| ret as ssize_t) }
 }

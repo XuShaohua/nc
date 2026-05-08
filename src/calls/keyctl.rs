@@ -7,5 +7,5 @@ pub unsafe fn keyctl(
     arg5: usize,
 ) -> Result<usize, Errno> {
     let operation = operation as usize;
-    syscall5(SYS_KEYCTL, operation, arg2, arg3, arg4, arg5)
+    unsafe { syscall5(SYS_KEYCTL, operation, arg2, arg3, arg4, arg5) }
 }

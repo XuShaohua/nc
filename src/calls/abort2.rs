@@ -5,6 +5,6 @@ pub unsafe fn abort2(why: &str, args_len: i32, args: uinptr_t) -> ! {
     let args_len = args_len as usize;
     unsafe {
         let _ = syscall3(SYS_ABORT2, why_ptr, args_len, args);
+        core::hint::unreachable_unchecked();
     }
-    core::hint::unreachable_unchecked();
 }

@@ -5,5 +5,5 @@
 /// - `len`: length of the list-head, as userspace expects
 pub unsafe fn set_robust_list(head: *mut robust_list_head_t, len: usize) -> Result<(), Errno> {
     let head_ptr = head as usize;
-    syscall2(SYS_SET_ROBUST_LIST, head_ptr, len).map(drop)
+    unsafe { syscall2(SYS_SET_ROBUST_LIST, head_ptr, len).map(drop) }
 }

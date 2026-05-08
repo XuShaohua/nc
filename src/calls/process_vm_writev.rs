@@ -10,14 +10,16 @@ pub unsafe fn process_vm_writev(
     let lvec_len = lvec.len();
     let rvec_ptr = rvec.as_ptr() as usize;
     let rvec_len = rvec.len();
-    syscall6(
-        SYS_PROCESS_VM_WRITEV,
-        pid,
-        lvec_ptr,
-        lvec_len,
-        rvec_ptr,
-        rvec_len,
-        flags,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(
+            SYS_PROCESS_VM_WRITEV,
+            pid,
+            lvec_ptr,
+            lvec_len,
+            rvec_ptr,
+            rvec_len,
+            flags,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

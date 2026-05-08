@@ -35,5 +35,5 @@ pub unsafe fn llistxattr<P: AsRef<Path>>(filename: P, value: &mut [u8]) -> Resul
     let filename_ptr = filename.as_ptr() as usize;
     let value_ptr = value.as_mut_ptr() as usize;
     let size = value.len();
-    syscall3(SYS_LLISTXATTR, filename_ptr, value_ptr, size).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_LLISTXATTR, filename_ptr, value_ptr, size).map(|ret| ret as ssize_t) }
 }

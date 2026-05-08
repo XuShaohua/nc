@@ -9,5 +9,5 @@ pub unsafe fn ktimer_settime(
     let flags = flags as usize;
     let value_ptr = value as *const itimerspec_t as usize;
     let ovalue_ptr = ovalue as *mut itimerspec_t as usize;
-    syscall4(SYS_KTIMER_SETTIME, timer_id, flags, value_ptr, ovalue_ptr).map(drop)
+    unsafe { syscall4(SYS_KTIMER_SETTIME, timer_id, flags, value_ptr, ovalue_ptr).map(drop) }
 }

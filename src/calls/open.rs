@@ -15,5 +15,5 @@ pub unsafe fn open<P: AsRef<Path>>(filename: P, flags: i32, mode: mode_t) -> Res
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
     let mode = mode as usize;
-    syscall3(SYS_OPEN, filename_ptr, flags, mode).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_OPEN, filename_ptr, flags, mode).map(|ret| ret as i32) }
 }

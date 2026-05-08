@@ -14,5 +14,5 @@ pub unsafe fn settimeofday(timeval: &timeval_t, tz: Option<&timezone_t>) -> Resu
     let tz_ptr = tz.map_or(core::ptr::null::<timezone_t>() as usize, |tz| {
         tz as *const timezone_t as usize
     });
-    syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
+    unsafe { syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop) }
 }

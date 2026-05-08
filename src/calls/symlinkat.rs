@@ -20,5 +20,5 @@ pub unsafe fn symlinkat<P: AsRef<Path>>(
     let new_dirfd = new_dirfd as usize;
     let new_name = CString::new(new_name.as_ref());
     let new_name_ptr = new_name.as_ptr() as usize;
-    syscall3(SYS_SYMLINKAT, old_name_ptr, new_dirfd, new_name_ptr).map(drop)
+    unsafe { syscall3(SYS_SYMLINKAT, old_name_ptr, new_dirfd, new_name_ptr).map(drop) }
 }

@@ -51,5 +51,5 @@ pub unsafe fn setitimer(
     let old_val_ptr = old_val.map_or(core::ptr::null_mut::<itimerval_t>() as usize, |old_val| {
         old_val as *mut itimerval_t as usize
     });
-    syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr).map(drop)
+    unsafe { syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr).map(drop) }
 }

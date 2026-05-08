@@ -39,5 +39,5 @@ pub unsafe fn waitid(
     let ru_ptr = ru.map_or(core::ptr::null_mut::<rusage_t>() as usize, |ru| {
         ru as *mut rusage_t as usize
     });
-    syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(drop)
+    unsafe { syscall5(SYS_WAITID, which, pid, info_ptr, options, ru_ptr).map(drop) }
 }

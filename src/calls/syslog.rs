@@ -17,5 +17,5 @@ pub unsafe fn syslog(action: i32, buf: &mut [u8]) -> Result<ssize_t, Errno> {
     let action = action as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
-    syscall3(SYS_SYSLOG, action, buf_ptr, buf_len).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_SYSLOG, action, buf_ptr, buf_len).map(|ret| ret as ssize_t) }
 }

@@ -2,5 +2,5 @@
 /// also to enter the kernel as a server daemon.
 pub unsafe fn nfssvc(fd: i32, args: usize) -> Result<(), Errno> {
     let fd = fd as usize;
-    syscall2(SYS_NFSSVC, fd, args).map(drop)
+    unsafe { syscall2(SYS_NFSSVC, fd, args).map(drop) }
 }

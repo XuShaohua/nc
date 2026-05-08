@@ -7,5 +7,5 @@ pub unsafe fn mq_setattr(
     let mqdes = mqdes as usize;
     let new_attr_ptr = new_attr.map_or(0, |new_attr| new_attr as *mut mq_attr_t as usize);
     let old_attr_ptr = old_attr.map_or(0, |old_attr| old_attr as *mut mq_attr_t as usize);
-    syscall3(SYS_MQ_SETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(drop)
+    unsafe { syscall3(SYS_MQ_SETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(drop) }
 }

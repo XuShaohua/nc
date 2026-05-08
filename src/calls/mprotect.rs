@@ -32,5 +32,5 @@ pub unsafe fn mprotect(
 ) -> Result<(), Errno> {
     let addr = addr as usize;
     let prot = prot as usize;
-    syscall3(SYS_MPROTECT, addr, len, prot).map(drop)
+    unsafe { syscall3(SYS_MPROTECT, addr, len, prot).map(drop) }
 }

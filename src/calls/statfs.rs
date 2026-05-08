@@ -14,5 +14,5 @@ pub unsafe fn statfs<P: AsRef<Path>>(filename: P, buf: &mut statfs_t) -> Result<
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let buf_ptr = buf as *mut statfs_t as usize;
-    syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(drop)
+    unsafe { syscall2(SYS_STATFS, filename_ptr, buf_ptr).map(drop) }
 }

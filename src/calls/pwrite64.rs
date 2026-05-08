@@ -21,5 +21,5 @@ pub unsafe fn pwrite64(fd: i32, buf: &[u8], offset: loff_t) -> Result<ssize_t, E
     let count = buf.len();
     let buf_ptr = buf.as_ptr() as usize;
     let offset = offset as usize;
-    syscall4(SYS_PWRITE64, fd, buf_ptr, count, offset).map(|ret| ret as ssize_t)
+    unsafe { syscall4(SYS_PWRITE64, fd, buf_ptr, count, offset).map(|ret| ret as ssize_t) }
 }

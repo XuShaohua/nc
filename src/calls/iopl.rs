@@ -9,5 +9,5 @@
 /// ```
 pub unsafe fn iopl(level: i32) -> Result<(), Errno> {
     let level = level as usize;
-    syscall1(SYS_IOPL, level).map(drop)
+    unsafe { syscall1(SYS_IOPL, level).map(drop) }
 }

@@ -27,5 +27,5 @@
 pub unsafe fn readv(fd: usize, iov: &mut [iovec_t]) -> Result<ssize_t, Errno> {
     let iov_ptr = iov.as_mut_ptr() as usize;
     let len = iov.len();
-    syscall3(SYS_READV, fd, iov_ptr, len).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_READV, fd, iov_ptr, len).map(|ret| ret as ssize_t) }
 }

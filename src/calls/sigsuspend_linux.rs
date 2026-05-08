@@ -28,5 +28,5 @@
 /// ```
 pub unsafe fn sigsuspend(mask: &old_sigset_t) -> Result<(), Errno> {
     let mask_ptr = mask as *const old_sigset_t as usize;
-    syscall1(SYS_SIGSUSPEND, mask_ptr).map(drop)
+    unsafe { syscall1(SYS_SIGSUSPEND, mask_ptr).map(drop) }
 }

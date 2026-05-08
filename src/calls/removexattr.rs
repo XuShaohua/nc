@@ -31,5 +31,5 @@ pub unsafe fn removexattr<P: AsRef<Path>>(filename: P, name: P) -> Result<(), Er
     let filename_ptr = filename.as_ptr() as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    syscall2(SYS_REMOVEXATTR, filename_ptr, name_ptr).map(drop)
+    unsafe { syscall2(SYS_REMOVEXATTR, filename_ptr, name_ptr).map(drop) }
 }

@@ -55,14 +55,16 @@ pub unsafe fn recvfrom(
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
         addrlen as *mut socklen_t as usize
     });
-    syscall6(
-        SYS_RECVFROM,
-        sockfd,
-        buf_ptr,
-        buflen,
-        flags,
-        src_addr_ptr,
-        addrlen_ptr,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(
+            SYS_RECVFROM,
+            sockfd,
+            buf_ptr,
+            buflen,
+            flags,
+            src_addr_ptr,
+            addrlen_ptr,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

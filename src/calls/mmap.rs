@@ -60,6 +60,8 @@ pub unsafe fn mmap(
     let flags = flags as usize;
     let fd = fd as usize;
     let offset = offset as usize;
-    syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
-        .map(|ret| ret as *const core::ffi::c_void)
+    unsafe {
+        syscall6(SYS_MMAP, start, len, prot, flags, fd, offset)
+            .map(|ret| ret as *const core::ffi::c_void)
+    }
 }

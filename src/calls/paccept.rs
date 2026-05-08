@@ -11,13 +11,15 @@ pub unsafe fn paccept(
     let addrlen_ptr = addrlen as *mut socklen_t as usize;
     let sigmask_ptr = sigmask.map_or(0, |sigmask| sigmask as *const sigset_t as usize);
     let flags = flags as usize;
-    syscall5(
-        SYS_PACCEPT,
-        sockfd,
-        addr_ptr,
-        addrlen_ptr,
-        sigmask_ptr,
-        flags,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_PACCEPT,
+            sockfd,
+            addr_ptr,
+            addrlen_ptr,
+            sigmask_ptr,
+            flags,
+        )
+        .map(drop)
+    }
 }

@@ -9,5 +9,5 @@
 pub unsafe fn setregid(rgid: gid_t, egid: gid_t) -> Result<(), Errno> {
     let rgid = rgid as usize;
     let egid = egid as usize;
-    syscall2(SYS_SETREGID, rgid, egid).map(drop)
+    unsafe { syscall2(SYS_SETREGID, rgid, egid).map(drop) }
 }

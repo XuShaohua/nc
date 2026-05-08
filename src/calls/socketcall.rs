@@ -7,5 +7,5 @@
 pub unsafe fn socketcall(call: i32, args: &mut usize) -> Result<usize, Errno> {
     let call = call as usize;
     let args_ptr = args as *mut usize as usize;
-    syscall2(SYS_SOCKETCALL, call, args_ptr)
+    unsafe { syscall2(SYS_SOCKETCALL, call, args_ptr) }
 }

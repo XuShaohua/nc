@@ -31,5 +31,5 @@
 pub unsafe fn rt_sigsuspend(set: &sigset_t) -> Result<(), Errno> {
     let set_ptr = set as *const sigset_t as usize;
     let sigset_size = core::mem::size_of::<sigset_t>();
-    syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigset_size).map(drop)
+    unsafe { syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigset_size).map(drop) }
 }

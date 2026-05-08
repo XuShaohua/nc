@@ -10,5 +10,5 @@ pub unsafe fn sem_open<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     let value = value as usize;
-    syscall4(SYS_SEM_OPEN, name_ptr, flags, mode, value).map(|ret| ret as user_addr_t)
+    unsafe { syscall4(SYS_SEM_OPEN, name_ptr, flags, mode, value).map(|ret| ret as user_addr_t) }
 }

@@ -19,5 +19,5 @@
 pub unsafe fn inotify_rm_watch(fd: i32, wd: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let wd = wd as usize;
-    syscall2(SYS_INOTIFY_RM_WATCH, fd, wd).map(drop)
+    unsafe { syscall2(SYS_INOTIFY_RM_WATCH, fd, wd).map(drop) }
 }

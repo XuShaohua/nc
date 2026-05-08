@@ -92,14 +92,16 @@ pub unsafe fn io_pgetevents(
     let sig_ptr = sig.map_or(null::<aio_sigset_t>() as usize, |sig| {
         sig as *const aio_sigset_t as usize
     });
-    syscall6(
-        SYS_IO_PGETEVENTS,
-        ctx_id,
-        min_nr,
-        nr,
-        events_ptr,
-        timeout_ptr,
-        sig_ptr,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall6(
+            SYS_IO_PGETEVENTS,
+            ctx_id,
+            min_nr,
+            nr,
+            events_ptr,
+            timeout_ptr,
+            sig_ptr,
+        )
+        .map(|ret| ret as i32)
+    }
 }

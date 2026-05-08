@@ -12,5 +12,5 @@
 pub unsafe fn timerfd_create(clockid: i32, flags: i32) -> Result<i32, Errno> {
     let clockid = clockid as usize;
     let flags = flags as usize;
-    syscall2(SYS_TIMERFD_CREATE, clockid, flags).map(|ret| ret as i32)
+    unsafe { syscall2(SYS_TIMERFD_CREATE, clockid, flags).map(|ret| ret as i32) }
 }

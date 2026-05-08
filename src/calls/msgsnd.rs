@@ -81,5 +81,5 @@ pub unsafe fn msgsnd(
     let msq_id = msq_id as usize;
     let msgq = msgq as usize;
     let msg_flag = msg_flag as usize;
-    syscall4(SYS_MSGSND, msq_id, msgq, msg_size, msg_flag).map(drop)
+    unsafe { syscall4(SYS_MSGSND, msq_id, msgq, msg_size, msg_flag).map(drop) }
 }

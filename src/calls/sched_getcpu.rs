@@ -7,5 +7,5 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn sched_getcpu() -> Result<i32, Errno> {
-    syscall0(SYS_SCHED_GETCPU).map(|val| val as i32)
+    unsafe { syscall0(SYS_SCHED_GETCPU).map(|val| val as i32) }
 }

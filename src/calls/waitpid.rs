@@ -24,5 +24,5 @@ pub unsafe fn waitpid(pid: pid_t, status: &mut i32, options: i32) -> Result<pid_
     let pid = pid as usize;
     let status_ptr = status as *mut i32 as usize;
     let options = options as usize;
-    syscall3(SYS_WAITPID, pid, status_ptr, options).map(|ret| ret as pid_t)
+    unsafe { syscall3(SYS_WAITPID, pid, status_ptr, options).map(|ret| ret as pid_t) }
 }

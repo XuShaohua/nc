@@ -7,5 +7,5 @@ pub unsafe fn statmount(
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_size = buf.len();
     let flags = flags as usize;
-    syscall4(SYS_STATMOUNT, req_ptr, buf_ptr, buf_size, flags).map(drop)
+    unsafe { syscall4(SYS_STATMOUNT, req_ptr, buf_ptr, buf_size, flags).map(drop) }
 }

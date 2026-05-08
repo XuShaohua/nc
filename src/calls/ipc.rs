@@ -12,5 +12,5 @@ pub unsafe fn ipc(
     let second = second as usize;
     let third = third as usize;
     let fifth = fifth as usize;
-    syscall6(SYS_IPC, call, first, second, third, ptr, fifth).map(drop)
+    unsafe { syscall6(SYS_IPC, call, first, second, third, ptr, fifth).map(drop) }
 }

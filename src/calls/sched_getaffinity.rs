@@ -22,5 +22,5 @@ pub unsafe fn sched_getaffinity(pid: pid_t, user_mask: &mut cpu_set_t) -> Result
     let pid = pid as usize;
     let cpu_set_len = core::mem::size_of::<cpu_set_t>();
     let user_mask_ptr = user_mask as *mut cpu_set_t as usize;
-    syscall3(SYS_SCHED_GETAFFINITY, pid, cpu_set_len, user_mask_ptr).map(drop)
+    unsafe { syscall3(SYS_SCHED_GETAFFINITY, pid, cpu_set_len, user_mask_ptr).map(drop) }
 }

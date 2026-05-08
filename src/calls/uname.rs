@@ -11,5 +11,5 @@
 /// ```
 pub unsafe fn uname(buf: &mut utsname_t) -> Result<(), Errno> {
     let buf_ptr = buf as *mut utsname_t as usize;
-    syscall1(SYS_UNAME, buf_ptr).map(drop)
+    unsafe { syscall1(SYS_UNAME, buf_ptr).map(drop) }
 }

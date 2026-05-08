@@ -9,5 +9,5 @@
 /// assert_eq!(ret, Ok(pid));
 /// ```
 pub unsafe fn setsid() -> Result<pid_t, Errno> {
-    syscall0(SYS_SETSID).map(|ret| ret as pid_t)
+    unsafe { syscall0(SYS_SETSID).map(|ret| ret as pid_t) }
 }

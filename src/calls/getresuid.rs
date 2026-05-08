@@ -16,5 +16,5 @@ pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) ->
     let ruid_ptr = ruid as *mut uid_t as usize;
     let euid_ptr = euid as *mut uid_t as usize;
     let suid_ptr = suid as *mut uid_t as usize;
-    syscall3(SYS_GETRESUID, ruid_ptr, euid_ptr, suid_ptr).map(drop)
+    unsafe { syscall3(SYS_GETRESUID, ruid_ptr, euid_ptr, suid_ptr).map(drop) }
 }

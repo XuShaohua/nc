@@ -20,5 +20,5 @@ pub unsafe fn write(fd: i32, buf: &[u8]) -> Result<ssize_t, Errno> {
     let fd = fd as usize;
     let count = buf.len();
     let buf_ptr = buf.as_ptr() as usize;
-    syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_WRITE, fd, buf_ptr, count).map(|ret| ret as ssize_t) }
 }

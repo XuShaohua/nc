@@ -21,5 +21,5 @@ pub unsafe fn mknodat<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     let dev = dev as usize;
-    syscall4(SYS_MKNODAT, dirfd, filename_ptr, mode, dev).map(drop)
+    unsafe { syscall4(SYS_MKNODAT, dirfd, filename_ptr, mode, dev).map(drop) }
 }

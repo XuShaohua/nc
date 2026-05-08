@@ -9,5 +9,5 @@ pub unsafe fn rt_tgsigqueueinfo(
     let tid = tid as usize;
     let sig = sig as usize;
     let info_ptr = info as *mut siginfo_t as usize;
-    syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, info_ptr).map(drop)
+    unsafe { syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, info_ptr).map(drop) }
 }

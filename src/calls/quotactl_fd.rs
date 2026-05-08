@@ -9,5 +9,5 @@ pub unsafe fn quotactl_fd<P: AsRef<Path>>(
     let cmd = cmd as usize;
     let id = id as usize;
     let addr = addr as usize;
-    syscall4(SYS_QUOTACTL_FD, fd, cmd, id, addr).map(drop)
+    unsafe { syscall4(SYS_QUOTACTL_FD, fd, cmd, id, addr).map(drop) }
 }

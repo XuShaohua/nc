@@ -17,5 +17,5 @@ pub unsafe fn io_cancel(
 ) -> Result<(), Errno> {
     let iocb_ptr = iocb as *const iocb_t as usize;
     let result_ptr = result as *mut io_event_t as usize;
-    syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(drop)
+    unsafe { syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(drop) }
 }

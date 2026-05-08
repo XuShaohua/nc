@@ -15,15 +15,17 @@ pub unsafe fn sctp_generic_recvmsg(
     let sinfo_ptr = sinfo as *mut sctp_sndrcvinfo_t as usize;
     let _msg_flags_ptr = msg_flags as *mut i32 as usize;
     // FIXME(Shaohua): Parameter error
-    syscall6(
-        SYS_SCTP_GENERIC_RECVMSG,
-        sockfd,
-        iov_ptr,
-        iov_len,
-        from_ptr,
-        from_len_addr_ptr,
-        sinfo_ptr,
-        //msg_flags_ptr,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(
+            SYS_SCTP_GENERIC_RECVMSG,
+            sockfd,
+            iov_ptr,
+            iov_len,
+            from_ptr,
+            from_len_addr_ptr,
+            sinfo_ptr,
+            //msg_flags_ptr,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

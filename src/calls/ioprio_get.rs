@@ -12,5 +12,5 @@
 pub unsafe fn ioprio_get(which: i32, who: i32) -> Result<i32, Errno> {
     let which = which as usize;
     let who = who as usize;
-    syscall2(SYS_IOPRIO_GET, which, who).map(|ret| ret as i32)
+    unsafe { syscall2(SYS_IOPRIO_GET, which, who).map(|ret| ret as i32) }
 }

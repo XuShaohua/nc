@@ -11,5 +11,5 @@
 /// ```
 pub unsafe fn sysinfo(info: &mut sysinfo_t) -> Result<(), Errno> {
     let info_ptr = info as *mut sysinfo_t as usize;
-    syscall1(SYS_SYSINFO, info_ptr).map(drop)
+    unsafe { syscall1(SYS_SYSINFO, info_ptr).map(drop) }
 }

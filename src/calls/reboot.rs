@@ -18,5 +18,5 @@ pub unsafe fn reboot(magic: i32, magci2: i32, cmd: u32, arg: usize) -> Result<()
     let magic = magic as usize;
     let magic2 = magci2 as usize;
     let cmd = cmd as usize;
-    syscall4(SYS_REBOOT, magic, magic2, cmd, arg).map(drop)
+    unsafe { syscall4(SYS_REBOOT, magic, magic2, cmd, arg).map(drop) }
 }

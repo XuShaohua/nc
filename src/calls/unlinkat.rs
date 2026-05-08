@@ -20,5 +20,5 @@ pub unsafe fn unlinkat<P: AsRef<Path>>(dfd: i32, filename: P, flag: i32) -> Resu
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let flag = flag as usize;
-    syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag).map(drop)
+    unsafe { syscall3(SYS_UNLINKAT, dfd, filename_ptr, flag).map(drop) }
 }

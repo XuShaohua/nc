@@ -33,13 +33,15 @@ pub unsafe fn mount<P: AsRef<Path>>(
     let fs_type_ptr = fs_type.as_ptr() as usize;
     let flags = flags as usize;
     let data_page = data_page as usize;
-    syscall5(
-        SYS_MOUNT,
-        dev_name_ptr,
-        dir_name_ptr,
-        fs_type_ptr,
-        flags,
-        data_page,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_MOUNT,
+            dev_name_ptr,
+            dir_name_ptr,
+            fs_type_ptr,
+            flags,
+            data_page,
+        )
+        .map(drop)
+    }
 }

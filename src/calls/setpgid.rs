@@ -10,5 +10,5 @@
 pub unsafe fn setpgid(pid: pid_t, pgid: pid_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let pgid = pgid as usize;
-    syscall2(SYS_SETPGID, pid, pgid).map(drop)
+    unsafe { syscall2(SYS_SETPGID, pid, pgid).map(drop) }
 }

@@ -27,12 +27,14 @@ pub unsafe fn renameat<P: AsRef<Path>>(
     let newdfd = newdfd as usize;
     let newfilename = CString::new(newfilename.as_ref());
     let newfilename_ptr = newfilename.as_ptr() as usize;
-    syscall4(
-        SYS_RENAMEAT,
-        olddfd,
-        oldfilename_ptr,
-        newdfd,
-        newfilename_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall4(
+            SYS_RENAMEAT,
+            olddfd,
+            oldfilename_ptr,
+            newdfd,
+            newfilename_ptr,
+        )
+        .map(drop)
+    }
 }

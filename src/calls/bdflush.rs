@@ -7,5 +7,5 @@
 /// Deprecated.
 pub unsafe fn bdflush() {
     core::unimplemented!();
-    // syscall0(SYS_BDFLUSH);
+    // unsafe { syscall0(SYS_BDFLUSH) };
 }

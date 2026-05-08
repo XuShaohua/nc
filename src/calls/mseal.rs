@@ -7,5 +7,5 @@ pub unsafe fn mseal(
     flags: usize,
 ) -> Result<(), Errno> {
     let start = start as usize;
-    syscall3(SYS_MSEAL, start, len, flags).map(drop)
+    unsafe { syscall3(SYS_MSEAL, start, len, flags).map(drop) }
 }

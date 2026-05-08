@@ -10,5 +10,5 @@
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn idle() -> Result<(), Errno> {
-    syscall0(SYS_IDLE).map(drop)
+    unsafe { syscall0(SYS_IDLE).map(drop) }
 }

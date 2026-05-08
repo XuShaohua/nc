@@ -24,5 +24,5 @@ pub unsafe fn prlimit64(
         .map_or(core::ptr::null_mut::<rlimit64_t>() as usize, |old_limit| {
             old_limit as *mut rlimit64_t as usize
         });
-    syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop)
+    unsafe { syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop) }
 }

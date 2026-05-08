@@ -38,13 +38,15 @@ pub unsafe fn lsetxattr<P: AsRef<Path>>(
     let value_ptr = value.as_ptr() as usize;
     let size = value.len();
     let flags = flags as usize;
-    syscall5(
-        SYS_LSETXATTR,
-        filename_ptr,
-        name_ptr,
-        value_ptr,
-        size,
-        flags,
-    )
-    .map(drop)
+    unsafe {
+        syscall5(
+            SYS_LSETXATTR,
+            filename_ptr,
+            name_ptr,
+            value_ptr,
+            size,
+            flags,
+        )
+        .map(drop)
+    }
 }

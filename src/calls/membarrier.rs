@@ -30,5 +30,5 @@ pub unsafe fn membarrier(cmd: i32, flags: u32, cpuid: i32) -> Result<i32, Errno>
     let cmd = cmd as usize;
     let flags = flags as usize;
     let cpuid = cpuid as usize;
-    syscall3(SYS_MEMBARRIER, cmd, flags, cpuid).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_MEMBARRIER, cmd, flags, cpuid).map(|ret| ret as i32) }
 }

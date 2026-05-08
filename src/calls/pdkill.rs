@@ -2,5 +2,5 @@
 pub unsafe fn pdkill(fd: i32, sig: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let sig = sig as usize;
-    syscall2(SYS_PDKILL, fd, sig).map(drop)
+    unsafe { syscall2(SYS_PDKILL, fd, sig).map(drop) }
 }

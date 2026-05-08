@@ -63,5 +63,5 @@
 /// ```
 pub unsafe fn timer_getoverrun(timer_id: timer_t) -> Result<i32, Errno> {
     let timer_id = timer_id as usize;
-    syscall1(SYS_TIMER_GETOVERRUN, timer_id).map(|ret| ret as i32)
+    unsafe { syscall1(SYS_TIMER_GETOVERRUN, timer_id).map(|ret| ret as i32) }
 }

@@ -14,5 +14,5 @@
 pub unsafe fn pipe2(pipefd: &mut [i32; 2], flags: i32) -> Result<(), Errno> {
     let pipefd_ptr = pipefd.as_mut_ptr() as usize;
     let flags = flags as usize;
-    syscall2(SYS_PIPE2, pipefd_ptr, flags).map(drop)
+    unsafe { syscall2(SYS_PIPE2, pipefd_ptr, flags).map(drop) }
 }

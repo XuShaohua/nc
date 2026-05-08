@@ -13,5 +13,5 @@ pub unsafe fn remap_file_pages(
     let pgoff = pgoff as usize;
     // NOTE(Shaohua): Type of flags is usize in kernel.
     let flags = flags as usize;
-    syscall5(SYS_REMAP_FILE_PAGES, start, size, prot, pgoff, flags).map(drop)
+    unsafe { syscall5(SYS_REMAP_FILE_PAGES, start, size, prot, pgoff, flags).map(drop) }
 }

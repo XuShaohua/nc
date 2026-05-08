@@ -21,5 +21,5 @@ pub unsafe fn readlink<P: AsRef<Path>>(filename: P, buf: &mut [u8]) -> Result<ss
     let filename_ptr = filename.as_ptr() as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_len = buf.len();
-    syscall3(SYS_READLINK, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t)
+    unsafe { syscall3(SYS_READLINK, filename_ptr, buf_ptr, buf_len).map(|ret| ret as ssize_t) }
 }

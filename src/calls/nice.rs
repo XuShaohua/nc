@@ -8,5 +8,5 @@
 /// ```
 pub unsafe fn nice(increment: i32) -> Result<(), Errno> {
     let increment = increment as usize;
-    syscall1(SYS_NICE, increment).map(drop)
+    unsafe { syscall1(SYS_NICE, increment).map(drop) }
 }

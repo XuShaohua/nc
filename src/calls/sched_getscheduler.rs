@@ -8,5 +8,5 @@
 /// ```
 pub unsafe fn sched_getscheduler(pid: pid_t) -> Result<i32, Errno> {
     let pid = pid as usize;
-    syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32)
+    unsafe { syscall1(SYS_SCHED_GETSCHEDULER, pid).map(|ret| ret as i32) }
 }

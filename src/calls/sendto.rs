@@ -53,14 +53,16 @@ pub unsafe fn sendto(
         dest_addr as usize
     });
     let addrlen = addrlen as usize;
-    syscall6(
-        SYS_SENDTO,
-        sockfd,
-        buf_ptr,
-        len,
-        flags,
-        dest_addr_ptr,
-        addrlen,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(
+            SYS_SENDTO,
+            sockfd,
+            buf_ptr,
+            len,
+            flags,
+            dest_addr_ptr,
+            addrlen,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

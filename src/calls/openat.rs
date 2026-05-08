@@ -21,5 +21,5 @@ pub unsafe fn openat<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
     let mode = mode as usize;
-    syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_OPENAT, dirfd, filename_ptr, flags, mode).map(|ret| ret as i32) }
 }

@@ -12,5 +12,5 @@
 /// ```
 pub unsafe fn umask(mode: mode_t) -> Result<mode_t, Errno> {
     let mode = mode as usize;
-    syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t)
+    unsafe { syscall1(SYS_UMASK, mode).map(|ret| ret as mode_t) }
 }

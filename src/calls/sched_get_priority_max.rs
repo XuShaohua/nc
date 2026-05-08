@@ -10,5 +10,5 @@
 /// ```
 pub unsafe fn sched_get_priority_max(policy: i32) -> Result<i32, Errno> {
     let policy = policy as usize;
-    syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy).map(|ret| ret as i32)
+    unsafe { syscall1(SYS_SCHED_GET_PRIORITY_MAX, policy).map(|ret| ret as i32) }
 }

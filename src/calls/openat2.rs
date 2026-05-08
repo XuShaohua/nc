@@ -24,5 +24,5 @@ pub unsafe fn openat2<P: AsRef<Path>>(
     let pathname_ptr = pathname.as_ptr() as usize;
     let how_ptr = how as *mut open_how_t as usize;
     let how_size = core::mem::size_of::<open_how_t>();
-    syscall4(SYS_OPENAT2, dirfd, pathname_ptr, how_ptr, how_size).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_OPENAT2, dirfd, pathname_ptr, how_ptr, how_size).map(|ret| ret as i32) }
 }

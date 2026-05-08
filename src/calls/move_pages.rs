@@ -14,14 +14,16 @@ pub unsafe fn move_pages(
     });
     // NOTE(Shaohua): Type of flags is i32 in kernel.
     let flags = flags as usize;
-    syscall6(
-        SYS_MOVE_PAGES,
-        pid,
-        nr_pages,
-        pages,
-        nodes_ptr,
-        status,
-        flags,
-    )
-    .map(drop)
+    unsafe {
+        syscall6(
+            SYS_MOVE_PAGES,
+            pid,
+            nr_pages,
+            pages,
+            nodes_ptr,
+            status,
+            flags,
+        )
+        .map(drop)
+    }
 }

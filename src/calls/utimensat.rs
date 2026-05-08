@@ -36,5 +36,5 @@ pub unsafe fn utimensat<P: AsRef<Path>>(
     let filename_ptr = filename.as_ptr() as usize;
     let times_ptr = times.as_ptr() as usize;
     let flags = flags as usize;
-    syscall4(SYS_UTIMENSAT, dirfd, filename_ptr, times_ptr, flags).map(drop)
+    unsafe { syscall4(SYS_UTIMENSAT, dirfd, filename_ptr, times_ptr, flags).map(drop) }
 }

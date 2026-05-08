@@ -11,5 +11,5 @@
 pub unsafe fn setgroups(group_list: &[gid_t]) -> Result<(), Errno> {
     let group_len = group_list.len();
     let group_ptr = group_list.as_ptr() as usize;
-    syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop)
+    unsafe { syscall2(SYS_SETGROUPS, group_len, group_ptr).map(drop) }
 }

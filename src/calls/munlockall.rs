@@ -9,5 +9,5 @@
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn munlockall() -> Result<(), Errno> {
-    syscall0(SYS_MUNLOCKALL).map(drop)
+    unsafe { syscall0(SYS_MUNLOCKALL).map(drop) }
 }

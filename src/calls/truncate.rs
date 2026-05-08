@@ -18,5 +18,5 @@ pub unsafe fn truncate<P: AsRef<Path>>(filename: P, length: off_t) -> Result<(),
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let length = length as usize;
-    syscall2(SYS_TRUNCATE, filename_ptr, length).map(drop)
+    unsafe { syscall2(SYS_TRUNCATE, filename_ptr, length).map(drop) }
 }

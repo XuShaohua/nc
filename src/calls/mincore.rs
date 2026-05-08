@@ -25,5 +25,5 @@ pub unsafe fn mincore(
 ) -> Result<(), Errno> {
     let start = start as usize;
     let vec_ptr = vec.as_ptr() as usize;
-    syscall3(SYS_MINCORE, start, len, vec_ptr).map(drop)
+    unsafe { syscall3(SYS_MINCORE, start, len, vec_ptr).map(drop) }
 }

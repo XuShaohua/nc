@@ -80,5 +80,5 @@
 /// ```
 ///
 pub unsafe fn io_destroy(ctx_id: aio_context_t) -> Result<(), Errno> {
-    syscall1(SYS_IO_DESTROY, ctx_id).map(drop)
+    unsafe { syscall1(SYS_IO_DESTROY, ctx_id).map(drop) }
 }

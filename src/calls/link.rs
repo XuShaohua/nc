@@ -29,5 +29,5 @@ pub unsafe fn link<P: AsRef<Path>>(old_filename: P, new_filename: P) -> Result<(
     let old_filename_ptr = old_filename.as_ptr() as usize;
     let new_filename = CString::new(new_filename.as_ref());
     let new_filename_ptr = new_filename.as_ptr() as usize;
-    syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop)
+    unsafe { syscall2(SYS_LINK, old_filename_ptr, new_filename_ptr).map(drop) }
 }

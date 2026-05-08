@@ -52,6 +52,8 @@ pub unsafe fn mremap(
     let addr = addr as usize;
     let flags = flags as usize;
     let new_addr = new_addr as usize;
-    syscall5(SYS_MREMAP, addr, old_len, new_len, flags, new_addr)
-        .map(|ret| ret as *const core::ffi::c_void)
+    unsafe {
+        syscall5(SYS_MREMAP, addr, old_len, new_len, flags, new_addr)
+            .map(|ret| ret as *const core::ffi::c_void)
+    }
 }

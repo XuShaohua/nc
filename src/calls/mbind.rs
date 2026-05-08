@@ -11,5 +11,5 @@ pub unsafe fn mbind(
     let mode = mode as usize;
     let nmask = nmask.as_ptr() as usize;
     let flags = flags as usize;
-    syscall6(SYS_MBIND, start, len, mode, nmask, maxnode, flags).map(drop)
+    unsafe { syscall6(SYS_MBIND, start, len, mode, nmask, maxnode, flags).map(drop) }
 }

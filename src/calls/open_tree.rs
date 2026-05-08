@@ -3,5 +3,5 @@ pub unsafe fn open_tree<P: AsRef<Path>>(dfd: i32, filename: P, flags: u32) -> Re
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
     let flags = flags as usize;
-    syscall3(SYS_OPEN_TREE, dfd, filename_ptr, flags).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_OPEN_TREE, dfd, filename_ptr, flags).map(|ret| ret as i32) }
 }

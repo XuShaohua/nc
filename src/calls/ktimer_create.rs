@@ -7,5 +7,5 @@ pub unsafe fn ktimer_craete(
     let clockid = clockid as usize;
     let evp_ptr = evp as *mut sigevent_t as usize;
     let timer_id_ptr = timer_id as *mut i32 as usize;
-    syscall3(SYS_KTIMER_CREATE, clockid, evp_ptr, timer_id_ptr).map(drop)
+    unsafe { syscall3(SYS_KTIMER_CREATE, clockid, evp_ptr, timer_id_ptr).map(drop) }
 }

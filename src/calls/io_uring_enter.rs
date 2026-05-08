@@ -12,14 +12,16 @@ pub unsafe fn io_uring_enter(
     let min_complete = min_complete as usize;
     let flags = flags as usize;
     let arg = arg as usize;
-    syscall6(
-        SYS_IO_URING_ENTER,
-        fd,
-        to_submit,
-        min_complete,
-        flags,
-        arg,
-        arg_size,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall6(
+            SYS_IO_URING_ENTER,
+            fd,
+            to_submit,
+            min_complete,
+            flags,
+            arg,
+            arg_size,
+        )
+        .map(|ret| ret as i32)
+    }
 }

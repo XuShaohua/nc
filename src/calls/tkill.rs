@@ -29,5 +29,5 @@
 pub unsafe fn tkill(tid: i32, sig: i32) -> Result<(), Errno> {
     let tid = tid as usize;
     let sig = sig as usize;
-    syscall2(SYS_TKILL, tid, sig).map(drop)
+    unsafe { syscall2(SYS_TKILL, tid, sig).map(drop) }
 }

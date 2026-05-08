@@ -30,5 +30,5 @@ pub unsafe fn tgkill(tgid: i32, tid: i32, sig: i32) -> Result<(), Errno> {
     let tgid = tgid as usize;
     let tid = tid as usize;
     let sig = sig as usize;
-    syscall3(SYS_TGKILL, tgid, tid, sig).map(drop)
+    unsafe { syscall3(SYS_TGKILL, tgid, tid, sig).map(drop) }
 }

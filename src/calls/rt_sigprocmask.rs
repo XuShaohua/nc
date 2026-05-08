@@ -12,5 +12,5 @@ pub unsafe fn rt_sigprocmask(
         oldset as *mut sigset_t as usize
     });
     let sig_set_size = core::mem::size_of::<sigset_t>();
-    syscall4(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr, sig_set_size).map(drop)
+    unsafe { syscall4(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr, sig_set_size).map(drop) }
 }

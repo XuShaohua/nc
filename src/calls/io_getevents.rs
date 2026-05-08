@@ -99,13 +99,15 @@ pub unsafe fn io_getevents(
     let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
         timeout as *const timespec_t as usize
     });
-    syscall5(
-        SYS_IO_GETEVENTS,
-        ctx_id,
-        min_nr,
-        nr,
-        events_ptr,
-        timeout_ptr,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall5(
+            SYS_IO_GETEVENTS,
+            ctx_id,
+            min_nr,
+            nr,
+            events_ptr,
+            timeout_ptr,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

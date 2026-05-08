@@ -9,5 +9,5 @@ pub unsafe fn kcmp(
     let pid1 = pid1 as usize;
     let pid2 = pid2 as usize;
     let type_ = type_ as usize;
-    syscall5(SYS_KCMP, pid1, pid2, type_, idx1, idx2).map(|ret| ret as i32)
+    unsafe { syscall5(SYS_KCMP, pid1, pid2, type_, idx1, idx2).map(|ret| ret as i32) }
 }

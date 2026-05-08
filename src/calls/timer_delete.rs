@@ -11,5 +11,5 @@
 /// ```
 pub unsafe fn timer_delete(timer_id: timer_t) -> Result<(), Errno> {
     let timer_id = timer_id as usize;
-    syscall1(SYS_TIMER_DELETE, timer_id).map(drop)
+    unsafe { syscall1(SYS_TIMER_DELETE, timer_id).map(drop) }
 }

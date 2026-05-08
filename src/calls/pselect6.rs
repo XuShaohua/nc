@@ -29,14 +29,16 @@ pub unsafe fn pselect6(
     let sigmask_ptr = sigmask.map_or(null::<sigset_t>() as usize, |sigmask| {
         sigmask as *const sigset_t as usize
     });
-    syscall6(
-        SYS_PSELECT6,
-        nfds,
-        read_fds_ptr,
-        write_fds_ptr,
-        except_fds_ptr,
-        timeout_ptr,
-        sigmask_ptr,
-    )
-    .map(|ret| ret as i32)
+    unsafe {
+        syscall6(
+            SYS_PSELECT6,
+            nfds,
+            read_fds_ptr,
+            write_fds_ptr,
+            except_fds_ptr,
+            timeout_ptr,
+            sigmask_ptr,
+        )
+        .map(|ret| ret as i32)
+    }
 }

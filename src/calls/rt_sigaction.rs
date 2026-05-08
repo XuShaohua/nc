@@ -25,5 +25,5 @@ pub unsafe fn rt_sigaction(
         old_act as *mut sigaction_t as usize
     });
     let sigset_size = core::mem::size_of::<sigset_t>();
-    syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigset_size).map(drop)
+    unsafe { syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigset_size).map(drop) }
 }

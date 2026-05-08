@@ -12,14 +12,16 @@ pub unsafe fn sendto_nocancel(
     let flags = flags as usize;
     let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
     let addrlen = addrlen as usize;
-    syscall6(
-        SYS_SENDTO_NOCANCEL,
-        sockfd,
-        buf_ptr,
-        len,
-        flags,
-        dest_addr_ptr,
-        addrlen,
-    )
-    .map(|ret| ret as ssize_t)
+    unsafe {
+        syscall6(
+            SYS_SENDTO_NOCANCEL,
+            sockfd,
+            buf_ptr,
+            len,
+            flags,
+            dest_addr_ptr,
+            addrlen,
+        )
+        .map(|ret| ret as ssize_t)
+    }
 }

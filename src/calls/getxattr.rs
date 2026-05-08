@@ -43,5 +43,7 @@ pub unsafe fn getxattr<P: AsRef<Path>>(
     let name_ptr = name.as_ptr() as usize;
     let value_ptr = value.as_mut_ptr() as usize;
     let size = value.len();
-    syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value_ptr, size).map(|ret| ret as ssize_t)
+    unsafe {
+        syscall4(SYS_GETXATTR, filename_ptr, name_ptr, value_ptr, size).map(|ret| ret as ssize_t)
+    }
 }

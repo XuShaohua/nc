@@ -10,5 +10,5 @@ pub unsafe fn kmq_open<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     let attr_ptr = attr as *const mq_attr_t as usize;
-    syscall4(SYS_KMQ_OPEN, path_ptr, flags, mode, attr_ptr).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_KMQ_OPEN, path_ptr, flags, mode, attr_ptr).map(|ret| ret as i32) }
 }

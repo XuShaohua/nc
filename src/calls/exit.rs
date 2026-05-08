@@ -9,6 +9,6 @@ pub unsafe fn exit(status: i32) -> ! {
     let status = status as usize;
     unsafe {
         let _ret = syscall1(SYS_EXIT, status);
+        core::hint::unreachable_unchecked();
     }
-    core::hint::unreachable_unchecked();
 }

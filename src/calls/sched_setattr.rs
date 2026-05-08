@@ -3,5 +3,5 @@ pub unsafe fn sched_setattr(pid: pid_t, attr: &sched_attr_t, flags: u32) -> Resu
     let pid = pid as usize;
     let attr_ptr = attr as *const sched_attr_t as usize;
     let flags = flags as usize;
-    syscall3(SYS_SCHED_SETATTR, pid, attr_ptr, flags).map(drop)
+    unsafe { syscall3(SYS_SCHED_SETATTR, pid, attr_ptr, flags).map(drop) }
 }

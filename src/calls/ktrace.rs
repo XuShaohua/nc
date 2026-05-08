@@ -10,5 +10,5 @@ pub unsafe fn ktrace<P: AsRef<Path>>(
     let ops = ops as usize;
     let facs = facs as usize;
     let pid = pid as usize;
-    syscall4(SYS_KTRACE, tracefile_ptr, ops, facs, pid).map(drop)
+    unsafe { syscall4(SYS_KTRACE, tracefile_ptr, ops, facs, pid).map(drop) }
 }

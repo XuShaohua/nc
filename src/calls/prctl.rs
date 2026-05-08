@@ -7,5 +7,5 @@ pub unsafe fn prctl(
     arg5: usize,
 ) -> Result<i32, Errno> {
     let option = option as usize;
-    syscall5(SYS_PRCTL, option, arg2, arg3, arg4, arg5).map(|ret| ret as i32)
+    unsafe { syscall5(SYS_PRCTL, option, arg2, arg3, arg4, arg5).map(|ret| ret as i32) }
 }

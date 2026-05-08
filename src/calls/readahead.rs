@@ -14,5 +14,5 @@
 pub unsafe fn readahead(fd: i32, offset: off_t, count: size_t) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
-    syscall3(SYS_READAHEAD, fd, offset, count).map(drop)
+    unsafe { syscall3(SYS_READAHEAD, fd, offset, count).map(drop) }
 }

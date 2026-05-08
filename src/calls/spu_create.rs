@@ -10,5 +10,5 @@ pub unsafe fn spu_create<P: AsRef<Path>>(
     let flags = flags as usize;
     let mode = mode as usize;
     let neighbor_fd = neighbor_fd as usize;
-    syscall4(SYS_SPU_CREATE, name_ptr, flags, mode, neighbor_fd).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_SPU_CREATE, name_ptr, flags, mode, neighbor_fd).map(|ret| ret as i32) }
 }

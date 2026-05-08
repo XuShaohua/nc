@@ -7,5 +7,5 @@ pub unsafe fn open_by_handle_at(
     let mount_fd = mount_fd as usize;
     let handle_ptr = handle as *mut file_handle_t as usize;
     let flags = flags as usize;
-    syscall3(SYS_OPEN_BY_HANDLE_AT, mount_fd, handle_ptr, flags).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_OPEN_BY_HANDLE_AT, mount_fd, handle_ptr, flags).map(|ret| ret as i32) }
 }

@@ -17,5 +17,5 @@ pub unsafe fn gettimeofday(
     let tz_ptr = tz.map_or(core::ptr::null_mut::<timezone_t>() as usize, |tz| {
         tz as *mut timezone_t as usize
     });
-    syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop)
+    unsafe { syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop) }
 }

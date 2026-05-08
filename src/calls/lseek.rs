@@ -16,5 +16,5 @@ pub unsafe fn lseek(fd: i32, offset: off_t, whence: i32) -> Result<(), Errno> {
     let fd = fd as usize;
     let offset = offset as usize;
     let whence = whence as usize;
-    syscall3(SYS_LSEEK, fd, offset, whence).map(drop)
+    unsafe { syscall3(SYS_LSEEK, fd, offset, whence).map(drop) }
 }

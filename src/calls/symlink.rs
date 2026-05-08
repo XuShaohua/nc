@@ -15,5 +15,5 @@ pub unsafe fn symlink<P: AsRef<Path>>(old_name: P, new_name: P) -> Result<(), Er
     let old_name_ptr = old_name.as_ptr() as usize;
     let new_name = CString::new(new_name.as_ref());
     let new_name_ptr = new_name.as_ptr() as usize;
-    syscall2(SYS_SYMLINK, old_name_ptr, new_name_ptr).map(drop)
+    unsafe { syscall2(SYS_SYMLINK, old_name_ptr, new_name_ptr).map(drop) }
 }

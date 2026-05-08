@@ -34,5 +34,5 @@ pub unsafe fn madvise(
 ) -> Result<(), Errno> {
     let addr = addr as usize;
     let advice = advice as usize;
-    syscall3(SYS_MADVISE, addr, len, advice).map(drop)
+    unsafe { syscall3(SYS_MADVISE, addr, len, advice).map(drop) }
 }

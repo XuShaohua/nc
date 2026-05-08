@@ -16,5 +16,5 @@
 pub unsafe fn msgget(key: key_t, msg_flag: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let msg_flag = msg_flag as usize;
-    syscall2(SYS_MSGGET, key, msg_flag).map(|ret| ret as i32)
+    unsafe { syscall2(SYS_MSGGET, key, msg_flag).map(|ret| ret as i32) }
 }

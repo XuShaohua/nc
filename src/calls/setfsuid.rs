@@ -10,5 +10,5 @@
 /// ```
 pub unsafe fn setfsuid(fsuid: uid_t) -> Result<uid_t, Errno> {
     let fsuid = fsuid as usize;
-    syscall1(SYS_SETFSUID, fsuid).map(|ret| ret as uid_t)
+    unsafe { syscall1(SYS_SETFSUID, fsuid).map(|ret| ret as uid_t) }
 }

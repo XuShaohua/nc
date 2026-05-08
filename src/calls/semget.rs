@@ -131,5 +131,5 @@ pub unsafe fn semget(key: key_t, nsems: i32, sem_flag: i32) -> Result<i32, Errno
     let key = key as usize;
     let nsems = nsems as usize;
     let sem_flag = sem_flag as usize;
-    syscall3(SYS_SEMGET, key, nsems, sem_flag).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_SEMGET, key, nsems, sem_flag).map(|ret| ret as i32) }
 }

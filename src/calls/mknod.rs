@@ -15,5 +15,5 @@ pub unsafe fn mknod<P: AsRef<Path>>(filename: P, mode: mode_t, dev: dev_t) -> Re
     let filename_ptr = filename.as_ptr() as usize;
     let mode = mode as usize;
     let dev = dev as usize;
-    syscall3(SYS_MKNOD, filename_ptr, mode, dev).map(drop)
+    unsafe { syscall3(SYS_MKNOD, filename_ptr, mode, dev).map(drop) }
 }

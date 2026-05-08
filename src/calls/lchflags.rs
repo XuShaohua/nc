@@ -3,5 +3,5 @@ pub unsafe fn lchflags<P: AsRef<Path>>(path: P, flags: fflags_t) -> Result<(), E
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let flags = flags as usize;
-    syscall2(SYS_LCHFLAGS, path_ptr, flags).map(drop)
+    unsafe { syscall2(SYS_LCHFLAGS, path_ptr, flags).map(drop) }
 }

@@ -46,5 +46,5 @@ pub unsafe fn socketpair(
     let type_ = type_ as usize;
     let protocol = protocol as usize;
     let pair_ptr = pair.as_mut_ptr() as usize;
-    syscall4(SYS_SOCKETPAIR, domain, type_, protocol, pair_ptr).map(drop)
+    unsafe { syscall4(SYS_SOCKETPAIR, domain, type_, protocol, pair_ptr).map(drop) }
 }

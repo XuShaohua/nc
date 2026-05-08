@@ -72,5 +72,5 @@
 pub unsafe fn pidfd_open(pid: pid_t, flags: u32) -> Result<i32, Errno> {
     let pid = pid as usize;
     let flags = flags as usize;
-    syscall2(SYS_PIDFD_OPEN, pid, flags).map(|ret| ret as i32)
+    unsafe { syscall2(SYS_PIDFD_OPEN, pid, flags).map(|ret| ret as i32) }
 }

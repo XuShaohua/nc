@@ -27,5 +27,5 @@ pub unsafe fn lchown<P: AsRef<Path>>(filename: P, user: uid_t, group: gid_t) -> 
     let filename_ptr = filename.as_ptr() as usize;
     let user = user as usize;
     let group = group as usize;
-    syscall3(SYS_LCHOWN, filename_ptr, user, group).map(drop)
+    unsafe { syscall3(SYS_LCHOWN, filename_ptr, user, group).map(drop) }
 }

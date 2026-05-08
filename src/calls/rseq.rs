@@ -4,5 +4,5 @@ pub unsafe fn rseq(rseq: &mut [rseq_t], flags: i32, sig: u32) -> Result<i32, Err
     let rseq_len = rseq.len();
     let flags = flags as usize;
     let sig = sig as usize;
-    syscall4(SYS_RSEQ, rseq_ptr, rseq_len, flags, sig).map(|ret| ret as i32)
+    unsafe { syscall4(SYS_RSEQ, rseq_ptr, rseq_len, flags, sig).map(|ret| ret as i32) }
 }

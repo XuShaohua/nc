@@ -10,5 +10,5 @@
 pub unsafe fn mlock2(addr: *const core::ffi::c_void, len: size_t, flags: i32) -> Result<(), Errno> {
     let addr = addr as usize;
     let flags = flags as usize;
-    syscall3(SYS_MLOCK2, addr, len, flags).map(drop)
+    unsafe { syscall3(SYS_MLOCK2, addr, len, flags).map(drop) }
 }

@@ -17,5 +17,5 @@
 /// assert_eq!(remaining, Ok(0));
 /// ```
 pub unsafe fn pause() -> Result<(), Errno> {
-    syscall0(SYS_PAUSE).map(drop)
+    unsafe { syscall0(SYS_PAUSE).map(drop) }
 }

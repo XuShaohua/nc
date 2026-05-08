@@ -15,5 +15,5 @@
 pub unsafe fn shmget(key: key_t, size: size_t, shm_flag: i32) -> Result<i32, Errno> {
     let key = key as usize;
     let shm_flag = shm_flag as usize;
-    syscall3(SYS_SHMGET, key, size, shm_flag).map(|ret| ret as i32)
+    unsafe { syscall3(SYS_SHMGET, key, size, shm_flag).map(|ret| ret as i32) }
 }

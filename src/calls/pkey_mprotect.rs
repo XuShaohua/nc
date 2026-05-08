@@ -8,5 +8,5 @@ pub unsafe fn pkey_mprotect(
     let start = start as usize;
     let prot = prot as usize;
     let pkey = pkey as usize;
-    syscall4(SYS_PKEY_MPROTECT, start, len, prot, pkey).map(drop)
+    unsafe { syscall4(SYS_PKEY_MPROTECT, start, len, prot, pkey).map(drop) }
 }

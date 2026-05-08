@@ -15,14 +15,16 @@ pub unsafe fn shm_open2<P: AsRef<Path>>(
     let fcaps_ptr = fcaps as *mut filecaps_t as usize;
     let name = CString::new(name.as_ref());
     let name_ptr = name.as_ptr() as usize;
-    syscall6(
-        SYS_SHM_OPEN2,
-        path_ptr,
-        flags,
-        mode,
-        shmflags,
-        fcaps_ptr,
-        name_ptr,
-    )
-    .map(drop)
+    unsafe {
+        syscall6(
+            SYS_SHM_OPEN2,
+            path_ptr,
+            flags,
+            mode,
+            shmflags,
+            fcaps_ptr,
+            name_ptr,
+        )
+        .map(drop)
+    }
 }

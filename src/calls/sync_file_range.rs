@@ -41,5 +41,5 @@ pub unsafe fn sync_file_range(
     let offset = offset as usize;
     let nbytes = nbytes as usize;
     let flags = flags as usize;
-    syscall4(SYS_SYNC_FILE_RANGE, fd, offset, nbytes, flags).map(drop)
+    unsafe { syscall4(SYS_SYNC_FILE_RANGE, fd, offset, nbytes, flags).map(drop) }
 }

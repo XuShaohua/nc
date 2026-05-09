@@ -2,7 +2,7 @@
 // Use of this source is governed by Apache-2.0 License that can be found
 // in the LICENSE file.
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 fn handle_alarm(signum: i32) {
     println!("handle alarm");
     assert_eq!(signum, nc::SIGALRM);

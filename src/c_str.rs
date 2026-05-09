@@ -28,7 +28,7 @@ use core::ptr;
 /// - `buf` is a pointer to raw buffer memory
 /// - `len` should not be larger than length of buffer
 #[must_use]
-pub(crate) unsafe fn strlen(buf: usize, len: usize) -> usize {
+pub unsafe fn strlen(buf: usize, len: usize) -> usize {
     let buf_ptr = buf as *const u8;
     for i in 0..len {
         let chr: u8 = unsafe { *buf_ptr.wrapping_add(i) };

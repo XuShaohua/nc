@@ -19,10 +19,10 @@ pub unsafe fn rt_sigaction(
 ) -> Result<(), Errno> {
     let sig = sig as usize;
     let act_ptr = act.map_or(core::ptr::null::<sigaction_t>() as usize, |act| {
-        act as *const sigaction_t as usize
+        core::ptr::from_ref(act) as usize
     });
     let old_act_ptr = old_act.map_or(core::ptr::null_mut::<sigaction_t>() as usize, |old_act| {
-        old_act as *mut sigaction_t as usize
+        core::ptr::from_mut(old_act) as usize
     });
     let sigset_size = core::mem::size_of::<sigset_t>();
     unsafe { syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigset_size).map(drop) }

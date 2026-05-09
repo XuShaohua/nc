@@ -7,6 +7,6 @@ pub unsafe fn lio_listio(
     let mode = mode as usize;
     let acb_list_ptr = acb_list.as_mut_ptr() as usize;
     let acb_list_len = acb_list.len();
-    let sig_ptr = sig as *mut sigevent_t as usize;
+    let sig_ptr = core::ptr::from_mut(sig) as usize;
     unsafe { syscall4(SYS_LIO_LISTIO, mode, acb_list_ptr, acb_list_len, sig_ptr).map(drop) }
 }

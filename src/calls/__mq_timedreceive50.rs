@@ -8,8 +8,8 @@ pub unsafe fn __mq_timedreceive50(
     let mqdes = mqdes as usize;
     let msg = CString::new(msg);
     let msg_ptr = msg.as_ptr() as usize;
-    let msg_prio = msg_prio as *mut u32 as usize;
-    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+    let msg_prio = core::ptr::from_mut(msg_prio) as usize;
+    let abs_timeout_ptr = core::ptr::from_ref(abs_timeout) as usize;
     unsafe {
         syscall5(
             SYS___MQ_TIMEDRECEIVE50,

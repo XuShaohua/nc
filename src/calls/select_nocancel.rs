@@ -10,7 +10,7 @@ pub unsafe fn select_nocancel(
     let readfds_ptr = readfds as usize;
     let writefds_ptr = writefds as usize;
     let exceptfds_ptr = exceptfds as usize;
-    let timeout_ptr = timeout as *mut timeval_t as usize;
+    let timeout_ptr = core::ptr::from_mut(timeout) as usize;
     unsafe {
         syscall5(
             SYS_SELECT_NOCANCEL,

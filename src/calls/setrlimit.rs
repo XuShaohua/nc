@@ -12,6 +12,6 @@
 /// ```
 pub unsafe fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
-    let rlimit_ptr = rlimit as *const rlimit_t as usize;
+    let rlimit_ptr = core::ptr::from_ref(rlimit) as usize;
     unsafe { syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(drop) }
 }

@@ -63,7 +63,7 @@ pub unsafe fn epoll_pwait(
     let events_ptr = events.as_mut_ptr() as usize;
     let max_events = events.len();
     let timeout = timeout as usize;
-    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let sigmask_ptr = core::ptr::from_ref(sigmask) as usize;
     let sigset_size = core::mem::size_of::<sigset_t>();
     unsafe {
         syscall6(

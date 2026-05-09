@@ -13,9 +13,9 @@ pub unsafe fn gettimeofday(
     timeval: &mut timeval_t,
     tz: Option<&mut timezone_t>,
 ) -> Result<(), Errno> {
-    let timeval_ptr = timeval as *mut timeval_t as usize;
+    let timeval_ptr = core::ptr::from_mut(timeval) as usize;
     let tz_ptr = tz.map_or(core::ptr::null_mut::<timezone_t>() as usize, |tz| {
-        tz as *mut timezone_t as usize
+        core::ptr::from_mut(tz) as usize
     });
     unsafe { syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop) }
 }

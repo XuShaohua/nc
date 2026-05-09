@@ -10,7 +10,7 @@ pub unsafe fn move_pages(
     let pid = pid as usize;
     let nodes_ptr = nodes as usize;
     let status = status.map_or(core::ptr::null_mut::<i32>() as usize, |status| {
-        status as *mut i32 as usize
+        core::ptr::from_mut(status) as usize
     });
     // NOTE(Shaohua): Type of flags is i32 in kernel.
     let flags = flags as usize;

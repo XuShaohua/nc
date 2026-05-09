@@ -7,7 +7,7 @@ pub unsafe fn _sched_getparam(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let lid = lid as usize;
-    let policy_ptr = policy as *mut i32 as usize;
-    let param_ptr = param as *mut sched_param_t as usize;
+    let policy_ptr = core::ptr::from_mut(policy) as usize;
+    let param_ptr = core::ptr::from_mut(param) as usize;
     unsafe { syscall4(SYS__SCHED_GETPARAM, pid, lid, policy_ptr, param_ptr).map(drop) }
 }

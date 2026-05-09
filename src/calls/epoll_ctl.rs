@@ -30,6 +30,6 @@ pub unsafe fn epoll_ctl(
     let epfd = epfd as usize;
     let op = op as usize;
     let fd = fd as usize;
-    let event_ptr = event as *mut epoll_event_t as usize;
+    let event_ptr = core::ptr::from_mut(event) as usize;
     unsafe { syscall4(SYS_EPOLL_CTL, epfd, op, fd, event_ptr).map(drop) }
 }

@@ -5,7 +5,7 @@ pub unsafe fn __setitimer50(
     old_val: &mut itimerval_t,
 ) -> Result<(), Errno> {
     let which = which as usize;
-    let new_val_ptr = new_val as *const itimerval_t as usize;
-    let old_val_ptr = old_val as *mut itimerval_t as usize;
+    let new_val_ptr = core::ptr::from_ref(new_val) as usize;
+    let old_val_ptr = core::ptr::from_mut(old_val) as usize;
     unsafe { syscall3(SYS___SETITIMER50, which, new_val_ptr, old_val_ptr).map(drop) }
 }

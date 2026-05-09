@@ -6,6 +6,6 @@
 // TODO(Shaohua): Check args type and return type
 pub unsafe fn socketcall(call: i32, args: &mut usize) -> Result<usize, Errno> {
     let call = call as usize;
-    let args_ptr = args as *mut usize as usize;
+    let args_ptr = core::ptr::from_mut(args) as usize;
     unsafe { syscall2(SYS_SOCKETCALL, call, args_ptr) }
 }

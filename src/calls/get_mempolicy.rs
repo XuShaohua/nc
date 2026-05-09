@@ -6,8 +6,8 @@ pub unsafe fn get_mempolicy(
     addr: *const core::ffi::c_void,
     flags: usize,
 ) -> Result<(), Errno> {
-    let mode_ptr = mode as *mut i32 as usize;
-    let nmask_ptr = nmask as *mut usize as usize;
+    let mode_ptr = core::ptr::from_mut(mode) as usize;
+    let nmask_ptr = core::ptr::from_mut(nmask) as usize;
     let addr = addr as usize;
     unsafe {
         syscall5(

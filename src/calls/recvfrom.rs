@@ -53,7 +53,7 @@ pub unsafe fn recvfrom(
         src_addr as usize
     });
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
-        addrlen as *mut socklen_t as usize
+        core::ptr::from_mut(addrlen) as usize
     });
     unsafe {
         syscall6(

@@ -59,14 +59,14 @@ pub unsafe fn futex(
     val3: u32,
 ) -> Result<i32, Errno> {
     use core::sync::atomic::AtomicU32;
-    let uaddr_ptr = uaddr as *const AtomicU32 as usize;
+    let uaddr_ptr = core::ptr::from_ref(uaddr) as usize;
     let op = op as usize;
     let val = val as usize;
     let utime_ptr = utime.map_or(core::ptr::null::<timespec_t>() as usize, |time_ref| {
-        time_ref as *const timespec_t as usize
+        core::ptr::from_ref(time_ref) as usize
     });
     let uaddr2_ptr = uaddr2.map_or(core::ptr::null::<AtomicU32>() as usize, |uaddr2_ref| {
-        uaddr2_ref as *const AtomicU32 as usize
+        core::ptr::from_ref(uaddr2_ref) as usize
     });
     let val3 = val3 as usize;
     unsafe {

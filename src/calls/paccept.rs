@@ -7,9 +7,9 @@ pub unsafe fn paccept(
     flags: i32,
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
-    let addr_ptr = addr as *mut sockaddr_in_t as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
-    let sigmask_ptr = sigmask.map_or(0, |sigmask| sigmask as *const sigset_t as usize);
+    let addr_ptr = core::ptr::from_mut(addr) as usize;
+    let addrlen_ptr = core::ptr::from_mut(addrlen) as usize;
+    let sigmask_ptr = sigmask.map_or(0, |sigmask| core::ptr::from_ref(sigmask) as usize);
     let flags = flags as usize;
     unsafe {
         syscall5(

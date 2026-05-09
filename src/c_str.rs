@@ -99,7 +99,7 @@ impl CString {
     #[must_use]
     fn into_inner(self) -> Box<[u8]> {
         let this = mem::ManuallyDrop::new(self);
-        unsafe { ptr::read(&this.inner) }
+        unsafe { ptr::read(ptr::from_ref(&this.inner)) }
     }
 
     #[must_use]
@@ -146,7 +146,7 @@ impl CStr {
     #[inline]
     #[allow(clippy::missing_const_for_fn)]
     unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &Self {
-        unsafe { &*(bytes as *const [u8] as *const Self) }
+        unsafe { &*(ptr::from_ref(bytes) as *const Self) }
     }
 
     #[must_use]
@@ -160,7 +160,7 @@ impl CStr {
     #[allow(clippy::missing_const_for_fn)]
     // NOTE(Shaohua): const unsafe feature is not available in rustc 1.46 stable.
     pub fn to_bytes_with_nul(&self) -> &[u8] {
-        unsafe { &*(&self.inner as *const [u8]) }
+        unsafe { &*(ptr::from_ref(&self.inner)) }
     }
 }
 

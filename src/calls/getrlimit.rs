@@ -11,6 +11,6 @@
 /// ```
 pub unsafe fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
-    let rlim_ptr = rlim as *mut rlimit_t as usize;
+    let rlim_ptr = core::ptr::from_mut(rlim) as usize;
     unsafe { syscall2(SYS_GETRLIMIT, resource, rlim_ptr).map(drop) }
 }

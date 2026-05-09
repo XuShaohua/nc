@@ -114,7 +114,7 @@ pub unsafe fn accept(
         addr as usize
     });
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
-        addrlen as *mut socklen_t as usize
+        core::ptr::from_mut(addrlen) as usize
     });
     unsafe { syscall3(SYS_ACCEPT, sockfd, addr_ptr, addrlen_ptr).map(|val| val as i32) }
 }
@@ -214,7 +214,7 @@ pub unsafe fn accept4(
         addr as usize
     });
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
-        addrlen as *mut socklen_t as usize
+        core::ptr::from_mut(addrlen) as usize
     });
     let flags = flags as usize;
     unsafe { syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32) }
@@ -282,7 +282,7 @@ pub unsafe fn add_key<P: AsRef<Path>>(
 /// assert!(tm.time.tv_sec > 1611552896);
 /// ```
 pub unsafe fn adjtimex(buf: &mut timex_t) -> Result<i32, Errno> {
-    let buf_ptr = buf as *mut timex_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall1(SYS_ADJTIMEX, buf_ptr).map(|ret| ret as i32) }
 }
 
@@ -378,7 +378,7 @@ pub unsafe fn bind(sockfd: i32, addr: *const sockaddr_t, addrlen: socklen_t) -> 
 /// Perform a command on an extended BPF map or program
 pub unsafe fn bpf(cmd: i32, attr: &mut bpf_attr_t, size: u32) -> Result<i32, Errno> {
     let cmd = cmd as usize;
-    let attr_ptr = attr as *mut bpf_attr_t as usize;
+    let attr_ptr = core::ptr::from_mut(attr) as usize;
     let size = size as usize;
     unsafe { syscall3(SYS_BPF, cmd, attr_ptr, size).map(|ret| ret as i32) }
 }
@@ -393,15 +393,15 @@ pub unsafe fn capget(
     hdrp: &mut cap_user_header_t,
     data: &mut cap_user_data_t,
 ) -> Result<(), Errno> {
-    let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
-    let data_ptr = data as *mut cap_user_data_t as usize;
+    let hdrp_ptr = core::ptr::from_mut(hdrp) as usize;
+    let data_ptr = core::ptr::from_mut(data) as usize;
     unsafe { syscall2(SYS_CAPGET, hdrp_ptr, data_ptr).map(drop) }
 }
 
 /// Set capabilities of thread.
 pub unsafe fn capset(hdrp: &mut cap_user_header_t, data: &cap_user_data_t) -> Result<(), Errno> {
-    let hdrp_ptr = hdrp as *mut cap_user_header_t as usize;
-    let data_ptr = data as *const cap_user_data_t as usize;
+    let hdrp_ptr = core::ptr::from_mut(hdrp) as usize;
+    let data_ptr = core::ptr::from_ref(data) as usize;
     unsafe { syscall2(SYS_CAPSET, hdrp_ptr, data_ptr).map(drop) }
 }
 
@@ -457,7 +457,7 @@ pub unsafe fn chroot<P: AsRef<Path>>(filename: P) -> Result<(), Errno> {
 /// ```
 pub unsafe fn clock_adjtime(which_clock: clockid_t, tx: &mut timex_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
-    let tx_ptr = tx as *mut timex_t as usize;
+    let tx_ptr = core::ptr::from_mut(tx) as usize;
     unsafe { syscall2(SYS_CLOCK_ADJTIME, which_clock, tx_ptr).map(drop) }
 }
 
@@ -477,7 +477,7 @@ pub unsafe fn clock_getres(
 ) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let tp_ptr = tp.map_or(core::ptr::null_mut::<timespec_t>() as usize, |tp| {
-        tp as *mut timespec_t as usize
+        core::ptr::from_mut(tp) as usize
     });
     unsafe { syscall2(SYS_CLOCK_GETRES, which_clock, tp_ptr).map(drop) }
 }
@@ -494,7 +494,7 @@ pub unsafe fn clock_getres(
 /// ```
 pub unsafe fn clock_gettime(which_clock: clockid_t, tp: &mut timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
-    let tp_ptr = tp as *mut timespec_t as usize;
+    let tp_ptr = core::ptr::from_mut(tp) as usize;
     unsafe { syscall2(SYS_CLOCK_GETTIME, which_clock, tp_ptr).map(drop) }
 }
 
@@ -518,9 +518,9 @@ pub unsafe fn clock_nanosleep(
 ) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let flags = flags as usize;
-    let request_ptr = request as *const timespec_t as usize;
+    let request_ptr = core::ptr::from_ref(request) as usize;
     let remain_ptr = remain.map_or(core::ptr::null_mut::<timespec_t>() as usize, |remain| {
-        remain as *mut timespec_t as usize
+        core::ptr::from_mut(remain) as usize
     });
     unsafe {
         syscall4(
@@ -549,7 +549,7 @@ pub unsafe fn clock_nanosleep(
 /// ```
 pub unsafe fn clock_settime(which_clock: clockid_t, tp: &timespec_t) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
-    let tp_ptr = tp as *const timespec_t as usize;
+    let tp_ptr = core::ptr::from_ref(tp) as usize;
     unsafe { syscall2(SYS_CLOCK_SETTIME, which_clock, tp_ptr).map(drop) }
 }
 
@@ -564,10 +564,10 @@ pub unsafe fn clone(
     use core::ptr::null_mut;
     let child_stack = child_stack as usize;
     let parent_tid_ptr = parent_tid.map_or(null_mut::<pid_t>() as usize, |parent_tid| {
-        parent_tid as *mut pid_t as usize
+        core::ptr::from_mut(parent_tid) as usize
     });
     let child_tid_ptr = child_tid.map_or(null_mut::<pid_t>() as usize, |child_tid| {
-        child_tid as *mut pid_t as usize
+        core::ptr::from_mut(child_tid) as usize
     });
     let tls_ptr = tls.map_or(core::ptr::null::<u8>() as usize, |tls| tls as usize);
     unsafe {
@@ -591,13 +591,13 @@ pub unsafe fn clone(
 /// let mut args = nc::clone_args_t::default();
 /// let mut pid_fd: i32 = -1;
 /// args.exit_signal = nc::SIGCHLD as u64;
-/// args.pidfd = &mut pid_fd as *mut i32 as usize as u64;
+/// args.pidfd = &mut core::ptr::from_mut(pid_fd) as usize as u64;
 /// args.flags = nc::CLONE_PIDFD as u64 | nc::CLONE_PARENT_SETTID as u64;
 /// let pid = unsafe { nc::clone3(&args) };
 /// assert!(pid.is_ok());
 /// ```
 pub unsafe fn clone3(cl_args: &clone_args_t) -> Result<pid_t, Errno> {
-    let cl_args_ptr = cl_args as *const clone_args_t as usize;
+    let cl_args_ptr = core::ptr::from_ref(cl_args) as usize;
     let size = core::mem::size_of::<clone_args_t>();
     unsafe { syscall2(SYS_CLONE3, cl_args_ptr, size).map(|ret| ret as pid_t) }
 }
@@ -752,9 +752,9 @@ pub unsafe fn copy_file_range(
     flags: u32,
 ) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
-    let off_in_ptr = off_in as *mut loff_t as usize;
+    let off_in_ptr = core::ptr::from_mut(off_in) as usize;
     let fd_out = fd_out as usize;
-    let off_out_ptr = off_out as *mut loff_t as usize;
+    let off_out_ptr = core::ptr::from_mut(off_out) as usize;
     let flags = flags as usize;
     unsafe {
         syscall6(
@@ -877,7 +877,7 @@ pub unsafe fn epoll_ctl(
     let epfd = epfd as usize;
     let op = op as usize;
     let fd = fd as usize;
-    let event_ptr = event as *mut epoll_event_t as usize;
+    let event_ptr = core::ptr::from_mut(event) as usize;
     unsafe { syscall4(SYS_EPOLL_CTL, epfd, op, fd, event_ptr).map(drop) }
 }
 
@@ -946,7 +946,7 @@ pub unsafe fn epoll_pwait(
     let events_ptr = events.as_mut_ptr() as usize;
     let max_events = events.len();
     let timeout = timeout as usize;
-    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let sigmask_ptr = core::ptr::from_ref(sigmask) as usize;
     let sigset_size = core::mem::size_of::<sigset_t>();
     unsafe {
         syscall6(
@@ -1602,7 +1602,7 @@ pub unsafe fn fsetxattr<P: AsRef<Path>>(
 /// ```
 pub unsafe fn fstat(fd: i32, statbuf: &mut stat_t) -> Result<(), Errno> {
     let fd = fd as usize;
-    let statbuf_ptr = statbuf as *mut stat_t as usize;
+    let statbuf_ptr = core::ptr::from_mut(statbuf) as usize;
     unsafe { syscall2(SYS_FSTAT, fd, statbuf_ptr).map(drop) }
 }
 
@@ -1626,7 +1626,7 @@ pub unsafe fn fstatat<P: AsRef<Path>>(
     let dfd = dfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    let statbuf_ptr = statbuf as *mut stat_t as usize;
+    let statbuf_ptr = core::ptr::from_mut(statbuf) as usize;
     let flag = flag as usize;
     unsafe { syscall4(SYS_FSTATAT, dfd, filename_ptr, statbuf_ptr, flag).map(drop) }
 }
@@ -1651,7 +1651,7 @@ pub unsafe fn fstatat<P: AsRef<Path>>(
 /// ```
 pub unsafe fn fstatfs(fd: i32, buf: &mut statfs_t) -> Result<(), Errno> {
     let fd = fd as usize;
-    let buf_ptr = buf as *mut statfs_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall2(SYS_FSTATFS, fd, buf_ptr).map(drop) }
 }
 
@@ -1762,14 +1762,14 @@ pub unsafe fn futex(
     val3: u32,
 ) -> Result<i32, Errno> {
     use core::sync::atomic::AtomicU32;
-    let uaddr_ptr = uaddr as *const AtomicU32 as usize;
+    let uaddr_ptr = core::ptr::from_ref(uaddr) as usize;
     let op = op as usize;
     let val = val as usize;
     let utime_ptr = utime.map_or(core::ptr::null::<timespec_t>() as usize, |time_ref| {
-        time_ref as *const timespec_t as usize
+        core::ptr::from_ref(time_ref) as usize
     });
     let uaddr2_ptr = uaddr2.map_or(core::ptr::null::<AtomicU32>() as usize, |uaddr2_ref| {
-        uaddr2_ref as *const AtomicU32 as usize
+        core::ptr::from_ref(uaddr2_ref) as usize
     });
     let val3 = val3 as usize;
     unsafe {
@@ -1793,9 +1793,9 @@ pub unsafe fn getcpu(
     node: &mut u32,
     cache: &mut getcpu_cache_t,
 ) -> Result<(), Errno> {
-    let cpu_ptr = cpu as *mut u32 as usize;
-    let node_ptr = node as *mut u32 as usize;
-    let cache_ptr = cache as *mut getcpu_cache_t as usize;
+    let cpu_ptr = core::ptr::from_mut(cpu) as usize;
+    let node_ptr = core::ptr::from_mut(node) as usize;
+    let cache_ptr = core::ptr::from_mut(cache) as usize;
     unsafe { syscall3(SYS_GETCPU, cpu_ptr, node_ptr, cache_ptr).map(drop) }
 }
 
@@ -1986,7 +1986,7 @@ pub unsafe fn getgroups(group_list: &mut [gid_t]) -> Result<i32, Errno> {
 /// ```
 pub unsafe fn getitimer(which: i32, curr_val: &mut itimerval_t) -> Result<(), Errno> {
     let which = which as usize;
-    let curr_val_ptr = curr_val as *mut itimerval_t as usize;
+    let curr_val_ptr = core::ptr::from_mut(curr_val) as usize;
     unsafe { syscall2(SYS_GETITIMER, which, curr_val_ptr).map(drop) }
 }
 
@@ -2082,7 +2082,7 @@ pub unsafe fn getpeername(
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    let addrlen_ptr = core::ptr::from_mut(addrlen) as usize;
     unsafe { syscall3(SYS_GETPEERNAME, sockfd, addr_ptr, addrlen_ptr).map(drop) }
 }
 
@@ -2183,9 +2183,9 @@ pub unsafe fn getrandom(buf: &mut [u8], flags: u32) -> Result<ssize_t, Errno> {
 /// assert!(sgid > 0);
 /// ```
 pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
-    let rgid_ptr = rgid as *mut gid_t as usize;
-    let egid_ptr = egid as *mut gid_t as usize;
-    let sgid_ptr = sgid as *mut gid_t as usize;
+    let rgid_ptr = core::ptr::from_mut(rgid) as usize;
+    let egid_ptr = core::ptr::from_mut(egid) as usize;
+    let sgid_ptr = core::ptr::from_mut(sgid) as usize;
     unsafe { syscall3(SYS_GETRESGID, rgid_ptr, egid_ptr, sgid_ptr).map(drop) }
 }
 
@@ -2204,9 +2204,9 @@ pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) ->
 /// assert!(suid > 0);
 /// ```
 pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result<(), Errno> {
-    let ruid_ptr = ruid as *mut uid_t as usize;
-    let euid_ptr = euid as *mut uid_t as usize;
-    let suid_ptr = suid as *mut uid_t as usize;
+    let ruid_ptr = core::ptr::from_mut(ruid) as usize;
+    let euid_ptr = core::ptr::from_mut(euid) as usize;
+    let suid_ptr = core::ptr::from_mut(suid) as usize;
     unsafe { syscall3(SYS_GETRESUID, ruid_ptr, euid_ptr, suid_ptr).map(drop) }
 }
 
@@ -2223,7 +2223,7 @@ pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) ->
 /// ```
 pub unsafe fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
-    let rlim_ptr = rlim as *mut rlimit_t as usize;
+    let rlim_ptr = core::ptr::from_mut(rlim) as usize;
     unsafe { syscall2(SYS_GETRLIMIT, resource, rlim_ptr).map(drop) }
 }
 
@@ -2240,7 +2240,7 @@ pub unsafe fn getrlimit(resource: i32, rlim: &mut rlimit_t) -> Result<(), Errno>
 /// ```
 pub unsafe fn getrusage(who: i32, usage: &mut rusage_t) -> Result<(), Errno> {
     let who = who as usize;
-    let usage_ptr = usage as *mut rusage_t as usize;
+    let usage_ptr = core::ptr::from_mut(usage) as usize;
     unsafe { syscall2(SYS_GETRUSAGE, who, usage_ptr).map(drop) }
 }
 
@@ -2352,7 +2352,7 @@ pub unsafe fn getsockname(
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    let addrlen_ptr = core::ptr::from_mut(addrlen) as usize;
     unsafe { syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop) }
 }
 
@@ -2411,7 +2411,7 @@ pub unsafe fn getsockopt(
     let level = level as usize;
     let opt_name = opt_name as usize;
     let opt_val_ptr = opt_val as usize;
-    let opt_len_ptr = opt_len as *mut socklen_t as usize;
+    let opt_len_ptr = core::ptr::from_mut(opt_len) as usize;
     unsafe {
         syscall5(
             SYS_GETSOCKOPT,
@@ -2454,9 +2454,9 @@ pub unsafe fn gettimeofday(
     timeval: &mut timeval_t,
     tz: Option<&mut timezone_t>,
 ) -> Result<(), Errno> {
-    let timeval_ptr = timeval as *mut timeval_t as usize;
+    let timeval_ptr = core::ptr::from_mut(timeval) as usize;
     let tz_ptr = tz.map_or(core::ptr::null_mut::<timezone_t>() as usize, |tz| {
-        tz as *mut timezone_t as usize
+        core::ptr::from_mut(tz) as usize
     });
     unsafe { syscall2(SYS_GETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop) }
 }
@@ -2533,8 +2533,8 @@ pub unsafe fn get_mempolicy(
     addr: *const core::ffi::c_void,
     flags: usize,
 ) -> Result<(), Errno> {
-    let mode_ptr = mode as *mut i32 as usize;
-    let nmask_ptr = nmask as *mut usize as usize;
+    let mode_ptr = core::ptr::from_mut(mode) as usize;
+    let nmask_ptr = core::ptr::from_mut(nmask) as usize;
     let addr = addr as usize;
     unsafe {
         syscall5(
@@ -2562,7 +2562,7 @@ pub unsafe fn get_robust_list(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let head_ptr = head_ptr as usize;
-    let len_ptr = len_ptr as *mut size_t as usize;
+    let len_ptr = core::ptr::from_mut(len_ptr) as usize;
     unsafe { syscall3(SYS_GET_ROBUST_LIST, pid, head_ptr, len_ptr).map(drop) }
 }
 
@@ -2726,8 +2726,8 @@ pub unsafe fn io_cancel(
     iocb: &iocb_t,
     result: &mut io_event_t,
 ) -> Result<(), Errno> {
-    let iocb_ptr = iocb as *const iocb_t as usize;
-    let result_ptr = result as *mut io_event_t as usize;
+    let iocb_ptr = core::ptr::from_ref(iocb) as usize;
+    let result_ptr = core::ptr::from_mut(result) as usize;
     unsafe { syscall3(SYS_IO_CANCEL, ctx_id, iocb_ptr, result_ptr).map(drop) }
 }
 
@@ -2915,7 +2915,7 @@ pub unsafe fn io_getevents(
     let nr = events.len();
     let events_ptr = events.as_mut_ptr() as usize;
     let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     unsafe {
         syscall5(
@@ -3019,10 +3019,10 @@ pub unsafe fn io_pgetevents(
     let nr = events.len();
     let events_ptr = events.as_mut_ptr() as usize;
     let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let sig_ptr = sig.map_or(null::<aio_sigset_t>() as usize, |sig| {
-        sig as *const aio_sigset_t as usize
+        core::ptr::from_ref(sig) as usize
     });
     unsafe {
         syscall6(
@@ -3133,7 +3133,7 @@ pub unsafe fn io_pgetevents(
 ///
 pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
     let nr_events = nr_events as usize;
-    let ctx_id_ptr = ctx_id as *mut aio_context_t as usize;
+    let ctx_id_ptr = core::ptr::from_mut(ctx_id) as usize;
     unsafe { syscall2(SYS_IO_SETUP, nr_events, ctx_id_ptr).map(drop) }
 }
 
@@ -4038,7 +4038,7 @@ pub unsafe fn move_pages(
     let pid = pid as usize;
     let nodes_ptr = nodes as usize;
     let status = status.map_or(core::ptr::null_mut::<i32>() as usize, |status| {
-        status as *mut i32 as usize
+        core::ptr::from_mut(status) as usize
     });
     // NOTE(Shaohua): Type of flags is i32 in kernel.
     let flags = flags as usize;
@@ -4127,10 +4127,10 @@ pub unsafe fn mq_getsetattr(
 ) -> Result<mqd_t, Errno> {
     let mqdes = mqdes as usize;
     let new_attr_ptr = new_attr.map_or(core::ptr::null::<mq_attr_t>() as usize, |new_attr| {
-        new_attr as *const mq_attr_t as usize
+        core::ptr::from_ref(new_attr) as usize
     });
     let old_attr_ptr = old_attr.map_or(core::ptr::null_mut::<mq_attr_t>() as usize, |old_attr| {
-        old_attr as *mut mq_attr_t as usize
+        core::ptr::from_mut(old_attr) as usize
     });
     unsafe {
         syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)
@@ -4142,7 +4142,7 @@ pub unsafe fn mq_notify(mqdes: mqd_t, notification: Option<&sigevent_t>) -> Resu
     let mqdes = mqdes as usize;
     let notification_ptr = notification
         .map_or(core::ptr::null::<sigevent_t>() as usize, |notification| {
-            notification as *const sigevent_t as usize
+            core::ptr::from_ref(notification) as usize
         });
     unsafe { syscall2(SYS_MQ_NOTIFY, mqdes, notification_ptr).map(drop) }
 }
@@ -4179,7 +4179,7 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
     let oflag = oflag as usize;
     let mode = mode as usize;
     let attr_ptr = attr.map_or(core::ptr::null_mut::<mq_attr_t>() as usize, |attr| {
-        attr as *mut mq_attr_t as usize
+        core::ptr::from_mut(attr) as usize
     });
     unsafe { syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr).map(|ret| ret as mqd_t) }
 }
@@ -4247,8 +4247,8 @@ pub unsafe fn mq_timedreceive(
     let mqdes = mqdes as usize;
     let msg_ptr = msg.as_mut_ptr() as usize;
     let msg_len = msg.len();
-    let msg_prio = msg_prio as *mut u32 as usize;
-    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+    let msg_prio = core::ptr::from_mut(msg_prio) as usize;
+    let abs_timeout_ptr = core::ptr::from_ref(abs_timeout) as usize;
     unsafe {
         syscall5(
             SYS_MQ_TIMEDRECEIVE,
@@ -4312,7 +4312,7 @@ pub unsafe fn mq_timedsend(
     let msg_ptr = msg.as_ptr() as usize;
     let msg_len = msg.len();
     let msg_prio = msg_prio as usize;
-    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+    let abs_timeout_ptr = core::ptr::from_ref(abs_timeout) as usize;
     unsafe {
         syscall5(
             SYS_MQ_TIMEDSEND,
@@ -4431,7 +4431,7 @@ pub unsafe fn mremap(
 pub unsafe fn msgctl(msq_id: i32, cmd: i32, buf: &mut msqid_ds_t) -> Result<i32, Errno> {
     let msq_id = msq_id as usize;
     let cmd = cmd as usize;
-    let buf_ptr = buf as *mut msqid_ds_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall3(SYS_MSGCTL, msq_id, cmd, buf_ptr).map(|ret| ret as i32) }
 }
 
@@ -4738,8 +4738,8 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
     let dfd = dfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    let handle_ptr = handle as *mut file_handle_t as usize;
-    let mount_id_ptr = mount_id as *mut i32 as usize;
+    let handle_ptr = core::ptr::from_mut(handle) as usize;
+    let mount_id_ptr = core::ptr::from_mut(mount_id) as usize;
     let flags = flags as usize;
     unsafe {
         syscall5(
@@ -4767,9 +4767,9 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
 /// assert!(ret.is_ok());
 /// ```
 pub unsafe fn nanosleep(req: &timespec_t, rem: Option<&mut timespec_t>) -> Result<(), Errno> {
-    let req_ptr = req as *const timespec_t as usize;
+    let req_ptr = core::ptr::from_ref(req) as usize;
     let rem_ptr = rem.map_or(core::ptr::null_mut::<timespec_t>() as usize, |rem| {
-        rem as *mut timespec_t as usize
+        core::ptr::from_mut(rem) as usize
     });
     unsafe { syscall2(SYS_NANOSLEEP, req_ptr, rem_ptr).map(drop) }
 }
@@ -4807,7 +4807,7 @@ pub unsafe fn open_by_handle_at(
     flags: i32,
 ) -> Result<i32, Errno> {
     let mount_fd = mount_fd as usize;
-    let handle_ptr = handle as *mut file_handle_t as usize;
+    let handle_ptr = core::ptr::from_mut(handle) as usize;
     let flags = flags as usize;
     unsafe { syscall3(SYS_OPEN_BY_HANDLE_AT, mount_fd, handle_ptr, flags).map(|ret| ret as i32) }
 }
@@ -4820,7 +4820,7 @@ pub unsafe fn perf_event_open(
     group_fd: i32,
     flags: usize,
 ) -> Result<i32, Errno> {
-    let attr_ptr = attr as *mut perf_event_attr_t as usize;
+    let attr_ptr = core::ptr::from_mut(attr) as usize;
     let pid = pid as usize;
     let cpu = cpu as usize;
     let group_fd = group_fd as usize;
@@ -4901,10 +4901,10 @@ pub unsafe fn ppoll(
     let fds_ptr = fds.as_mut_ptr() as usize;
     let nfds = fds.len();
     let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let sig_mask_ptr = sig_mask.map_or(null::<sigset_t>() as usize, |sig_mask| {
-        sig_mask as *const sigset_t as usize
+        core::ptr::from_ref(sig_mask) as usize
     });
     let sig_set_size = core::mem::size_of::<sigset_t>();
     unsafe {
@@ -5058,11 +5058,11 @@ pub unsafe fn prlimit64(
     let pid = pid as usize;
     let resource = resource as usize;
     let new_limit_ptr = new_limit.map_or(core::ptr::null::<rlimit64_t>() as usize, |new_limit| {
-        new_limit as *const rlimit64_t as usize
+        core::ptr::from_ref(new_limit) as usize
     });
     let old_limit_ptr = old_limit
         .map_or(core::ptr::null_mut::<rlimit64_t>() as usize, |old_limit| {
-            old_limit as *mut rlimit64_t as usize
+            core::ptr::from_mut(old_limit) as usize
         });
     unsafe { syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop) }
 }
@@ -5136,19 +5136,19 @@ pub unsafe fn pselect6(
     use core::ptr::{null, null_mut};
     let nfds = nfds as usize;
     let read_fds_ptr = read_fds.map_or(null_mut::<fd_set_t>() as usize, |read_fds| {
-        read_fds as *mut fd_set_t as usize
+        core::ptr::from_mut(read_fds) as usize
     });
     let write_fds_ptr = write_fds.map_or(null_mut::<fd_set_t>() as usize, |write_fds| {
-        write_fds as *mut fd_set_t as usize
+        core::ptr::from_mut(write_fds) as usize
     });
     let except_fds_ptr = except_fds.map_or(null_mut::<fd_set_t>() as usize, |except_fds| {
-        except_fds as *mut fd_set_t as usize
+        core::ptr::from_mut(except_fds) as usize
     });
     let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let sigmask_ptr = sigmask.map_or(null::<sigset_t>() as usize, |sigmask| {
-        sigmask as *const sigset_t as usize
+        core::ptr::from_ref(sigmask) as usize
     });
     unsafe {
         syscall6(
@@ -5502,7 +5502,7 @@ pub unsafe fn recvfrom(
         src_addr as usize
     });
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
-        addrlen as *mut socklen_t as usize
+        core::ptr::from_mut(addrlen) as usize
     });
     unsafe {
         syscall6(
@@ -5614,7 +5614,7 @@ pub unsafe fn recvmmsg(
     let vlen = msgvec.len();
     let flags = flags as usize;
     let timeout_ptr = timeout.map_or(core::ptr::null_mut::<timespec_t>() as usize, |timeout| {
-        timeout as *mut timespec_t as usize
+        core::ptr::from_mut(timeout) as usize
     });
     unsafe { syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr) }
 }
@@ -5693,7 +5693,7 @@ pub unsafe fn recvmmsg(
 /// ```
 pub unsafe fn recvmsg(sockfd: i32, msg: &mut msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
-    let msg_ptr = msg as *mut msghdr_t as usize;
+    let msg_ptr = core::ptr::from_mut(msg) as usize;
     let flags = flags as usize;
     unsafe { syscall3(SYS_RECVMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t) }
 }
@@ -5860,10 +5860,10 @@ pub unsafe fn rt_sigaction(
 ) -> Result<(), Errno> {
     let sig = sig as usize;
     let act_ptr = act.map_or(core::ptr::null::<sigaction_t>() as usize, |act| {
-        act as *const sigaction_t as usize
+        core::ptr::from_ref(act) as usize
     });
     let old_act_ptr = old_act.map_or(core::ptr::null_mut::<sigaction_t>() as usize, |old_act| {
-        old_act as *mut sigaction_t as usize
+        core::ptr::from_mut(old_act) as usize
     });
     let sigset_size = core::mem::size_of::<sigset_t>();
     unsafe { syscall4(SYS_RT_SIGACTION, sig, act_ptr, old_act_ptr, sigset_size).map(drop) }
@@ -5871,7 +5871,7 @@ pub unsafe fn rt_sigaction(
 
 /// Examine pending signals.
 pub unsafe fn rt_sigpending(set: &mut sigset_t) -> Result<(), Errno> {
-    let set_ptr = set as *mut sigset_t as usize;
+    let set_ptr = core::ptr::from_mut(set) as usize;
     let sig_set_size = core::mem::size_of::<sigset_t>();
     unsafe { syscall2(SYS_RT_SIGPENDING, set_ptr, sig_set_size).map(drop) }
 }
@@ -5884,10 +5884,10 @@ pub unsafe fn rt_sigprocmask(
 ) -> Result<(), Errno> {
     let how = how as usize;
     let set_ptr = set.map_or(core::ptr::null::<sigset_t>() as usize, |set| {
-        set as *const sigset_t as usize
+        core::ptr::from_ref(set) as usize
     });
     let oldset_ptr = oldset.map_or(core::ptr::null_mut::<sigset_t>() as usize, |oldset| {
-        oldset as *mut sigset_t as usize
+        core::ptr::from_mut(oldset) as usize
     });
     let sig_set_size = core::mem::size_of::<sigset_t>();
     unsafe { syscall4(SYS_RT_SIGPROCMASK, how, set_ptr, oldset_ptr, sig_set_size).map(drop) }
@@ -5899,7 +5899,7 @@ pub unsafe fn rt_sigprocmask(
 pub unsafe fn rt_sigqueueinfo(pid: pid_t, sig: i32, info: &mut siginfo_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let sig = sig as usize;
-    let info_ptr = info as *mut siginfo_t as usize;
+    let info_ptr = core::ptr::from_mut(info) as usize;
     unsafe { syscall3(SYS_RT_SIGQUEUEINFO, pid, sig, info_ptr).map(drop) }
 }
 
@@ -5941,7 +5941,7 @@ pub unsafe fn rt_sigreturn() {
 /// }
 /// ```
 pub unsafe fn rt_sigsuspend(set: &sigset_t) -> Result<(), Errno> {
-    let set_ptr = set as *const sigset_t as usize;
+    let set_ptr = core::ptr::from_ref(set) as usize;
     let sigset_size = core::mem::size_of::<sigset_t>();
     unsafe { syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigset_size).map(drop) }
 }
@@ -5952,11 +5952,11 @@ pub unsafe fn rt_sigtimedwait(
     info: Option<&mut siginfo_t>,
     ts: &timespec_t,
 ) -> Result<i32, Errno> {
-    let set_ptr = set as *const sigset_t as usize;
+    let set_ptr = core::ptr::from_ref(set) as usize;
     let info_ptr = info.map_or(core::ptr::null_mut::<siginfo_t>() as usize, |info| {
-        info as *mut siginfo_t as usize
+        core::ptr::from_mut(info) as usize
     });
-    let ts_ptr = ts as *const timespec_t as usize;
+    let ts_ptr = core::ptr::from_ref(ts) as usize;
     let sig_set_size = core::mem::size_of::<sigset_t>();
     unsafe {
         syscall4(SYS_RT_SIGTIMEDWAIT, set_ptr, info_ptr, ts_ptr, sig_set_size).map(|ret| ret as i32)
@@ -5973,7 +5973,7 @@ pub unsafe fn rt_tgsigqueueinfo(
     let tgid = tgid as usize;
     let tid = tid as usize;
     let sig = sig as usize;
-    let info_ptr = info as *mut siginfo_t as usize;
+    let info_ptr = core::ptr::from_mut(info) as usize;
     unsafe { syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, info_ptr).map(drop) }
 }
 
@@ -6000,14 +6000,14 @@ pub unsafe fn rt_tgsigqueueinfo(
 pub unsafe fn sched_getaffinity(pid: pid_t, user_mask: &mut cpu_set_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let cpu_set_len = core::mem::size_of::<cpu_set_t>();
-    let user_mask_ptr = user_mask as *mut cpu_set_t as usize;
+    let user_mask_ptr = core::ptr::from_mut(user_mask) as usize;
     unsafe { syscall3(SYS_SCHED_GETAFFINITY, pid, cpu_set_len, user_mask_ptr).map(drop) }
 }
 
 /// Get scheduling policy and attributes
 pub unsafe fn sched_getattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> Result<(), Errno> {
     let pid = pid as usize;
-    let attr_ptr = attr as *mut sched_attr_t as usize;
+    let attr_ptr = core::ptr::from_mut(attr) as usize;
     let size = core::mem::size_of::<sched_attr_t>();
     let flags = flags as usize;
     unsafe { syscall4(SYS_SCHED_GETATTR, pid, attr_ptr, size, flags).map(drop) }
@@ -6025,7 +6025,7 @@ pub unsafe fn sched_getattr(pid: pid_t, attr: &mut sched_attr_t, flags: u32) -> 
 /// ```
 pub unsafe fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
-    let param_ptr = param as *mut sched_param_t as usize;
+    let param_ptr = core::ptr::from_mut(param) as usize;
     unsafe { syscall2(SYS_SCHED_GETPARAM, pid, param_ptr).map(drop) }
 }
 
@@ -6083,7 +6083,7 @@ pub unsafe fn sched_get_priority_min(policy: i32) -> Result<i32, Errno> {
 /// ```
 pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Result<(), Errno> {
     let pid = pid as usize;
-    let interval_ptr = interval as *mut timespec_t as usize;
+    let interval_ptr = core::ptr::from_mut(interval) as usize;
     unsafe { syscall2(SYS_SCHED_RR_GET_INTERVAL, pid, interval_ptr).map(drop) }
 }
 
@@ -6110,14 +6110,14 @@ pub unsafe fn sched_rr_get_interval(pid: pid_t, interval: &mut timespec_t) -> Re
 pub unsafe fn sched_setaffinity(pid: pid_t, user_mask: &cpu_set_t) -> Result<(), Errno> {
     let pid = pid as usize;
     let cpu_set_len = core::mem::size_of::<cpu_set_t>();
-    let user_mask_ptr = user_mask as *const cpu_set_t as usize;
+    let user_mask_ptr = core::ptr::from_ref(user_mask) as usize;
     unsafe { syscall3(SYS_SCHED_SETAFFINITY, pid, cpu_set_len, user_mask_ptr).map(drop) }
 }
 
 /// Set the RT priority of a thread.
 pub unsafe fn sched_setattr(pid: pid_t, attr: &sched_attr_t, flags: u32) -> Result<(), Errno> {
     let pid = pid as usize;
-    let attr_ptr = attr as *const sched_attr_t as usize;
+    let attr_ptr = core::ptr::from_ref(attr) as usize;
     let flags = flags as usize;
     unsafe { syscall3(SYS_SCHED_SETATTR, pid, attr_ptr, flags).map(drop) }
 }
@@ -6136,7 +6136,7 @@ pub unsafe fn sched_setattr(pid: pid_t, attr: &sched_attr_t, flags: u32) -> Resu
 /// ```
 pub unsafe fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
-    let param_ptr = param as *const sched_param_t as usize;
+    let param_ptr = core::ptr::from_ref(param) as usize;
     unsafe { syscall2(SYS_SCHED_SETPARAM, pid, param_ptr).map(drop) }
 }
 
@@ -6156,7 +6156,7 @@ pub unsafe fn sched_setscheduler(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let policy = policy as usize;
-    let param_ptr = param as *const sched_param_t as usize;
+    let param_ptr = core::ptr::from_ref(param) as usize;
     unsafe { syscall3(SYS_SCHED_SETSCHEDULER, pid, policy, param_ptr).map(drop) }
 }
 
@@ -6602,7 +6602,7 @@ pub unsafe fn semtimedop(
     let sops_ptr = sops.as_mut_ptr() as usize;
     let nops = sops.len();
     let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     unsafe { syscall4(SYS_SEMTIMEDOP, semid, sops_ptr, nops, timeout_ptr).map(drop) }
 }
@@ -6677,7 +6677,7 @@ pub unsafe fn sendfile(
     let out_fd = out_fd as usize;
     let in_fd = in_fd as usize;
     let offset_ptr = offset.map_or(core::ptr::null_mut::<off_t>() as usize, |offset| {
-        offset as *mut off_t as usize
+        core::ptr::from_mut(offset) as usize
     });
     unsafe { syscall4(SYS_SENDFILE, out_fd, in_fd, offset_ptr, count).map(|ret| ret as ssize_t) }
 }
@@ -6851,7 +6851,7 @@ pub unsafe fn sendmmsg(sockfd: i32, msgvec: &[mmsghdr_t], flags: i32) -> Result<
 /// ```
 pub unsafe fn sendmsg(sockfd: i32, msg: &msghdr_t, flags: i32) -> Result<ssize_t, Errno> {
     let sockfd = sockfd as usize;
-    let msg_ptr = msg as *const msghdr_t as usize;
+    let msg_ptr = core::ptr::from_ref(msg) as usize;
     let flags = flags as usize;
     unsafe { syscall3(SYS_SENDMSG, sockfd, msg_ptr, flags).map(|ret| ret as ssize_t) }
 }
@@ -7068,9 +7068,9 @@ pub unsafe fn setitimer(
     old_val: Option<&mut itimerval_t>,
 ) -> Result<(), Errno> {
     let which = which as usize;
-    let new_val_ptr = new_val as *const itimerval_t as usize;
+    let new_val_ptr = core::ptr::from_ref(new_val) as usize;
     let old_val_ptr = old_val.map_or(core::ptr::null_mut::<itimerval_t>() as usize, |old_val| {
-        old_val as *mut itimerval_t as usize
+        core::ptr::from_mut(old_val) as usize
     });
     unsafe { syscall3(SYS_SETITIMER, which, new_val_ptr, old_val_ptr).map(drop) }
 }
@@ -7185,7 +7185,7 @@ pub unsafe fn setreuid(ruid: uid_t, euid: uid_t) -> Result<(), Errno> {
 /// ```
 pub unsafe fn setrlimit(resource: i32, rlimit: &rlimit_t) -> Result<(), Errno> {
     let resource = resource as usize;
-    let rlimit_ptr = rlimit as *const rlimit_t as usize;
+    let rlimit_ptr = core::ptr::from_ref(rlimit) as usize;
     unsafe { syscall2(SYS_SETRLIMIT, resource, rlimit_ptr).map(drop) }
 }
 
@@ -7254,9 +7254,9 @@ pub unsafe fn setsockopt(
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn settimeofday(timeval: &timeval_t, tz: Option<&timezone_t>) -> Result<(), Errno> {
-    let timeval_ptr = timeval as *const timeval_t as usize;
+    let timeval_ptr = core::ptr::from_ref(timeval) as usize;
     let tz_ptr = tz.map_or(core::ptr::null::<timezone_t>() as usize, |tz| {
-        tz as *const timezone_t as usize
+        core::ptr::from_ref(tz) as usize
     });
     unsafe { syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop) }
 }
@@ -7338,7 +7338,7 @@ pub unsafe fn set_robust_list(head: *mut robust_list_head_t, len: usize) -> Resu
 ///
 /// Always returns the caller's thread id.
 pub unsafe fn set_tid_address(tid: &mut i32) -> pid_t {
-    let tid_ptr = tid as *mut i32 as usize;
+    let tid_ptr = core::ptr::from_mut(tid) as usize;
     // This function is always successful.
     unsafe { syscall1(SYS_SET_TID_ADDRESS, tid_ptr).unwrap_or_default() as pid_t }
 }
@@ -7400,7 +7400,7 @@ pub unsafe fn shmat(
 pub unsafe fn shmctl(shmid: i32, cmd: i32, buf: &mut shmid_ds_t) -> Result<i32, Errno> {
     let shmid = shmid as usize;
     let cmd = cmd as usize;
-    let buf_ptr = buf as *mut shmid_ds_t as usize;
+    let buf_ptr = core::ptr::from_mut(buf) as usize;
     unsafe { syscall3(SYS_SHMCTL, shmid, cmd, buf_ptr).map(|ret| ret as i32) }
 }
 
@@ -7545,10 +7545,10 @@ pub unsafe fn sigaltstack(
     old_ss: Option<&mut sigaltstack_t>,
 ) -> Result<(), Errno> {
     let ss_ptr = ss.map_or(core::ptr::null::<sigaltstack_t>() as usize, |ss| {
-        ss as *const sigaltstack_t as usize
+        core::ptr::from_ref(ss) as usize
     });
     let old_ss_ptr = old_ss.map_or(core::ptr::null_mut::<sigaltstack_t>() as usize, |old_ss| {
-        old_ss as *mut sigaltstack_t as usize
+        core::ptr::from_mut(old_ss) as usize
     });
     unsafe { syscall2(SYS_SIGALTSTACK, ss_ptr, old_ss_ptr).map(drop) }
 }
@@ -7556,7 +7556,7 @@ pub unsafe fn sigaltstack(
 /// Create a file descriptor to accept signals.
 pub unsafe fn signalfd4(fd: i32, mask: &sigset_t, flags: i32) -> Result<i32, Errno> {
     let fd = fd as usize;
-    let mask_ptr = mask as *const sigset_t as usize;
+    let mask_ptr = core::ptr::from_ref(mask) as usize;
     let size_mask = core::mem::size_of::<sigset_t>();
     let flags = flags as usize;
     unsafe { syscall4(SYS_SIGNALFD4, fd, mask_ptr, size_mask, flags).map(|ret| ret as i32) }

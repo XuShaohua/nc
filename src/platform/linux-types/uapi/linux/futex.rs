@@ -70,7 +70,7 @@ pub struct futex_waitv_t {
 #[repr(C)]
 #[derive(Debug)]
 pub struct robust_list_t {
-    pub next: *mut robust_list_t,
+    pub next: *mut Self,
 }
 
 /// Per-thread list head:

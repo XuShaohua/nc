@@ -31,8 +31,8 @@ impl linux_dirent_t {
     /// `d_type` located at last byte of dirent.
     #[must_use]
     #[inline]
-    pub fn d_type(&self) -> u8 {
-        let self_ptr: *const u8 = (self as *const Self).cast::<u8>();
+    pub const fn d_type(&self) -> u8 {
+        let self_ptr: *const u8 = ptr::from_ref(self).cast::<u8>();
         let d_type_ptr: *const u8 = self_ptr
             .wrapping_add(self.d_reclen as usize)
             .wrapping_sub(1);

@@ -29,7 +29,7 @@
 /// }
 /// ```
 pub unsafe fn rt_sigsuspend(set: &sigset_t) -> Result<(), Errno> {
-    let set_ptr = set as *const sigset_t as usize;
+    let set_ptr = core::ptr::from_ref(set) as usize;
     let sigset_size = core::mem::size_of::<sigset_t>();
     unsafe { syscall2(SYS_RT_SIGSUSPEND, set_ptr, sigset_size).map(drop) }
 }

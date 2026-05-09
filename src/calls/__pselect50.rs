@@ -13,11 +13,11 @@ pub unsafe fn pselect6(
     sigmask: &sigset_t,
 ) -> Result<i32, Errno> {
     let nfds = nfds as usize;
-    let readfds_ptr = readfds as *mut fd_set_t as usize;
-    let writefds_ptr = writefds as *mut fd_set_t as usize;
-    let exceptfds_ptr = exceptfds as *mut fd_set_t as usize;
-    let timeout_ptr = timeout as *const timespec_t as usize;
-    let sigmask_ptr = sigmask as *const sigset_t as usize;
+    let readfds_ptr = core::ptr::from_mut(readfds) as usize;
+    let writefds_ptr = core::ptr::from_mut(writefds) as usize;
+    let exceptfds_ptr = core::ptr::from_mut(exceptfds) as usize;
+    let timeout_ptr = core::ptr::from_ref(timeout) as usize;
+    let sigmask_ptr = core::ptr::from_ref(sigmask) as usize;
     unsafe {
         syscall6(
             SYS___PSELECT50,

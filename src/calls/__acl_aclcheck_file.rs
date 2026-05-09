@@ -6,6 +6,6 @@ pub unsafe fn __acl_aclcheck_file<P: AsRef<Path>>(
     let path = CString::new(path.as_ref());
     let path_ptr = path.as_ptr() as usize;
     let type_ = type_ as usize;
-    let acl_ptr = acl as *mut acl_t as usize;
+    let acl_ptr = core::ptr::from_mut(acl) as usize;
     unsafe { syscall3(SYS___ACL_ACLCHECK_FILE, path_ptr, type_, acl_ptr).map(drop) }
 }

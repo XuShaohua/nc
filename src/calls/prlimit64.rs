@@ -18,11 +18,11 @@ pub unsafe fn prlimit64(
     let pid = pid as usize;
     let resource = resource as usize;
     let new_limit_ptr = new_limit.map_or(core::ptr::null::<rlimit64_t>() as usize, |new_limit| {
-        new_limit as *const rlimit64_t as usize
+        core::ptr::from_ref(new_limit) as usize
     });
     let old_limit_ptr = old_limit
         .map_or(core::ptr::null_mut::<rlimit64_t>() as usize, |old_limit| {
-            old_limit as *mut rlimit64_t as usize
+            core::ptr::from_mut(old_limit) as usize
         });
     unsafe { syscall4(SYS_PRLIMIT64, pid, resource, new_limit_ptr, old_limit_ptr).map(drop) }
 }

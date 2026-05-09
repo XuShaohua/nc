@@ -13,8 +13,8 @@
 /// assert!(sgid > 0);
 /// ```
 pub unsafe fn getresgid(rgid: &mut gid_t, egid: &mut gid_t, sgid: &mut gid_t) -> Result<(), Errno> {
-    let rgid_ptr = rgid as *mut gid_t as usize;
-    let egid_ptr = egid as *mut gid_t as usize;
-    let sgid_ptr = sgid as *mut gid_t as usize;
+    let rgid_ptr = core::ptr::from_mut(rgid) as usize;
+    let egid_ptr = core::ptr::from_mut(egid) as usize;
+    let sgid_ptr = core::ptr::from_mut(sgid) as usize;
     unsafe { syscall3(SYS_GETRESGID, rgid_ptr, egid_ptr, sgid_ptr).map(drop) }
 }

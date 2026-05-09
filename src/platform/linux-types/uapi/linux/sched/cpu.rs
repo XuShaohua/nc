@@ -36,7 +36,7 @@ impl cpu_set_t {
     /// # Errors
     ///
     /// Returns `EINVAL` if `pos` is larger than 1023.
-    pub fn set(&mut self, pos: usize) -> Result<(), Errno> {
+    pub const fn set(&mut self, pos: usize) -> Result<(), Errno> {
         if pos >= Self::bits() {
             return Err(EINVAL);
         }
@@ -48,7 +48,7 @@ impl cpu_set_t {
     /// # Errors
     ///
     /// Returns `EINVAL` if `pos` is larger than 1023.
-    pub fn clear(&mut self, pos: usize) -> Result<(), Errno> {
+    pub const fn clear(&mut self, pos: usize) -> Result<(), Errno> {
         if pos >= Self::bits() {
             return Err(EINVAL);
         }
@@ -78,7 +78,7 @@ impl cpu_set_t {
 
     #[must_use]
     #[inline]
-    pub fn as_mut_ptr(&mut self) -> &mut [usize] {
+    pub const fn as_mut_ptr(&mut self) -> &mut [usize] {
         &mut self.bits
     }
 }

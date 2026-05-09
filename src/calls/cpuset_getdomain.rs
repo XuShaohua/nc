@@ -11,8 +11,8 @@ pub unsafe fn cpuset_getdomain(
     let level = level as usize;
     let which = which as usize;
     let id = id as usize;
-    let mask_ptr = mask as *mut domainset_t as usize;
-    let policy_ptr = policy as *mut i32 as usize;
+    let mask_ptr = core::ptr::from_mut(mask) as usize;
+    let policy_ptr = core::ptr::from_mut(policy) as usize;
     unsafe {
         syscall6(
             SYS_CPUSET_GETDOMAIN,

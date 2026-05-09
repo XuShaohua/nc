@@ -10,9 +10,9 @@
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn settimeofday(timeval: &timeval_t, tz: Option<&timezone_t>) -> Result<(), Errno> {
-    let timeval_ptr = timeval as *const timeval_t as usize;
+    let timeval_ptr = core::ptr::from_ref(timeval) as usize;
     let tz_ptr = tz.map_or(core::ptr::null::<timezone_t>() as usize, |tz| {
-        tz as *const timezone_t as usize
+        core::ptr::from_ref(tz) as usize
     });
     unsafe { syscall2(SYS_SETTIMEOFDAY, timeval_ptr, tz_ptr).map(drop) }
 }

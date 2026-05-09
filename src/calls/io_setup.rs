@@ -93,6 +93,6 @@
 ///
 pub unsafe fn io_setup(nr_events: u32, ctx_id: &mut aio_context_t) -> Result<(), Errno> {
     let nr_events = nr_events as usize;
-    let ctx_id_ptr = ctx_id as *mut aio_context_t as usize;
+    let ctx_id_ptr = core::ptr::from_mut(ctx_id) as usize;
     unsafe { syscall2(SYS_IO_SETUP, nr_events, ctx_id_ptr).map(drop) }
 }

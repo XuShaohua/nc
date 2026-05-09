@@ -93,7 +93,7 @@ pub unsafe fn accept4(
         addr as usize
     });
     let addrlen_ptr = addrlen.map_or(core::ptr::null_mut::<socklen_t>() as usize, |addrlen| {
-        addrlen as *mut socklen_t as usize
+        core::ptr::from_mut(addrlen) as usize
     });
     let flags = flags as usize;
     unsafe { syscall4(SYS_ACCEPT4, sockfd, addr_ptr, addrlen_ptr, flags).map(|val| val as i32) }

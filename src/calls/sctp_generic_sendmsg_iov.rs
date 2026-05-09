@@ -11,7 +11,7 @@ pub unsafe fn sctp_generic_sendmsg_iov(
     let iov_len = iov.len();
     let to_ptr = to.as_ptr() as usize;
     let to_len = to.len();
-    let sinfo_ptr = sinfo as *mut sctp_sndrcvinfo_t as usize;
+    let sinfo_ptr = core::ptr::from_mut(sinfo) as usize;
     let _flags = flags as usize;
     // FIXME(Shaohua): Parameter error
     unsafe {

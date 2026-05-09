@@ -3,6 +3,6 @@
 pub unsafe fn rtprio(function: i32, pid: pid_t, rt: &mut rtprio_t) -> Result<(), Errno> {
     let function = function as usize;
     let pid = pid as usize;
-    let rt_ptr = rt as *mut rtprio_t as usize;
+    let rt_ptr = core::ptr::from_mut(rt) as usize;
     unsafe { syscall3(SYS_RTPRIO, function, pid, rt_ptr).map(drop) }
 }

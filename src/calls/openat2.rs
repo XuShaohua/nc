@@ -22,7 +22,7 @@ pub unsafe fn openat2<P: AsRef<Path>>(
     let dirfd = dirfd as usize;
     let pathname = CString::new(pathname.as_ref());
     let pathname_ptr = pathname.as_ptr() as usize;
-    let how_ptr = how as *mut open_how_t as usize;
+    let how_ptr = core::ptr::from_mut(how) as usize;
     let how_size = core::mem::size_of::<open_how_t>();
     unsafe { syscall4(SYS_OPENAT2, dirfd, pathname_ptr, how_ptr, how_size).map(|ret| ret as i32) }
 }

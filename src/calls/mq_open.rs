@@ -29,6 +29,6 @@ pub unsafe fn mq_open<P: AsRef<Path>>(
     let name_ptr = name.as_ptr() as usize;
     let oflag = oflag as usize;
     let mode = mode as usize;
-    let attr_ptr = attr.map_or(0, |attr| attr as *mut mq_attr_t as usize);
+    let attr_ptr = attr.map_or(0, |attr| core::ptr::from_mut(attr) as usize);
     unsafe { syscall4(SYS_MQ_OPEN, name_ptr, oflag, mode, attr_ptr).map(|ret| ret as mqd_t) }
 }

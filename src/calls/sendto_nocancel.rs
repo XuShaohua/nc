@@ -10,7 +10,7 @@ pub unsafe fn sendto_nocancel(
     let buf_ptr = buf.as_ptr() as usize;
     let len = buf.len();
     let flags = flags as usize;
-    let dest_addr_ptr = dest_addr as *const sockaddr_in_t as usize;
+    let dest_addr_ptr = core::ptr::from_ref(dest_addr) as usize;
     let addrlen = addrlen as usize;
     unsafe {
         syscall6(

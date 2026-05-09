@@ -8,6 +8,6 @@ pub unsafe fn rt_tgsigqueueinfo(
     let tgid = tgid as usize;
     let tid = tid as usize;
     let sig = sig as usize;
-    let info_ptr = info as *mut siginfo_t as usize;
+    let info_ptr = core::ptr::from_mut(info) as usize;
     unsafe { syscall4(SYS_RT_TGSIGQUEUEINFO, tgid, tid, sig, info_ptr).map(drop) }
 }

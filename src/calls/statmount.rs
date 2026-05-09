@@ -3,7 +3,7 @@ pub unsafe fn statmount(
     buf: &mut [statmount_t],
     flags: u32,
 ) -> Result<(), Errno> {
-    let req_ptr = req as *const mnt_id_req_t as usize;
+    let req_ptr = core::ptr::from_ref(req) as usize;
     let buf_ptr = buf.as_mut_ptr() as usize;
     let buf_size = buf.len();
     let flags = flags as usize;

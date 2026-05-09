@@ -15,19 +15,19 @@ pub unsafe fn pselect6(
     use core::ptr::{null, null_mut};
     let nfds = nfds as usize;
     let read_fds_ptr = read_fds.map_or(null_mut::<fd_set_t>() as usize, |read_fds| {
-        read_fds as *mut fd_set_t as usize
+        core::ptr::from_mut(read_fds) as usize
     });
     let write_fds_ptr = write_fds.map_or(null_mut::<fd_set_t>() as usize, |write_fds| {
-        write_fds as *mut fd_set_t as usize
+        core::ptr::from_mut(write_fds) as usize
     });
     let except_fds_ptr = except_fds.map_or(null_mut::<fd_set_t>() as usize, |except_fds| {
-        except_fds as *mut fd_set_t as usize
+        core::ptr::from_mut(except_fds) as usize
     });
     let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let sigmask_ptr = sigmask.map_or(null::<sigset_t>() as usize, |sigmask| {
-        sigmask as *const sigset_t as usize
+        core::ptr::from_ref(sigmask) as usize
     });
     unsafe {
         syscall6(

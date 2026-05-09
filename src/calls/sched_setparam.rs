@@ -12,6 +12,6 @@
 /// ```
 pub unsafe fn sched_setparam(pid: pid_t, param: &sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
-    let param_ptr = param as *const sched_param_t as usize;
+    let param_ptr = core::ptr::from_ref(param) as usize;
     unsafe { syscall2(SYS_SCHED_SETPARAM, pid, param_ptr).map(drop) }
 }

@@ -15,7 +15,7 @@ pub struct Path {
 impl Path {
     #[inline]
     pub fn new<S: AsRef<[u8]> + ?Sized>(s: &S) -> &Self {
-        unsafe { &*(s.as_ref() as *const [u8] as *const Self) }
+        unsafe { &*(core::ptr::from_ref(s.as_ref()) as *const Self) }
     }
 
     #[must_use]

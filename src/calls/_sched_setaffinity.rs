@@ -7,6 +7,6 @@ pub unsafe fn _sched_setaffinity(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let lid = lid as usize;
-    let cpuset_ptr = cpuset as *const cpuset_t as usize;
+    let cpuset_ptr = core::ptr::from_ref(cpuset) as usize;
     unsafe { syscall4(SYS__SCHED_SETAFFINITY, pid, lid, size, cpuset_ptr).map(drop) }
 }

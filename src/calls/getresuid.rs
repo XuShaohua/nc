@@ -13,8 +13,8 @@
 /// assert!(suid > 0);
 /// ```
 pub unsafe fn getresuid(ruid: &mut uid_t, euid: &mut uid_t, suid: &mut uid_t) -> Result<(), Errno> {
-    let ruid_ptr = ruid as *mut uid_t as usize;
-    let euid_ptr = euid as *mut uid_t as usize;
-    let suid_ptr = suid as *mut uid_t as usize;
+    let ruid_ptr = core::ptr::from_mut(ruid) as usize;
+    let euid_ptr = core::ptr::from_mut(euid) as usize;
+    let suid_ptr = core::ptr::from_mut(suid) as usize;
     unsafe { syscall3(SYS_GETRESUID, ruid_ptr, euid_ptr, suid_ptr).map(drop) }
 }

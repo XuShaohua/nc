@@ -32,10 +32,10 @@ pub unsafe fn mq_getsetattr(
 ) -> Result<mqd_t, Errno> {
     let mqdes = mqdes as usize;
     let new_attr_ptr = new_attr.map_or(core::ptr::null::<mq_attr_t>() as usize, |new_attr| {
-        new_attr as *const mq_attr_t as usize
+        core::ptr::from_ref(new_attr) as usize
     });
     let old_attr_ptr = old_attr.map_or(core::ptr::null_mut::<mq_attr_t>() as usize, |old_attr| {
-        old_attr as *mut mq_attr_t as usize
+        core::ptr::from_mut(old_attr) as usize
     });
     unsafe {
         syscall3(SYS_MQ_GETSETATTR, mqdes, new_attr_ptr, old_attr_ptr).map(|ret| ret as mqd_t)

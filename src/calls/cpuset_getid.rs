@@ -9,6 +9,6 @@ pub unsafe fn cpuset_getid(
     let level = level as usize;
     let which = which as usize;
     let id = id as usize;
-    let setid_ptr = setid as *mut cpuset_t as usize;
+    let setid_ptr = core::ptr::from_mut(setid) as usize;
     unsafe { syscall4(SYS_CPUSET_GETID, level, which, id, setid_ptr).map(drop) }
 }

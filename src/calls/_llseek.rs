@@ -7,7 +7,7 @@ pub unsafe fn _llseek(
     whence: i32,
 ) -> Result<(), Errno> {
     let fd = fd as usize;
-    let result_ptr = result as *mut loff_t as usize;
+    let result_ptr = core::ptr::from_mut(result) as usize;
     let whence = whence as usize;
     unsafe { syscall5(SYS__LLSEEK, fd, offset_high, offset_low, result_ptr, whence).map(drop) }
 }

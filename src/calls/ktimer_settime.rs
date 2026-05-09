@@ -7,7 +7,7 @@ pub unsafe fn ktimer_settime(
 ) -> Result<(), Errno> {
     let timer_id = timer_id as usize;
     let flags = flags as usize;
-    let value_ptr = value as *const itimerspec_t as usize;
-    let ovalue_ptr = ovalue as *mut itimerspec_t as usize;
+    let value_ptr = core::ptr::from_ref(value) as usize;
+    let ovalue_ptr = core::ptr::from_mut(ovalue) as usize;
     unsafe { syscall4(SYS_KTIMER_SETTIME, timer_id, flags, value_ptr, ovalue_ptr).map(drop) }
 }

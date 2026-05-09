@@ -9,8 +9,8 @@ pub unsafe fn name_to_handle_at<P: AsRef<Path>>(
     let dfd = dfd as usize;
     let filename = CString::new(filename.as_ref());
     let filename_ptr = filename.as_ptr() as usize;
-    let handle_ptr = handle as *mut file_handle_t as usize;
-    let mount_id_ptr = mount_id as *mut i32 as usize;
+    let handle_ptr = core::ptr::from_mut(handle) as usize;
+    let mount_id_ptr = core::ptr::from_mut(mount_id) as usize;
     let flags = flags as usize;
     unsafe {
         syscall5(

@@ -11,6 +11,6 @@ pub unsafe fn get_robust_list(
 ) -> Result<(), Errno> {
     let pid = pid as usize;
     let head_ptr = head_ptr as usize;
-    let len_ptr = len_ptr as *mut size_t as usize;
+    let len_ptr = core::ptr::from_mut(len_ptr) as usize;
     unsafe { syscall3(SYS_GET_ROBUST_LIST, pid, head_ptr, len_ptr).map(drop) }
 }

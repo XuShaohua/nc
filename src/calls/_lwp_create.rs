@@ -4,7 +4,7 @@ pub unsafe fn _lwp_craete(
     flags: usize,
     id: &mut lwpid_t,
 ) -> Result<(), Errno> {
-    let ctx_ptr = ctx as *mut ucontext_t as usize;
-    let id_ptr = id as *mut lwpid_t as usize;
+    let ctx_ptr = core::ptr::from_mut(ctx) as usize;
+    let id_ptr = core::ptr::from_mut(id) as usize;
     unsafe { syscall3(SYS__LWP_CREATE, ctx_ptr, flags, id_ptr).map(drop) }
 }

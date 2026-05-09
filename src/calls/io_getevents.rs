@@ -97,7 +97,7 @@ pub unsafe fn io_getevents(
     let nr = events.len();
     let events_ptr = events.as_mut_ptr() as usize;
     let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     unsafe {
         syscall5(

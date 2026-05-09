@@ -103,7 +103,7 @@ pub unsafe fn pidfd_send_signal(
     let pidfd = pidfd as usize;
     let sig = sig as usize;
     let info_ptr = info.map_or(core::ptr::null_mut::<siginfo_t>() as usize, |info| {
-        info as *mut siginfo_t as usize
+        core::ptr::from_mut(info) as usize
     });
     let flags = flags as usize;
     unsafe { syscall4(SYS_PIDFD_SEND_SIGNAL, pidfd, sig, info_ptr, flags).map(drop) }

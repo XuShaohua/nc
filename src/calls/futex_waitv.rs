@@ -32,7 +32,7 @@ pub unsafe fn futex_waitv(
     let waiters_len = waiters.len();
     let flags = flags as usize;
     let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let clockid = clockid as usize;
     unsafe {

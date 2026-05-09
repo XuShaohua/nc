@@ -87,10 +87,10 @@ pub unsafe fn io_pgetevents(
     let nr = events.len();
     let events_ptr = events.as_mut_ptr() as usize;
     let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let sig_ptr = sig.map_or(null::<aio_sigset_t>() as usize, |sig| {
-        sig as *const aio_sigset_t as usize
+        core::ptr::from_ref(sig) as usize
     });
     unsafe {
         syscall6(

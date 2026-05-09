@@ -11,7 +11,7 @@ pub unsafe fn cpuset_setdomain(
     let level = level as usize;
     let which = which as usize;
     let id = id as usize;
-    let mask_ptr = mask as *const domainset_t as usize;
+    let mask_ptr = core::ptr::from_ref(mask) as usize;
     let policy = policy as usize;
     unsafe {
         syscall6(

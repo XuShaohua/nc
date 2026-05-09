@@ -94,7 +94,7 @@ pub unsafe fn recvmmsg(
     let vlen = msgvec.len();
     let flags = flags as usize;
     let timeout_ptr = timeout.map_or(core::ptr::null_mut::<timespec_t>() as usize, |timeout| {
-        timeout as *mut timespec_t as usize
+        core::ptr::from_mut(timeout) as usize
     });
     unsafe { syscall5(SYS_RECVMMSG, sockfd, msgvec_ptr, vlen, flags, timeout_ptr) }
 }

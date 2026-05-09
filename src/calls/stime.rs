@@ -9,6 +9,6 @@
 /// assert_eq!(ret, Err(nc::EPERM));
 /// ```
 pub unsafe fn stime(t: &time_t) -> Result<(), Errno> {
-    let t_ptr = t as *const time_t as usize;
+    let t_ptr = core::ptr::from_ref(t) as usize;
     unsafe { syscall1(SYS_STIME, t_ptr).map(drop) }
 }

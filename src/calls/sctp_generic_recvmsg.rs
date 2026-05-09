@@ -11,9 +11,9 @@ pub unsafe fn sctp_generic_recvmsg(
     let iov_ptr = iov.as_mut_ptr() as usize;
     let iov_len = iov.len();
     let from_ptr = from.as_mut_ptr() as usize;
-    let from_len_addr_ptr = from_len_addr as *mut socklen_t as usize;
-    let sinfo_ptr = sinfo as *mut sctp_sndrcvinfo_t as usize;
-    let _msg_flags_ptr = msg_flags as *mut i32 as usize;
+    let from_len_addr_ptr = core::ptr::from_mut(from_len_addr) as usize;
+    let sinfo_ptr = core::ptr::from_mut(sinfo) as usize;
+    let _msg_flags_ptr = core::ptr::from_mut(msg_flags) as usize;
     // FIXME(Shaohua): Parameter error
     unsafe {
         syscall6(

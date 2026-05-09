@@ -48,7 +48,7 @@ pub unsafe fn mq_timedsend(
     let msg_ptr = msg.as_ptr() as usize;
     let msg_len = msg.len();
     let msg_prio = msg_prio as usize;
-    let abs_timeout_ptr = abs_timeout as *const timespec_t as usize;
+    let abs_timeout_ptr = core::ptr::from_ref(abs_timeout) as usize;
     unsafe {
         syscall5(
             SYS_MQ_TIMEDSEND,

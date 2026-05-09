@@ -10,6 +10,6 @@
 /// ```
 pub unsafe fn sched_getparam(pid: pid_t, param: &mut sched_param_t) -> Result<(), Errno> {
     let pid = pid as usize;
-    let param_ptr = param as *mut sched_param_t as usize;
+    let param_ptr = core::ptr::from_mut(param) as usize;
     unsafe { syscall2(SYS_SCHED_GETPARAM, pid, param_ptr).map(drop) }
 }

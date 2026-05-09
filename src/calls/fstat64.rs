@@ -18,6 +18,6 @@
 /// ```
 pub unsafe fn fstat64(fd: i32, statbuf: &mut stat64_t) -> Result<(), Errno> {
     let fd = fd as usize;
-    let statbuf_ptr = statbuf as *mut stat64_t as usize;
+    let statbuf_ptr = core::ptr::from_mut(statbuf) as usize;
     unsafe { syscall2(SYS_FSTAT64, fd, statbuf_ptr).map(drop) }
 }

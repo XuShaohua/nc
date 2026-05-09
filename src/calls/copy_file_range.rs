@@ -39,9 +39,9 @@ pub unsafe fn copy_file_range(
     flags: u32,
 ) -> Result<ssize_t, Errno> {
     let fd_in = fd_in as usize;
-    let off_in_ptr = off_in as *mut loff_t as usize;
+    let off_in_ptr = core::ptr::from_mut(off_in) as usize;
     let fd_out = fd_out as usize;
-    let off_out_ptr = off_out as *mut loff_t as usize;
+    let off_out_ptr = core::ptr::from_mut(off_out) as usize;
     let flags = flags as usize;
     unsafe {
         syscall6(

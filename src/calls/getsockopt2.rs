@@ -9,8 +9,8 @@ pub unsafe fn getsockopt2(
     let sockfd = sockfd as usize;
     let level = level as usize;
     let optname = optname as usize;
-    let optval_ptr = optval as *mut usize as usize;
-    let optlen_ptr = optlen as *mut socklen_t as usize;
+    let optval_ptr = core::ptr::from_mut(optval) as usize;
+    let optlen_ptr = core::ptr::from_mut(optlen) as usize;
     unsafe {
         syscall5(
             SYS_GETSOCKOPT2,

@@ -18,9 +18,9 @@ pub unsafe fn clock_nanosleep(
 ) -> Result<(), Errno> {
     let which_clock = which_clock as usize;
     let flags = flags as usize;
-    let request_ptr = request as *const timespec_t as usize;
+    let request_ptr = core::ptr::from_ref(request) as usize;
     let remain_ptr = remain.map_or(core::ptr::null_mut::<timespec_t>() as usize, |remain| {
-        remain as *mut timespec_t as usize
+        core::ptr::from_mut(remain) as usize
     });
     unsafe {
         syscall4(

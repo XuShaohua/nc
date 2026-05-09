@@ -90,6 +90,6 @@ pub unsafe fn getsockname(
 ) -> Result<(), Errno> {
     let sockfd = sockfd as usize;
     let addr_ptr = addr as usize;
-    let addrlen_ptr = addrlen as *mut socklen_t as usize;
+    let addrlen_ptr = core::ptr::from_mut(addrlen) as usize;
     unsafe { syscall3(SYS_GETSOCKNAME, sockfd, addr_ptr, addrlen_ptr).map(drop) }
 }

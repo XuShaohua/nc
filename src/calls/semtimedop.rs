@@ -8,7 +8,7 @@ pub unsafe fn semtimedop(
     let sops_ptr = sops.as_mut_ptr() as usize;
     let nops = sops.len();
     let timeout_ptr = timeout.map_or(core::ptr::null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     unsafe { syscall4(SYS_SEMTIMEDOP, semid, sops_ptr, nops, timeout_ptr).map(drop) }
 }

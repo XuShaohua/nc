@@ -120,7 +120,7 @@ pub const fn IOC_DIR(nr: u32) -> u32 {
 #[inline]
 #[must_use]
 pub const fn IOC_TYPE(nr: u32) -> u32 {
-    nr >> IOC_TYPESHIFT & IOC_TYPEMASK
+    (nr >> IOC_TYPESHIFT) & IOC_TYPEMASK
 }
 
 #[inline]
@@ -132,7 +132,7 @@ pub const fn IOC_NR(nr: u32) -> u32 {
 #[inline]
 #[must_use]
 pub const fn IOC_SIZE(nr: u32) -> u32 {
-    nr >> IOC_SIZESHIFT & IOC_SIZEMASK
+    (nr >> IOC_SIZESHIFT) & IOC_SIZEMASK
 }
 
 /// ...and for the drivers/sound files...

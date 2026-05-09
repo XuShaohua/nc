@@ -9,10 +9,10 @@ pub unsafe fn ppoll(
     let fds_ptr = fds.as_mut_ptr() as usize;
     let nfds = fds.len();
     let timeout_ptr = timeout.map_or(null::<timespec_t>() as usize, |timeout| {
-        timeout as *const timespec_t as usize
+        core::ptr::from_ref(timeout) as usize
     });
     let sig_mask_ptr = sig_mask.map_or(null::<sigset_t>() as usize, |sig_mask| {
-        sig_mask as *const sigset_t as usize
+        core::ptr::from_ref(sig_mask) as usize
     });
     let sig_set_size = core::mem::size_of::<sigset_t>();
     unsafe {

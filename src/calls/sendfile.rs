@@ -68,7 +68,7 @@ pub unsafe fn sendfile(
     let out_fd = out_fd as usize;
     let in_fd = in_fd as usize;
     let offset_ptr = offset.map_or(core::ptr::null_mut::<off_t>() as usize, |offset| {
-        offset as *mut off_t as usize
+        core::ptr::from_mut(offset) as usize
     });
     unsafe { syscall4(SYS_SENDFILE, out_fd, in_fd, offset_ptr, count).map(|ret| ret as ssize_t) }
 }

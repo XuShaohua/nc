@@ -8,6 +8,6 @@ pub unsafe fn _sched_setparam(
     let pid = pid as usize;
     let lid = lid as usize;
     let policy = policy as usize;
-    let param_ptr = param as *const sched_param_t as usize;
+    let param_ptr = core::ptr::from_ref(param) as usize;
     unsafe { syscall4(SYS__SCHED_SETPARAM, pid, lid, policy, param_ptr).map(drop) }
 }

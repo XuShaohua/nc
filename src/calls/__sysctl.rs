@@ -7,7 +7,7 @@ pub unsafe fn __sysctl(
     new_val: usize,
     new_len: size_t,
 ) -> Result<(), Errno> {
-    let name_ptr = name as *const i32 as usize;
+    let name_ptr = core::ptr::from_ref(name) as usize;
     let name_len = name_len as usize;
     unsafe {
         syscall6(

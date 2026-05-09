@@ -5,5 +5,5 @@
 use crate::{clone, pid_t, Errno, SIGCHLD};
 
 pub unsafe fn fork() -> Result<pid_t, Errno> {
-    clone(SIGCHLD as usize, core::ptr::null(), None, None, None)
+    unsafe { clone(SIGCHLD as usize, core::ptr::null(), None, None, None) }
 }

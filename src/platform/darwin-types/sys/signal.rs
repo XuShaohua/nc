@@ -10,6 +10,13 @@ use core::ptr::null_mut;
 
 use crate::{pid_t, sigset_t, uid_t};
 
+/// The restore function should be written with assembly, or naked rust function,
+/// which does not modify stack frame.
+pub type restorefn_t = unsafe extern "C" fn();
+
+/// `restorefn_t` as usize
+pub type sigrestore_t = Option<restorefn_t>;
+
 /// counting 0; could be 33 (mask is 1-32)
 pub const __DARWIN_NSIG: i32 = 32;
 
@@ -280,8 +287,8 @@ pub type sa_sigaction_fn = fn(i32, *mut siginfo_t, *mut c_void);
 /// union for signal handlers
 #[repr(C)]
 pub union sigaction_u {
-    sa_handler: sa_handler_fn,
-    sa_sigaction: sa_sigaction_fn,
+    pub sa_handler: sa_handler_fn,
+    pub sa_sigaction: sa_sigaction_fn,
 }
 
 pub type sa_tramp_fn = fn(*mut c_void, i32, i32, *mut siginfo_t, *mut c_void);

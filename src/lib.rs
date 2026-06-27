@@ -239,11 +239,17 @@ mod platform;
 #[path = "platform/netbsd-x86_64/mod.rs"]
 mod platform;
 
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+#[path = "platform/darwin-aarch64/mod.rs"]
+mod platform;
+
 #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
 #[path = "platform/darwin-x86_64/mod.rs"]
 mod platform;
 
 pub mod restore;
+
+#[cfg(target_os = "linux")]
 pub mod util;
 
 mod wrappers;

@@ -8,13 +8,15 @@ pub type c_char = i8;
 
 #[cfg(target_arch = "x86_64")]
 #[path = "i386/mod.rs"]
-mod arch;
-pub use arch::*;
+mod i386_arch;
+#[cfg(target_arch = "x86_64")]
+pub use i386_arch::*;
 
 #[cfg(target_arch = "aarch64")]
 #[path = "arm/mod.rs"]
-mod arch;
-pub use arch::*;
+mod arm_arch;
+#[cfg(target_arch = "aarch64")]
+pub use arm_arch::*;
 
 mod bsm;
 mod copyfile;

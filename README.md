@@ -110,10 +110,8 @@ fn main() {
   - aarch64
 - freebsd
   - x86-64
-- netbsd
-  - x86-64
-- mac os
-  - x86-64
+- macos
+  - arm64
 
 ## Related projects
 

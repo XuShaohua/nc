@@ -20,6 +20,7 @@ pub const FUTEX_WAIT_BITSET: i32 = 9;
 pub const FUTEX_WAKE_BITSET: i32 = 10;
 pub const FUTEX_WAIT_REQUEUE_PI: i32 = 11;
 pub const FUTEX_CMP_REQUEUE_PI: i32 = 12;
+pub const FUTEX_LOCK_PI2: i32 = 13;
 
 pub const FUTEX_PRIVATE_FLAG: i32 = 128;
 pub const FUTEX_CLOCK_REALTIME: i32 = 256;
